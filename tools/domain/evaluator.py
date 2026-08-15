@@ -1,7 +1,7 @@
 """Evaluador ligero de sitios web estáticos. Analiza archivos HTML/CSS/JS sin
 necesidad de navegador y produce métricas estilo Lighthouse (0-100 por categoría).
 
-Categorías: seo, a11y, performance, responsive, best_practices
+Categorías: seo, a11y, performance, responsive, best_practices, visual, task
 """
 from __future__ import annotations
 
@@ -51,19 +51,62 @@ PERF_CHECKS = {
 RESP_CHECKS = {
     "viewport_mobile": ("viewport para mobile", lambda h: 'name="viewport"' in h),
     "media_queries": ("media queries en CSS", lambda css: "@media" in css),
-    "flexgrid": ("usa flex o grid", lambda css: "display:flex" in css or "display: grid" in css),
+    "flexgrid": ("usa flex o grid", lambda css: re.search(r"display\s*:\s*(flex|grid|inline-flex)", css) is not None),
     "img_responsive": ("imágenes con width/height o max-width", lambda h: _img_responsive(h)),
 }
 
 BP_CHECKS = {
     "doctype": ("doctype presente", lambda h: h.lstrip().lower().startswith("<!doctype html>")),
     "no_console": ("sin console.log", lambda js: "console.log" not in js),
-    "charset": ("meta charset", lambda h: 'charset="utf-8"' in h or "charset=UTF-8" in h),
+    "charset": ("meta charset", lambda h: re.search(r'<meta[^>]+charset=["\']?utf-?8', h, re.I) is not None),
     "favicon": ("favicon link", lambda h: 'rel="icon"' in h or 'rel="shortcut icon"' in h),
 }
 
+VISUAL_CHECKS = {
+    "css_animations": (
+        "animaciones CSS (@keyframes/animation)",
+        lambda c: "@keyframes" in c or "animation:" in c or "animation-" in c,
+    ),
+    "css_transitions": (
+        "transiciones CSS (transition)",
+        lambda c: "transition" in c,
+    ),
+    "gradients": (
+        "gradientes (linear/radial-gradient)",
+        lambda c: "linear-gradient" in c or "radial-gradient" in c or "conic-gradient" in c,
+    ),
+    "dark_mode": (
+        "dark mode (prefers-color-scheme)",
+        lambda c: "prefers-color-scheme" in c,
+    ),
+    "theme_persist": (
+        "tema persistido en localStorage",
+        lambda c: "localStorage" in c and ("theme" in c.lower() or "dark" in c.lower() or "color-scheme" in c),
+    ),
+    "scroll_reveal": (
+        "scroll-reveal (IntersectionObserver o scroll)",
+        lambda c: "IntersectionObserver" in c or "scroll" in c.lower(),
+    ),
+    "reduced_motion": (
+        "respeto a prefers-reduced-motion",
+        lambda c: "prefers-reduced-motion" in c,
+    ),
+    "hover_effects": (
+        "hover effects (:hover + transition/transform)",
+        lambda c: ":hover" in c and ("transition" in c or "transform" in c),
+    ),
+    "sticky_nav": (
+        "nav sticky/fixed",
+        lambda c: "position:sticky" in c or "position: sticky" in c or "position:fixed" in c or "position: fixed" in c,
+    ),
+    "microinteractions": (
+        "microinteracciones (:active/:hover + transform)",
+        lambda c: ":active" in c or ("transform" in c and ":hover" in c),
+    ),
+}
 
-def extract_requirements(task: str, max_items: int = 8) -> list[str]:
+
+def extract_requirements(task: str, max_items: int = 10) -> list[str]:
     """Extrae requisitos verificables de la tarea estipulada:
     - URLs de repositorios (github.com/usuario/repo, gitlab.com/..., etc.)
     - menciones 'github.com/usuario' (para exigir al menos enlaces a ese perfil)
@@ -93,7 +136,18 @@ def extract_requirements(task: str, max_items: int = 8) -> list[str]:
         seen = set()
         skip = {"HTML", "CSS", "JS", "GitHub", "Python", "JavaScript", "TypeScript",
                 "Landing", "Portfolio", "LandingPage", "Vicente", "Vila", "Repo", "Repos",
-                "Cada", "Para", "Con", "Sin", "Una", "Los", "Las", "Son", "Web"}
+                "Cada", "Para", "Con", "Sin", "Una", "Un", "Los", "Las", "Son", "Web",
+                "Enfoque", "Diseño", "Diseños", "Estética", "Visual", "Visuales",
+                "Interactivos", "Interactivo", "Interactivas", "Interactiva", "Moderno",
+                "Modernos", "Actuales", "Actual", "Tarea", "Proyecto", "Proyectos",
+                "Página", "Pagina", "Páginas", "Paginas", "Contenido", "Sección", "Seccion",
+                "Secciones", "Cada", "Tiene", "Debe", "Deben", "Más", "Mas", "Todo", "Todos",
+                "Primer", "Segundo", "Tercer", "Uso", "Usa", "Usar", "Lista", "Listado",
+                "Nombre", "Nombres", "Descripción", "Descripcion", "Lenguaje", "Etiqueta",
+                "Etiquetas", "Categoría", "Categoria", "Categorías", "Categorias", "Perfil",
+                "Cuenta", "Usuario", "Usuarios", "Repositorio", "Repositorios", "Biblioteca",
+                "Bibliotecas", "Librería", "Librerias", "Agente", "Agentes", "AgentesIA",
+                "IA", "GenAI", "AI", "OpenAI", "Gemini", "Groq", "Ollama", "Langfuse"}
         for m in re.finditer(r"([A-Z][A-Za-z0-9]*(?:-[A-Za-z0-9]+)*)", task):
             name = m.group(1)
             if name in seen or name in skip or len(name) < 4:
@@ -158,7 +212,11 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None) -> 
 
     requirements: lista de subcadenas que DEBEN aparecer en el código (html+css+js)
     concatenado. Si se pasan, se añade la categoría 'task' al total (requisitos de
-    la tarea estipulada presentes). Si no, 'task' se ignora (total = media de 5 ejes).
+    la tarea estipulada presentes). Si no, 'task' se ignora.
+
+    'visual' es un proxy estático de diseño moderno/interactivo (animaciones,
+    transiciones, gradientes, dark mode, IntersectionObserver, reduced-motion, ...).
+    total = media(seo,a11y,perf,resp,bp,visual) y +task si hay requirements.
     """
     project_dir = Path(project_dir)
     html_files = sorted(project_dir.rglob("*.html"))
@@ -175,16 +233,22 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None) -> 
     h = html_files[0].read_text(errors="replace")
     n_html = len(html_files)
 
+    combined_assets = h + "\n" + css_text + "\n" + js_text
+
     seo, seo_fails = _score([(k,) + v for k, v in SEO_CHECKS.items()], h)
     a11y, a11y_fails = _score([(k,) + v for k, v in A11Y_CHECKS.items()], h)
     perf, perf_fails = _score([(k,) + v for k, v in PERF_CHECKS.items()], h)
-    resp, resp_fails = _score([(k,) + v for k, v in RESP_CHECKS.items()], h)
-    bp, bp_fails = _score([(k,) + v for k, v in BP_CHECKS.items()], h)
+    # responsive y best_practices mezclan checks de html+css+js -> evaluar contra
+    # el contenido combinado (no solo HTML).
+    resp, resp_fails = _score([(k,) + v for k, v in RESP_CHECKS.items()], combined_assets)
+    bp, bp_fails = _score([(k,) + v for k, v in BP_CHECKS.items()], combined_assets)
+
+    # Categoría 'visual': señales estáticas de diseño moderno/interactivo.
+    visual, visual_fails = _score([(k,) + v for k, v in VISUAL_CHECKS.items()], combined_assets)
 
     # Categoría 'task': requisitos de la tarea presentes en el código
     requirements = requirements or []
-    combined = h + "\n" + css_text + "\n" + js_text
-    task_fails = [r for r in requirements if r not in combined]
+    task_fails = [r for r in requirements if r not in combined_assets]
     task = int(100 * (len(requirements) - len(task_fails)) / len(requirements)) if requirements else None
 
     html_bytes = sum(p.stat().st_size for p in html_files)
@@ -193,10 +257,10 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None) -> 
     img_bytes = sum(p.stat().st_size for p in project_dir.rglob("*")
                     if p.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif", ".svg"))
 
+    axes = [seo, a11y, perf, resp, bp, visual]
     if task is not None:
-        total = int((seo + a11y + perf + resp + bp + task) / 6)
-    else:
-        total = int((seo + a11y + perf + resp + bp) / 5)
+        axes.append(task)
+    total = int(sum(axes) / len(axes))
 
     return {
         "total": total,
@@ -205,6 +269,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None) -> 
         "performance": perf,
         "responsive": resp,
         "best_practices": bp,
+        "visual": visual,
         "task": task,
         "failures": {
             "seo": seo_fails,
@@ -212,6 +277,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None) -> 
             "performance": perf_fails,
             "responsive": resp_fails,
             "best_practices": bp_fails,
+            "visual": visual_fails,
             "task": task_fails,
         },
         "files": {

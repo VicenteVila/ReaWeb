@@ -70,10 +70,13 @@ python -m scripts.render_dashboard                # todas las runs
 python -m scripts.render_dashboard --run <run_id> # una run concreta
 ```
 
-Genera `runs/dashboard_<ts>.html` autocontenido (SVG + imágenes base64, sin
+Genera un `dashboard_<ts>.html` autocontenido (SVG + imágenes base64, sin
 dependencias externas): curva H0→Hn, filmstrip con screenshots de cada hipótesis,
-radar del mejor vs baseline y tabla de métricas. Renderiza con Chrome de Windows
-headless vía WSL (`wslpath -w`); si no lo encuentra, genera el dashboard solo-datos.
+radar del mejor vs baseline y tabla de métricas (incluye columnas `visual` y `task`).
+Con `--run <run_id>` el dashboard se escribe **dentro de esa run**
+(`runs/<run_id>/dashboard_<ts>.html`); sin `--run`, en la raíz de `runs/`.
+Renderiza con Chrome de Windows headless vía WSL (`wslpath -w`); si no lo
+encuentra, genera el dashboard solo-datos.
 
 ## Scripts
 
@@ -111,23 +114,29 @@ EditSkill().run(path="archetypes/landing-page/rules.yaml",
                 mode="replace")
 ```
 
-## Evaluador y categoría "task"
+## Evaluador y categorías "task" y "visual"
 
 El evaluador ligero (sin Chrome) puntúa SEO, A11y, Performance, Responsive y
-Best Practices (0-100). Además, si la tarea estipulada menciona requisitos
-verificables (repositorios de `github.com/usuario`, URLs, nombres de proyectos),
-`extract_requirements()` los extrae automáticamente y el evaluador añade la
-categoría **`task`**: % de requisitos presentes literalmente en el código
-(html+css+js). El total pasa a ser la media de 6 ejes.
+Best Practices (0-100). Además:
 
-Esto evita que el agente optimice el score estático a costa de la tarea real
-(p. ej. un candidato con mejor score pero sin los enlaces a los repos solicitados).
+- **`task`**: si la tarea estipulada menciona requisitos verificables (repositorios
+  de `github.com/usuario`, URLs, nombres de proyectos), `extract_requirements()`
+  los extrae automáticamente y el evaluador verifica que aparezcan literalmente en
+  el código (html+css+js). Evita optimizar el score a costa de la tarea real.
+- **`visual`**: proxy estático de diseño moderno/interactivo (animaciones CSS,
+  transiciones, gradientes, dark mode con `prefers-color-scheme`, tema persistido
+  en localStorage, scroll-reveal con IntersectionObserver, respeto a
+  `prefers-reduced-motion`, hover effects, nav sticky, microinteracciones).
+
+`total` = media(seo, a11y, perf, resp, bp, visual) y +`task` si hay requirements
+(7 ejes). Responsive y Best Practices se evalúan contra el contenido combinado
+(html+css+js), no solo contra el HTML.
 
 ## Tests
 
 ```bash
 python3 -m pytest test          # si tienes pytest
-python3 -c "import sys; sys.path.insert(0,'.'); from test.test_evaluator import *; test_good_scores_high(); test_bad_scores_low(); test_modern_images_detected(); test_task_requirements_present(); test_task_requirements_missing(); print('OK')"
+python3 -c "import sys; sys.path.insert(0,'.'); from test.test_evaluator import *; test_good_scores_high(); test_bad_scores_low(); test_visual_high_with_modern_design(); test_task_requirements_present(); print('OK')"
 ```
 
 ## Notas

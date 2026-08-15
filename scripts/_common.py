@@ -13,17 +13,18 @@ from tools.domain import build_domain_registry
 from config import ensure_dirs, PATHS
 
 
-def load_archetype(archetype: str) -> str:
-    """Carga rules.yaml + tech-stack del arquetipo (si existen)."""
+def load_archetype(archetype: str) -> tuple[str, str]:
+    """Carga (rules.yaml, stack.json) del arquetipo (si existen)."""
     base = PATHS["domain"] / "archetypes" / archetype
-    parts = []
+    rules = ""
+    stack = ""
     rules_file = base / "rules.yaml"
     if rules_file.exists():
-        parts.append(rules_file.read_text())
-    stack_file = base / "tech-stack.json"
+        rules = rules_file.read_text()
+    stack_file = base / "stack.json"
     if stack_file.exists():
-        parts.append("--- STACK ---\n" + stack_file.read_text()[:2000])
-    return "\n".join(parts)
+        stack = stack_file.read_text()[:2000]
+    return rules, stack
 
 
 def build_agent(archetype: str, task: str, model: str | None, turns: int,
@@ -32,7 +33,7 @@ def build_agent(archetype: str, task: str, model: str | None, turns: int,
     """Construye el agente + registry listos para ejecutar una run."""
     ensure_dirs()
     llm = LLM(model=model)
-    rules = load_archetype(archetype)
+    rules, stack = load_archetype(archetype)
 
     arq_dir = PATHS["domain"] / "archetypes" / archetype
     if not arq_dir.exists():
@@ -43,7 +44,7 @@ def build_agent(archetype: str, task: str, model: str | None, turns: int,
         archetype_name=archetype,
         task=task,
         rules=rules,
-        stack=rules,
+        stack=stack,
         max_turns=turns,
         max_cost_usd=max_cost,
         allow_meta_edits=allow_meta,
@@ -56,7 +57,7 @@ def build_agent(archetype: str, task: str, model: str | None, turns: int,
         archetype=archetype,
         task=task,
         rules=rules,
-        stack=rules,
+        stack=stack,
     )
     for tool_name in ("read_file", "write_file", "edit_file", "list_files", "python_exec", "bash"):
         try:

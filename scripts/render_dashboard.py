@@ -120,7 +120,7 @@ def load_run(run_dir: Path) -> dict | None:
 
 
 def radar_points(node) -> str:
-    labels = ["seo", "a11y", "performance", "responsive", "best_practices", "task"]
+    labels = ["seo", "a11y", "performance", "responsive", "best_practices", "visual", "task"]
     vals = [node["metrics"].get(k, 0) for k in labels]
     n = len(labels)
     cx, cy, r = 100, 100, 70
@@ -207,7 +207,9 @@ def render_dashboard(runs: list[dict], screenshots: bool, chrome: str | None) ->
                 f'<tr><td><b>{nd["id"]}</b></td><td>{nd["status"]}</td>'
                 f'<td>{m.get("seo", "-")}</td><td>{m.get("a11y", "-")}</td>'
                 f'<td>{m.get("performance", "-")}</td><td>{m.get("responsive", "-")}</td>'
-                f'<td>{m.get("best_practices", "-")}</td><td>{m.get("task", "-") if m.get("task") is not None else "-"}</td>'
+                f'<td>{m.get("best_practices", "-")}</td>'
+                f'<td>{m.get("visual", "-") if m.get("visual") is not None else "-"}</td>'
+                f'<td>{m.get("task", "-") if m.get("task") is not None else "-"}</td>'
                 f'<td><b>{m.get("total", "-")}</b></td></tr>'
             )
         radar_best = radar_points(best)
@@ -234,7 +236,7 @@ def render_dashboard(runs: list[dict], screenshots: bool, chrome: str | None) ->
   <h3>Filmstrip (evolución visual)</h3>
   <div class="filmstrip">{film_html}</div>
   <h3>Métricas por hipótesis</h3>
-  <table><thead><tr><th>H</th><th>status</th><th>seo</th><th>a11y</th><th>perf</th><th>resp</th><th>bp</th><th>task</th><th>total</th></tr></thead>
+  <table><thead><tr><th>H</th><th>status</th><th>seo</th><th>a11y</th><th>perf</th><th>resp</th><th>bp</th><th>visual</th><th>task</th><th>total</th></tr></thead>
   <tbody>{rows}</tbody></table>
 </section>''')
     return f'''<!DOCTYPE html>
@@ -295,7 +297,18 @@ def main():
         print("Aviso: no se encontró Chrome de Windows. Genero dashboard sin screenshots.")
 
     html = render_dashboard(runs, screenshots=not args.no_screenshots, chrome=chrome)
-    out = RUNS / f"dashboard_{datetime.now().strftime('%Y%m%dT%H%M%S')}.html"
+    ts = datetime.now().strftime("%Y%m%dT%H%M%S")
+    if args.run:
+        # con --run, el dashboard vive DENTRO de esa run
+        run_dir = None
+        for d in sorted(RUNS.iterdir()):
+            if d.is_dir() and args.run in (d.name, d.name.split("--")[-1]):
+                run_dir = d
+                break
+        out_dir = run_dir or RUNS
+    else:
+        out_dir = RUNS
+    out = out_dir / f"dashboard_{ts}.html"
     out.write_text(html)
     print(f"Dashboard escrito en: {out}")
     print("Ábrelo con doble clic en el navegador.")

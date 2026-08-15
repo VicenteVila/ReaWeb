@@ -222,6 +222,7 @@ class Agent:
             r"\bperf=(\d+)": "performance",
             r"\bresp=(\d+)": "responsive",
             r"\bbp=(\d+)": "best_practices",
+            r"\bvisual=(\d+)": "visual",
             r"\btask=(\d+)": "task",
         }
         for token, key in mapping.items():

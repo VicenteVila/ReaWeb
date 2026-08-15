@@ -159,7 +159,8 @@ class GenerateCandidate(Tool):
         summary = (
             f"Métricas: total={metrics.get('total')} seo={metrics.get('seo')} "
             f"a11y={metrics.get('a11y')} perf={metrics.get('performance')} "
-            f"resp={metrics.get('responsive')} bp={metrics.get('best_practices')}{task_metrics}"
+            f"resp={metrics.get('responsive')} bp={metrics.get('best_practices')} "
+            f"visual={metrics.get('visual')}{task_metrics}"
         )
         if vuln_files:
             summary += " [PARSEO_FALLBACK]"
@@ -204,7 +205,7 @@ class AuditPage(Tool):
         result = m1.copy()
         if verify:
             m2 = evaluate(target, requirements=self.requirements)
-            for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices", "task"):
+            for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices", "visual", "task"):
                 if k in m1 and k in m2 and m1.get(k) is not None and m2.get(k) is not None and abs(m1[k] - m2[k]) > 0:
                     # mantiene el más alto para no penalizar varianza
                     result[k] = max(m1[k], m2[k])
@@ -221,7 +222,7 @@ class AuditPage(Tool):
         res = (
             f"total={result.get('total')} | seo={result.get('seo')} a11y={result.get('a11y')} "
             f"perf={result.get('performance')} resp={result.get('responsive')} "
-            f"bp={result.get('best_practices')}{task_part} | verificación={result.get('verification')}"
+            f"bp={result.get('best_practices')} visual={result.get('visual')}{task_part} | verificación={result.get('verification')}"
         )
         if fail_lines:
             res += "\nFallos detectados:\n" + "\n".join(fail_lines)

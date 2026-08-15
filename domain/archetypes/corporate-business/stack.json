@@ -1,0 +1,60 @@
+{
+  "archetype": "corporate-business",
+  "priority": "trust_scalability_compliance",
+  "stack": {
+    "framework": {
+      "primary": "Next.js 14+ (App Router)",
+      "cms": "Enterprise headless (Contentful, Sitecore, o Adobe Experience Manager)"
+    },
+    "language": "TypeScript",
+    "styling": {
+      "framework": "Tailwind CSS o Styled Components",
+      "design_system": "Storybook obligatorio",
+      "consistency": "Strict brand token enforcement"
+    },
+    "crm_integration": {
+      "sales": "Salesforce, HubSpot, o Microsoft Dynamics",
+      "forms": "Marketo, Pardot, o HubSpot Forms",
+      "tracking": "Adobe Analytics o Google Analytics 360"
+    },
+    "personalization": {
+      "engine": "Optimizely, Dynamic Yield, o custom",
+      "ab_testing": "Integrado en platform"
+    },
+    "search": {
+      "site_search": "Algolia Enterprise o Elasticsearch",
+      "content": "AI-powered search con autocomplete"
+    },
+    "deployment": {
+      "hosting": "AWS, Azure, o Vercel Enterprise",
+      "cdn": "Akamai o Cloudflare Enterprise",
+      "security": "WAF, DDoS protection, penetration testing"
+    },
+    "compliance": {
+      "accessibility": "WCAG 2.1 AA auditado",
+      "privacy": "OneTrust o TrustArc para GDPR/CCPA",
+      "security": "SOC2 Type II, ISO 27001"
+    }
+  },
+  "features_required": [
+    "multi_language_i18n",
+    "personalization_engine",
+    "advanced_analytics",
+    "crm_integration",
+    "lead_scoring",
+    "gated_content",
+    "careers_portal",
+    "site_search",
+    "accessibility_compliance",
+    "security_headers"
+  ],
+  "enterprise_considerations": [
+    "sso_saml",
+    "role_based_access",
+    "audit_logs",
+    "data_residency",
+    "sla_uptime_99.99",
+    "disaster_recovery",
+    "penetration_testing"
+  ]
+}

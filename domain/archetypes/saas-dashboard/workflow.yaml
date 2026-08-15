@@ -1,0 +1,73 @@
+workflow:_dashboard-widget-create:
+- 'DESCRIPCIÓN: Crear widget para dashboard'
+- 'CUÁNDO_USAR: Agregar nuevas métricas o visualizaciones'
+- ''
+- 'PASOS:'
+- 1. Definir KPI o dato a mostrar
+- 2. Seleccionar tipo de visualización (stat, chart, table, list)
+- 3. Implementar fetching de datos con React Query
+- 4. Agregar timeframe selector (Hoy, Semana, Mes, Custom) si aplica
+- 5. Implementar loading skeleton
+- 6. Agregar empty state si no hay datos
+- 7. Hacer clickable para drill-down si aplica
+- '8. Responsive: Ajustar tamaño en grid layout'
+- '9. Opcional: Comparativa vs período anterior'
+- ''
+workflow:_data-table-implement:
+- 'DESCRIPCIÓN: Implementar tabla de datos avanzada'
+- 'CUÁNDO_USAR: Listados complejos de datos'
+- ''
+- 'PASOS:'
+- '1. Seleccionar librería: TanStack Table v8 (recomendado)'
+- 2. Definir columnas con sorting y filtering
+- 3. Implementar paginación server-side o virtualización
+- 4. Agregar filtros globales y por columna
+- 5. Column visibility toggle (qué columnas mostrar)
+- 6. Row selection con bulk actions
+- 7. Expandable rows para detalles
+- 8. Exportar a CSV/Excel
+- 9. Persistir estado de filtros en URL (shareable)
+- '10. Responsive: Horizontal scroll o card view en mobile'
+- ''
+workflow:_onboarding-flow:
+- 'DESCRIPCIÓN: Crear flujo de onboarding para nuevos usuarios'
+- 'CUÁNDO_USAR: Para mejorar activación y retención'
+- ''
+- 'PASOS:'
+- 1. Definir "aha moment" o valor clave a descubrir
+- 2. Crear checklist de pasos (3-5 pasos máximo)
+- 3. Progress indicator visual
+- 4. Tooltips/contextual help en primer uso
+- 5. Empty states que guíen a la acción
+- 6. Celebración de milestones (confetti opcional pero efectivo)
+- 7. Opción de "Skip" pero trackear quién skipea
+- 8. Follow-up email si no completó en 24h
+- '9. Medir completion rate objetivo: &gt;70%'
+- ''
+workflow:_realtime-collab:
+- 'DESCRIPCIÓN: Implementar colaboración en tiempo real'
+- 'CUÁNDO_USAR: Múltiples usuarios editando simultáneamente'
+- ''
+- 'PASOS:'
+- '1. Elegir tecnología: Socket.io, Supabase Realtime, o Yjs (CRDTs)'
+- 2. Implementar presence (quién está online)
+- 3. Cursor tracking o highlighting de selección
+- 4. Conflict resolution strategy (last-write-wins o merge)
+- 5. Offline support con sync al reconectar
+- 6. Permissions en tiempo real (quién puede editar qué)
+- 7. Activity feed de cambios recientes
+- 8. Undo/redo por usuario
+- ''
+workflow:_settings-architecture:
+- 'DESCRIPCIÓN: Arquitectura de configuraciones'
+- 'CUÁNDO_USAR: Setup de página de settings'
+- ''
+- 'PASOS:'
+- '1. Organizar en categorías: Profile, Account, Team, Billing, Integrations, Notifications'
+- 2. Formularios con auto-save o save explícito por sección
+- 3. Validación inline (no esperar al submit)
+- 4. Danger zone para acciones destructivas (confirmación extra)
+- '5. Team management: Invites, roles, permissions'
+- '6. Billing: Plans, usage, invoices, payment methods'
+- 7. Webhooks configuration para integraciones
+- 8. API keys management (regenerate, revoke, scopes)

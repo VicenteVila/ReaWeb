@@ -1,0 +1,18 @@
+# Configuración del agente
+llm:
+  model: gemini-3.1-pro-preview   # preferido
+  fallback:
+    - gemini-3.1-pro-preview-customtools
+    - gemini-3.1-flash-lite
+    - gemini-3-flash-preview
+  temperature: 0.7
+
+context:
+  compaction_threshold_tokens: 60000
+  max_history_turns: 8
+  lessons_max_items: 12
+  search_tree_max_nodes: 15
+  re_emit_state_every_turn: true   # crítico (Apéndice F ReASearch)
+
+behavior:
+  allow_meta_edits: true

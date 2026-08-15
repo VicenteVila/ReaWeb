@@ -1,0 +1,35 @@
+## ESTADO DE OPTIMIZACIÓN — Turno {{ turn_number }}
+
+**Arquetipo:** {{ archetype_name }}
+**Tarea:** {{ task }}
+**Presupuesto:** {{ turns_remaining }}/{{ turns_total }} turnos | ${{ "%.2f"|format(cost_so_far) }} consumidos
+
+### Mejor candidato actual
+- **ID:** {{ best.id }}
+- **Métricas:** {{ best.metrics_summary }}
+- **Path:** {{ best.path }}
+
+### Historial reciente (últimos {{ recent|length }} experimentos)
+{% for exp in recent %}
+- **{{ exp.id }}**: {{ exp.action }} → {{ exp.result }} ({{ exp.delta }})
+{% else %}
+- (sin experimentos aún)
+{% endfor %}
+
+### Árbol de búsqueda (resumen)
+{% for n in tree %}
+- {{ n.id }}: parent={{ n.parent }} | {{ n.metrics_summary }} | {{ n.status }}
+{% else %}
+- (vacío)
+{% endfor %}
+
+### Lecciones persistentes (de lessons.md)
+{{ lessons }}
+
+### Stagnation
+{% if stagnation %}
+⚠️ {{ stagnation }}
+{% endif %}
+
+### Acciones realizadas en este turno
+{{ last_action_summary }}

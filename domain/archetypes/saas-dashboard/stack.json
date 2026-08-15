@@ -1,0 +1,53 @@
+{
+  "archetype": "saas-dashboard",
+  "priority": "user_experience_and_performance",
+  "stack": {
+    "framework": {
+      "primary": "Next.js 14+ (App Router)",
+      "state": "Zustand o Jotai (client state)",
+      "server_state": "TanStack Query (React Query)"
+    },
+    "language": "TypeScript",
+    "styling": {
+      "framework": "Tailwind CSS",
+      "components": "Shadcn/ui (base) + custom",
+      "charts": "Recharts, Tremor, o Chart.js",
+      "tables": "TanStack Table v8"
+    },
+    "backend": {
+      "database": "PostgreSQL (Supabase o Neon)",
+      "orm": "Prisma",
+      "realtime": "Supabase Realtime o Socket.io",
+      "api": "tRPC o Next.js API Routes"
+    },
+    "authentication": {
+      "provider": "Clerk (recomendado) o Auth0",
+      "features": [
+        "sso",
+        "mfa",
+        "org_switching"
+      ]
+    },
+    "deployment": {
+      "hosting": "Vercel",
+      "edge": "Vercel Edge Functions"
+    },
+    "monitoring": {
+      "errors": "Sentry",
+      "performance": "Vercel Analytics",
+      "product_analytics": "PostHog o Mixpanel"
+    }
+  },
+  "features_required": [
+    "dark_mode",
+    "keyboard_shortcuts",
+    "command_palette",
+    "notifications_center",
+    "activity_feed",
+    "data_export",
+    "role_based_access",
+    "audit_logs",
+    "webhooks",
+    "api_access"
+  ]
+}

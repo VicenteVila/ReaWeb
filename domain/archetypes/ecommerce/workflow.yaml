@@ -1,0 +1,67 @@
+workflow:_product-page-optimize:
+- 'DESCRIPCIÓN: Optimizar página de producto para conversión'
+- 'CUÁNDO_USAR: Al crear o mejorar PDP (Product Detail Page)'
+- ''
+- 'PASOS:'
+- 1. Implementar galería con zoom y thumbnails
+- 2. Agregar video de producto si existe
+- 3. Destacar USPs (Unique Selling Points) en bullets
+- 4. Mostrar social proof (reviews, "X personas compraron hoy")
+- 5. Implementar urgency (stock bajo, countdown de oferta real)
+- 6. Agregar cross-sells ("Completa tu look") y upsells
+- 7. Optimizar para mobile (50%+ tráfico suele ser móvil)
+- 8. A/B test de CTA button text ("Add to Cart" vs "Buy Now")
+- 9. Implementar wishlist/favorites
+- ''
+workflow:_checkout-optimize:
+- 'DESCRIPCIÓN: Reducir abandono de checkout'
+- 'CUÁNDO_USAR: Cuando checkout conversion es &lt; 60%'
+- ''
+- 'PASOS:'
+- 1. Auditar funnel de checkout (dónde abandonan)
+- 2. Reducir número de campos al mínimo
+- 3. Implementar autocompletado de direcciones (Google Places)
+- 4. Mostrar resumen de orden editable
+- 5. Múltiples opciones de pago visibles
+- 6. Indicador de seguridad (SSL, encryption)
+- 7. Error handling claro (qué campo falta/cuál es el error)
+- 8. Guardar progreso si refrescan la página
+- 9. Implementar express checkout (Apple Pay, Google Pay)
+- 10. Post-purchase upsell (no afecta conversión inicial)
+- ''
+workflow:_search-implement:
+- 'DESCRIPCIÓN: Implementar búsqueda avanzada de productos'
+- 'CUÁNDO_USAR: Catálogo &gt; 20 productos'
+- ''
+- 'PASOS:'
+- 1. Implementar búsqueda instantánea (Algolia o Elasticsearch)
+- 2. Autocomplete con sugerencias e imágenes
+- 3. Filtros faceted (categoría, precio, marca, atributos)
+- 4. Sorting options (relevancia, precio, novedad, rating)
+- 5. Búsqueda tolerant a typos (fuzzy search)
+- 6. Analytics de búsquedas sin resultados
+- '7. Mobile: Filtros en drawer/bottom sheet'
+- ''
+workflow:_cart-abandonment-recovery:
+- 'DESCRIPCIÓN: Setup de recuperación de carritos abandonados'
+- 'CUÁNDO_USAR: Siempre en e-commerce'
+- ''
+- 'PASOS:'
+- '1. Identificar trigger: carrito abandonado &gt; 1 hora'
+- '2. Email 1 (1 hora): "¿Olvidaste algo?" con imagen del producto'
+- '3. Email 2 (24 horas): Incentivo (10% off) si no compró'
+- '4. Email 3 (72 horas): Urgencia ("Stock limitado") + testimonial'
+- 5. SMS opcional si proporcionó teléfono
+- 6. Retargeting dinámico en Meta/Google Ads
+- '7. Medir recovery rate objetivo: &gt; 10%'
+- ''
+workflow:_inventory-sync:
+- 'DESCRIPCIÓN: Sincronización de inventario'
+- 'CUÁNDO_USAR: Conectar con sistema de inventario/ERP'
+- ''
+- 'PASOS:'
+- 1. Setup webhook para actualizaciones de stock
+- '2. Validación: No permitir comprar si stock = 0'
+- 3. Reservar stock al agregar al carrito (15 min timeout)
+- 4. Sincronización bidireccional (ventas online afectan stock físico)
+- 5. Alertas de stock bajo para administradores

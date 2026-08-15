@@ -1,0 +1,10 @@
+# Presupuestos por run
+limits:
+  max_turns: 20
+  max_cost_usd: 5.0
+  max_wall_time_minutes: 120
+
+stagnation:
+  turns_flat_advisory: 3      # inserta aviso en el prompt
+  turns_flat_hard_stop: 7     # fuerza selección final
+  min_improvement_percent: 2.0

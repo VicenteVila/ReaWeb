@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proyecto de ejemplo</title>
+  <meta name="description" content="Descripción breve de la página de ejemplo">
+  <meta property="og:title" content="Proyecto de ejemplo">
+  <meta property="og:description" content="Descripción breve de la página de ejemplo">
+  <link rel="canonical" href="https://example.com/">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <nav aria-label="Principal">
+    <ul>
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#features">Características</a></li>
+    </ul>
+  </nav>
+  <main id="main">
+    <section id="hero">
+      <h1>Título principal</h1>
+      <p>Subtítulo de la landing para captar atención.</p>
+      <img src="hero.webp" alt="Imagen ilustrativa del hero" width="800" height="400">
+    </section>
+    <section id="features">
+      <h2>Características</h2>
+      <div class="grid">
+        <article><h3>Feature 1</h3><p>Descripción.</p></article>
+        <article><h3>Feature 2</h3><p>Descripción.</p></article>
+      </div>
+      <form action="/gracias" method="post">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required>
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

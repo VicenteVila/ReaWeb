@@ -31,7 +31,9 @@ def _write(case: dict, name: str) -> Path:
     d = Path("/tmp/opencode") / f"fixture_{name}"
     d.mkdir(parents=True, exist_ok=True)
     for fname, content in case.items():
-        (d / fname).write_text(content)
+        p = d / fname
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(content)
     return d
 
 
@@ -118,7 +120,8 @@ def test_weighted_total_visual_dominates():
 def test_visual_high_with_modern_design():
     html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title></head>
-    <body><main><section><h1>Único</h1></section></main>
+    <body><header></header><nav></nav><main><section><h1>Único</h1>
+    <p>Texto de contenido real para la página</p></section><section><p>Segunda sección</p></section></main>
     <canvas id="c"></canvas>
     <script>const io=new IntersectionObserver(()=>{});</script></body></html>"""
     css = """body{background:linear-gradient(90deg,#000,#333)}
@@ -126,6 +129,7 @@ def test_visual_high_with_modern_design():
     @keyframes fade{from{opacity:0}to{opacity:1}}
     .card{transition:transform .2s}
     .card:hover{transform:scale(1.05);animation:fade 1s}
+    .btn:focus{outline:2px solid #fff;transition:outline .2s}
     @media (prefers-color-scheme:dark){body{background:#111}}
     @media (prefers-reduced-motion:reduce){*{animation:none}}
     """
@@ -270,7 +274,8 @@ def test_subdir_not_evaluated():
     m = evaluate(d)
     # el subdir no debe aportar: sigue fallando flexgrid/media si la raíz no lo tiene
     assert "flexgrid" in m["failures"]["responsive"], m
-    assert "no_console" in m["failures"]["best_practices"], m
+    # y el console.log del subdir no debe contar como fallo de la página
+    assert "no_console" not in m["failures"]["best_practices"], m
     # y no debe haber múltiples h1 por culpa del subdir
     assert "h1" not in m["failures"]["seo"], m
 

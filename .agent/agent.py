@@ -153,10 +153,11 @@ class Agent:
             "path": "-",
         }
         # Desglose de secciones obligatorias del mejor candidato (si existe)
-        if best and best.path:
+        if best:
+            cand_dir = self.run_dir / "candidates" / best.id
             from tools.domain.evaluator import extract_sections, _html_has_section
             sections = extract_sections(self.task)
-            html_path = Path(best.path) / "index.html"
+            html_path = cand_dir / "index.html"
             if sections and html_path.exists():
                 h = html_path.read_text(errors="replace")
                 fails = [s for s in sections if not _html_has_section(h, s)]

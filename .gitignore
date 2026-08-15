@@ -8,5 +8,6 @@ workspace/current/
 workspace/temp/
 workspace/cache/
 memory/*.json
+memory/*.db
 dist/
 build/

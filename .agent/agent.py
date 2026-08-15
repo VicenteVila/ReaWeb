@@ -12,6 +12,7 @@ import jinja2
 
 from agent.budget_tracker import BudgetTracker
 from agent.llm import LLMResponse
+from agent.memory_db import MemoryDB
 from agent.state import ContextManager, Experiment, Memory, SearchTree, TreeNode
 from config import CONTEXT_DEFAULTS, ensure_dirs, PATHS
 
@@ -45,8 +46,20 @@ class Agent:
         self.run_id = self.run_dir.name
 
         self.budget = BudgetTracker(max_turns=max_turns, max_cost_usd=max_cost_usd)
-        self.memory = Memory(run_dir=self.run_dir)
-        self.tree = SearchTree(path=self.run_dir / "search_tree.json")
+        self.db = MemoryDB()
+        self.memory = Memory(run_dir=self.run_dir, db=self.db, run_id=self.run_id)
+        self.tree = SearchTree(
+            path=self.run_dir / "search_tree.json", run_id=self.run_id, db=self.db
+        )
+        self.db.upsert_run(
+            run_id=self.run_id,
+            archetype=archetype_name,
+            task=task,
+            model=getattr(llm, "model", "?"),
+            max_turns=max_turns,
+            started=datetime.now().isoformat(),
+            status="running",
+        )
         self.context = ContextManager(
             threshold_tokens=CONTEXT_DEFAULTS["compaction_threshold_tokens"],
             max_history=CONTEXT_DEFAULTS["max_history_turns"],
@@ -366,6 +379,16 @@ class Agent:
 
         # exportación automática del mejor candidato si el agente no llamó a select_final
         self._export_final()
+
+        best = self.tree.best()
+        self.db.upsert_run(
+            run_id=self.run_id,
+            finished=datetime.now().isoformat(),
+            best_score=best.metrics.get("total") if best else None,
+            best_node=best.id if best else None,
+            status="done",
+        )
+        self.db.close()
 
         final = self._final_summary()
         self._log("end", {"final": final})

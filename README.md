@@ -61,7 +61,11 @@ Cada run deja en `runs/<timestamp>--<arquetipo>/`:
 - `candidates/H<i>/` — snapshot congelado de cada hipótesis (generado automáticamente)
 - `screenshots/H<i>.png` — render de cada hipótesis (dashboard)
 - `final/` — mejor candidato exportado (aunque `select_final` no se llame)
-- `lessons_incremental.md` — lecciones de la run (se mergean a `memory/lessons.md`)
+- `lessons_incremental.md` — espejo en markdown de las lecciones de la run
+
+La **memoria persistente vive en SQLite** (`memory/memory.db`, stdlib, sin
+dependencias): tablas `runs`, `lessons`, `experiments` y `tree_nodes`. El agente
+escribe/lee de la DB; los `.md` son solo export legible para humanos.
 
 ### Evaluación visual
 
@@ -85,16 +89,53 @@ encuentra, genera el dashboard solo-datos.
 | `scripts/run_agent.py` | Ejecuta una run de optimización end-to-end |
 | `scripts/seed_from_docs.py` | Regenera `domain/` desde `../Docs/` |
 | `scripts/merge_lessons.py` | Fusiona lecciones de runs al archivo global |
+| `scripts/backfill_memory.py` | Migra runs existentes de `runs/` a `memory/memory.db` |
+| `scripts/cleanup_runs.py` | Limpieza de `runs/` (--keep N, --archive, --prune-*) |
 | `scripts/export_candidate.py` | Exporta el candidato final a un destino |
 | `scripts/render_dashboard.py` | Dashboard visual de evolución (curvas, filmstrip, radar) |
+
+## Memoria y limpieza de runs
+
+La memoria del agente se persiste en **SQLite** (`memory/memory.db`):
+
+- `runs` — metadatos de cada run (arquetipo, task, modelo, started/finished, mejor score/nodo)
+- `lessons` — lecciones (category worked/didnt/try), deduplicadas por contenido
+- `experiments` — historial de llamadas a tools con resultado y delta
+- `tree_nodes` — árbol de hipótesis H0..Hn (mismo contenido que `search_tree.json`)
+
+Los ficheros markdown (`lessons.md`, `lessons_incremental.md`) quedan como export
+legible; la fuente de verdad es la DB. Al crear una run, `run_agent` registra la
+run en la DB; al cerrar, actualiza `finished`, `best_score` y `best_node`.
+
+**Migración de historial existente:**
+
+```bash
+python -m scripts.backfill_memory                  # migra todas las runs de runs/
+python -m scripts.backfill_memory --run <run_id>   # solo una
+```
+
+**Limpieza de la carpeta `runs/`** (que acumula runs y dashboards):
+
+```bash
+python -m scripts.cleanup_runs --keep 6 --prune-dashboards --prune-orphans   # dry-run (default)
+python -m scripts.cleanup_runs --keep 6 --prune-dashboards --prune-orphans --yes
+python -m scripts.cleanup_runs --keep 6 --archive /tmp/backup --yes   # empaca en tar.gz
+```
+
+- `--keep N` borra las runs más antiguas conservando las N recientes (solo si ya
+  están en la DB — corre `backfill_memory` primero).
+- `--prune-dashboards` elimina los `dashboard_*.html` sueltos en la raíz de
+  `runs/` (artefactos viejos, regenerables con `render_dashboard --run`).
+- `--prune-orphans` elimina el `runs/lessons_incremental.md` raíz ya migrado.
+- `--archive DIR` mueve las runs a borrar a un `.tar.gz` en vez de eliminarlas.
 
 ## Estructura
 
 ```
-.agent/       Loop del agente (agent.py, llm.py, state.py, budget_tracker.py, prompts/)
+.agent/       Loop del agente (agent.py, llm.py, state.py, memory_db.py, budget_tracker.py, prompts/)
 tools/        Tools invocables (file_io, code_exec, domain/)
 domain/       Conocimiento: reglas, skills, workflows, arquetipos (semilla de Docs/)
-memory/       lessons.md (persistente) + registros
+memory/       memory.db (fuente de verdad) + lessons.md (export)
 runs/         Un directorio por run
 workspace/    Sandbox (workspace/current = candidato activo)
 config/       agent/budget/tools yaml

@@ -252,9 +252,15 @@ class UpdateLessons(Tool):
         }
 
     def run(self, category: str = "", lesson: str = "", **kwargs) -> str:
+        from agent.memory_db import MemoryDB
         from agent.state import Memory
 
-        mem = Memory()
+        run_id = kwargs.get("run_id")
+        db = MemoryDB()
+        if run_id:
+            mem = Memory(run_dir=PATHS["runs"] / run_id, db=db, run_id=run_id)
+        else:
+            mem = Memory(db=db)
         text = f"## What {category} - {self._now()}\n{lesson}"
         mem.append_incremental(text)
         return f"OK: lección {category} guardada."

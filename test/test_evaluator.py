@@ -54,3 +54,36 @@ def test_modern_images_detected():
     d = _write({"index.html": f"<!DOCTYPE html><html><body>{html}</body></html>"}, "webp")
     m = evaluate(d)
     assert "modern_img" not in m["failures"]["performance"]
+
+
+def test_task_requirements_present():
+    html = """<!DOCTYPE html><html><body>
+    <h1>Repos</h1><script>const repos=[{name:'TraceForge',url:'https://github.com/VicenteVila/TraceForge'}];</script>
+    </body></html>"""
+    d = _write({"index.html": html, "app.js": ""}, "task_ok")
+    m = evaluate(d, requirements=["TraceForge", "github.com/VicenteVila/TraceForge"])
+    assert m["task"] == 100, m
+    assert "task" in m["failures"]
+
+
+def test_task_requirements_missing():
+    html = """<!DOCTYPE html><html><body><h1>Repos</h1>
+    <script>const repos=[{name:'TraceForge'}];</script></body></html>"""
+    d = _write({"index.html": html, "app.js": ""}, "task_bad")
+    m = evaluate(d, requirements=["TraceForge", "github.com/VicenteVila/TraceForge"])
+    assert m["task"] == 50, m
+    assert "github.com/VicenteVila/TraceForge" in m["failures"]["task"]
+
+
+def test_task_absent_ignored():
+    d = _write({"index.html": GOOD_HTML, "styles.css": "body{}", "app.js": ""}, "task_none")
+    m = evaluate(d)  # sin requirements
+    assert m["task"] is None, m
+    assert m["total"] == int((m["seo"] + m["a11y"] + m["performance"] + m["responsive"] + m["best_practices"]) / 5)
+
+
+def test_extract_requirements_ignores_placeholders():
+    from tools.domain.evaluator import extract_requirements
+    reqs = extract_requirements("Enlace a https://github.com/VicenteVila/<repo> y github.com/VicenteVila")
+    assert not any("<repo>" in r for r in reqs), reqs
+    assert "github.com/VicenteVila" in reqs, reqs

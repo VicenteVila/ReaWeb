@@ -22,6 +22,10 @@ STACK PREFERIDO:
 
 OBJETIVO DE MEJORA (si existe): {improve}
 
+REQUISITOS VERIFICABLES DE LA TAREA (deben aparecer literalmente en el código,
+en index.html o app.js):
+{requirements}
+
 REQUISITOS:
 1. Una página HTML autocontenida (index.html) con CSS en styles.css y JS en app.js.
 2. Diseño responsive (mobile-first), semántico, accesible.
@@ -82,13 +86,15 @@ class GenerateCandidate(Tool):
         "objetivo o confirmación."
     )
 
-    def __init__(self, llm, archetype: str = "", task: str = "", rules: str = "", stack: str = "", improve: str = ""):
+    def __init__(self, llm, archetype: str = "", task: str = "", rules: str = "", stack: str = "", improve: str = "", requirements: list[str] | None = None):
         self.llm = llm
         self.archetype = archetype
         self.task = task
         self.rules = rules
         self.stack = stack
         self.improve = improve
+        from .evaluator import extract_requirements
+        self.requirements = requirements if requirements is not None else extract_requirements(task)
         super().__init__()
 
     def schema(self) -> dict:
@@ -116,6 +122,7 @@ class GenerateCandidate(Tool):
             rules=self.rules[:4000],
             stack=self.stack[:2000],
             improve=objective or self.improve or "Sin mejora específica (versión inicial)",
+            requirements="\n".join(f"- {r}" for r in self.requirements) if self.requirements else "(ninguno específico)",
         )
         out = self.llm.generate(prompt, temperature=0.7)
         text = out.text
@@ -147,11 +154,12 @@ class GenerateCandidate(Tool):
                 continue
             (target / fname).write_text(content)
 
-        metrics = evaluate(target)
+        metrics = evaluate(target, requirements=self.requirements)
+        task_metrics = f" task={metrics.get('task')}" if metrics.get('task') is not None else ""
         summary = (
             f"Métricas: total={metrics.get('total')} seo={metrics.get('seo')} "
             f"a11y={metrics.get('a11y')} perf={metrics.get('performance')} "
-            f"resp={metrics.get('responsive')} bp={metrics.get('best_practices')}"
+            f"resp={metrics.get('responsive')} bp={metrics.get('best_practices')}{task_metrics}"
         )
         if vuln_files:
             summary += " [PARSEO_FALLBACK]"
@@ -162,9 +170,14 @@ class AuditPage(Tool):
     name = "audit_page"
     description = (
         "Audita el candidato actual en workspace/current con el evaluador ligero. "
-        "Devuelve métricas por categoría y fallos detectados. Ejecuta doble "
-        "verificación si se pide."
+        "Devuelve métricas por categoría (incluida 'task', requisitos de la tarea) "
+        "y fallos detectados. Ejecuta doble verificación si se pide."
     )
+
+    def __init__(self, requirements: list[str] | None = None):
+        from .evaluator import extract_requirements
+        self.requirements = requirements or []
+        super().__init__()
 
     def schema(self) -> dict:
         return {
@@ -187,12 +200,12 @@ class AuditPage(Tool):
         target = PATHS["current"]
         if not (target / "index.html").exists():
             return f"ERROR: no existe index.html en {target}"
-        m1 = evaluate(target)
+        m1 = evaluate(target, requirements=self.requirements)
         result = m1.copy()
         if verify:
-            m2 = evaluate(target)
-            for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices"):
-                if k in m1 and k in m2 and abs(m1[k] - m2[k]) > 0:
+            m2 = evaluate(target, requirements=self.requirements)
+            for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices", "task"):
+                if k in m1 and k in m2 and m1.get(k) is not None and m2.get(k) is not None and abs(m1[k] - m2[k]) > 0:
                     # mantiene el más alto para no penalizar varianza
                     result[k] = max(m1[k], m2[k])
             result["verification"] = "double"
@@ -204,10 +217,11 @@ class AuditPage(Tool):
         for cat, lst in fails.items():
             if lst:
                 fail_lines.append(f"{cat}: {', '.join(lst)}")
+        task_part = f" task={result.get('task')}" if result.get('task') is not None else ""
         res = (
             f"total={result.get('total')} | seo={result.get('seo')} a11y={result.get('a11y')} "
             f"perf={result.get('performance')} resp={result.get('responsive')} "
-            f"bp={result.get('best_practices')} | verificación={result.get('verification')}"
+            f"bp={result.get('best_practices')}{task_part} | verificación={result.get('verification')}"
         )
         if fail_lines:
             res += "\nFallos detectados:\n" + "\n".join(fail_lines)

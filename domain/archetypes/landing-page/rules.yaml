@@ -1,3 +1,5 @@
 conversion_rules:
   - mobile_first
   - minimal_forms
+
+Añadir regla para portfolios interactivos: 1. Los filtros deben ser combinables (categoría + búsqueda). 2. El tema (dark/light) debe persistirse en localStorage. 3. Las visualizaciones de relaciones entre proyectos deben usar SVG puro para máxima compatibilidad y velocidad.

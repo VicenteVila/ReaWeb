@@ -29,6 +29,7 @@ class Agent:
         max_cost_usd: float = 5.0,
         allow_meta_edits: bool = True,
         verbose: bool = True,
+        target_h: int = 0,
     ):
         self.llm = llm
         self.archetype_name = archetype_name
@@ -53,6 +54,8 @@ class Agent:
         self.history: list = []
         self.turn = 0
         self.last_transcript: list = []
+        self.target_h = target_h
+        self.hypothesis_count = 0
 
         # registrar run en transcript
         (self.run_dir / "run_config.json").write_text(
@@ -82,10 +85,39 @@ class Agent:
         meta_note = ""
         if not self.allow_meta_edits:
             meta_note = "\nNOTA: la meta-evolución (edit_skill/review_harness) está deshabilitada en esta run."
+        target_note = ""
+        if self.target_h:
+            target_note = (
+                "\nOBJETIVO DE RUN (target-h="
+                + str(self.target_h)
+                + "): debes generar y auditar al menos las hipótesis H0..H"
+                + str(self.target_h)
+                + " ("
+                + str(self.target_h + 1)
+                + " candidatos) ANTES de seleccionar el final. No declares fin hasta alcanzarlo, salvo que se agote el presupuesto."
+            )
         rules_block = ""
         if self.rules:
             rules_block = "\n\n# REGLAS Y STACK DEL ARQUETIPO (contexto precargado)\n" + self.rules[:4000]
-        return base + meta_note + rules_block
+        return base + meta_note + target_note + rules_block
+
+    def _snapshot(self, node_id: str) -> str:
+        """Congela workspace/current en runs/<run_id>/candidates/<node_id>/."""
+        import shutil
+
+        src = PATHS["current"]
+        if not (src / "index.html").exists():
+            self._log("system", {"event": "snapshot_skipped", "node": node_id, "reason": "sin index.html"})
+            return "(sin snapshot)"
+        dst = self.run_dir / "candidates" / node_id
+        if dst.exists():
+            shutil.rmtree(dst, ignore_errors=True)
+        dst.mkdir(parents=True, exist_ok=True)
+        for f in src.iterdir():
+            if f.is_file():
+                shutil.copy2(f, dst / f.name)
+        self._log("system", {"event": "snapshot", "node": node_id, "to": str(dst)})
+        return str(dst)
 
     def _render_state(self, stagnation: str | None) -> str:
         env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(PATHS["prompts"])))
@@ -124,6 +156,8 @@ class Agent:
             lessons=self.memory.read_global_lessons()[:3000],
             stagnation=stagnation,
             last_action_summary=self._last_action_summary(),
+            target_h=self.target_h,
+            hypotheses_done=self.hypothesis_count,
         )
 
     def _last_action_summary(self) -> str:
@@ -166,49 +200,78 @@ class Agent:
         return result, {}
 
     def _handle_eval_result(self, call, result: str) -> str | None:
-        """Interpreta el resultado de audit_page para actualizar árbol y presupuesto."""
-        if call.name != "audit_page" or "total=" not in result:
-            return None
-        try:
-            import re
+        """Interpreta métricas de generate_candidate o audit_page y actualiza el
+        árbol de búsqueda en términos de hipótesis H0..Hn.
 
-            m = re.search(r"total=(\d+)", result)
-            total = int(m.group(1)) if m else 0
-            metrics = {}
-            mapping = {
-                "seo=": "seo",
-                "a11y=": "a11y",
-                "perf=": "performance",
-                "resp=": "responsive",
-                "bp=": "best_practices",
-            }
-            for token, key in mapping.items():
-                m2 = re.search(rf"{token}(\d+)", result)
-                if m2:
-                    metrics[key] = int(m2.group(1))
-            metrics["total"] = total
-            node_id = f"v{self.turn:03d}"
-            prev_best = self.tree.best()
-            prev_score = prev_best.metrics.get("total", -1) if prev_best else -1
-            self.tree.add(
-                TreeNode(
-                    id=node_id,
-                    parent=prev_best.id if prev_best else None,
-                    action=self.last_transcript[-1].get("tool", "") if self.last_transcript else "",
-                    metrics=metrics,
-                    status="best_branch" if total >= prev_score else "explored",
-                )
-            )
-            best_prev = prev_score if prev_score >= 0 else None
-            delta = ""
-            if best_prev is not None:
-                delta = f"{total - best_prev:+d}"
-                self._log("eval", {"candidate": node_id, "total": total, "delta": delta})
-            else:
-                self._log("eval", {"candidate": node_id, "total": total, "delta": None})
-            return node_id
-        except Exception as e:
+        - generate_candidate: crea una NUEVA hipótesis H<i> (baseline H0 la primera).
+        - audit_page: CONFIRMA (doble verificación) la hipótesis actual, actualizando
+          sus métricas sin crear nodos duplicados.
+        """
+        if call.name not in ("generate_candidate", "audit_page"):
             return None
+        import re
+
+        m = re.search(r"total=(\d+)", result)
+        if not m:
+            return None
+        total = int(m.group(1))
+        metrics: dict = {}
+        mapping = {
+            r"\bseo=(\d+)": "seo",
+            r"\ba11y=(\d+)": "a11y",
+            r"\bperf=(\d+)": "performance",
+            r"\bresp=(\d+)": "responsive",
+            r"\bbp=(\d+)": "best_practices",
+            r"\btask=(\d+)": "task",
+        }
+        for token, key in mapping.items():
+            m2 = re.search(token, result)
+            if m2:
+                metrics[key] = int(m2.group(1))
+        metrics["total"] = total
+
+        prev_best = self.tree.best()
+        prev_score = prev_best.metrics.get("total", -1) if prev_best else -1
+
+        is_confirm = False
+        if call.name == "generate_candidate":
+            node_id = f"H{self.hypothesis_count}"
+            self.hypothesis_count += 1
+            self._log("eval", {"candidate": node_id, "tool": "generate_candidate", "total": total, "task": metrics.get("task"), "version": "new"})
+        else:
+            # audit_page confirma la hipótesis más reciente
+            node_id = f"H{self.hypothesis_count - 1}"
+            if self.hypothesis_count == 0 or node_id not in self.tree.nodes:
+                node_id = f"H{self.hypothesis_count}"
+                self.hypothesis_count += 1
+                self._log("eval", {"candidate": node_id, "tool": "audit_page", "total": total, "task": metrics.get("task"), "version": "inferred"})
+            else:
+                is_confirm = True
+                self._log("eval", {"candidate": node_id, "tool": "audit_page", "total": total, "task": metrics.get("task"), "version": "confirm"})
+
+        # Parent coherente: al confirmar se respeta el parent del nodo existente
+        existing = self.tree.nodes.get(node_id)
+        if existing is not None:
+            parent = existing.parent
+            already_best = existing.status == "best_branch"
+            status = "best_branch" if (total >= prev_score or already_best) else existing.status
+        else:
+            parent = prev_best.id if prev_best else None
+            status = "best_branch" if total >= prev_score else "explored"
+        if is_confirm:
+            status = "best_branch" if total >= prev_score else "explored"
+
+        self.tree.add(
+            TreeNode(
+                id=node_id,
+                parent=parent,
+                action=call.name,
+                metrics=metrics,
+                status=status,
+                description=result[:200],
+            )
+        )
+        return node_id
 
     def run(self, registry, initial_url: str = "") -> str:
         self.budget.start()
@@ -249,6 +312,15 @@ class Agent:
                 self._log("assistant", {"text": text[:2000]})
                 # si el agente no invoca tools pero dice DONE o FIN, terminar
                 if any(k in text.lower() for k in ("done", "fin", "finalizado", "terminado")):
+                    if self.target_h and self.hypothesis_count <= self.target_h:
+                        self._log(
+                            "system",
+                            {
+                                "event": "target_h_bloqueado",
+                                "reason": f"Objetivo {self.target_h} no alcanzado (hipótesis generadas: {self.hypothesis_count})",
+                            },
+                        )
+                        continue
                     stop_reason = "El agente finalizó por sí mismo."
                     self._log("stop", {"reason": stop_reason})
                     break
@@ -267,9 +339,8 @@ class Agent:
                     )
                 )
                 node_id = self._handle_eval_result(call, result)
-                if node_id is not None:
-                    # tmp: actualizar la última métrica como evaluación
-                    pass
+                if call.name == "generate_candidate" and node_id is not None:
+                    self._snapshot(node_id)
 
             # verificamos si tras ejecutar tools el presupuesto pide stop
             if self.budget.done():
@@ -292,9 +363,33 @@ class Agent:
             self.memory.append_global(lessons)
             self._log("system", {"event": "lessons_merged"})
 
+        # exportación automática del mejor candidato si el agente no llamó a select_final
+        self._export_final()
+
         final = self._final_summary()
         self._log("end", {"final": final})
         return final
+
+    def _export_final(self) -> str:
+        """Copia el mejor candidato (snapshot) a runs/<run_id>/final/."""
+        import shutil
+
+        best = self.tree.best()
+        if best is None:
+            self._log("system", {"event": "no_final_export", "reason": "sin mejores nodos"})
+            return "(sin candidato)"
+        src = self.run_dir / "candidates" / best.id
+        if not (src / "index.html").exists():
+            src = PATHS["current"]
+        if not (src / "index.html").exists():
+            self._log("system", {"event": "no_final_export", "reason": "sin archivos candidatos"})
+            return "(sin candidato)"
+        dst = self.run_dir / "final"
+        if dst.exists():
+            shutil.rmtree(dst, ignore_errors=True)
+        shutil.copytree(src, dst)
+        self._log("system", {"event": "final_exported", "best": best.id, "to": str(dst)})
+        return str(dst)
 
     def _current_best_score(self) -> float:
         best = self.tree.best()

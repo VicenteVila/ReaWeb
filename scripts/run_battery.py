@@ -55,17 +55,28 @@ def curve_from_transcript(run_dir: Path) -> list[dict]:
         except json.JSONDecodeError:
             continue
         if e.get("kind") == "eval" and e.get("total") is not None:
-            curve.append({"id": e.get("candidate"), "total": e["total"], "delta": e.get("delta")})
-    return curve
+            curve.append({"id": e.get("candidate"), "total": e["total"], "delta": e.get("delta"), "version": e.get("version")})
+    # deduplicar: si audit_page confirma una hipótesis, se queda la última entrada por id
+    by_id: dict = {}
+    for c in curve:
+        by_id[c["id"]] = c
+
+    def _sort_key(c: dict) -> int:
+        import re
+        m = re.search(r"(\d+)$", c["id"] or "")
+        return int(m.group(1)) if m else 0
+
+    return [by_id[k] for k in sorted(by_id, key=lambda k: _sort_key(by_id[k]))]
 
 
-def summarize_run(archetype: str, task: str, turn: int, verbose: bool = True) -> dict:
+def summarize_run(archetype: str, task: str, turn: int, verbose: bool = True, target_h: int = 0) -> dict:
     """Ejecuta una run y devuelve su resumen sintético."""
     agent = run_single(
         archetype=archetype,
         task=task,
         turns=turn,
         verbose=verbose,
+        target_h=target_h,
     )
     curve = curve_from_transcript(agent.run_dir)
     best = max(curve, key=lambda x: x["total"]) if curve else None
@@ -123,6 +134,8 @@ def main():
     parser.add_argument("--run", action="append", default=[], help="Item 'arquetipo:tarea' (repetible)")
     parser.add_argument("--config", type=Path, default=None, help="YAML {runs: {arquetipo: tarea}}")
     parser.add_argument("--turns", type=int, default=8, help="Presupuesto de iteraciones por run")
+    parser.add_argument("--target-h", type=int, default=0,
+                        help="Hipótesis objetivo por run (p. ej. --target-h 3 => H0..H3)")
     parser.add_argument("--max-cost", type=float, default=2.0, help="Presupuesto máx USD por run")
     parser.add_argument("--model", default=None, help="Modelo Gemini")
     parser.add_argument("--quiet", action="store_true", help="No imprimir detalle de cada run")
@@ -143,6 +156,7 @@ def main():
             task=task,
             turn=args.turns,
             verbose=not args.quiet,
+            target_h=args.target_h,
         )
         results.append(summary)
 

@@ -4,6 +4,14 @@
 **Tarea:** {{ task }}
 **Presupuesto:** {{ turns_remaining }}/{{ turns_total }} turnos | ${{ "%.2f"|format(cost_so_far) }} consumidos
 
+{% if target_h %}
+### 🎯 Objetivo de hipótesis (target-h={{ target_h }})
+- Hipótesis generadas hasta ahora: **{{ hypotheses_done }}/{{ target_h + 1 }}** (faltan H{{ hypotheses_done }}..H{{ target_h }}).
+- ACCIÓN PRIORITARIA: si aún no alcanzas el objetivo, tu siguiente acción DEBE ser
+  `generate_candidate` (nueva hipótesis) y `audit_page` para confirmarla. No dediques
+  turnos a inspeccionar archivos, actualizar lecciones ni razonar en texto hasta cumplirlo.
+{% endif %}
+
 ### Mejor candidato actual
 - **ID:** {{ best.id }}
 - **Métricas:** {{ best.metrics_summary }}

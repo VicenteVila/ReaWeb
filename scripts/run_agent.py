@@ -20,6 +20,8 @@ def main():
     parser.add_argument("--turns", type=int, default=20, help="Máximo de iteraciones (H1..Hn)")
     parser.add_argument("--max-cost", type=float, default=5.0, help="Presupuesto máx en USD")
     parser.add_argument("--no-meta", action="store_true", help="Deshabilitar meta-evolución")
+    parser.add_argument("--target-h", type=int, default=0,
+                        help="Hipótesis objetivo (p. ej. --target-h 3 => H0..H3). No declara fin hasta alcanzarlo.")
     args = parser.parse_args()
 
     run_single(
@@ -30,6 +32,7 @@ def main():
         max_cost=args.max_cost,
         allow_meta=not args.no_meta,
         verbose=True,
+        target_h=args.target_h,
     )
 
 

@@ -12,11 +12,14 @@ from tools.domain.deployer import DeployPreview, GitSnapshot
 
 
 def build_domain_registry(llm, archetype: str = "", task: str = "", rules: str = "", stack: str = "") -> ToolRegistry:
+    from tools.domain.evaluator import extract_requirements
+
+    requirements = extract_requirements(task)
     registry = ToolRegistry(
         [
             InspectArchetype(),
-            GenerateCandidate(llm=llm, archetype=archetype, task=task, rules=rules, stack=stack),
-            AuditPage(),
+            GenerateCandidate(llm=llm, archetype=archetype, task=task, rules=rules, stack=stack, requirements=requirements),
+            AuditPage(requirements=requirements),
             AnalyzeProject(),
             UpdateLessons(),
             SelectFinal(),

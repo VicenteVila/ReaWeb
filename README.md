@@ -42,7 +42,9 @@ python -m scripts.run_agent \
 # portfolio-creative, blog-content
 ```
 
-Opciones: `--model`, `--turns`, `--max-cost`, `--no-meta` (deshabilita meta-evolución).
+Opciones: `--model`, `--turns`, `--max-cost`, `--no-meta` (deshabilita meta-evolución),
+`--target-h N` (objetivo mínimo de hipótesis, p. ej. `--target-h 3` exige generar y
+auditar H0..H3 antes de poder cerrar).
 
 ### Flujo (UX)
 
@@ -55,9 +57,23 @@ Final → select_final exporta el mejor candidato razonando sobre la historia
 Cada run deja en `runs/<timestamp>--<arquetipo>/`:
 
 - `transcript.jsonl` — interacción completa (tools + evaluaciones)
-- `search_tree.json` — árbol de búsqueda por candidato con métricas
-- `candidates/` y `final/` — código exportado
+- `search_tree.json` — árbol de hipótesis H0..Hn con métricas, parents y status
+- `candidates/H<i>/` — snapshot congelado de cada hipótesis (generado automáticamente)
+- `screenshots/H<i>.png` — render de cada hipótesis (dashboard)
+- `final/` — mejor candidato exportado (aunque `select_final` no se llame)
 - `lessons_incremental.md` — lecciones de la run (se mergean a `memory/lessons.md`)
+
+### Evaluación visual
+
+```bash
+python -m scripts.render_dashboard                # todas las runs
+python -m scripts.render_dashboard --run <run_id> # una run concreta
+```
+
+Genera `runs/dashboard_<ts>.html` autocontenido (SVG + imágenes base64, sin
+dependencias externas): curva H0→Hn, filmstrip con screenshots de cada hipótesis,
+radar del mejor vs baseline y tabla de métricas. Renderiza con Chrome de Windows
+headless vía WSL (`wslpath -w`); si no lo encuentra, genera el dashboard solo-datos.
 
 ## Scripts
 
@@ -67,6 +83,7 @@ Cada run deja en `runs/<timestamp>--<arquetipo>/`:
 | `scripts/seed_from_docs.py` | Regenera `domain/` desde `../Docs/` |
 | `scripts/merge_lessons.py` | Fusiona lecciones de runs al archivo global |
 | `scripts/export_candidate.py` | Exporta el candidato final a un destino |
+| `scripts/render_dashboard.py` | Dashboard visual de evolución (curvas, filmstrip, radar) |
 
 ## Estructura
 
@@ -94,11 +111,23 @@ EditSkill().run(path="archetypes/landing-page/rules.yaml",
                 mode="replace")
 ```
 
+## Evaluador y categoría "task"
+
+El evaluador ligero (sin Chrome) puntúa SEO, A11y, Performance, Responsive y
+Best Practices (0-100). Además, si la tarea estipulada menciona requisitos
+verificables (repositorios de `github.com/usuario`, URLs, nombres de proyectos),
+`extract_requirements()` los extrae automáticamente y el evaluador añade la
+categoría **`task`**: % de requisitos presentes literalmente en el código
+(html+css+js). El total pasa a ser la media de 6 ejes.
+
+Esto evita que el agente optimice el score estático a costa de la tarea real
+(p. ej. un candidato con mejor score pero sin los enlaces a los repos solicitados).
+
 ## Tests
 
 ```bash
 python3 -m pytest test          # si tienes pytest
-python3 -c "import sys; sys.path.insert(0,'.'); from test.test_evaluator import *; test_good_scores_high(); test_bad_scores_low(); test_modern_images_detected(); print('OK')"
+python3 -c "import sys; sys.path.insert(0,'.'); from test.test_evaluator import *; test_good_scores_high(); test_bad_scores_low(); test_modern_images_detected(); test_task_requirements_present(); test_task_requirements_missing(); print('OK')"
 ```
 
 ## Notas

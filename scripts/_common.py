@@ -27,7 +27,8 @@ def load_archetype(archetype: str) -> str:
 
 
 def build_agent(archetype: str, task: str, model: str | None, turns: int,
-                max_cost: float, allow_meta: bool, verbose: bool) -> tuple[Agent, object]:
+                max_cost: float, allow_meta: bool, verbose: bool,
+                target_h: int = 0) -> tuple[Agent, object]:
     """Construye el agente + registry listos para ejecutar una run."""
     ensure_dirs()
     llm = LLM(model=model)
@@ -47,6 +48,7 @@ def build_agent(archetype: str, task: str, model: str | None, turns: int,
         max_cost_usd=max_cost,
         allow_meta_edits=allow_meta,
         verbose=verbose,
+        target_h=target_h,
     )
 
     registry = build_domain_registry(
@@ -66,10 +68,11 @@ def build_agent(archetype: str, task: str, model: str | None, turns: int,
 
 def run_single(archetype: str, task: str, model: str | None = None,
                turns: int = 20, max_cost: float = 5.0,
-               allow_meta: bool = True, verbose: bool = True) -> Agent:
+               allow_meta: bool = True, verbose: bool = True,
+               target_h: int = 0) -> Agent:
     """Ejecuta una run completa y devuelve el agente (con run_dir resuelto)."""
     agent, registry = build_agent(
-        archetype, task, model, turns, max_cost, allow_meta, verbose
+        archetype, task, model, turns, max_cost, allow_meta, verbose, target_h
     )
     final = agent.run(registry)
     if verbose:

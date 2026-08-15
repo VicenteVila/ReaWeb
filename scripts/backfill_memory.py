@@ -20,6 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from agent.harness_snapshot import task_hash as _task_hash
 from agent.memory_db import MemoryDB
 from config import PATHS
 
@@ -46,9 +47,12 @@ def backfill_run(db: MemoryDB, run_dir: Path, verbose: bool = True) -> dict:
     fields = {
         "archetype": cfg.get("archetype"),
         "task": cfg.get("task"),
+        "task_hash": cfg.get("task_hash") or (_task_hash(cfg.get("task", "")) if cfg.get("task") else None),
         "model": cfg.get("model"),
         "max_turns": cfg.get("max_turns"),
         "started": cfg.get("started"),
+        "harness_hash": (cfg.get("harness") or {}).get("end") or (cfg.get("harness") or {}).get("start"),
+        "harness_diff": "; ".join((cfg.get("harness") or {}).get("diff", [])),
     }
     db.upsert_run(run_id=run_id, **{k: v for k, v in fields.items() if v is not None})
     stats["run"] = 1
@@ -82,6 +86,8 @@ def backfill_run(db: MemoryDB, run_dir: Path, verbose: bool = True) -> dict:
     best_total = None
     best_node = None
     if trans.exists():
+        best_so_far = None
+        pending_tools: list[dict] = []
         for line in trans.read_text().splitlines():
             try:
                 e = json.loads(line)
@@ -89,23 +95,41 @@ def backfill_run(db: MemoryDB, run_dir: Path, verbose: bool = True) -> dict:
                 continue
             kind = e.get("kind")
             if kind == "tool":
-                db.add_experiment(
-                    run_id=run_id,
-                    turn=e.get("turn", 0),
-                    action=e.get("tool", ""),
-                    result=str(e.get("result", ""))[:200],
-                    delta="",
-                    node_id=None,
-                    ts=e.get("ts"),
-                )
-                stats["experiments"] += 1
+                pending_tools.append({
+                    "turn": e.get("turn", 0),
+                    "tool": e.get("tool", ""),
+                    "result": str(e.get("result", ""))[:200],
+                    "ts": e.get("ts"),
+                })
             elif kind == "eval":
                 # mejor candidato definitivo: última entrada eval por candidato
                 if e.get("total") is not None:
-                    best_total = e["total"]
+                    total = e["total"]
+                    prev = best_so_far if best_so_far is not None else total
+                    delta = total - prev
+                    best_so_far = max(best_so_far or 0, total)
+                    best_total = total
                     best_node = e.get("candidate") or best_node
+                    # asociar el eval a la tool generate_candidate/audit_page previa
+                    node_id = e.get("candidate")
+                    for pt in reversed(pending_tools):
+                        if pt["tool"] in ("generate_candidate", "audit_page"):
+                            pt["delta"] = f"{delta:+.1f}"
+                            pt["node_id"] = node_id
+                            break
             elif kind == "end":
                 finished = e.get("ts") or finished
+        for pt in pending_tools:
+            db.add_experiment(
+                run_id=run_id,
+                turn=pt["turn"],
+                action=pt["tool"],
+                result=pt["result"],
+                delta=pt.get("delta", ""),
+                node_id=pt.get("node_id"),
+                ts=pt["ts"],
+            )
+            stats["experiments"] += 1
         # mejor del árbol (autoritativo), no del transcript
         best = db.nodes(run_id)
         if best:

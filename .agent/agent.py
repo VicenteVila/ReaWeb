@@ -14,6 +14,7 @@ from agent.budget_tracker import BudgetTracker
 from agent.llm import LLMResponse
 from agent.memory_db import MemoryDB
 from agent.state import ContextManager, Experiment, Memory, SearchTree, TreeNode
+from agent import harness_snapshot
 from config import CONTEXT_DEFAULTS, ensure_dirs, PATHS
 
 
@@ -53,15 +54,19 @@ class Agent:
         self.tree = SearchTree(
             path=self.run_dir / "search_tree.json", run_id=self.run_id, db=self.db
         )
+        self.harness_start = harness_snapshot.snapshot()
+        self.task_hash = harness_snapshot.task_hash(task)
         self.db.upsert_run(
             run_id=self.run_id,
             archetype=archetype_name,
             task=task,
+            task_hash=self.task_hash,
             model=getattr(llm, "model", "?"),
             max_turns=max_turns,
             started=datetime.now().isoformat(),
             status="running",
             initial_url=initial_url,
+            harness_hash=self.harness_start["tree_hash"],
         )
         self.context = ContextManager(
             threshold_tokens=CONTEXT_DEFAULTS["compaction_threshold_tokens"],
@@ -79,10 +84,16 @@ class Agent:
                 {
                     "archetype": archetype_name,
                     "task": task,
+                    "task_hash": self.task_hash,
                     "model": getattr(llm, "model", "?"),
                     "max_turns": max_turns,
                     "started": datetime.now().isoformat(),
                     "initial_url": initial_url,
+                    "harness": {
+                        "start": self.harness_start["tree_hash"],
+                        "n_files": self.harness_start["n_files"],
+                        "files": self.harness_start["files"],
+                    },
                 },
                 indent=2,
             )
@@ -362,18 +373,21 @@ class Agent:
                 continue
 
             for call in resp.tool_calls:
+                prev_best = self._current_best_score()
                 result, _ = self._exec_tool(registry, call)
                 self.history.append({"role": "model", "parts": [{"function_call": {"name": call.name, "args": call.args}}]})
                 self.history.append({"role": "user", "parts": [{"function_response": {"name": call.name, "response": {"result": result}}}]})
+                node_id = self._handle_eval_result(call, result)
+                delta = self._current_best_score() - prev_best
                 self.memory.add_experiment(
                     Experiment(
                         id=f"t{self.turn}",
                         action=call.name,
                         result=result[:200],
-                        delta="",
+                        delta=f"{delta:+.1f}",
+                        node_id=node_id,
                     )
                 )
-                node_id = self._handle_eval_result(call, result)
                 if call.name == "generate_candidate" and node_id is not None:
                     self._snapshot(node_id)
 
@@ -402,13 +416,26 @@ class Agent:
         self._export_final()
 
         best = self.tree.best()
+        harness_end = harness_snapshot.snapshot()
+        diff = harness_snapshot.diff_snapshots(self.harness_start, harness_end)
         self.db.upsert_run(
             run_id=self.run_id,
             finished=datetime.now().isoformat(),
             best_score=best.metrics.get("total") if best else None,
             best_node=best.id if best else None,
             status="done",
+            harness_hash=harness_end["tree_hash"],
+            harness_diff="; ".join(diff),
         )
+        # añadir el diff al run_config.json
+        try:
+            cfg_path = self.run_dir / "run_config.json"
+            cfg = json.loads(cfg_path.read_text())
+            cfg["harness"]["end"] = harness_end["tree_hash"]
+            cfg["harness"]["diff"] = diff
+            cfg_path.write_text(json.dumps(cfg, indent=2))
+        except Exception:
+            pass
         self.db.close()
 
         final = self._final_summary()

@@ -13,17 +13,20 @@ from config import PATHS
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS runs (
-    id          TEXT PRIMARY KEY,
-    archetype   TEXT,
-    task        TEXT,
-    model       TEXT,
-    max_turns   INTEGER,
-    started     TEXT,
-    finished    TEXT,
-    best_score  REAL,
-    best_node   TEXT,
-    status      TEXT,
-    initial_url TEXT
+    id               TEXT PRIMARY KEY,
+    archetype        TEXT,
+    task             TEXT,
+    task_hash        TEXT,
+    model            TEXT,
+    max_turns        INTEGER,
+    started          TEXT,
+    finished         TEXT,
+    best_score       REAL,
+    best_node        TEXT,
+    status           TEXT,
+    initial_url      TEXT,
+    harness_hash     TEXT,
+    harness_diff     TEXT
 );
 CREATE TABLE IF NOT EXISTS lessons (
     id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,10 +73,16 @@ class MemoryDB:
         self.conn = sqlite3.connect(self.path)
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript(SCHEMA)
-        # migración: columna initial_url si la DB es anterior
+        # migración: columnas nuevas si la DB es anterior
         cols = {r[1] for r in self.conn.execute("PRAGMA table_info(runs)")}
-        if "initial_url" not in cols:
-            self.conn.execute("ALTER TABLE runs ADD COLUMN initial_url TEXT")
+        for col, ddl in (
+            ("initial_url", "ALTER TABLE runs ADD COLUMN initial_url TEXT"),
+            ("task_hash", "ALTER TABLE runs ADD COLUMN task_hash TEXT"),
+            ("harness_hash", "ALTER TABLE runs ADD COLUMN harness_hash TEXT"),
+            ("harness_diff", "ALTER TABLE runs ADD COLUMN harness_diff TEXT"),
+        ):
+            if col not in cols:
+                self.conn.execute(ddl)
         self.conn.commit()
 
     # --- runs ---

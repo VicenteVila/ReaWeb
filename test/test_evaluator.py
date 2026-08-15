@@ -325,6 +325,51 @@ def test_extract_sections_from_task():
     assert s == ["navbar", "hero", "stats", "features", "faq", "footer"], s
 
 
+def test_extract_sections_graph_task():
+    from tools.domain.evaluator import extract_sections
+    s = extract_sections(
+        "grafo de conocimientos con nodo central (Vicente Vila), repositorios que "
+        "abren su readme local (repos/) y categorias sujet arXiv (cs.AI, cs.LG)"
+    )
+    assert "graph" in s, s
+    assert "root_node" in s, s
+    assert "readme" in s, s
+    assert "topics" in s, s
+
+
+def test_graph_structure_present_scores_high():
+    """Un grafo SVG con nodo raíz, repos, enlaces README local y categorías arXiv pasa structure."""
+    html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title></head>
+    <body>
+    <nav class="navbar"><a href="#graph">Grafo</a></nav>
+    <section class="hero"><h1>Vicente Vila</h1></section>
+    <section id="graph" class="knowledge-graph">
+      <svg id="svg-graph"><g class="node root-node"><title>Vicente Vila</title></g>
+      <g class="node repo"><title>TraceForge</title><a href="repos/TraceForge/index.html">README</a></g></svg>
+    </section>
+    <section id="topics"><span class="arxiv">cs.AI</span><span>cs.LG</span></section>
+    <a class="cta" href="#contact">Contacto</a>
+    <footer><p>© 2026</p></footer>
+    </body></html>"""
+    d = _write({"index.html": html}, "graph_ok")
+    m = evaluate(d, structure=["navbar", "hero", "graph", "root_node", "readme", "topics", "cta", "footer"])
+    assert m["structure"] == 100, m
+    assert not m["failures"]["structure"], m
+
+
+def test_graph_structure_missing_lowers():
+    """Grafo sin nodo raíz ni enlaces README local ni categorías: estructura incompleta."""
+    html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title></head>
+    <body><section id="graph"><svg><circle></circle></svg></section></body></html>"""
+    d = _write({"index.html": html}, "graph_missing")
+    m = evaluate(d, structure=["graph", "root_node", "readme", "topics"])
+    assert m["structure"] <= 40, m
+    for key in ("root_node", "readme", "topics"):
+        assert key in m["failures"]["structure"], key
+
+
 def test_extract_sections_no_noise_from_repo_names():
     from tools.domain.evaluator import extract_sections
     s = extract_sections("landing para CogniTeam y equipos de agentes IA")

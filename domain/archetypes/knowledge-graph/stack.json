@@ -1,0 +1,46 @@
+{
+  "archetype": "knowledge-graph",
+  "priority": "visual_impact_and_performance_balance",
+  "stack": {
+    "framework": {
+      "primary": "Vanilla (HTML + CSS + JS)",
+      "graph": "SVG puro (circle, path, g) — sin canvas"
+    },
+    "language": "JavaScript (ES6+)",
+    "styling": {
+      "framework": "CSS custom (variables, transitions)",
+      "effects": "drop-shadow, transform, stroke-dashoffset"
+    },
+    "animations": {
+      "hover": "CSS transitions + transforms",
+      "reveal": "IntersectionObserver",
+      "graph": "transiciones opacity/translate para nodos hijos"
+    },
+    "theme": {
+      "dark_light": "prefers-color-scheme + localStorage",
+      "reduced_motion": "prefers-reduced-motion"
+    },
+    "deployment": {
+      "hosting": "GitHub Pages / Netlify (estático)"
+    }
+  },
+  "features_required": [
+    "svg_graph",
+    "hover_expand_children",
+    "node_highlight_glow",
+    "knowledge_topics_nodes",
+    "readme_local_links",
+    "legend",
+    "dark_mode",
+    "keyboard_accessibility",
+    "prefers_reduced_motion"
+  ],
+  "design_principles": [
+    "graph_as_hero",
+    "interactive_discovery",
+    "purposeful_hover_feedback",
+    "typography_as_design",
+    "accessible_interaction",
+    "svg_purity"
+  ]
+}

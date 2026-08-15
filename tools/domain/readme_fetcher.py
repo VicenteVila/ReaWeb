@@ -196,6 +196,16 @@ def _table_row(m):
     return "<table><tr>" + "".join(f"<td>{c}</td>" for c in cells) + "</tr></table>"
 
 
+def _download_readme(owner: str, repo: str) -> tuple[str, str]:
+    """Descarga el README.md del repo probando ramas main y master."""
+    for branch in ("main", "master"):
+        url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/README.md"
+        code, body = _http_get(url)
+        if code == 200 and body:
+            return body, ""
+    return "", f"main/master devolvieron {code}"
+
+
 class FetchReadme(Tool):
     name = "fetch_readme"
     description = (
@@ -274,12 +284,7 @@ class FetchReadme(Tool):
         return "ok", html_page
 
     def _download_readme(self, owner: str, repo: str) -> tuple[str, str]:
-        for branch in ("main", "master"):
-            url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/README.md"
-            code, body = _http_get(url)
-            if code == 200 and body:
-                return body, ""
-        return "", f"main/master devolvieron {code}"
+        return _download_readme(owner, repo)
 
     def _render_markdown(self, md: str) -> str:
         code, body = _http_post_json(

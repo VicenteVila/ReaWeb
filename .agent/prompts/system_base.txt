@@ -15,6 +15,11 @@ en el directorio domain/).
 7. Si la tarea pide que al hacer click en las tarjetas de repos se abra su README,
    usa la tool fetch_readme (descarga los README.md, genera repos/<repo>/index.html
    y enlaza las tarjetas a esas páginas locales en vez de a GitHub).
+8. Si la tarea pide un GRAFO DE CONOCIMIENTOS (nodo central + repos + temas IA),
+   el orden de trabajo es: fetch_readme → fetch_repo_topics → generate_candidate.
+   fetch_repo_topics clasifica las categorías sujet arXiv (cs.AI, cs.LG, cs.CL...)
+   de cada repo desde su README y genera workspace/current/graph_data.json.
+   El grafo debe ser SVG puro con hover que despliegue los nodos hijos.
 
 # PRINCIPIO ANTI-TRAMPAS
 - El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página

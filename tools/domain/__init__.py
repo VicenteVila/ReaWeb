@@ -8,6 +8,7 @@ from tools.domain.web_generator import (
     InspectArchetype,
 )
 from tools.domain.readme_fetcher import FetchReadme
+from tools.domain.repo_topics import FetchRepoTopics
 from tools.domain.meta_editor import EditSkill, ReviewHarness
 from tools.domain.bundle_analyzer import AnalyzeProject
 from tools.domain.deployer import DeployPreview, GitSnapshot
@@ -22,6 +23,7 @@ def build_domain_registry(llm, archetype: str = "", task: str = "", rules: str =
             InspectArchetype(),
             FetchUrl(),
             FetchReadme(task=task),
+            FetchRepoTopics(llm=llm, task=task),
             GenerateCandidate(llm=llm, archetype=archetype, task=task, rules=rules, stack=stack, requirements=requirements),
             AuditPage(requirements=requirements, task=task),
             AnalyzeProject(),

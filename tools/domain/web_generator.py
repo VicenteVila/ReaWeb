@@ -34,6 +34,10 @@ REFERENCIA (HTML analizado de una URL; adapta su estructura, estética y patrone
 de contenido a la tarea, NO copies su contenido literal):
 {reference}
 
+DATOS DEL GRAFO DE CONOCIMIENTOS (si existe, úsalos literalmente para el grafo SVG:
+nodo raíz con nombre y email, un nodo por repo, y las categorías sujet arXiv por repo):
+{graph_data}
+
 REQUISITOS:
 1. Una página HTML autocontenida (index.html) con CSS en styles.css y JS en app.js.
 2. Diseño responsive (mobile-first), semántico, accesible.
@@ -255,6 +259,13 @@ class GenerateCandidate(Tool):
         else:
             reference = "(sin referencia: genera desde cero)"
 
+        graph_path = PATHS["current"] / "graph_data.json"
+        if graph_path.exists():
+            graph_text = graph_path.read_text(errors="replace")
+            graph_data = f"(graph_data.json, {len(graph_text)} chars):\n" + graph_text[:6000]
+        else:
+            graph_data = "(sin graph_data.json: no hay grafo de datos; si la tarea pide un grafo, llama antes a fetch_repo_topics)"
+
         prompt = GENERATOR_PROMPT.format(
             task=self.task,
             archetype=self.archetype,
@@ -264,6 +275,7 @@ class GenerateCandidate(Tool):
             requirements="\n".join(f"- {r}" for r in self.requirements) if self.requirements else "(ninguno específico)",
             sections="\n".join(f"- {s}" for s in self.sections) if self.sections else "(no exigidas)",
             reference=reference,
+            graph_data=graph_data,
         )
         out = self.llm.generate(prompt, temperature=0.7)
         text = out.text

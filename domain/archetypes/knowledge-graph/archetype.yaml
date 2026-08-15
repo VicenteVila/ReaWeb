@@ -1,0 +1,44 @@
+identidad_del_proyecto:
+- '- **Nombre:** Vicente Vila — Grafo de Conocimientos IA'
+- '- **Tagline:** Mapa interactivo de mi ecosistema de agentes'
+- '- **Industria:** IA / Software'
+- '- **Target:** Reclutadores, colaboradores, comunidad técnica'
+- ''
+nodo_central_(raíz_del_grafo):
+- '- **Nombre:** Vicente Vila'
+- '- **Email:** vicentevilaramirez@gmail.com'
+- '- **Rol en el grafo:** nodo raíz; de él salen todos los repositorios'
+- ''
+secciones_obligatorias:
+- 1. **Grafo SVG interactivo:** nodo raíz (nombre + email) en el centro
+- 2. **Nodos de repositorios:** TraceForge, CogniTeam, PromptForge, Asubarnipal, PopeBot-agente
+- 3. **Expansión por hover:** sobre un repo se despliegan 2 nodos hijos:
+-    - Conocimientos IA (categorías sujet arXiv: cs.AI, cs.LG, cs.CL, cs.MA...)
+-    - README (enlace a repos/<repo>/index.html)
+- 4. **Leyenda:** explica colores/significado de los nodos
+- 5. **Footer:** nombre, email, enlace al perfil de GitHub
+- ''
+datos_requeridos:
+- '- **Nombre:** Vicente Vila'
+- '- **Email:** vicentevilaramirez@gmail.com'
+- '- **Repositorios:** TraceForge, CogniTeam, PromptForge, Asubarnipal, PopeBot-agente (github.com/VicenteVila)'
+- '- **Temas IA:** categorías sujet arXiv (cs.*) por repositorio'
+- ''
+stack_tecnológico:
+- '- Framework: Vanilla (HTML + CSS + JS)'
+- '- Grafo: SVG puro (nodos y aristas como <circle>/<path>/<g>)'
+- '- Animaciones: CSS transitions/transforms + IntersectionObserver'
+- '- Tema: dark/light con prefers-color-scheme y localStorage'
+- '- Deploy: estático (GitHub Pages / Netlify)'
+- ''
+kpis_a_medir:
+- '- Tiempo en página alto (exploración del grafo)'
+- '- Interacción: repos explorados, nodos desplegados'
+- '- Accesibilidad: navegación del grafo sin ratón'
+- ''
+notas_especiales:
+- '- [x] Nodos con efectos interactivos al hacer hover (glow, scale, stroke)'
+- '- [x] SVG puro (no canvas) para el grafo'
+- '- [x] Animaciones reducidas si prefers-reduced-motion'
+- '- [x] Sin dependencias externas ni CDN'
+- '- [x] Dark/light mode persistido'

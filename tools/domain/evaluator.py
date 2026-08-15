@@ -350,6 +350,10 @@ def _score(checks: list[tuple[str, str, object]], context: str) -> tuple[int, li
 SECTION_ALIASES = {
     "navbar": ["navbar", "nav-links", "<nav", "header-nav", "topnav", "barra de navegacion", "menu de navegacion"],
     "hero": ["hero", "cta-group", "hero-title", "jumbotron", "portada", "titulo principal"],
+    "graph": ["graph", "grafo", "knowledge-graph", "svg-graph", "nodes", "nodos", "network", "grafo de conocimientos", "conocimientos"],
+    "root_node": ["root-node", "nodo central", "nodo raiz", "root", "raiz", "central node", "center node"],
+    "readme": ["readme", "repos/", "repositorios", "local readme"],
+    "topics": ["topics", "arxiv", "categorias", "categorias sujet", "cs.ai", "cs.lg", "cs.cl"],
     "logo_bar": ["logo-bar", "trusted", "logos", "trusted-by", "logo bar", "marcas", "logo bar 'trusted by'"],
     "stats": ["stats", "stat-card", "counter", "metrics", "metricas", "contadores", "estadisticas"],
     "features": ["features", "feature-card", "feature-grid", "cards", "grid", "beneficios", "tarjetas", "caracteristicas"],
@@ -375,7 +379,8 @@ def extract_sections(task: str) -> list[str]:
     task_low = task.lower()
     found: list[str] = []
     # orden preferente para que el prompt/score sea estable
-    priority = ["navbar", "hero", "logo_bar", "stats", "features", "integrations",
+    priority = ["navbar", "hero", "graph", "root_node", "readme", "topics",
+                "logo_bar", "stats", "features", "integrations",
                 "social_proof", "testimonial", "faq", "cta", "footer", "contact",
                 "pricing", "about"]
     for key in priority:

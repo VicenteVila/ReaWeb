@@ -1,6 +1,8 @@
 """Snapshot del harness: hash de los directorios que definen el comportamiento
 del agente (domain/, tools/, .agent/prompts/) para poder medir la evolución del
-harness entre runs.
+harness entre runs. También incluye la fuente semilla Docs/ y las lecciones de
+la DB (memoria persistente), de modo que cualquier cambio de conocimiento quede
+versionado en el snapshot.
 
 Un "snapshot" es un dict:
     {
@@ -20,7 +22,12 @@ from pathlib import Path
 
 from config import PATHS
 
+# Directorios del repo que definen el comportamiento del agente.
 HARNESS_DIRS = ("domain", "tools", ".agent/prompts")
+# Directorios externos al repo: prefijo de ruta en el snapshot -> path real.
+# Docs/ es la especificación fuente semilla (ver README): si cambia, el
+# harness_hash debe reflejarlo.
+EXTRA_DIRS: dict[str, Path] = {"Docs": PATHS["root"].parent / "Docs"}
 
 
 def _iter_harness_files() -> list[tuple[str, bytes]]:
@@ -36,11 +43,45 @@ def _iter_harness_files() -> list[tuple[str, bytes]]:
                     out.append((rel, p.read_bytes()))
                 except OSError:
                     continue
+    for prefix, base in EXTRA_DIRS.items():
+        if not base.exists():
+            continue
+        for p in sorted(base.rglob("*")):
+            if p.is_file():
+                rel = f"{prefix}/{p.relative_to(base)}"
+                try:
+                    out.append((rel, p.read_bytes()))
+                except OSError:
+                    continue
     return out
 
 
+def lessons_hash() -> str:
+    """Hash estable del contenido de lecciones de la DB (memoria persistente).
+
+    Devuelve '' si no hay lecciones o no se puede leer la DB.
+    """
+    try:
+        from agent.memory_db import MemoryDB
+
+        db = MemoryDB()
+        try:
+            rows = db.conn.execute(
+                "SELECT run_id, ts, category, content FROM lessons "
+                "ORDER BY run_id, ts, category"
+            ).fetchall()
+        finally:
+            db.close()
+    except Exception:
+        return ""
+    if not rows:
+        return ""
+    payload = "\n".join(f"{r[0]}|{r[1]}|{r[2]}|{r[3]}" for r in rows)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+
+
 def snapshot() -> dict:
-    """Calcula el hash de la versión actual del harness."""
+    """Calcula el hash de la versión actual del harness (incluye Docs/ y memoria)."""
     files = sorted(_iter_harness_files())
     h = hashlib.sha256()
     file_hashes: dict[str, str] = {}
@@ -51,9 +92,16 @@ def snapshot() -> dict:
         h.update(b"\0")
         h.update(fh.encode("utf-8"))
         h.update(b"\0")
+    # La memoria (lecciones) es parte viva del conocimiento del agente.
+    lh = lessons_hash()
+    if lh:
+        file_hashes["memory/lessons.db"] = lh
+        h.update(b"memory/lessons.db\0")
+        h.update(lh.encode("utf-8"))
+        h.update(b"\0")
     return {
         "tree_hash": h.hexdigest(),
-        "n_files": len(files),
+        "n_files": len(files) + (1 if lh else 0),
         "files": file_hashes,
     }
 

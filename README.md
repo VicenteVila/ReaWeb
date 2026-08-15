@@ -165,6 +165,27 @@ scripts/      Entrypoints
 test/         Tests (evaluador, fixtures)
 ```
 
+## Docs/ vs domain/ (separación de fuentes)
+
+- **`Docs/`** (`../Docs`, fuera del repo) es la **especificación inicial** escrita
+  por humanos: `global_rules.md`, `agent_skills.md`, `global_workflows.md` y
+  `Archetypes/<arquetipo>/{project-context,project-rules,project-workflows}.md`
+  (+ `tech-stack.json`). Es la semilla que se importa **una sola vez** con
+  `scripts/seed_from_docs.py`, que la convierte a YAML/JSON en `domain/`.
+- **`domain/`** es el **conocimiento vivo**: el agente lo mejora vía meta-evolución
+  (`edit_skill`/`review_harness`, restringidos a `domain/`). Lo que el harness
+  aprende durante las runs se aplica aquí, **no** en `Docs/`.
+- Por tanto `Docs/` puede quedar **obsoleto** respecto a `domain/` (p. ej. el
+  arquetipo `knowledge-graph` existe en `domain/` pero no en `Docs/`). Si se
+  quiere actualizar la especificación humana, hay que re-sincronizarla
+  manualmente desde `domain/` (no hay script inverso automático).
+
+Para que esta separación sea **medible**, el snapshot del harness
+(`agent/harness_snapshot.py`) incluye **tanto `Docs/` como `domain/`** además de
+las lecciones de la DB: cualquier cambio en la fuente semilla, en el conocimiento
+vivo o en la memoria altera el `harness_hash` de la run y queda visible en
+`scripts/trend_evolution.py`.
+
 ## Meta-evolución
 
 El agente puede editar su propio harness a través de `edit_skill` (validación YAML

@@ -9,7 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from agent import harness_snapshot
-from agent.harness_snapshot import diff_snapshots, snapshot, task_hash
+from agent.harness_snapshot import diff_snapshots, lessons_hash, snapshot, task_hash
 from agent.memory_db import MemoryDB
 from config import PATHS
 
@@ -20,6 +20,24 @@ def test_snapshot_hashes_files():
     assert s["tree_hash"]
     assert any(k.endswith(".py") for k in s["files"])
     assert s["files"] == snapshot()["files"]  # estable
+
+
+def test_snapshot_includes_docs_and_memory():
+    s = snapshot()
+    assert any(k.startswith("Docs/") for k in s["files"]), "Docs/ debe estar versionado"
+    assert s["n_files"] > sum(1 for k in s["files"] if k.startswith("Docs/"))
+    assert "memory/lessons.db" in s["files"]  # la memoria es parte viva del harness
+
+
+def test_lessons_hash_derived_from_db():
+    db = MemoryDB()
+    db.add_lesson("t-evo2", "worked", "leccion unica evo2")
+    h = lessons_hash()
+    assert h and len(h) == 16
+    db.conn.execute("DELETE FROM lessons WHERE run_id='t-evo2' AND content='leccion unica evo2'")
+    db.conn.commit()
+    db.close()
+    assert lessons_hash() != h, "cambiar lecciones debe cambiar lessons_hash"
 
 
 def test_diff_snapshots_detects_change():
@@ -109,7 +127,8 @@ def test_backfill_computes_delta():
 
 
 if __name__ == "__main__":
-    for fn in [test_snapshot_hashes_files, test_diff_snapshots_detects_change,
+    for fn in [test_snapshot_hashes_files, test_snapshot_includes_docs_and_memory,
+               test_lessons_hash_derived_from_db, test_diff_snapshots_detects_change,
                test_task_hash_stable_and_normalized, test_db_run_has_harness_columns,
                test_backfill_computes_delta]:
         fn()

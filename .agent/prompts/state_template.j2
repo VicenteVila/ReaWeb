@@ -23,6 +23,13 @@
 - **ID:** {{ best.id }}
 - **Métricas:** {{ best.metrics_summary }}
 - **Path:** {{ best.path }}
+{% if best.sections and best.sections_fails %}
+- **Secciones obligatorias:** {{ best.sections_present }}/{{ best.sections_total }} presentes
+  - FALTAN: {{ best.sections_fails | join(", ") }}
+  - RECUERDA: el score es señal, no objetivo. Un candidato que no incluya TODAS las
+    secciones obligatorias de la tarea no debe ser seleccionado como final aunque tenga
+    el total más alto.
+{% endif %}
 
 ### Historial reciente (últimos {{ recent|length }} experimentos)
 {% for exp in recent %}

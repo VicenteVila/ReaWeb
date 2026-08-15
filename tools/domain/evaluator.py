@@ -53,7 +53,11 @@ PERF_CHECKS = {
 RESP_CHECKS = {
     "viewport_mobile": ("viewport para mobile", lambda h: 'name="viewport"' in h),
     "media_queries": ("media queries en CSS", lambda css: "@media" in css),
-    "flexgrid": ("usa flex o grid", lambda css: re.search(r"display\s*:\s*(flex|grid|inline-flex)", css) is not None),
+    "flexgrid": (
+        "usa flex o grid (CSS literal o clases tipo Tailwind)",
+        lambda css: (re.search(r"display\s*:\s*(flex|grid|inline-flex)", css) is not None)
+                    or bool(re.search(r'class=["\'][^"\']*\b(?:grid|flex|md:grid-cols-\d|grid-cols-\d)\b', css)),
+    ),
     "img_responsive": ("imágenes con width/height o max-width", lambda h: _img_responsive(h)),
 }
 
@@ -62,6 +66,10 @@ BP_CHECKS = {
     "no_console": ("sin console.log (fuera de comentarios)", lambda js: "console.log" not in _strip_js_comments(js)),
     "charset": ("meta charset", lambda h: re.search(r'<meta[^>]+charset=["\']?utf-?8', h, re.I) is not None),
     "favicon": ("favicon con href", lambda h: bool(re.search(r'rel=["\'][^"\']*icon["\'][^>]*href=["\'][^"\']+["\']', h, re.I))),
+    "no_cdn": (
+        "sin librerías/frameworks externos vía CDN (Tailwind, Bootstrap...)",
+        lambda c: not re.search(r'<(?:script|link)\s[^>]*(?:src|href)=["\']https?://[^"\']*(?:cdn|unpkg|jsdelivr|tailwindcss|bootstrap|googleapis)[^"\']*', c, re.I),
+    ),
 }
 
 
@@ -121,6 +129,10 @@ VISUAL_CHECKS = {
         "microinteracciones reales (:active/:focus o mousemove/tilt)",
         lambda c: _has_microinteractions(c),
     ),
+    "content_richness": (
+        "contenido real: >=3 secciones semánticas o >=80 palabras en el body",
+        lambda c: _has_content_richness(c),
+    ),
 }
 
 
@@ -153,10 +165,26 @@ def _has_real_gradients(c: str) -> bool:
 
 
 def _has_animated_canvas(c: str) -> bool:
-    """Canvas que de verdad anima: requestAnimationFrame + getContext + dibujo."""
+    """Canvas que de verdad anima con DINÁMICA: requestAnimationFrame + getContext +
+    dibujo que varía (coordenadas/valores dependientes de una variable, Math.random,
+    Date.now/performance.now, contador incremental o parámetro t del callback).
+
+    Un fillRect estático en bucle (mismas coordenadas siempre) NO cuenta como
+    animación real: es un canvas 'encendido' pero visualmente congelado.
+    """
     if "requestAnimationFrame" not in c or "getContext" not in c:
         return False
-    return bool(re.search(r"(?:fillRect|strokeRect|clearRect|arc\(|fill\(|stroke\(|drawImage|fillText|bezierCurveTo|lineTo)", c))
+    if not re.search(r"(?:fillRect|strokeRect|clearRect|arc\(|fill\(|stroke\(|drawImage|fillText|bezierCurveTo|lineTo)", c):
+        return False
+    # exige señal de dinamismo: variable/tiempo/aleatorio/contador/parámetro t
+    dynamic = (
+        re.search(r"Math\.random", c)
+        or re.search(r"Date\.now|performance\.now", c)
+        or re.search(r"requestAnimationFrame\s*\(\s*\(?\s*t\s*\)?\s*=>", c)
+        or re.search(r"(?:let|const|var)\s+\w+\s*=\s*0\s*;\s*[\s\S]*\+\+|--", c)
+        or re.search(r"(?:let|const|var)\s+\w+\s*(?:=\s*Math\.|;\s*[\s\S]{0,200}?ctx\.)", c)
+    )
+    return bool(dynamic)
 
 
 def _no_dead_canvas(c: str) -> bool:
@@ -195,6 +223,19 @@ def _has_microinteractions(c: str) -> bool:
     if re.search(r"addEventListener\s*\(\s*['\"](mousemove|pointermove|touchmove)['\"]", c):
         return True
     return bool(re.search(r"transform\s*:\s*perspective\(|rotateX\(|rotateY\(", c) and ":hover" in c)
+
+
+def _has_content_richness(c: str) -> bool:
+    """Exige que la página tenga contenido real: >=3 secciones semánticas o
+    >=80 palabras de texto visible. Evita que una landing vacía ('tokens') gane."""
+    sections = len(re.findall(r"<(section|article|nav|header|footer|main)\b", c))
+    if sections >= 3:
+        return True
+    body = re.sub(r"<script[\s\S]*?</script>", "", c, flags=re.I)
+    body = re.sub(r"<style[\s\S]*?</style>", "", body, flags=re.I)
+    body = re.sub(r"<[^>]+>", " ", body)
+    words = len([w for w in re.split(r"\s+", body) if w.strip()])
+    return words >= 80
 
 
 def extract_requirements(task: str, max_items: int = 10) -> list[str]:
@@ -304,6 +345,63 @@ def _score(checks: list[tuple[str, str, object]], context: str) -> tuple[int, li
     return pct, fails
 
 
+# Secciones estructurales típicas que puede exigir una tarea. Cada entrada es
+# (clave, [alias/keywords a detectar en el HTML]).
+SECTION_ALIASES = {
+    "navbar": ["navbar", "nav-links", "<nav", "header-nav", "topnav", "barra de navegacion", "menu de navegacion"],
+    "hero": ["hero", "cta-group", "hero-title", "jumbotron", "portada", "titulo principal"],
+    "logo_bar": ["logo-bar", "trusted", "logos", "trusted-by", "logo bar", "marcas", "logo bar 'trusted by'"],
+    "stats": ["stats", "stat-card", "counter", "metrics", "metricas", "contadores", "estadisticas"],
+    "features": ["features", "feature-card", "feature-grid", "cards", "grid", "beneficios", "tarjetas", "caracteristicas"],
+    "integrations": ["integrations", "integration", "tool-stack", "integrations-grid", "stack", "integraciones", "tool stack", "herramientas"],
+    "social_proof": ["social-proof", "testimonial", "testimonials", "case-study", "reviews", "case-studies", "social proof", "prueba social", "casos de exito"],
+    "faq": ["faq", "accordion", "accordeon", "preguntas", "preguntas frecuentes"],
+    "cta": ["cta", "cta-final", "cta-section", "call-to-action", "llamada a la accion", "cta final"],
+    "footer": ["footer", "<footer", "pie de pagina"],
+    "testimonial": ["testimonial", "testimonials", "case-study", "reviews", "testimonios"],
+    "contact": ["contact", "contacto", "contact-form", "formulario de contacto"],
+    "pricing": ["pricing", "precios", "price-card", "plans", "planes", "tarifas"],
+    "about": ["about", "acerca", "nosotros", "acerca de"],
+}
+
+
+def extract_sections(task: str) -> list[str]:
+    """Extrae de la tarea las secciones estructurales que se exigen, en orden.
+
+    Busca menciones de secciones típicas (navbar, hero, stats, FAQ, footer, etc.)
+    en el texto de la tarea y devuelve sus claves canónicas. Si la tarea no
+    menciona ninguna sección, devuelve una lista vacía (no se evalúa structure).
+    """
+    task_low = task.lower()
+    found: list[str] = []
+    # orden preferente para que el prompt/score sea estable
+    priority = ["navbar", "hero", "logo_bar", "stats", "features", "integrations",
+                "social_proof", "testimonial", "faq", "cta", "footer", "contact",
+                "pricing", "about"]
+    for key in priority:
+        aliases = SECTION_ALIASES[key]
+        # si la tarea menciona un alias relevante de esa sección
+        if any(a in task_low for a in aliases):
+            # evitar duplicar alias genéricos ('grid', 'stack', 'cards')
+            if key not in found:
+                found.append(key)
+    return found
+
+
+def _html_has_section(h: str, key: str) -> bool:
+    """Comprueba que la sección estructural 'key' aparece en el HTML.
+
+    Busca id="...key..." / class="...key..." o cualquiera de sus alias
+    (case-insensitive) dentro del HTML, para no depender solo de nombres exactos.
+    """
+    h_low = h.lower()
+    aliases = SECTION_ALIASES.get(key, [key])
+    for a in aliases:
+        if a in h_low:
+            return True
+    return False
+
+
 WEIGHTS = {
     "seo": 1.0,
     "a11y": 1.0,
@@ -311,28 +409,39 @@ WEIGHTS = {
     "responsive": 1.0,
     "best_practices": 1.0,
     "visual": 2.0,
+    "structure": 2.0,
     "task": 1.0,
 }
 
 
-def evaluate(project_dir: str | Path, requirements: list[str] | None = None, weights: dict | None = None) -> dict:
+def evaluate(project_dir: str | Path, requirements: list[str] | None = None, weights: dict | None = None,
+             structure: list[str] | None = None) -> dict:
     """Evalúa un proyecto web estático. Devuelve métricas por categoría y total.
 
     requirements: lista de subcadenas que DEBEN aparecer en el código (html+css+js)
     concatenado. Si se pasan, se añade la categoría 'task' al total (requisitos de
     la tarea estipulada presentes). Si no, 'task' se ignora.
 
-    'visual' es un proxy de diseño moderno/interactivo que exige efectos REALES
-    (canvas con requestAnimationFrame+dibujo, @keyframes usado, gradientes en
-    propiedades, transition con disparador, etc.), no solo menciones.
+    structure: lista de secciones obligatorias (id, clase o palabra clave) que deben
+    estar presentes en el HTML de la raíz. Si se pasa, se añade la categoría
+    'structure' al total (peso 2.0). Ver extract_sections().
 
-    total = media PONDERADA de las categorías (WEIGHTS; visual pesa 2.0 por
-    defecto). Se puede sobrescribir con weights=.
+    IMPORTANTE: solo se evalúan archivos en la RAÍZ del proyecto (index.html,
+    styles.css, app.js). Los subdirectorios (repos/, assets/, etc.) NO participan
+    en ningún contexto de evaluación para evitar inflar métricas con contenido
+    auxiliar.
+
+    'visual' es un proxy de diseño moderno/interactivo que exige efectos REALES
+    (canvas con requestAnimationFrame+dibujo DINÁMICO, @keyframes usado, gradientes
+    en propiedades, transition con disparador, etc.), no solo menciones.
+
+    total = media PONDERADA de las categorías (WEIGHTS; visual y structure pesan
+    2.0 por defecto). Se puede sobrescribir con weights=.
     """
     project_dir = Path(project_dir)
-    html_files = sorted(project_dir.rglob("*.html"))
-    css_text = " ".join(p.read_text(errors="replace") for p in project_dir.rglob("*.css"))
-    js_text = " ".join(p.read_text(errors="replace") for p in project_dir.rglob("*.js"))
+    html_files = sorted(project_dir.glob("*.html"))
+    css_text = " ".join(p.read_text(errors="replace") for p in project_dir.glob("*.css"))
+    js_text = " ".join(p.read_text(errors="replace") for p in project_dir.glob("*.js"))
 
     if not html_files:
         return {
@@ -362,6 +471,11 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
     task_fails = [r for r in requirements if r not in combined_assets]
     task = int(100 * (len(requirements) - len(task_fails)) / len(requirements)) if requirements else None
 
+    # Categoría 'structure': secciones obligatorias presentes en el HTML de la raíz.
+    structure = structure or []
+    structure_fails = [s for s in structure if not _html_has_section(h, s)]
+    structure_score = int(100 * (len(structure) - len(structure_fails)) / len(structure)) if structure else None
+
     html_bytes = sum(p.stat().st_size for p in html_files)
     css_bytes = sum(p.stat().st_size for p in project_dir.rglob("*.css"))
     js_bytes = sum(p.stat().st_size for p in project_dir.rglob("*.js"))
@@ -371,6 +485,8 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
     axes = {"seo": seo, "a11y": a11y, "performance": perf, "responsive": resp, "best_practices": bp, "visual": visual}
     if task is not None:
         axes["task"] = task
+    if structure_score is not None:
+        axes["structure"] = structure_score
     w = {**WEIGHTS, **(weights or {})}
     num = sum(axes[k] * w.get(k, 1.0) for k in axes)
     den = sum(w.get(k, 1.0) for k in axes)
@@ -385,6 +501,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
         "best_practices": bp,
         "visual": visual,
         "task": task,
+        "structure": structure_score,
         "failures": {
             "seo": seo_fails,
             "a11y": a11y_fails,
@@ -393,6 +510,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
             "best_practices": bp_fails,
             "visual": visual_fails,
             "task": task_fails,
+            "structure": structure_fails,
         },
         "files": {
             "html": n_html,

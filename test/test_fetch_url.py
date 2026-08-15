@@ -74,6 +74,11 @@ def test_generator_prompt_includes_reference():
     assert "{reference}" in GENERATOR_PROMPT
 
 
+def test_generator_prompt_includes_sections():
+    assert "SECCIONES OBLIGATORIAS" in GENERATOR_PROMPT
+    assert "{sections}" in GENERATOR_PROMPT
+
+
 def test_run_config_has_initial_url():
     import json
     from .test_memory import __name__ as _  # noqa  (evita import cíclico)

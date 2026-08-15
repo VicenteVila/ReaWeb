@@ -23,7 +23,7 @@ def build_domain_registry(llm, archetype: str = "", task: str = "", rules: str =
             FetchUrl(),
             FetchReadme(task=task),
             GenerateCandidate(llm=llm, archetype=archetype, task=task, rules=rules, stack=stack, requirements=requirements),
-            AuditPage(requirements=requirements),
+            AuditPage(requirements=requirements, task=task),
             AnalyzeProject(),
             UpdateLessons(),
             SelectFinal(),

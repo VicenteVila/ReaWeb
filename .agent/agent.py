@@ -152,6 +152,18 @@ class Agent:
             ),
             "path": "-",
         }
+        # Desglose de secciones obligatorias del mejor candidato (si existe)
+        if best and best.path:
+            from tools.domain.evaluator import extract_sections, _html_has_section
+            sections = extract_sections(self.task)
+            html_path = Path(best.path) / "index.html"
+            if sections and html_path.exists():
+                h = html_path.read_text(errors="replace")
+                fails = [s for s in sections if not _html_has_section(h, s)]
+                best_fields["sections"] = sections
+                best_fields["sections_fails"] = fails
+                best_fields["sections_present"] = len(sections) - len(fails)
+                best_fields["sections_total"] = len(sections)
         recent = []
         for exp in self.memory.recent_experiments[-8:]:
             recent.append(
@@ -244,6 +256,7 @@ class Agent:
             r"\bbp=(\d+)": "best_practices",
             r"\bvisual=(\d+)": "visual",
             r"\btask=(\d+)": "task",
+            r"\bstructure=(\d+)": "structure",
         }
         for token, key in mapping.items():
             m2 = re.search(token, result)

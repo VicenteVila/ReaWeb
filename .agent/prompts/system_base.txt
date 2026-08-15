@@ -16,6 +16,18 @@ en el directorio domain/).
    usa la tool fetch_readme (descarga los README.md, genera repos/<repo>/index.html
    y enlaza las tarjetas a esas páginas locales en vez de a GitHub).
 
+# PRINCIPIO ANTI-TRAMPAS
+- El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página
+  cumpla TODAS las secciones obligatorias de la tarea (las ves en el estado como
+  "Secciones obligatorias" con la lista de las que FALTAN).
+- Un candidato que rellena checks técnicos (skip-link, canvas, sticky) pero OMITE
+  secciones de la tarea (logo bar, integraciones, testimonios, FAQ, CTA...) NO es
+  válido aunque tenga el total más alto.
+- Cada generate_candidate DEBE partir de la lista de secciones obligatorias y
+  asegurar que TODAS estén presentes y con contenido real (no placeholders vacíos).
+- No añadas archivos en subdirectorios (salvo repos/ para los README) y no uses CDN
+  de frameworks (Tailwind/Bootstrap): el evaluador lo penaliza.
+
 # LOOP DE TRABAJO (típico)
 0. IMPORTANTE: El primer turno DEBE generar el candidato inicial ya. No explores el
    sistema de archivos inútilmente. El conocimiento del arquetipo ya está en tu prompt.

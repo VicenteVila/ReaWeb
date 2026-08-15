@@ -26,6 +26,10 @@ REQUISITOS VERIFICABLES DE LA TAREA (deben aparecer literalmente en el código,
 en index.html o app.js):
 {requirements}
 
+SECCIONES OBLIGATORIAS DE LA TAREA (inclúyelas TODAS en el HTML, con id o class
+descriptivos; el evaluador verifica su presencia):
+{sections}
+
 REFERENCIA (HTML analizado de una URL; adapta su estructura, estética y patrones
 de contenido a la tarea, NO copies su contenido literal):
 {reference}
@@ -37,7 +41,8 @@ REQUISITOS:
    OG tags, un solo <h1>, alt en imágenes, atributos aria donde haga falta.
 4. Las imágenes pueden ser inline SVG o URLs de ejemplo. No uses rutas que no existan.
 5. Máximo 1 <style> y 1 <script>; usa defer.
-6. Sin console.log. Sin dependencias externas pesadas.
+6. Sin console.log. Sin dependencias externas pesadas (no uses CDN de Tailwind/Bootstrap).
+7. Sin archivos extra en subdirectorios: todo en la raíz (index.html, styles.css, app.js).
 
 Devuelve EXACTAMENTE 3 bloques separados por la línea ===FILE===
 Estructura:
@@ -218,8 +223,9 @@ class GenerateCandidate(Tool):
         self.rules = rules
         self.stack = stack
         self.improve = improve
-        from .evaluator import extract_requirements
+        from .evaluator import extract_requirements, extract_sections
         self.requirements = requirements if requirements is not None else extract_requirements(task)
+        self.sections = extract_sections(task)
         super().__init__()
 
     def schema(self) -> dict:
@@ -256,6 +262,7 @@ class GenerateCandidate(Tool):
             stack=self.stack[:2000],
             improve=objective or self.improve or "Sin mejora específica (versión inicial)",
             requirements="\n".join(f"- {r}" for r in self.requirements) if self.requirements else "(ninguno específico)",
+            sections="\n".join(f"- {s}" for s in self.sections) if self.sections else "(no exigidas)",
             reference=reference,
         )
         out = self.llm.generate(prompt, temperature=0.7)
@@ -288,13 +295,14 @@ class GenerateCandidate(Tool):
                 continue
             (target / fname).write_text(content)
 
-        metrics = evaluate(target, requirements=self.requirements)
+        metrics = evaluate(target, requirements=self.requirements, structure=self.sections)
         task_metrics = f" task={metrics.get('task')}" if metrics.get('task') is not None else ""
+        struct_metrics = f" structure={metrics.get('structure')}" if metrics.get('structure') is not None else ""
         summary = (
             f"Métricas: total={metrics.get('total')} seo={metrics.get('seo')} "
             f"a11y={metrics.get('a11y')} perf={metrics.get('performance')} "
             f"resp={metrics.get('responsive')} bp={metrics.get('best_practices')} "
-            f"visual={metrics.get('visual')}{task_metrics}"
+            f"visual={metrics.get('visual')}{task_metrics}{struct_metrics}"
         )
         if vuln_files:
             summary += " [PARSEO_FALLBACK]"
@@ -309,9 +317,10 @@ class AuditPage(Tool):
         "y fallos detectados. Ejecuta doble verificación si se pide."
     )
 
-    def __init__(self, requirements: list[str] | None = None):
-        from .evaluator import extract_requirements
-        self.requirements = requirements or []
+    def __init__(self, requirements: list[str] | None = None, task: str = ""):
+        from .evaluator import extract_requirements, extract_sections
+        self.requirements = requirements or extract_requirements(task) if task else []
+        self.sections = extract_sections(task) if task else []
         super().__init__()
 
     def schema(self) -> dict:
@@ -335,11 +344,11 @@ class AuditPage(Tool):
         target = PATHS["current"]
         if not (target / "index.html").exists():
             return f"ERROR: no existe index.html en {target}"
-        m1 = evaluate(target, requirements=self.requirements)
+        m1 = evaluate(target, requirements=self.requirements, structure=self.sections)
         result = m1.copy()
         if verify:
-            m2 = evaluate(target, requirements=self.requirements)
-            for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices", "visual", "task"):
+            m2 = evaluate(target, requirements=self.requirements, structure=self.sections)
+            for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices", "visual", "task", "structure"):
                 if k in m1 and k in m2 and m1.get(k) is not None and m2.get(k) is not None and abs(m1[k] - m2[k]) > 0:
                     # mantiene el más alto para no penalizar varianza
                     result[k] = max(m1[k], m2[k])
@@ -353,10 +362,11 @@ class AuditPage(Tool):
             if lst:
                 fail_lines.append(f"{cat}: {', '.join(lst)}")
         task_part = f" task={result.get('task')}" if result.get('task') is not None else ""
+        struct_part = f" structure={result.get('structure')}" if result.get('structure') is not None else ""
         res = (
             f"total={result.get('total')} | seo={result.get('seo')} a11y={result.get('a11y')} "
             f"perf={result.get('performance')} resp={result.get('responsive')} "
-            f"bp={result.get('best_practices')} visual={result.get('visual')}{task_part} | verificación={result.get('verification')}"
+            f"bp={result.get('best_practices')} visual={result.get('visual')}{task_part}{struct_part} | verificación={result.get('verification')}"
         )
         if fail_lines:
             res += "\nFallos detectados:\n" + "\n".join(fail_lines)

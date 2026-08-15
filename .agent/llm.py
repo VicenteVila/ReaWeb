@@ -72,10 +72,17 @@ class LLM:
         properties = {}
         required = []
         for name, spec in params.get("properties", {}).items():
-            properties[name] = types.Schema(
+            schema = types.Schema(
                 type=LLM._type(spec.get("type", "string")),
                 description=spec.get("description", ""),
             )
+            if spec.get("type") == "array" and spec.get("items"):
+                items = spec["items"]
+                schema.items = types.Schema(
+                    type=LLM._type(items.get("type", "string")),
+                    description=items.get("description", ""),
+                )
+            properties[name] = schema
             if spec.get("required"):
                 required.append(name)
         return types.Schema(

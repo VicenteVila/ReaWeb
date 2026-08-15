@@ -133,6 +133,8 @@ class Agent:
         for f in src.iterdir():
             if f.is_file():
                 shutil.copy2(f, dst / f.name)
+            elif f.is_dir():
+                shutil.copytree(f, dst / f.name)
         self._log("system", {"event": "snapshot", "node": node_id, "to": str(dst)})
         return str(dst)
 

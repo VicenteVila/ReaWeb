@@ -12,6 +12,9 @@ en el directorio domain/).
    TODA la historia de optimización.
 5. Mantén lessons.md actualizado: qué funcionó, qué no, qué probar.
 6. Si un candidato empeora, puedes REVERTIR a un candidato mejor anterior (árbol de búsqueda).
+7. Si la tarea pide que al hacer click en las tarjetas de repos se abra su README,
+   usa la tool fetch_readme (descarga los README.md, genera repos/<repo>/index.html
+   y enlaza las tarjetas a esas páginas locales en vez de a GitHub).
 
 # LOOP DE TRABAJO (típico)
 0. IMPORTANTE: El primer turno DEBE generar el candidato inicial ya. No explores el

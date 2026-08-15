@@ -39,15 +39,17 @@ def test_good_scores_high():
     css = """body{background:linear-gradient(90deg,#fff,#ddd)}
     nav{position:sticky;top:0}
     @keyframes fade{from{opacity:0}to{opacity:1}}
-    .card{transition:transform .2s}.card:hover{transform:scale(1.02)}
+    .card{transition:transform .2s}.card:hover{transform:scale(1.02);animation:fade 1s}
     @media (prefers-color-scheme:dark){body{background:#111}}
     @media (prefers-reduced-motion:reduce){*{animation:none}}
     """
-    d = _write({"index.html": GOOD_HTML, "styles.css": css, "app.js": ""}, "good")
+    html = GOOD_HTML + '<canvas id="c"></canvas><script>const io=new IntersectionObserver(()=>{});</script>'
+    js = 'const c=document.getElementById("c").getContext("2d");function a(){c.fillRect(0,0,1,1);requestAnimationFrame(a)}a();'
+    d = _write({"index.html": html, "styles.css": css, "app.js": js}, "good")
     m = evaluate(d)
-    assert m["total"] >= 80, m
+    assert m["total"] >= 75, m
     assert m["seo"] >= 70, m
-    assert m["visual"] >= 60, m
+    assert m["visual"] >= 70, m
 
 
 def test_bad_scores_low():
@@ -88,33 +90,92 @@ def test_task_absent_ignored():
     m = evaluate(d)  # sin requirements
     assert m["task"] is None, m
     assert m["visual"] is not None, m
-    assert m["total"] == int((m["seo"] + m["a11y"] + m["performance"] + m["responsive"] + m["best_practices"] + m["visual"]) / 6)
+    # total ponderado con visual 2.0x
+    axes = {
+        "seo": m["seo"], "a11y": m["a11y"], "performance": m["performance"],
+        "responsive": m["responsive"], "best_practices": m["best_practices"], "visual": m["visual"],
+    }
+    from tools.domain.evaluator import WEIGHTS
+    num = sum(axes[k] * WEIGHTS[k] for k in axes)
+    den = sum(WEIGHTS[k] for k in axes)
+    assert m["total"] == int(num / den), m
+
+
+def test_weighted_total_visual_dominates():
+    """Con visual=0 vs visual=100, el total ponderado se mueve más por visual."""
+    from tools.domain.evaluator import WEIGHTS
+    assert WEIGHTS["visual"] == 2.0
+    base = {"seo": 90, "a11y": 90, "performance": 90, "responsive": 90, "best_practices": 90, "visual": 50}
+    lo = {**base, "visual": 0}
+    hi = {**base, "visual": 100}
+    def tot(axes):
+        num = sum(axes[k] * WEIGHTS[k] for k in axes)
+        return int(num / sum(WEIGHTS[k] for k in axes))
+    assert hi["visual"] - lo["visual"] == 100
+    assert tot(hi) - tot(lo) >= 25, (tot(hi), tot(lo))
 
 
 def test_visual_high_with_modern_design():
     html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title></head>
     <body><main><section><h1>Único</h1></section></main>
+    <canvas id="c"></canvas>
     <script>const io=new IntersectionObserver(()=>{});</script></body></html>"""
     css = """body{background:linear-gradient(90deg,#000,#333)}
     nav{position:sticky;top:0}
     @keyframes fade{from{opacity:0}to{opacity:1}}
     .card{transition:transform .2s}
-    .card:hover{transform:scale(1.05)}
+    .card:hover{transform:scale(1.05);animation:fade 1s}
     @media (prefers-color-scheme:dark){body{background:#111}}
     @media (prefers-reduced-motion:reduce){*{animation:none}}
     """
-    js = 'const t=localStorage.getItem("theme");document.body.classList.toggle("dark",t==="dark");'
+    js = ('const c=document.getElementById("c").getContext("2d");'
+          'function a(){c.fillRect(0,0,1,1);requestAnimationFrame(a)}a();'
+          'const t=localStorage.getItem("theme");document.body.classList.toggle("dark",t==="dark");')
     d = _write({"index.html": html, "styles.css": css, "app.js": js}, "visual_high")
     m = evaluate(d)
     assert m["visual"] >= 90, m
     assert "css_animations" not in m["failures"]["visual"]
+    assert "canvas_animated" not in m["failures"]["visual"]
 
 
 def test_visual_low_with_plain_page():
     d = _write({"index.html": GOOD_HTML, "styles.css": "body{color:black}", "app.js": ""}, "visual_low")
     m = evaluate(d)
     assert m["visual"] <= 30, m
+
+
+def test_canvas_declared_but_not_animated_fails():
+    """Canvas presente pero sin requestAnimationFrame+dibujo = fallo visual."""
+    html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title></head>
+    <body><main><h1>Único</h1></main><canvas id="c"></canvas></body></html>"""
+    js = 'const c=document.getElementById("c");c.getContext("2d");c.width=innerWidth;'
+    d = _write({"index.html": html, "styles.css": "body{}", "app.js": js}, "canvas_dead")
+    m = evaluate(d)
+    assert "canvas_animated" in m["failures"]["visual"], m
+    assert "no_dead_canvas" in m["failures"]["visual"], m
+
+
+def test_no_canvas_is_not_penalized():
+    """Página sin canvas no debe fallar no_dead_canvas."""
+    d = _write({"index.html": GOOD_HTML, "styles.css": "body{}", "app.js": ""}, "no_canvas")
+    m = evaluate(d)
+    assert "no_dead_canvas" not in m["failures"]["visual"], m
+
+
+def test_gradient_in_comment_not_counted():
+    css = "/* background:linear-gradient(90deg,#fff,#000); */ body{color:black}"
+    d = _write({"index.html": GOOD_HTML, "styles.css": css, "app.js": ""}, "grad_comment")
+    m = evaluate(d)
+    assert "gradients" in m["failures"]["visual"], m
+
+
+def test_transition_without_trigger_not_counted():
+    css = ".x{transition:all .3s}"
+    d = _write({"index.html": GOOD_HTML, "styles.css": css, "app.js": ""}, "trans_notrig")
+    m = evaluate(d)
+    assert "css_transitions" in m["failures"]["visual"], m
 
 
 def test_extract_requirements_ignores_placeholders():

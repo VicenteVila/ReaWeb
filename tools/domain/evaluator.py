@@ -15,14 +15,16 @@ SEO_CHECKS = {
         lambda h: len(re.sub(r"<[^>]+>", "", re.search(r"<title.*?>(.*?)</title>", h, re.S).group(1)) if re.search(r"<title.*?>(.*?)</title>", h, re.S) else "") < 60,
     ),
     "meta_desc": (
-        'meta description presente',
-        lambda h: re.search(r'<meta\s+name=["\']description', h) is not None,
+        "meta description con contenido",
+        lambda h: bool(re.search(r'<meta\s+name=["\']description["\'][^>]*content=["\'][^"\']+["\']', h, re.I)
+                      or re.search(r'<meta\s+content=["\'][^"\']+["\'][^>]*name=["\']description["\']', h, re.I)),
     ),
-    "og": ("Open Graph tags", lambda h: 'property="og:title"' in h or "og:title" in h),
+    "og": ("Open Graph tags con contenido", lambda h: bool(re.search(r'property=["\']og:(title|description|image)["\'][^>]*content=["\'][^"\']+["\']', h, re.I))),
     "h1": ("Un solo <h1>", lambda h: len(re.findall(r"<h1[ >]", h)) == 1),
     "lang": ("Atributo lang en <html>", lambda h: re.search(r'<html[^>]*\blang=', h) is not None),
     "viewport": ("viewport meta", lambda h: 'name="viewport"' in h or "name='viewport'" in h),
-    "canonical": ("canonical link", lambda h: 'rel="canonical"' in h),
+    "canonical": ("canonical con href", lambda h: bool(re.search(r'rel=["\']canonical["\'][^>]*href=["\'][^"\']+["\']', h, re.I)
+                      or re.search(r'href=["\'][^"\']+["\'][^>]*rel=["\']canonical["\']', h, re.I))),
 }
 
 A11Y_CHECKS = {
@@ -32,7 +34,7 @@ A11Y_CHECKS = {
         if re.findall(r"<img\b([^>]*)>", h) else True,
     ),
     "labels_inputs": (
-        "inputs con label o aria-label",
+        "inputs con label[for] o aria-label",
         lambda h: _inputs_labeled(h),
     ),
     "skip_link": ("skip link", lambda h: re.search(r'class=["\'][^"\']*skip', h) is not None or "skip-link" in h),
@@ -57,53 +59,142 @@ RESP_CHECKS = {
 
 BP_CHECKS = {
     "doctype": ("doctype presente", lambda h: h.lstrip().lower().startswith("<!doctype html>")),
-    "no_console": ("sin console.log", lambda js: "console.log" not in js),
+    "no_console": ("sin console.log (fuera de comentarios)", lambda js: "console.log" not in _strip_js_comments(js)),
     "charset": ("meta charset", lambda h: re.search(r'<meta[^>]+charset=["\']?utf-?8', h, re.I) is not None),
-    "favicon": ("favicon link", lambda h: 'rel="icon"' in h or 'rel="shortcut icon"' in h),
+    "favicon": ("favicon con href", lambda h: bool(re.search(r'rel=["\'][^"\']*icon["\'][^>]*href=["\'][^"\']+["\']', h, re.I))),
 }
+
+
+def _strip_js_comments(js: str) -> str:
+    """Elimina comentarios // y /* */ (aproximación sin tóxicos) para que
+    un console.log dentro de un comentario no cuente como fallo."""
+    s = re.sub(r"//[^\n]*", "", js)
+    s = re.sub(r"/\*[\s\S]*?\*/", "", s)
+    return s
 
 VISUAL_CHECKS = {
     "css_animations": (
-        "animaciones CSS (@keyframes/animation)",
-        lambda c: "@keyframes" in c or "animation:" in c or "animation-" in c,
+        "animaciones CSS reales (@keyframes usado por animation)",
+        lambda c: _has_real_css_animations(c),
     ),
     "css_transitions": (
-        "transiciones CSS (transition)",
-        lambda c: "transition" in c,
+        "transiciones CSS reales (transition en :hover/:focus/:active)",
+        lambda c: _has_real_transitions(c),
     ),
     "gradients": (
-        "gradientes (linear/radial-gradient)",
-        lambda c: "linear-gradient" in c or "radial-gradient" in c or "conic-gradient" in c,
+        "gradientes usados en propiedades",
+        lambda c: _has_real_gradients(c),
+    ),
+    "canvas_animated": (
+        "canvas animado real (requestAnimationFrame + dibujo)",
+        lambda c: _has_animated_canvas(c),
+    ),
+    "no_dead_canvas": (
+        "canvas declarado no debe quedarse sin animar",
+        lambda c: _no_dead_canvas(c),
     ),
     "dark_mode": (
-        "dark mode (prefers-color-scheme)",
-        lambda c: "prefers-color-scheme" in c,
+        "dark mode real (prefers-color-scheme en CSS o matchMedia)",
+        lambda c: _has_dark_mode(c),
     ),
     "theme_persist": (
         "tema persistido en localStorage",
         lambda c: "localStorage" in c and ("theme" in c.lower() or "dark" in c.lower() or "color-scheme" in c),
     ),
     "scroll_reveal": (
-        "scroll-reveal (IntersectionObserver o scroll)",
-        lambda c: "IntersectionObserver" in c or "scroll" in c.lower(),
+        "scroll-reveal real (IntersectionObserver o listener scroll)",
+        lambda c: _has_scroll_reveal(c),
     ),
     "reduced_motion": (
         "respeto a prefers-reduced-motion",
         lambda c: "prefers-reduced-motion" in c,
     ),
     "hover_effects": (
-        "hover effects (:hover + transition/transform)",
-        lambda c: ":hover" in c and ("transition" in c or "transform" in c),
+        "hover effects reales (:hover + transition/transform)",
+        lambda c: _has_hover_effects(c),
     ),
     "sticky_nav": (
         "nav sticky/fixed",
         lambda c: "position:sticky" in c or "position: sticky" in c or "position:fixed" in c or "position: fixed" in c,
     ),
     "microinteractions": (
-        "microinteracciones (:active/:hover + transform)",
-        lambda c: ":active" in c or ("transform" in c and ":hover" in c),
+        "microinteracciones reales (:active/:focus o mousemove/tilt)",
+        lambda c: _has_microinteractions(c),
     ),
 }
+
+
+def _has_real_css_animations(c: str) -> bool:
+    """@keyframes <nombre> definido Y referenciado por animation/animation-name."""
+    names = re.findall(r"@keyframes\s+([A-Za-z0-9_-]+)", c)
+    for name in names:
+        if re.search(r"(?:animation|animation-name)\s*:[^;{}]*\b" + re.escape(name) + r"\b", c):
+            return True
+    return False
+
+
+def _has_real_transitions(c: str) -> bool:
+    """transition presente junto a un disparador real (:hover/:focus/:active)."""
+    if "transition" not in c:
+        return False
+    return bool(re.search(r":[a-z-]*:?(hover|focus|active)\b", c))
+
+
+def _has_real_gradients(c: str) -> bool:
+    """Gradiente usado como valor de propiedad (no solo mencionado, ni en comentario)."""
+    c = re.sub(r"/\*[\s\S]*?\*/", "", c)
+    return bool(
+        re.search(
+            r"(?:background|background-image|border-image|filter|mask|outline|box-shadow)\s*:[^;}]*?"
+            r"(?:linear|radial|conic)-gradient",
+            c,
+        )
+    )
+
+
+def _has_animated_canvas(c: str) -> bool:
+    """Canvas que de verdad anima: requestAnimationFrame + getContext + dibujo."""
+    if "requestAnimationFrame" not in c or "getContext" not in c:
+        return False
+    return bool(re.search(r"(?:fillRect|strokeRect|clearRect|arc\(|fill\(|stroke\(|drawImage|fillText|bezierCurveTo|lineTo)", c))
+
+
+def _no_dead_canvas(c: str) -> bool:
+    """Si hay canvas/getContext, exige que además haya animación real; si no hay
+    canvas en absoluto, no penaliza."""
+    if "<canvas" not in c and "getContext" not in c:
+        return True
+    return _has_animated_canvas(c)
+
+
+def _has_dark_mode(c: str) -> bool:
+    """prefers-color-scheme como media query CSS o matchMedia JS."""
+    if re.search(r"@media\s*[({][^}]*prefers-color-scheme", c):
+        return True
+    return bool(re.search(r"matchMedia\s*\(\s*['\"]\(prefers-color-scheme", c))
+
+
+def _has_scroll_reveal(c: str) -> bool:
+    """IntersectionObserver o listener de scroll real."""
+    if "IntersectionObserver" in c:
+        return True
+    return bool(re.search(r"addEventListener\s*\(\s*['\"]scroll['\"]", c)) or "onscroll" in c
+
+
+def _has_hover_effects(c: str) -> bool:
+    """:hover real con transition o transform en la misma regla."""
+    if ":hover" not in c:
+        return False
+    return bool(re.search(r"[^{}]*:hover\s*\{[^}]*?(transition|transform)[^}]*\}", c))
+
+
+def _has_microinteractions(c: str) -> bool:
+    """:active/:focus con transición, o listener de mousemove/tilt real."""
+    if re.search(r":(active|focus)\b", c) and "transition" in c:
+        return True
+    if re.search(r"addEventListener\s*\(\s*['\"](mousemove|pointermove|touchmove)['\"]", c):
+        return True
+    return bool(re.search(r"transform\s*:\s*perspective\(|rotateX\(|rotateY\(", c) and ":hover" in c)
 
 
 def extract_requirements(task: str, max_items: int = 10) -> list[str]:
@@ -165,12 +256,18 @@ def _inputs_labeled(h: str) -> bool:
     if not inputs:
         return True
     for attrs in inputs:
-        if re.search(r'aria-label=["\']', attrs) or re.search(r'id=["\']', attrs):
+        if re.search(r'aria-label=["\']', attrs):
             continue
         # input tipo hidden no necesita label
         if 'type="hidden"' in attrs:
             continue
-        return False
+        # exige label[for=id] con el mismo id, no basta con tener id
+        m = re.search(r'\bid=["\']([^"\']+)["\']', attrs)
+        if not m:
+            return False
+        fid = m.group(1)
+        if not re.search(r'<label\b[^>]*\bfor=["\']' + re.escape(fid) + r'["\']', h):
+            return False
     return True
 
 
@@ -207,16 +304,30 @@ def _score(checks: list[tuple[str, str, object]], context: str) -> tuple[int, li
     return pct, fails
 
 
-def evaluate(project_dir: str | Path, requirements: list[str] | None = None) -> dict:
+WEIGHTS = {
+    "seo": 1.0,
+    "a11y": 1.0,
+    "performance": 1.0,
+    "responsive": 1.0,
+    "best_practices": 1.0,
+    "visual": 2.0,
+    "task": 1.0,
+}
+
+
+def evaluate(project_dir: str | Path, requirements: list[str] | None = None, weights: dict | None = None) -> dict:
     """Evalúa un proyecto web estático. Devuelve métricas por categoría y total.
 
     requirements: lista de subcadenas que DEBEN aparecer en el código (html+css+js)
     concatenado. Si se pasan, se añade la categoría 'task' al total (requisitos de
     la tarea estipulada presentes). Si no, 'task' se ignora.
 
-    'visual' es un proxy estático de diseño moderno/interactivo (animaciones,
-    transiciones, gradientes, dark mode, IntersectionObserver, reduced-motion, ...).
-    total = media(seo,a11y,perf,resp,bp,visual) y +task si hay requirements.
+    'visual' es un proxy de diseño moderno/interactivo que exige efectos REALES
+    (canvas con requestAnimationFrame+dibujo, @keyframes usado, gradientes en
+    propiedades, transition con disparador, etc.), no solo menciones.
+
+    total = media PONDERADA de las categorías (WEIGHTS; visual pesa 2.0 por
+    defecto). Se puede sobrescribir con weights=.
     """
     project_dir = Path(project_dir)
     html_files = sorted(project_dir.rglob("*.html"))
@@ -257,10 +368,13 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None) -> 
     img_bytes = sum(p.stat().st_size for p in project_dir.rglob("*")
                     if p.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif", ".svg"))
 
-    axes = [seo, a11y, perf, resp, bp, visual]
+    axes = {"seo": seo, "a11y": a11y, "performance": perf, "responsive": resp, "best_practices": bp, "visual": visual}
     if task is not None:
-        axes.append(task)
-    total = int(sum(axes) / len(axes))
+        axes["task"] = task
+    w = {**WEIGHTS, **(weights or {})}
+    num = sum(axes[k] * w.get(k, 1.0) for k in axes)
+    den = sum(w.get(k, 1.0) for k in axes)
+    total = int(num / den) if den else 0
 
     return {
         "total": total,

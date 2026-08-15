@@ -123,13 +123,17 @@ Best Practices (0-100). Además:
   de `github.com/usuario`, URLs, nombres de proyectos), `extract_requirements()`
   los extrae automáticamente y el evaluador verifica que aparezcan literalmente en
   el código (html+css+js). Evita optimizar el score a costa de la tarea real.
-- **`visual`**: proxy estático de diseño moderno/interactivo (animaciones CSS,
-  transiciones, gradientes, dark mode con `prefers-color-scheme`, tema persistido
-  en localStorage, scroll-reveal con IntersectionObserver, respeto a
-  `prefers-reduced-motion`, hover effects, nav sticky, microinteracciones).
+- **`visual`**: proxy de diseño moderno/interactivo que exige efectos REALES, no
+  menciones: canvas animado (requestAnimationFrame + dibujo, sin canvas "muerto"),
+  `@keyframes` usado por `animation`, gradientes en propiedades (no en
+  comentarios), `transition` con disparador real (`:hover`/`:focus`/`:active`),
+  dark mode vía `prefers-color-scheme`/`matchMedia`, tema persistido en
+  localStorage, scroll-reveal con IntersectionObserver/listener, `prefers-reduced-motion`,
+  hover effects, nav sticky, microinteracciones (tilt/mousemove).
 
-`total` = media(seo, a11y, perf, resp, bp, visual) y +`task` si hay requirements
-(7 ejes). Responsive y Best Practices se evalúan contra el contenido combinado
+`total` = media **ponderada** de (seo, a11y, perf, resp, bp, visual) y +`task`
+si hay requirements. `visual` pesa **2.0×** (configurable en `WEIGHTS`).
+Responsive y Best Practices se evalúan contra el contenido combinado
 (html+css+js), no solo contra el HTML.
 
 ## Tests

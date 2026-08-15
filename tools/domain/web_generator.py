@@ -26,6 +26,10 @@ REQUISITOS VERIFICABLES DE LA TAREA (deben aparecer literalmente en el código,
 en index.html o app.js):
 {requirements}
 
+REFERENCIA (HTML analizado de una URL; adapta su estructura, estética y patrones
+de contenido a la tarea, NO copies su contenido literal):
+{reference}
+
 REQUISITOS:
 1. Una página HTML autocontenida (index.html) con CSS en styles.css y JS en app.js.
 2. Diseño responsive (mobile-first), semántico, accesible.
@@ -78,6 +82,127 @@ class InspectArchetype(Tool):
         return "\n\n".join(parts)[:8000]
 
 
+class FetchUrl(Tool):
+    name = "fetch_url"
+    description = (
+        "Descarga el HTML crudo de una URL y lo guarda como referencia de diseño "
+        "(runs/<run_id>/reference/ y workspace/reference.html). Devuelve un extracto "
+        "analizado (title, meta, headings, nav, estructura) para adaptar su contenido "
+        "a la tarea. Úsala al inicio para inspirar H0."
+    )
+
+    def schema(self) -> dict:
+        return {
+            "name": self.name,
+            "description": self.description,
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {"type": "string", "description": "URL http(s) a analizar"},
+                    "max_chars": {
+                        "type": "integer",
+                        "description": "Longitud máxima del extracto devuelto (default 8000)",
+                    },
+                },
+                "required": ["url"],
+            },
+        }
+
+    def run(self, url: str = "", max_chars: int = 8000, **kwargs) -> str:
+        import gzip
+        import re
+        import urllib.request
+        from urllib.parse import urlparse
+
+        if not re.match(r"^https?://", url):
+            return f"ERROR: URL inválida: {url!r} (debe empezar por http:// o https://)"
+
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https") or not parsed.netloc:
+            return f"ERROR: URL inválida: {url!r}"
+
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+                ),
+                "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+                "Accept-Encoding": "gzip",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                raw = resp.read()
+                if resp.headers.get("Content-Encoding") == "gzip":
+                    raw = gzip.decompress(raw)
+                html = raw.decode("utf-8", errors="replace")
+        except Exception as e:
+            return f"ERROR descargando {url}: {e}"
+
+        # guardar referencia: fuente en runs/<run_id>/reference/ + copia para el generador
+        run_id = kwargs.get("run_id")
+        ref_dir = PATHS["runs"] / run_id / "reference"
+        ref_dir.mkdir(parents=True, exist_ok=True)
+        safe = re.sub(r"[^\w.-]", "_", parsed.netloc + parsed.path)
+        ref_path = ref_dir / f"{safe[:80]}.html"
+        ref_path.write_text(html)
+        (PATHS["current"].parent / "reference.html").write_text(html)  # workspace/reference.html
+
+        excerpt = self._excerpt(html, max_chars=max_chars)
+        return (
+            f"OK: HTML descargado ({len(html)} chars, {resp.status}). "
+            f"Guardado en {ref_path} y workspace/reference.html.\n\n"
+            f"=== EXTRACTO ANALIZADO ===\n{excerpt}"
+        )
+
+    @staticmethod
+    def _excerpt(html: str, max_chars: int = 8000) -> str:
+        import re
+
+        # quitar scripts y comentarios para que quepa más estructura
+        cleaned = re.sub(r"<script[\s\S]*?</script>", "", html, flags=re.I)
+        cleaned = re.sub(r"<!--[\s\S]*?-->", "", cleaned)
+        cleaned = re.sub(r"<style[\s\S]*?</style>", "", cleaned, flags=re.I)
+
+        def strip(tag: str) -> str:
+            return re.sub(r"<[^>]+>", " ", tag)
+
+        parts = []
+        t = re.search(r"<title[^>]*>(.*?)</title>", cleaned, re.S | re.I)
+        if t:
+            parts.append(f"TITLE: {strip(t.group(1)).strip()[:120]}")
+        for m in re.finditer(r'<meta\s+name=["\'](description|keywords)["\']\s+content=["\']([^"\']*)', cleaned, re.I):
+            parts.append(f"META {m.group(1)}: {m.group(2)[:200]}")
+        for m in re.finditer(r"<h([1-3])[^>]*>([\s\S]*?)</h\1>", cleaned, re.I):
+            txt = strip(m.group(2)).strip()
+            if txt:
+                parts.append(f"H{m.group(1)}: {txt[:120]}")
+        nav = re.search(r"<nav[^>]*>([\s\S]*?)</nav>", cleaned, re.I | re.S)
+        if nav:
+            links = re.findall(r'<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)</a>', nav.group(1), re.I | re.S)
+            nav_links = [f"{strip(t).strip()[:30]} -> {h[:50]}" for h, t in links[:10]]
+            if nav_links:
+                parts.append("NAV:")
+                parts.extend(f"  - {l}" for l in nav_links)
+        m = re.search(r'<main[\s\S]*?>([\s\S]*?)</main>', cleaned, re.I | re.S)
+        if m:
+            body = m.group(1)
+        else:
+            body = cleaned
+        text = re.sub(r"<[^>]+>", " ", body)
+        text = re.sub(r"\s+", " ", text).strip()
+        if text:
+            parts.append(f"CONTENIDO: {text[:1200]}")
+        classes = re.findall(r'class="([^"]{4,})"', cleaned)
+        if classes:
+            uniq = sorted(set(classes))[:15]
+            parts.append(f"CLASSES (muestra): {', '.join(uniq)[:400]}")
+        out = "\n".join(parts)
+        return out[:max_chars] if len(out) > max_chars else out
+
+
 class GenerateCandidate(Tool):
     name = "generate_candidate"
     description = (
@@ -116,6 +241,14 @@ class GenerateCandidate(Tool):
     def run(self, objective: str = "", **kwargs) -> str:
         from .evaluator import evaluate
 
+        ref_path = PATHS["current"].parent / "reference.html"
+        if ref_path.exists():
+            ref_text = ref_path.read_text(errors="replace")
+            # recortar a lo útil para no inflar el prompt del subagente
+            reference = f"HTML de referencia ({len(ref_text)} chars):\n" + ref_text[:8000]
+        else:
+            reference = "(sin referencia: genera desde cero)"
+
         prompt = GENERATOR_PROMPT.format(
             task=self.task,
             archetype=self.archetype,
@@ -123,6 +256,7 @@ class GenerateCandidate(Tool):
             stack=self.stack[:2000],
             improve=objective or self.improve or "Sin mejora específica (versión inicial)",
             requirements="\n".join(f"- {r}" for r in self.requirements) if self.requirements else "(ninguno específico)",
+            reference=reference,
         )
         out = self.llm.generate(prompt, temperature=0.7)
         text = out.text

@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS runs (
     finished    TEXT,
     best_score  REAL,
     best_node   TEXT,
-    status      TEXT
+    status      TEXT,
+    initial_url TEXT
 );
 CREATE TABLE IF NOT EXISTS lessons (
     id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,6 +70,10 @@ class MemoryDB:
         self.conn = sqlite3.connect(self.path)
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript(SCHEMA)
+        # migración: columna initial_url si la DB es anterior
+        cols = {r[1] for r in self.conn.execute("PRAGMA table_info(runs)")}
+        if "initial_url" not in cols:
+            self.conn.execute("ALTER TABLE runs ADD COLUMN initial_url TEXT")
         self.conn.commit()
 
     # --- runs ---

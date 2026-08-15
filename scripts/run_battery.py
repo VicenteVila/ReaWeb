@@ -69,7 +69,7 @@ def curve_from_transcript(run_dir: Path) -> list[dict]:
     return [by_id[k] for k in sorted(by_id, key=lambda k: _sort_key(by_id[k]))]
 
 
-def summarize_run(archetype: str, task: str, turn: int, verbose: bool = True, target_h: int = 0) -> dict:
+def summarize_run(archetype: str, task: str, turn: int, verbose: bool = True, target_h: int = 0, initial_url: str = "") -> dict:
     """Ejecuta una run y devuelve su resumen sintético."""
     agent = run_single(
         archetype=archetype,
@@ -77,6 +77,7 @@ def summarize_run(archetype: str, task: str, turn: int, verbose: bool = True, ta
         turns=turn,
         verbose=verbose,
         target_h=target_h,
+        initial_url=initial_url,
     )
     curve = curve_from_transcript(agent.run_dir)
     best = max(curve, key=lambda x: x["total"]) if curve else None
@@ -138,6 +139,7 @@ def main():
                         help="Hipótesis objetivo por run (p. ej. --target-h 3 => H0..H3)")
     parser.add_argument("--max-cost", type=float, default=2.0, help="Presupuesto máx USD por run")
     parser.add_argument("--model", default=None, help="Modelo Gemini")
+    parser.add_argument("--url", default="", help="URL de referencia para todas las runs (adaptar como H0)")
     parser.add_argument("--quiet", action="store_true", help="No imprimir detalle de cada run")
     args = parser.parse_args()
 
@@ -157,6 +159,7 @@ def main():
             turn=args.turns,
             verbose=not args.quiet,
             target_h=args.target_h,
+            initial_url=args.url,
         )
         results.append(summary)
 

@@ -1,5 +1,6 @@
 from tools.base import ToolRegistry
 from tools.domain.web_generator import (
+    FetchUrl,
     GenerateCandidate,
     AuditPage,
     UpdateLessons,
@@ -18,6 +19,7 @@ def build_domain_registry(llm, archetype: str = "", task: str = "", rules: str =
     registry = ToolRegistry(
         [
             InspectArchetype(),
+            FetchUrl(),
             GenerateCandidate(llm=llm, archetype=archetype, task=task, rules=rules, stack=stack, requirements=requirements),
             AuditPage(requirements=requirements),
             AnalyzeProject(),

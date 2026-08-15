@@ -4,6 +4,13 @@
 **Tarea:** {{ task }}
 **Presupuesto:** {{ turns_remaining }}/{{ turns_total }} turnos | ${{ "%.2f"|format(cost_so_far) }} consumidos
 
+{% if initial_url %}
+### 🌐 URL de referencia disponible: {{ initial_url }}
+- ACCIÓN PRIORITARIA: usa la tool `fetch_url` con esta URL al comienzo para
+  analizar su HTML y adaptar su estructura/estética al contenido de la tarea
+  (sirve de inspiración para H0, NO copies su contenido literal).
+{% endif %}
+
 {% if target_h %}
 ### 🎯 Objetivo de hipótesis (target-h={{ target_h }})
 - Hipótesis generadas hasta ahora: **{{ hypotheses_done }}/{{ target_h + 1 }}** (faltan H{{ hypotheses_done }}..H{{ target_h }}).

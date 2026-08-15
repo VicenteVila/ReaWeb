@@ -22,6 +22,8 @@ def main():
     parser.add_argument("--no-meta", action="store_true", help="Deshabilitar meta-evolución")
     parser.add_argument("--target-h", type=int, default=0,
                         help="Hipótesis objetivo (p. ej. --target-h 3 => H0..H3). No declara fin hasta alcanzarlo.")
+    parser.add_argument("--url", default="",
+                        help="URL de referencia a analizar (HTML crudo) para adaptar su contenido como H0")
     args = parser.parse_args()
 
     run_single(
@@ -33,6 +35,7 @@ def main():
         allow_meta=not args.no_meta,
         verbose=True,
         target_h=args.target_h,
+        initial_url=args.url,
     )
 
 

@@ -38,13 +38,22 @@ python -m scripts.run_agent \
   --task "landing page para un SaaS de analítica de IA" \
   --turns 8
 
+# con URL de referencia (analiza su HTML y adapta el contenido como H0)
+python -m scripts.run_agent \
+  --archetype landing-page \
+  --url "https://www.introw.io/" \
+  --task "landing SaaS adaptada de introw.io al contenido de github.com/VicenteVila" \
+  --turns 16 --target-h 3
+
 # otros arquetipos: ecommerce, corporate-business, saas-dashboard,
 # portfolio-creative, blog-content
 ```
 
 Opciones: `--model`, `--turns`, `--max-cost`, `--no-meta` (deshabilita meta-evolución),
 `--target-h N` (objetivo mínimo de hipótesis, p. ej. `--target-h 3` exige generar y
-auditar H0..H3 antes de poder cerrar).
+auditar H0..H3 antes de poder cerrar), `--url <URL>` (URL de referencia a analizar:
+la tool `fetch_url` descarga su HTML crudo, lo guarda en la run y el generador la usa
+como referencia de estructura/estética para H0, adaptando el contenido a la tarea).
 
 ### Flujo (UX)
 
@@ -54,6 +63,9 @@ H1, H2, ... → el agente razona, edita con generate_candidate y re-audita
 Final → select_final exporta el mejor candidato razonando sobre la historia
 ```
 
+Si se pasa `--url`, el agente invoca `fetch_url` antes de generar H0 para analizar
+la web de referencia y adaptar su estructura/estética al contenido de la tarea.
+
 Cada run deja en `runs/<timestamp>--<arquetipo>/`:
 
 - `transcript.jsonl` — interacción completa (tools + evaluaciones)
@@ -62,8 +74,18 @@ Cada run deja en `runs/<timestamp>--<arquetipo>/`:
 - `screenshots/H<i>.png` — render de cada hipótesis (dashboard)
 - `final/` — mejor candidato exportado (aunque `select_final` no se llame)
 - `lessons_incremental.md` — espejo en markdown de las lecciones de la run
+- `reference/` — HTML crudo descargado de la URL de referencia (`--url`), si se usó
 
-La **memoria persistente vive en SQLite** (`memory/memory.db`, stdlib, sin
+### Análisis de URLs de referencia
+
+Con `--url <URL>`, la tool **`fetch_url`** descarga el HTML crudo de una web, lo
+guarda en `runs/<run_id>/reference/` (y `workspace/reference.html` para el
+generador) y devuelve al agente un extracto analizado (title, meta, headings,
+nav, contenido, clases). El generador incluye la referencia en su prompt para
+que H0 adapte **estructura y estética** de la URL a la tarea, sin copiar su
+contenido literal. Se registra `initial_url` en `run_config.json` y en la DB.
+
+La memoria persistente vive en SQLite (`memory/memory.db`, stdlib, sin
 dependencias): tablas `runs`, `lessons`, `experiments` y `tree_nodes`. El agente
 escribe/lee de la DB; los `.md` son solo export legible para humanos.
 

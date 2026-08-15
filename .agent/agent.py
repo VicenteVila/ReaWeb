@@ -31,6 +31,7 @@ class Agent:
         allow_meta_edits: bool = True,
         verbose: bool = True,
         target_h: int = 0,
+        initial_url: str = "",
     ):
         self.llm = llm
         self.archetype_name = archetype_name
@@ -39,6 +40,7 @@ class Agent:
         self.stack = stack
         self.allow_meta_edits = allow_meta_edits
         self.verbose = verbose
+        self.initial_url = initial_url
 
         run_id = datetime.now().strftime("%Y%m%dT%H%M%S") + "--" + archetype_name
         self.run_dir = run_dir or (PATHS["runs"] / run_id)
@@ -59,6 +61,7 @@ class Agent:
             max_turns=max_turns,
             started=datetime.now().isoformat(),
             status="running",
+            initial_url=initial_url,
         )
         self.context = ContextManager(
             threshold_tokens=CONTEXT_DEFAULTS["compaction_threshold_tokens"],
@@ -79,6 +82,7 @@ class Agent:
                     "model": getattr(llm, "model", "?"),
                     "max_turns": max_turns,
                     "started": datetime.now().isoformat(),
+                    "initial_url": initial_url,
                 },
                 indent=2,
             )
@@ -160,6 +164,7 @@ class Agent:
             turn_number=self.turn,
             archetype_name=self.archetype_name,
             task=self.task,
+            initial_url=self.initial_url,
             turns_remaining=self.budget.turns_remaining(),
             turns_total=self.budget.max_turns,
             cost_so_far=self.budget.cost_so_far,

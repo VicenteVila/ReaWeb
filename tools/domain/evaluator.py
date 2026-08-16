@@ -302,7 +302,14 @@ def extract_requirements(task: str, max_items: int = 16) -> list[str]:
                 "Resolvieron", "Resuelto", "Resueltos", "Fallo", "Fallos",
                 "Críticos", "Criticos", "Detectados", "generar", "GENERE",
                 "Escala", "Reduce", "JERARQU", "VISUAL", "Jerarqu", "Jerarquía",
-                "Jerarquia", "Contraste", "Peso", "Bold", "Negro", "Blanco"}
+                "Jerarquia", "Contraste", "Peso", "Bold", "Negro", "Blanco",
+                "ESTRUCTURALES", "FINALES", "DEBE", "Data", "Documentaci",
+                "Documentación", "Documentacion", "DERECHA", "Derecha",
+                "NUNCA", "Nunca", "Casing", "Repítelas", "Repitelas",
+                "regen", "Regen", "regenera", "Regenera", "Title", "Case",
+                "Evoluci", "Evolución", "Evolucion", "Readaptaci",
+                "Readaptación", "Readaptacion", "Razonamiento", "Size", "Font",
+                "FontSize", "Text"}
         for m in re.finditer(r"([A-Z][A-Za-z0-9]*(?:-[A-Za-z0-9]+)*)", task):
             name = m.group(1)
             if name in seen or name in skip or len(name) < 4:

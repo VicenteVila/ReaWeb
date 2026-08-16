@@ -257,7 +257,9 @@ def extract_requirements(task: str, max_items: int = 16) -> list[str]:
     # 2) cuentas owner mencionadas (github.com/usuario / gitlab.com/usuario)
     owners = set()
     for m in re.finditer(r"(?:github|gitlab)\.com/([A-Za-z0-9_.-]+)", task):
-        owners.add(m.group(1))
+        owner = m.group(1).rstrip("._-")  # sin puntuación de cierre de frase
+        if owner:
+            owners.add(owner)
     for owner in sorted(owners):
         base = f"github.com/{owner}"
         if not any(f"{base}/" in r for r in reqs) and base not in reqs:

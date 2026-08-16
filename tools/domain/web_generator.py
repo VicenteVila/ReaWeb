@@ -8,6 +8,32 @@ from pathlib import Path
 from config import PATHS
 from tools.base import Tool
 
+
+def _is_safe_filename(name: str) -> bool:
+    """Nombre de archivo permitido: plano (sin rutas ni subdirectorios)."""
+    return (
+        bool(name)
+        and not name.startswith(".")
+        and "/" not in name
+        and "\\" not in name
+        and " " not in name
+        and not name.startswith(("<", "{", "const", "function", "/*"))
+    )
+
+
+def _infer_file(content: str) -> str | None:
+    """Infere el nombre del archivo por el contenido cuando el subagente omitió
+    la línea del nombre (pega el HTML directamente tras ===FILE===)."""
+    head = content.strip()[:200].lower()
+    if head.startswith("<!doctype") or "<html" in head or head.startswith("{"):
+        return "index.html"
+    if head.startswith(":root") or "{" in head and "}" in head and ("color" in head or "font" in head or ";" in head):
+        return "styles.css"
+    if "const " in head or "let " in head or "function " in head or "document." in head:
+        return "app.js"
+    return None
+
+
 GENERATOR_PROMPT = """Eres un desarrollador web senior. Genera una página web completa para el siguiente proyecto.
 
 PROYECTO:
@@ -37,6 +63,20 @@ de contenido a la tarea, NO copies su contenido literal):
 DATOS DEL GRAFO DE CONOCIMIENTOS (si existe, úsalos literalmente para el grafo SVG:
 nodo raíz con nombre y email, un nodo por repo, y las categorías sujet arXiv por repo):
 {graph_data}
+
+CÓDIGO ACTUAL EN workspace/current (es el punto de partida a MUTAR, no lo ignores).
+Mantén TODO lo que funcione y evoluciona el diseño: estructura, interacciones,
+enlaces, animaciones y estética. NO regeneres desde cero a menos que sea la
+primera versión. Si este bloque está vacío, esta es la versión inicial (H0):
+{current_code}
+
+INSTRUCCIÓN DE MUTACIÓN (obligatoria):
+- Compara tu salida con {current_code} y conserva TODA la funcionalidad existente
+  (enlaces, hover, subnodos, temas, animaciones). Solo cambia lo que el objetivo
+  de mejora pide. Si el objetivo es estético, mantén la estructura e interacciones
+  intactas y mejora solo lo visual (spacing, alineación, centrado, color, tipografía).
+- No simplifiques ni elimines archivos ni bloques. Tu salida debe tener, como mínimo,
+  la misma riqueza de código que {current_code}.
 
 REQUISITOS:
 1. Una página HTML autocontenida (index.html) con CSS en styles.css y JS en app.js.
@@ -248,6 +288,89 @@ class GenerateCandidate(Tool):
             },
         }
 
+    @staticmethod
+    def _parse_files(text: str) -> tuple[dict, bool]:
+        """Extrae {nombre: contenido} del output del subagente.
+
+        Acepta dos formatos:
+          - Delimitado por ===FILE=== (línea siguiente = nombre del archivo).
+          - Bloques ```nombre``` (o ```html```/```css```/```js```) de markdown.
+        Devuelve (files, fallback_used). fallback_used=True si hubo que recurrir
+        al heurístico de inferencia por contenido.
+        """
+        files: dict[str, str] = {}
+        fallback = False
+
+        blocks = text.split("===FILE===")
+        if len(blocks) > 1:
+            for block in blocks[1:]:
+                body = block.strip("\n")
+                if not body:
+                    continue
+                lines = body.split("\n", 1)
+                fname = lines[0].strip()
+                content = lines[1] if len(lines) == 2 else ""
+                if _is_safe_filename(fname):
+                    files[fname] = content
+                else:
+                    # El subagente omitió la línea del nombre (HTML pegado tras ===FILE===):
+                    # inferir el archivo por contenido.
+                    inferred = _infer_file(body)
+                    if inferred:
+                        files.setdefault(inferred, body)
+                        fallback = True
+        elif not files:
+            files, f2 = GenerateCandidate._parse_files_fallback(text)
+            fallback = fallback or f2
+
+        return files, fallback
+
+    @staticmethod
+    def _parse_files_fallback(text: str) -> tuple[dict, bool]:
+        """Heurístico de último recurso: infiere archivos por contenido si no hay
+        delimitadores claros (p. ej. el modelo devolvió todo pegado o con ```)."""
+        import re
+
+        files: dict[str, str] = {}
+
+        # 1) bloques de código con nombre explícito (```html / index.html ...```)
+        for m in re.finditer(r"```(?:html|css|js)?\s*([\w.]+)?\s*\n(.*?)```", text, re.S):
+            name, content = m.group(1), m.group(2)
+            if name and _is_safe_filename(name):
+                files.setdefault(name, content)
+                continue
+            inferred = _infer_file(content)
+            if inferred:
+                files.setdefault(inferred, content)
+
+        # 2) si aún falta algo, escanear el texto crudo por segmentos plausibles
+        for fname, pattern in (
+            ("index.html", r"<!DOCTYPE\s+html|<\s*html\b"),
+            ("styles.css", r"\.body\s*\{|^\s*\*\{\s*$"),
+            ("app.js", r"\bconst\s+\w+\s*=\s*document\.|\baddEventListener\s*\("),
+        ):
+            if fname in files:
+                continue
+            if re.search(pattern, text, re.I | re.S):
+                files[fname] = text
+        return files, True
+
+    @staticmethod
+    def _build_current_code() -> str:
+        """Seriealiza el candidato actual en workspace/current para que el subagente
+        lo mute en lugar de regenerar desde cero (capa evolutiva estética: las
+        mejoras visuales se acumulan entre hipótesis)."""
+        target = PATHS["current"]
+        parts = []
+        for fname in ("index.html", "styles.css", "app.js"):
+            f = target / fname
+            if f.exists():
+                content = f.read_text(errors="replace")
+                parts.append(f"--- {fname} ({len(content)} chars) ---\n{content[:6000]}")
+        if not parts:
+            return "(workspace vacío: versión inicial desde cero)"
+        return "\n\n".join(parts)[:20000]
+
     def run(self, objective: str = "", **kwargs) -> str:
         from .evaluator import evaluate
 
@@ -266,6 +389,8 @@ class GenerateCandidate(Tool):
         else:
             graph_data = "(sin graph_data.json: no hay grafo de datos; si la tarea pide un grafo, llama antes a fetch_repo_topics)"
 
+        current_code = self._build_current_code()
+
         prompt = GENERATOR_PROMPT.format(
             task=self.task,
             archetype=self.archetype,
@@ -276,25 +401,15 @@ class GenerateCandidate(Tool):
             sections="\n".join(f"- {s}" for s in self.sections) if self.sections else "(no exigidas)",
             reference=reference,
             graph_data=graph_data,
+            current_code=current_code,
         )
         out = self.llm.generate(prompt, temperature=0.7)
         text = out.text
 
-        files = {}
-        blocks = text.split("===FILE===")
-        for block in blocks[1:]:
-            lines = block.strip("\n").split("\n", 1)
-            if len(lines) == 2:
-                fname, content = lines[0].strip(), lines[1]
-                files[fname] = content
-
-        vuln_files = False
+        files, vuln_files = self._parse_files(text)
         if not files:
-            # Fallback: parsear bloques ```nombre``` si el modelo los usó
-            import re
-            parts = re.findall(r"```(?:html|css|js)?\s*([\w.]+)\s*\n(.*?)```", text, re.S)
-            files = {n: c for n, c in parts}
-            vuln_files = True
+            files, vuln_files = self._parse_files_fallback(text)
+            vuln_files = vuln_files or True
 
         if not files or "index.html" not in files:
             return f"ERROR: no se pudo extraer archivos del output del subagente.\n---\n{text[:1500]}"

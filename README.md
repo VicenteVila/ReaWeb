@@ -136,7 +136,7 @@ encuentra, genera el dashboard solo-datos.
 | Script | Función |
 |---|---|
 | `scripts/run_agent.py` | Ejecuta una run de optimización end-to-end |
-| `scripts/seed_from_docs.py` | Regenera `domain/` desde `Docs/` |
+| `scripts/seed_from_docs.py` | Regenera `domain/generated` desde `Docs/` (reglas, skills y workflows globales) |
 | `scripts/merge_lessons.py` | Fusiona lecciones de runs al archivo global |
 | `scripts/backfill_memory.py` | Migra runs existentes de `runs/` a `memory/memory.db` |
 | `scripts/cleanup_runs.py` | Limpieza de `runs/` (--keep N, --archive, --prune-*) |
@@ -183,7 +183,7 @@ python -m scripts.cleanup_runs --keep 6 --archive /tmp/backup --yes   # empaca e
 ```
 .agent/       Loop del agente (agent.py, llm.py, state.py, memory_db.py, budget_tracker.py, prompts/)
 tools/        Tools invocables (file_io, code_exec, domain/)
-domain/       Conocimiento: reglas, skills, workflows, arquetipos (semilla de Docs/)
+domain/       Conocimiento: reglas, skills, workflows, arquetipos (fuente de verdad viva)
 memory/       memory.db (fuente de verdad) + lessons.md (export)
 runs/         Un directorio por run
 workspace/    Sandbox (workspace/current = candidato activo)
@@ -194,14 +194,15 @@ test/         Tests (evaluador, fixtures)
 
 ## Docs/ vs domain/ (separación de fuentes)
 
-- **`Docs/`** es la **especificación inicial** escrita
-  por humanos: `global_rules.md`, `agent_skills.md`, `global_workflows.md` y
-  `Archetypes/<arquetipo>/{project-context,project-rules,project-workflows}.md`
-  (+ `tech-stack.json`). Es la semilla que se importa **una sola vez** con
-  `scripts/seed_from_docs.py`, que la convierte a YAML/JSON en `domain/`.
-- **`domain/`** es el **conocimiento vivo**: el agente lo mejora vía meta-evolución
-  (`edit_skill`/`review_harness`, restringidos a `domain/`). Lo que el harness
-  aprende durante las runs se aplica aquí, **no** en `Docs/`.
+- **`Docs/`** es la **especificación humana**: `global_rules.md`, `agent_skills.md`
+  y `global_workflows.md` (la semilla global, importada con
+  `scripts/seed_from_docs.py` a `domain/generated`) y la documentación de diseño
+  (`REASONING.md`, `READAPTATION.md`, `EVOLUTION.md`).
+- **`domain/`** es el **conocimiento vivo**: contiene además los arquetipos
+  (`archetypes/*/`), que son la única fuente de verdad de su especificación. El
+  agente los mejora vía meta-evolución (`edit_skill`/`review_harness`,
+  restringidos a `domain/`). Lo que el harness aprende durante las runs se aplica
+  aquí, **no** en `Docs/`.
 - Por tanto `Docs/` puede quedar **obsoleto** respecto a `domain/` (p. ej. el
   arquetipo `knowledge-graph` existe en `domain/` pero no en `Docs/`). Si se
   quiere actualizar la especificación humana, hay que re-sincronizarla

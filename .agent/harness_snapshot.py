@@ -23,8 +23,9 @@ from pathlib import Path
 from config import PATHS
 
 # Directorios que definen el comportamiento del agente y la fuente semilla.
-# Docs/ es la especificación inicial de arquetipos (ver README); domain/ es el
-# conocimiento vivo que el agente mejora. Ambos quedan versionados en el hash.
+# Docs/ es la especificación humana (reglas/skills/workflows globales + documentación
+# de diseño); domain/ es el conocimiento vivo que el agente mejora, incluidos los
+# arquetipos. Ambos quedan versionados en el hash.
 HARNESS_DIRS = ("domain", "tools", ".agent/prompts", "Docs")
 
 

@@ -1,7 +1,6 @@
 workflow:_project-setup:
 - 'DESCRIPCIÓN: Inicialización de cualquier proyecto web'
 - 'CUÁNDO_USAR: Al inicio de CADA nuevo proyecto'
-- ''
 - 'PASOS:'
 - 1. Analizar requerimientos y tipo de proyecto
 - 2. Seleccionar arquetipo base (landing, ecommerce, saas, blog, portfolio)
@@ -14,17 +13,14 @@ workflow:_project-setup:
 - 9. Crear README.md template
 - 10. Crear archivo DECISIONS.md vacío
 - 11. Verificar instalación con 'npm run dev' o equivalente
-- ''
 - 'OUTPUT_ESPERADO:'
 - '- Proyecto listo para desarrollo'
 - '- Git inicializado'
 - '- Linting y formateo configurados'
 - '- Documentación base creada'
-- ''
 workflow:_component-create:
 - 'DESCRIPCIÓN: Crear nuevo componente siguiendo estándares'
 - 'CUÁNDO_USAR: Al necesitar crear cualquier componente UI'
-- ''
 - 'PASOS:'
 - '1. Determinar nivel atómico: atom | molecule | organism | template | page'
 - 2. Crear carpeta en /components/[nivel]/NombreComponente/
@@ -38,17 +34,14 @@ workflow:_component-create:
 - 5. Asegurar accesibilidad (ARIA, keyboard navigation)
 - 6. Documentar props con JSDoc
 - 7. Exportar en barrel file (index.ts de la carpeta padre)
-- ''
 - 'REGLAS_ESPECÍFICAS:'
 - '- Máximo 200 líneas por archivo de componente'
 - '- Props interfaces siempre definidas y exportadas'
 - '- Default props para valores opcionales'
 - '- forwardRef para componentes que necesiten ref'
-- ''
 workflow:_responsive-check:
 - 'DESCRIPCIÓN: Verificar responsive design en todos los breakpoints'
 - 'CUÁNDO_USAR: Después de crear/modificar cualquier componente/layout'
-- ''
 - 'PASOS:'
 - 1. Identificar breakpoints del proyecto (sm, md, lg, xl, 2xl)
 - '2. Verificar en cada breakpoint:'
@@ -61,16 +54,13 @@ workflow:_responsive-check:
 - 4. Verificar zoom hasta 200%
 - 5. Documentar issues encontrados y soluciones
 - 6. Capturar screenshots para referencia
-- ''
 - 'OUTPUT:'
 - '- Reporte de compatibilidad responsive'
 - '- Screenshots de cada breakpoint'
 - '- Lista de fixes aplicados'
-- ''
 workflow:_performance-audit:
 - 'DESCRIPCIÓN: Auditar performance del sitio'
 - 'CUÁNDO_USAR: Antes de cada deploy a producción'
-- ''
 - 'PASOS:'
 - 1. Ejecutar Lighthouse en modo incógnito
 - '2. Verificar Core Web Vitals:'
@@ -83,13 +73,10 @@ workflow:_performance-audit:
 - 6. Verificar estrategia de carga de fuentes
 - 7. Implementar lazy loading donde falte
 - 8. Re-ejecutar Lighthouse y comparar
-- ''
 - 'META: Score &gt;= 90 en Performance, Accessibility, Best Practices, SEO'
-- ''
 workflow:_seo-optimize:
 - 'DESCRIPCIÓN: Optimizar SEO técnico de la página'
 - 'CUÁNDO_USAR: Antes de lanzar o al modificar contenido importante'
-- ''
 - 'PASOS:'
 - 1. Verificar títulos únicos y descripciones (&lt; 60 y &lt; 160 chars)
 - 2. Implementar Open Graph tags (og:title, og:description, og:image)
@@ -101,11 +88,9 @@ workflow:_seo-optimize:
 - 8. Implementar canonical URLs
 - 9. Verificar URLs amigables
 - 10. Testear con Google Rich Results Test
-- ''
 workflow:_accessibility-audit:
 - 'DESCRIPCIÓN: Auditar accesibilidad completa'
 - 'CUÁNDO_USAR: Antes de lanzar y mensualmente'
-- ''
 - 'PASOS:'
 - 1. Ejecutar axe DevTools o Lighthouse A11y
 - 2. Navegar con solo teclado (Tab, Enter, Escape, Flechas)
@@ -116,13 +101,10 @@ workflow:_accessibility-audit:
 - 7. Validar HTML con W3C Validator
 - 8. Verificar reducción de movimiento (prefers-reduced-motion)
 - 9. Verificar modo oscuro si aplica (prefers-color-scheme)
-- ''
 - 'META: 0 errores de accesibilidad críticos, WCAG 2.1 AA'
-- ''
 workflow:_security-check:
 - 'DESCRIPCIÓN: Verificar seguridad básica'
 - 'CUÁNDO_USAR: Antes de deploy y al agregar forms/inputs'
-- ''
 - 'PASOS:'
 - 1. Verificar no hay secrets en código (grep API keys, passwords)
 - 2. Validar inputs de usuario (length, type, sanitization)
@@ -131,11 +113,9 @@ workflow:_security-check:
 - 5. Verificar HTTPS en todos los recursos externos
 - 6. Verificar protección CSRF en forms
 - 7. Revisar permisos de CORS
-- ''
 workflow:_pre-deploy:
 - 'DESCRIPCIÓN: Checklist final antes de deploy'
 - 'CUÁNDO_USAR: Siempre antes de deploy a producción'
-- ''
 - 'PASOS:'
 - 1. Ejecutar /performance-audit
 - 2. Ejecutar /accessibility-audit
@@ -147,11 +127,9 @@ workflow:_pre-deploy:
 - 8. Verificar no hay console.logs o debuggers
 - 9. Revisar CHANGELOG.md actualizado
 - 10. Crear tag de versión si aplica (semantic versioning)
-- ''
 workflow:_documentation-update:
 - 'DESCRIPCIÓN: Mantener documentación al día'
 - 'CUÁNDO_USAR: Al finalizar features importantes o semanalmente'
-- ''
 - 'PASOS:'
 - 1. Actualizar README.md si cambió instalación o estructura
 - 2. Documentar nuevos componentes en Storybook

@@ -238,7 +238,7 @@ def _has_content_richness(c: str) -> bool:
     return words >= 80
 
 
-def extract_requirements(task: str, max_items: int = 10) -> list[str]:
+def extract_requirements(task: str, max_items: int = 16) -> list[str]:
     """Extrae requisitos verificables de la tarea estipulada:
     - URLs de repositorios (github.com/usuario/repo, gitlab.com/..., etc.)
     - menciones 'github.com/usuario' (para exigir al menos enlaces a ese perfil)
@@ -267,19 +267,28 @@ def extract_requirements(task: str, max_items: int = 10) -> list[str]:
     if owners:
         seen = set()
         skip = {"HTML", "CSS", "JS", "GitHub", "Python", "JavaScript", "TypeScript",
-                "Landing", "Portfolio", "LandingPage", "Vicente", "Vila", "Repo", "Repos",
-                "Cada", "Para", "Con", "Sin", "Una", "Un", "Los", "Las", "Son", "Web",
-                "Enfoque", "Diseño", "Diseños", "Estética", "Visual", "Visuales",
-                "Interactivos", "Interactivo", "Interactivas", "Interactiva", "Moderno",
-                "Modernos", "Actuales", "Actual", "Tarea", "Proyecto", "Proyectos",
-                "Página", "Pagina", "Páginas", "Paginas", "Contenido", "Sección", "Seccion",
-                "Secciones", "Cada", "Tiene", "Debe", "Deben", "Más", "Mas", "Todo", "Todos",
-                "Primer", "Segundo", "Tercer", "Uso", "Usa", "Usar", "Lista", "Listado",
-                "Nombre", "Nombres", "Descripción", "Descripcion", "Lenguaje", "Etiqueta",
-                "Etiquetas", "Categoría", "Categoria", "Categorías", "Categorias", "Perfil",
-                "Cuenta", "Usuario", "Usuarios", "Repositorio", "Repositorios", "Biblioteca",
-                "Bibliotecas", "Librería", "Librerias", "Agente", "Agentes", "AgentesIA",
-                "IA", "GenAI", "AI", "OpenAI", "Gemini", "Groq", "Ollama", "Langfuse"}
+                "Landing", "Portfolio", "LandingPage", "Vicente", "Vila", "VicenteVila",
+                "Repo", "Repos", "Cada", "Para", "Con", "Sin", "Una", "Un", "Los", "Las",
+                "Son", "Web", "Enfoque", "Diseño", "Diseños", "Estética", "Visual",
+                "Visuales", "Interactivos", "Interactivo", "Interactivas", "Interactiva",
+                "Moderno", "Modernos", "Actuales", "Actual", "Tarea", "Proyecto",
+                "Proyectos", "Página", "Pagina", "Páginas", "Paginas", "Contenido",
+                "Sección", "Seccion", "Secciones", "Tiene", "Debe", "Deben", "Más",
+                "Mas", "Todo", "Todos", "Primer", "Segundo", "Tercer", "Uso", "Usa",
+                "Usar", "Lista", "Listado", "Nombre", "Nombres", "Descripción",
+                "Descripcion", "Lenguaje", "Etiqueta", "Etiquetas", "Categoría",
+                "Categoria", "Categorías", "Categorias", "Perfil", "Cuenta", "Usuario",
+                "Usuarios", "Repositorio", "Repositorios", "Biblioteca", "Bibliotecas",
+                "Librería", "Librerias", "Agente", "Agentes", "AgentesIA", "IA", "GenAI",
+                "AI", "OpenAI", "Gemini", "Groq", "Ollama", "Langfuse",
+                "Crea", "Grafo", "GRAFO", "GrafoDe", "Conocimiento", "Conocimientos",
+                "CONOCIMIENTOS", "SVG", "Nodo", "Nodos", "Subnodo", "Subnodos",
+                "Hover", "Hovers", "Documentación", "Documentacion", "Documento",
+                "Documentos", "CategoríasSujet", "Sujet", "Sujetos", "TRES", "Tres",
+                "Esos", "Esas", "Incluye", "Incluyen", "Dise", "Diseño", "Descripción",
+                "Enlace", "Enlaces", "Muestra", "Muestran", "Expandido", "Expandidos",
+                "Expansión", "Expansion", "Leyenda", "Footer", "Dark", "Light",
+                "Local", "Locales", "Ruta", "Rutas", "PáginaLocal", "PaginaLocal"}
         for m in re.finditer(r"([A-Z][A-Za-z0-9]*(?:-[A-Za-z0-9]+)*)", task):
             name = m.group(1)
             if name in seen or name in skip or len(name) < 4:
@@ -354,6 +363,7 @@ SECTION_ALIASES = {
     "root_node": ["root-node", "nodo central", "nodo raiz", "root", "raiz", "central node", "center node"],
     "readme": ["readme", "repos/", "repositorios", "local readme"],
     "topics": ["topics", "arxiv", "categorias", "categorias sujet", "cs.ai", "cs.lg", "cs.cl"],
+    "docs": ["docs", "evolucion", "readaptacion", "reasoning", "documentacion", "readaptation", "evolution", "doc subnodes", "subnodos de docs"],
     "logo_bar": ["logo-bar", "trusted", "logos", "trusted-by", "logo bar", "marcas", "logo bar 'trusted by'"],
     "stats": ["stats", "stat-card", "counter", "metrics", "metricas", "contadores", "estadisticas"],
     "features": ["features", "feature-card", "feature-grid", "cards", "grid", "beneficios", "tarjetas", "caracteristicas"],
@@ -379,7 +389,7 @@ def extract_sections(task: str) -> list[str]:
     task_low = task.lower()
     found: list[str] = []
     # orden preferente para que el prompt/score sea estable
-    priority = ["navbar", "hero", "graph", "root_node", "readme", "topics",
+    priority = ["navbar", "hero", "graph", "root_node", "readme", "topics", "docs",
                 "logo_bar", "stats", "features", "integrations",
                 "social_proof", "testimonial", "faq", "cta", "footer", "contact",
                 "pricing", "about"]

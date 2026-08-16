@@ -11,18 +11,24 @@ nodo_central_(raíz_del_grafo):
 - ''
 secciones_obligatorias:
 - 1. **Grafo SVG interactivo:** nodo raíz (nombre + email) en el centro
-- 2. **Nodos de repositorios:** TraceForge, CogniTeam, PromptForge, Asubarnipal, PopeBot-agente
+- 2. **Nodos de repositorios:** TraceForge, CogniTeam, PromptForge, Asubarnipal, PopeBot-agente, ReaWeb
 - 3. **Expansión por hover:** sobre un repo se despliegan 2 nodos hijos:
 -    - Conocimientos IA (categorías sujet arXiv: cs.AI, cs.LG, cs.CL, cs.MA...)
 -    - README (enlace a repos/<repo>/index.html)
-- 4. **Leyenda:** explica colores/significado de los nodos
-- 5. **Footer:** nombre, email, enlace al perfil de GitHub
+- 4. **Docs de ReaWeb como subnodos VISIBLES:** el nodo ReaWeb muestra SIEMPRE
+-    3 nodos hijos de documentación (EVOLUTION, READAPTATION, REASONING) enlazando
+-    a repos/ReaWeb/docs/<EVOLUTION|READAPTATION|REASONING>/index.html. Se muestran
+-    sin hover (expandidos por defecto), conservando además los subnodos hover
+-    (Conocimientos IA + README) del resto de repos.
+- 5. **Leyenda:** explica colores/significado de los nodos
+- 6. **Footer:** nombre, email, enlace al perfil de GitHub
 - ''
 datos_requeridos:
 - '- **Nombre:** Vicente Vila'
 - '- **Email:** vicentevilaramirez@gmail.com'
-- '- **Repositorios:** TraceForge, CogniTeam, PromptForge, Asubarnipal, PopeBot-agente (github.com/VicenteVila)'
+- '- **Repositorios:** TraceForge, CogniTeam, PromptForge, Asubarnipal, PopeBot-agente, ReaWeb (github.com/VicenteVila)'
 - '- **Temas IA:** categorías sujet arXiv (cs.*) por repositorio'
+- '- **Docs ReaWeb:** EVOLUTION, READAPTATION, REASONING (repos/ReaWeb/docs/<name>/index.html)'
 - ''
 stack_tecnológico:
 - '- Framework: Vanilla (HTML + CSS + JS)'

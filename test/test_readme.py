@@ -110,6 +110,42 @@ def test_fetch_readme_render_fallback_on_api_failure():
     shutil.rmtree(PATHS["current"] / "repos", ignore_errors=True)
 
 
+def test_fetch_readme_docs():
+    """Con el parámetro 'docs' genera repos/<repo>/docs/<name>/index.html."""
+    PATHS["current"].mkdir(parents=True, exist_ok=True)
+
+    def _mock(url: str, payload: dict | None = None):
+        if url.endswith("/ReaWeb/main/README.md"):
+            return 200, "# ReaWeb\n\nRepo"
+        if url.endswith("/ReaWeb/main/Docs/EVOLUTION.md"):
+            return 200, "# EVOLUTION\n\nHistoria"
+        if url.endswith("/ReaWeb/main/Docs/READAPTATION.md"):
+            return 200, "# READAPTATION\n\nAjustes"
+        if url.endswith("/ReaWeb/main/Docs/REASONING.md"):
+            return 200, "# REASONING\n\nMotivos"
+        if url == "https://api.github.com/markdown":
+            text = (payload or {}).get("text", "")
+            m = re.match(r"#\s*(\w+)", text)
+            title = m.group(1) if m else "X"
+            return 200, f"<h1>{title}</h1>"
+        return 404, ""
+
+    tool = rf.FetchReadme(task="github.com/VicenteVila/ReaWeb")
+    with mock.patch.object(rf, "_http_get", side_effect=_mock), \
+         mock.patch.object(rf, "_http_post_json", side_effect=_mock):
+        result = tool.run(run_id="t-readme-docs",
+                          docs=["EVOLUTION", "READAPTATION", "REASONING"])
+
+    assert "repos/ReaWeb/docs/EVOLUTION/index.html" in result
+    assert "repos/ReaWeb/docs/READAPTATION/index.html" in result
+    assert "repos/ReaWeb/docs/REASONING/index.html" in result
+    evo = (PATHS["current"] / "repos" / "ReaWeb" / "docs" / "EVOLUTION" / "index.html").read_text()
+    assert "<title>ReaWeb · docs · EVOLUTION</title>" in evo
+    assert "<h1>EVOLUTION</h1>" in evo
+    import shutil
+    shutil.rmtree(PATHS["current"] / "repos", ignore_errors=True)
+
+
 def test_fetch_readme_no_repos():
     tool = rf.FetchReadme(task="no hay repos aqui")
     assert "ERROR" in tool.run()

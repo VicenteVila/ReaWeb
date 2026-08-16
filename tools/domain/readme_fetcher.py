@@ -30,7 +30,7 @@ TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{title} · README</title>
+<title>{title} · {subtitle}</title>
 <style>
   :root {{ --bg:#ffffff; --text:#1a1a1a; --accent:#6366f1; --muted:#64748b;
           --card:#f8fafc; --border:#e2e8f0; }}
@@ -212,8 +212,10 @@ class FetchReadme(Tool):
         "Descarga los README.md de los repos de github.com/VicenteVila presentes en "
         "la tarea, los convierte a HTML y genera una página autocontenida por repo "
         "(workspace/current/repos/<repo>.html) para abrir el README al hacer click "
-        "en las tarjetas. Devuelve las rutas relativas a enlazar. Usa la API de "
-        "GitHub con fallback local."
+        "en las tarjetas. Si se pasa el parámetro 'docs' (p. ej. ['EVOLUTION', "
+        "'READAPTATION', 'REASONING']), genera además repos/<repo>/docs/<name>/index.html "
+        "desde Docs/<name>.md de ese repo. Devuelve las rutas relativas a enlazar. "
+        "Usa la API de GitHub con fallback local."
     )
 
     def __init__(self, task: str = ""):
@@ -233,12 +235,17 @@ class FetchReadme(Tool):
                         "items": {"type": "string"},
                         "description": "Repos explícitos (si se omite, se parsean de la tarea)",
                     },
+                    "docs": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Nombres de archivos .md (sin extensión) de Docs/ a generar por repo, p. ej. ['EVOLUTION','READAPTATION','REASONING'] -> repos/<repo>/docs/<name>/index.html",
+                    },
                 },
             },
         }
 
     def run(self, owner: str = "VicenteVila", repos: list[str] | None = None,
-            **kwargs) -> str:
+            docs: list[str] | None = None, **kwargs) -> str:
         if repos is None:
             repos = parse_github_repos(self.task, owner)
         if not repos:
@@ -257,6 +264,13 @@ class FetchReadme(Tool):
             out.mkdir(parents=True, exist_ok=True)
             (out / "index.html").write_text(page)
             generated.append(f"repos/{repo}/index.html")
+            # Docs opcionales: repos/<repo>/docs/<name>/index.html
+            for name in docs or []:
+                ok, doc_msg = self._build_doc_page(owner, repo, name, run_id)
+                if ok:
+                    generated.append(f"repos/{repo}/docs/{name}/index.html")
+                else:
+                    errors.append(f"{repo}/docs/{name}: {doc_msg}")
 
         if not generated:
             return "ERROR: no se pudo generar ningún README. Detalles: " + "; ".join(errors)
@@ -267,6 +281,30 @@ class FetchReadme(Tool):
                 "su página local (p. ej. repos/TraceForge/index.html) en vez de a "
                 "https://github.com.")
         return msg
+
+    def _build_doc_page(self, owner: str, repo: str, name: str, run_id: str | None) -> tuple[bool, str]:
+        """Genera repos/<repo>/docs/<name>/index.html desde Docs/<name>.md del repo."""
+        md, md_err = self._download_doc(owner, repo, name)
+        if md_err:
+            return False, f"Docs/{name}.md no encontrado ({md_err})"
+        if run_id:
+            ref_dir = PATHS["runs"] / run_id / "reference"
+            ref_dir.mkdir(parents=True, exist_ok=True)
+            (ref_dir / f"{repo}-{name}.md").write_text(md)
+        content = self._render_markdown(md)
+        html_page = TEMPLATE.format(title=f"{repo}", subtitle=f"docs · {name}", content=content)
+        out = PATHS["current"] / "repos" / repo / "docs" / name
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "index.html").write_text(html_page)
+        return True, ""
+
+    def _download_doc(self, owner: str, repo: str, name: str) -> tuple[str, str]:
+        for branch in ("main", "master"):
+            url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/Docs/{name}.md"
+            code, body = _http_get(url)
+            if code == 200 and body:
+                return body, ""
+        return "", f"Docs/{name}.md no encontrado"
 
     def _build_repo_page(self, owner: str, repo: str, run_id: str | None) -> tuple[str, str | None]:
         md, md_err = self._download_readme(owner, repo)
@@ -280,7 +318,7 @@ class FetchReadme(Tool):
             (ref_dir / f"{repo}.md").write_text(md)
 
         content = self._render_markdown(md)
-        html_page = TEMPLATE.format(title=f"{repo}", content=content)
+        html_page = TEMPLATE.format(title=f"{repo}", subtitle="README", content=content)
         return "ok", html_page
 
     def _download_readme(self, owner: str, repo: str) -> tuple[str, str]:

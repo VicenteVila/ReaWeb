@@ -422,6 +422,60 @@ def test_extract_sections_no_noise_from_repo_names():
     assert "about" not in s, s
 
 
+def test_extract_sections_docs_task():
+    """Una tarea que menciona docs de ReaWeb (EVOLUTION/READAPTATION/REASONING)
+    debe activar la sección 'docs'."""
+    from tools.domain.evaluator import extract_sections
+    s = extract_sections(
+        "grafo de conocimientos con repositorios y subnodos de docs (EVOLUTION, "
+        "READAPTATION, REASONING) visibles de ReaWeb"
+    )
+    assert "graph" in s, s
+    assert "docs" in s, s
+
+
+def test_graph_structure_docs_present_scores_high():
+    """Grafo con docs de ReaWeb enlazando a repos/ReaWeb/docs/<name>/index.html pasa structure."""
+    html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title></head>
+    <body>
+    <nav class="navbar"><a href="#graph">Grafo</a></nav>
+    <section class="hero"><h1>Vicente Vila</h1></section>
+    <section id="graph" class="knowledge-graph">
+      <svg id="svg-graph"><g class="node root-node"><title>Vicente Vila</title></g>
+      <g class="node repo"><title>TraceForge</title><a href="repos/TraceForge/index.html">README</a></g>
+      <g class="node repo docs"><title>ReaWeb</title>
+        <a class="doc-link" href="repos/ReaWeb/docs/EVOLUTION/index.html">EVOLUTION</a>
+        <a class="doc-link" href="repos/ReaWeb/docs/READAPTATION/index.html">READAPTATION</a>
+        <a class="doc-link" href="repos/ReaWeb/docs/REASONING/index.html">REASONING</a></g></svg>
+    </section>
+    <section id="topics"><span class="arxiv">cs.AI</span><span>cs.LG</span></section>
+    <section id="docs"><p>Documentación</p></section>
+    <a class="cta" href="#contact">Contacto</a>
+    <footer><p>© 2026</p></footer>
+    </body></html>"""
+    d = _write({"index.html": html}, "graph_docs_ok")
+    m = evaluate(d, structure=["navbar", "hero", "graph", "root_node", "readme", "topics", "docs", "cta", "footer"])
+    assert m["structure"] == 100, m
+    assert not m["failures"]["structure"], m
+
+
+def test_graph_structure_docs_missing_lowers():
+    """Grafo sin docs de ReaWeb: la sección 'docs' falla (resto de secciones ok)."""
+    html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title></head>
+    <body>
+    <section id="graph"><svg><g class="node root-node"><title>Vicente Vila</title></g>
+    <g class="node repo"><title>TraceForge</title><a href="repos/TraceForge/index.html">README</a></g></svg></section>
+    <section id="topics"><span class="arxiv">cs.AI</span></section>
+    <footer><p>© 2026</p></footer>
+    </body></html>"""
+    d = _write({"index.html": html}, "graph_docs_missing")
+    m = evaluate(d, structure=["graph", "root_node", "readme", "topics", "docs"])
+    assert "docs" in m["failures"]["structure"], m
+    assert m["structure"] < 100, m
+
+
 def test_visual_low_when_static_canvas_and_plain():
     """Página plana sin canvas dinámico ni secciones no debe alcanzar visual alto."""
     d = _write({"index.html": GOOD_HTML, "styles.css": "body{color:black}", "app.js": ""}, "visual_low2")

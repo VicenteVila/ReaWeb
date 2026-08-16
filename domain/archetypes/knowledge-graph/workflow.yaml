@@ -5,11 +5,15 @@ PASOS:
 1. Llama a fetch_readme para generar las páginas README de cada repo (repos/<repo>/index.html).
 2. Llama a fetch_repo_topics para clasificar las categorías sujet arXiv por repo
    (genera workspace/current/graph_data.json con root + repos + topics).
-3. Genera H0 con generate_candidate indicando: nodo raíz (Vicente Vila + email),
-   nodos repos alrededor, hover despliega 2 hijos (Conocimientos IA y README),
-   efectos glow/scale en hover, SVG puro, leyenda, footer, dark/light.
-4. Audita con audit_page y verifica structure (grafo, nodo raíz, readme, topics).
-5. Mejora iterativamente hasta que todas las secciones estén presentes.
+3. Para ReaWeb, genera además las páginas de sus 3 docs (EVOLUTION, READAPTATION,
+   REASONING) en repos/ReaWeb/docs/<name>/index.html.
+4. Genera H0 con generate_candidate indicando: nodo raíz (Vicente Vila + email),
+   nodos repos alrededor (incl. ReaWeb), hover despliega 2 hijos (Conocimientos IA
+   y README), ReaWeb muestra SIEMPRE 3 subnodos de docs visibles enlazando a
+   repos/ReaWeb/docs/<name>/index.html, efectos glow/scale en hover, SVG puro,
+   leyenda, footer, dark/light.
+5. Audita con audit_page y verifica structure (grafo, nodo raíz, readme, topics, docs).
+6. Mejora iterativamente hasta que todas las secciones estén presentes.
 
 workflow: _knowledge-graph-optimize:
 DESCRIPCIÓN: Optimizar la interactividad y estética del grafo.

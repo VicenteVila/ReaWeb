@@ -35,11 +35,24 @@ por sí solo comportamientos de optimizador: verifica ganancias, reutiliza fallo
 pasados, revierte ramas improductivas y explora de forma adaptativa bajo
 presupuesto.
 
+Un segundo trabajo completa la tesis (ver `READAPTATION.md`, sección 2):
+**AutoDesign** muestra que un **meta-harness optimizer** puede mejorar
+recursivamente el propio harness del agente a partir del *rollout feedback*, y
+que esa mejora del harness produce ganancias sistemáticas (DesignHarness:
+54.99 → 67.39, +12.4%, y +7.45 sobre Claude Design en PosterBench). AutoDesign
+también introduce el **crítico estético VLM** (§3.4): una capa que puntúa la
+calidad percibida del artefacto y guía la siguiente mutación.
+
 Nuestra hipótesis de trabajo para **ReaWeb** fue una concreción de esa tesis:
 
 > Si internalizamos la búsqueda en el agente, podemos especializar el *dominio*
 > (desarrollo web) sin reescribir el *controlador*, y además hacer que el agente
 > mejore su propio harness a partir de lo aprendido en cada run.
+
+De AutoDesign adoptamos dos piezas concretas: (1) el harness se **mide y se
+mejora** con feedback del rollout (`HARNESS_COMPONENTS`, `BLOCKING_CEILING`,
+`EVOLUTION.md`), y (2) un **crítico VLM** puntúa el candidato renderizado y
+recombina el total (`blend_visual_total`, `tools/domain/visual_critic.py`).
 
 ## 3. Decisiones de diseño y su porqué
 
@@ -51,6 +64,7 @@ Nuestra hipótesis de trabajo para **ReaWeb** fue una concreción de esa tesis:
 | **Categoría `task`** (`extract_requirements`) | Evita optimizar el score a costa de la tarea real: si la tarea pide `github.com/VicenteVila/TraceForge`, ese requisito debe aparecer literalmente en el código. |
 | **Categoría `structure`** (secciones obligatorias) | Los checks técnicos (skip-link, canvas, sticky) se pueden "rellenar" sin cumplir la tarea. Verificar secciones cierra esa vía. |
 | **Proxy `visual` con efectos REALES** (peso 2.0) | Un `canvas` declarado no es diseño moderno; un gradiente en un comentario tampoco. El evaluador exige animación/dibujo dinámico, `@keyframes` usado, `transition` con disparador real, dark mode persistido. |
+| **Crítico VLM estético (peso visual 2.0)** | Capa de AutoDesign (§3.4): el screenshot del candidato se puntúa 0-100 y `blend_visual_total` usa `max(visual_estático, vlm)` — recompensa mejoras estéticas reales, no solo estáticas. |
 | **Principio anti-trampa** (`system_base.txt`) | El total es una *señal*, no el objetivo. Un candidato con score alto pero secciones de la tarea ausentes no es válido. |
 | **Árbol de hipótesis H0..Hn con parents** | Es la representación de ReASearch de "búsqueda": permite comparar, revertir (`best_branch`/`dead_end`) y razonar sobre toda la historia. |
 | **Doble verificación con `audit_page`** | El paper observa que el agente verifica ganancias prometedoras; lo codificamos como tool de confirmación que no duplica nodos. |
@@ -85,7 +99,10 @@ El razonamiento no fue lineal; fue incremental, con capas de defensa ante
    con `fetch_repo_topics` (categorías sujet arXiv por repo) y subnodos animados.
 10. **Métricas de evolución** (`d18eb4b`): snapshot del harness por run,
     `task_hash`, delta en experiments, `trend_evolution` y benchmark re-ejecutable.
-11. **Empaquetado para GitHub** (`65a05ca`): Docs/ dentro del repo, LICENSE,
+11. **Crítico VLM + blend del total** (`ac73223`): capa estética de AutoDesign
+    (§3.4); `blend_visual_total` recombina el total con `max(visual, vlm)` para
+    que el feedback P0 guíe la siguiente mutación.
+12. **Empaquetado para GitHub** (`65a05ca`): Docs/ dentro del repo, LICENSE,
     uv.lock, CI, quickstart.
 
 ### Lecciones del propio proceso de desarrollo
@@ -94,6 +111,10 @@ El razonamiento no fue lineal; fue incremental, con capas de defensa ante
   run "engañaba" al score (canvas muerto, gradientes en comentarios, secciones
   ausentes), añadíamos una verificación más estricta. Esto es meta-evolución en
   tiempo real, igual que la que se pide al agente.
+- El **crítico VLM llegó como segunda fuente**: tras ver que el proxy `visual`
+  estático no capturaba "calidad percibida" (p. ej. textos desbordando círculos),
+  añadimos la capa estética de AutoDesign para que la búsqueda recompense también
+  mejoras que solo un ojo (VLM) detecta.
 - La **medición de la evolución llegó tarde** (hito 10): las primeras runs no
   tienen snapshot, así que el trend solo puede comparar versiones posteriores.
   Es la decisión que nos llevó a añadir `harness_hash`/`task_hash` para que

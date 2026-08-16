@@ -12,6 +12,13 @@ Basado en:
   https://doi.org/10.48550/arXiv.2608.06714 — el agente es el optimizador: sin
   loop externo, re-emisión de estado cada turno, memoria persistente y
   meta-evolución.
+- **AutoDesign** — Luo, Y., Jiang, H., Zou, J., Huang, X., Yan, W., Li, H.,
+  Yue, Z., Li, J., Chen, X., Zhao, X., Liu, J., Cui, J., Shen, Z., & Li, X.
+  (2026). *AutoDesign: Meta-Harness Optimization for Long-Horizon Agentic
+  Design*. arXiv:2608.13560.
+  https://doi.org/10.48550/arXiv.2608.13560 — meta-harness optimization con
+  rollout feedback: el harness se mejora a sí mismo y un **crítico estético VLM**
+  (§3.4) guía la siguiente mutación.
 - **Propuesta Arquitectura de Agente Web** — diseño de carpetas, stack y estrategia
   free-tier.
 - **Docs/** — reglas globales, skills, workflows y 6 arquetipos de web development.
@@ -20,8 +27,8 @@ Documentación del diseño (para humanos):
 
 - [`Docs/REASONING.md`](Docs/REASONING.md) — por qué y cómo se construyó el agente
   (decisiones de diseño + historial real de desarrollo).
-- [`Docs/READAPTATION.md`](Docs/READAPTATION.md) — adaptación de ReASearch al
-  dominio web, con citación formal (APA + BibTeX) y tabla de mapeo.
+- [`Docs/READAPTATION.md`](Docs/READAPTATION.md) — adaptación de ReASearch y
+  AutoDesign al dominio web, con citaciones formales (APA + BibTeX) y tablas de mapeo.
 - [`Docs/EVOLUTION.md`](Docs/EVOLUTION.md) — cómo el aprendizaje se convierte en
   nuevas reglas del harness y cómo se mide la evolución.
 
@@ -247,6 +254,11 @@ Best Practices (0-100). Además:
 si hay requirements. `visual` pesa **2.0×** (configurable en `WEIGHTS`).
 Responsive y Best Practices se evalúan contra el contenido combinado
 (html+css+js), no solo contra el HTML.
+
+Además, el **crítico VLM** (capa estética de AutoDesign, §3.4) renderiza el
+candidato y devuelve un score estético 0-100 con issues/sugerencias;
+`blend_visual_total` usa `max(visual_estático, vlm)` para que el feedback P0
+guíe la siguiente mutación (`tools/domain/visual_critic.py`, `evaluator.py:582`).
 
 ## Tests
 

@@ -10,7 +10,9 @@ se mide ese cambio. Es documentación para humanos.
 
 ```
 run ──▶ lecciones (worked/didnt/try) ──▶ snapshot harness_hash
-                                             │
+             │                                 │
+      crítica VLM (feedback P0)                │
+             │                                 │
           nueva regla en domain/ ◀── edit_skill (meta-evolución)
                                              │
                                         trend_evolution / benchmark
@@ -20,7 +22,10 @@ run ──▶ lecciones (worked/didnt/try) ──▶ snapshot harness_hash
 
 El agente no tiene un loop externo de evolución (eso sería ReASearch clásico);
 **él mismo** decide en cada run si debe editar su harness. El harness le da las
-herramientas (`edit_skill`, `review_harness`) y los instrumentos de medida.
+herramientas (`edit_skill`, `review_harness`) y los instrumentos de medida. El
+**crítico VLM** (capa estética de AutoDesign, §3.4) aporta el feedback P0: el
+score del candidato renderizado guía la siguiente mutación de
+`generate_candidate`, cerrando el bucle con señal estética real.
 
 ## 2. Las piezas del mecanismo
 
@@ -52,7 +57,18 @@ herramientas (`edit_skill`, `review_harness`) y los instrumentos de medida.
 - La meta-evolución puede **deshabilitarse** (`--no-meta`) si se quiere una run
   solo de ejecución.
 
-### 2.4 Medición de la evolución (cómo se sabe que hubo cambio)
+### 2.4 Feedback del crítico VLM (señal que guía la mutación)
+
+- `tools/domain/visual_critic.py` renderiza el candidato de `workspace/current`
+  y devuelve un score estético 0-100 con ≤4 issues y ≤4 sugerencias.
+- `blend_visual_total` (`evaluator.py:582`) recombina el total del nodo con
+  `visual = max(visual_estático, vlm)`: el feedback P0 del crítico (AutoDesign,
+  §3.4) guía la siguiente mutación de `generate_candidate`.
+- Los pesos de `WEIGHTS` (`evaluator.py:443`) dan **2.0× a `visual` y a
+  `structure`**: el eje estético pesa el doble, coherente con el énfasis visual
+  de AutoDesign.
+
+### 2.5 Medición de la evolución (cómo se sabe que hubo cambio)
 
 - Al abrir la run se toma un **snapshot del harness**: hash de `domain/`,
   `tools/`, `.agent/prompts/` y `Docs/` + hash de las lecciones de la DB
@@ -103,8 +119,12 @@ hitos 8-9).
 ## 5. Límites y decisiones abiertas
 
 - **El umbral exacto** para promover una lección a regla sigue siendo criterio
-  del agente (el paper observa que emerge, no que se programe). Documentamos
+  del agente (los papers observan que emerge, no que se programe). Documentamos
   aquí los criterios para que la decisión sea comprobable por un humano.
+- **El crítico VLM depende de un render**: si no hay Chrome disponible la señal
+  estética no se genera y el total vuelve al proxy estático (ver
+  `blend_visual_total`). AutoDesign asume infraestructura de render; aquí es un
+  requisito opcional por coste.
 - **El re-sync `domain/ → Docs/`** no es automático: la especificación humana se
   actualiza manualmente (ver README, "Docs/ vs domain/").
 - **Las runs anteriores al hito de medición** (antes de `d18eb4b`) no tienen

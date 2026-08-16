@@ -23,10 +23,25 @@ Basado en:
 
 ## Instalación
 
+Requisitos: Python 3.10+ y [uv](https://docs.astral.sh/uv/) (o pip).
+
 ```bash
+git clone https://github.com/VicenteVila/reaweb-harness
 cd reaweb-harness
-pip install google-genai pydantic PyYAML jinja2
+
+# con uv (recomendado, usa pyproject.toml + uv.lock)
+uv sync --extra dev
+
+# o con pip
+pip install -e ".[dev]"
+
 cp .env.example .env   # edita GEMINI_API_KEY
+```
+
+Los tests no requieren API key (móckean LLM y red):
+
+```bash
+uv run pytest -q
 ```
 
 ## Uso
@@ -109,7 +124,7 @@ encuentra, genera el dashboard solo-datos.
 | Script | Función |
 |---|---|
 | `scripts/run_agent.py` | Ejecuta una run de optimización end-to-end |
-| `scripts/seed_from_docs.py` | Regenera `domain/` desde `../Docs/` |
+| `scripts/seed_from_docs.py` | Regenera `domain/` desde `Docs/` |
 | `scripts/merge_lessons.py` | Fusiona lecciones de runs al archivo global |
 | `scripts/backfill_memory.py` | Migra runs existentes de `runs/` a `memory/memory.db` |
 | `scripts/cleanup_runs.py` | Limpieza de `runs/` (--keep N, --archive, --prune-*) |
@@ -167,7 +182,7 @@ test/         Tests (evaluador, fixtures)
 
 ## Docs/ vs domain/ (separación de fuentes)
 
-- **`Docs/`** (`../Docs`, fuera del repo) es la **especificación inicial** escrita
+- **`Docs/`** es la **especificación inicial** escrita
   por humanos: `global_rules.md`, `agent_skills.md`, `global_workflows.md` y
   `Archetypes/<arquetipo>/{project-context,project-rules,project-workflows}.md`
   (+ `tech-stack.json`). Es la semilla que se importa **una sola vez** con

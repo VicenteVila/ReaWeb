@@ -1,0 +1,43 @@
+{
+    "archetype": "landing-page",
+    "priority": "conversion",
+    "stack": {
+        "framework": {
+            "primary": "Next.js 14+ (App Router)",
+            "alternative": "Astro (para máxima performance)"
+        },
+        "language": "TypeScript",
+        "styling": {
+            "framework": "Tailwind CSS",
+            "animations": "Framer Motion",
+            "icons": "Lucide React"
+        },
+        "forms": {
+            "management": "React Hook Form",
+            "validation": "Zod",
+            "submission": "Formspree o Resend (emails)"
+        },
+        "cms": {
+            "content": "Contentful o Sanity (opcional)",
+            "images": "Cloudinary o Next.js Image Optimization"
+        },
+        "analytics": {
+            "web": "Google Analytics 4",
+            "heatmap": "Hotjar",
+            "events": "Google Tag Manager"
+        },
+        "deployment": "Vercel (preferido) o Netlify",
+        "seo": {
+            "meta": "Next.js Metadata API",
+            "sitemap": "next-sitemap"
+        }
+    },
+    "performance_targets": {
+        "lighthouse_performance": 95,
+        "lighthouse_accessibility": 100,
+        "lighthouse_seo": 100,
+        "lcp": "< 2.0s",
+        "fid": "< 100ms",
+        "cls": "< 0.1"
+    }
+}

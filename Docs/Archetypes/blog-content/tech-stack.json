@@ -1,0 +1,54 @@
+{
+    "archetype": "blog-content",
+    "priority": "seo_and_reading_experience",
+    "stack": {
+        "framework": {
+            "primary": "Next.js 14+ (App Router)",
+            "ssg": "Static Site Generation para posts",
+            "isr": "Incremental Static Regeneration"
+        },
+        "language": "TypeScript",
+        "styling": {
+            "framework": "Tailwind CSS",
+            "typography": "@tailwindcss/typography plugin",
+            "prose": "Optimizado para lectura larga"
+        },
+        "cms": {
+            "headless": "Sanity, Contentful, o Strapi",
+            "mdx": "Opcional para componentes interactivos en posts",
+            "images": "Cloudinary o Next.js Image"
+        },
+        "search": {
+            "site_search": "Algolia DocSearch o Fuse.js",
+            "content": "Full-text search implementada"
+        },
+        "comments": {
+            "provider": "Giscus (GitHub Discussions) o Disqus"
+        },
+        "newsletter": {
+            "provider": "ConvertKit o Buttondown",
+            "forms": "React Hook Form + API integration"
+        },
+        "deployment": {
+            "hosting": "Vercel (óptimo para Next.js)",
+            "cdn": "Cloudflare"
+        },
+        "analytics": {
+            "web": "Google Analytics 4",
+            "search": "Google Search Console",
+            "heatmap": "Hotjar (sampled)"
+        }
+    },
+    "features_required": [
+        "rss_feed",
+        "newsletter_integration",
+        "social_sharing",
+        "related_posts",
+        "table_of_contents",
+        "reading_time",
+        "author_profiles",
+        "tag_system",
+        "search_functionality",
+        "dark_mode"
+    ]
+}

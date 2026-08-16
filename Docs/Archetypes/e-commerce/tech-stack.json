@@ -1,0 +1,61 @@
+{
+    "archetype": "ecommerce",
+    "priority": "conversion_and_scalability",
+    "stack": {
+        "framework": {
+            "primary": "Next.js 14+ con App Router",
+            "alternative": "Shopify Hydrogen (si usa Shopify)"
+        },
+        "language": "TypeScript",
+        "styling": {
+            "framework": "Tailwind CSS",
+            "components": "Shadcn/ui o Radix UI",
+            "animations": "Framer Motion"
+        },
+        "backend": {
+            "cms": "Shopify, WooCommerce, o custom con Strapi",
+            "database": "PostgreSQL + Prisma",
+            "search": "Algolia o Meilisearch",
+            "cache": "Redis"
+        },
+        "payments": {
+            "primary": "Stripe",
+            "alternatives": [
+                "PayPal",
+                "MercadoPago",
+                "Square"
+            ],
+            "subscriptions": "Stripe Billing"
+        },
+        "authentication": {
+            "provider": "NextAuth.js o Clerk",
+            "roles": [
+                "customer",
+                "admin",
+                "vendor"
+            ]
+        },
+        "deployment": {
+            "hosting": "Vercel",
+            "cdn": "Cloudflare",
+            "images": "Cloudinary o Shopify CDN"
+        },
+        "analytics": {
+            "ecommerce": "Google Analytics 4 Enhanced Ecommerce",
+            "funnel": "Mixpanel o Amplitude",
+            "ab_testing": "Optimizely o Google Optimize"
+        }
+    },
+    "features_required": [
+        "cart_persistence",
+        "guest_checkout",
+        "order_tracking",
+        "inventory_management",
+        "discount_codes",
+        "multi_currency",
+        "reviews_system",
+        "wishlist",
+        "recently_viewed",
+        "related_products"
+    ]
+}

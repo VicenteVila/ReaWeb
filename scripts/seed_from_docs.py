@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import yaml
 
-DOCS = Path(__file__).resolve().parent.parent.parent / "Docs"
+DOCS = Path(__file__).resolve().parent.parent / "Docs"
 DOMAIN = Path(__file__).resolve().parent.parent / "domain"
 
 ARCHETYPE_MAP = {

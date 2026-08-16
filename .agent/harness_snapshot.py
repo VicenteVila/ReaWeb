@@ -22,12 +22,10 @@ from pathlib import Path
 
 from config import PATHS
 
-# Directorios del repo que definen el comportamiento del agente.
-HARNESS_DIRS = ("domain", "tools", ".agent/prompts")
-# Directorios externos al repo: prefijo de ruta en el snapshot -> path real.
-# Docs/ es la especificación fuente semilla (ver README): si cambia, el
-# harness_hash debe reflejarlo.
-EXTRA_DIRS: dict[str, Path] = {"Docs": PATHS["root"].parent / "Docs"}
+# Directorios que definen el comportamiento del agente y la fuente semilla.
+# Docs/ es la especificación inicial de arquetipos (ver README); domain/ es el
+# conocimiento vivo que el agente mejora. Ambos quedan versionados en el hash.
+HARNESS_DIRS = ("domain", "tools", ".agent/prompts", "Docs")
 
 
 def _iter_harness_files() -> list[tuple[str, bytes]]:
@@ -39,16 +37,6 @@ def _iter_harness_files() -> list[tuple[str, bytes]]:
         for p in sorted(base.rglob("*")):
             if p.is_file():
                 rel = str(p.relative_to(PATHS["root"]))
-                try:
-                    out.append((rel, p.read_bytes()))
-                except OSError:
-                    continue
-    for prefix, base in EXTRA_DIRS.items():
-        if not base.exists():
-            continue
-        for p in sorted(base.rglob("*")):
-            if p.is_file():
-                rel = f"{prefix}/{p.relative_to(base)}"
                 try:
                     out.append((rel, p.read_bytes()))
                 except OSError:

@@ -102,7 +102,7 @@ El razonamiento no fue lineal; fue incremental, con capas de defensa ante
 11. **Crítico VLM + blend del total** (`ac73223`): capa estética de AutoDesign
     (§3.4); `blend_visual_total` recombina el total con `max(visual, vlm)` para
     que el feedback P0 guíe la siguiente mutación.
-12. **Auto-lecciones por delta** (`d4f6a12`): el harness registra lecciones
+12. **Auto-lecciones por delta** (`092a61c`): el harness registra lecciones
     `worked`/`didnt` automáticamente cuando una tool produce un delta ≥ umbral
     (`LESSON_AUTO`), sin depender de que el LLM llame a `update_lessons`.
 13. **Empaquetado para GitHub** (`65a05ca`): Docs/ dentro del repo, LICENSE,

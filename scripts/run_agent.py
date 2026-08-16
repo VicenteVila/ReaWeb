@@ -24,9 +24,11 @@ def main():
                         help="Hipótesis objetivo (p. ej. --target-h 3 => H0..H3). No declara fin hasta alcanzarlo.")
     parser.add_argument("--url", default="",
                         help="URL de referencia a analizar (HTML crudo) para adaptar su contenido como H0")
+    parser.add_argument("--gate", action="store_true",
+                        help="Ejecutar el acceptance gate tras la run sobre propuestas pending")
     args = parser.parse_args()
 
-    run_single(
+    agent = run_single(
         archetype=args.archetype,
         task=args.task,
         model=args.model,
@@ -37,6 +39,11 @@ def main():
         target_h=args.target_h,
         initial_url=args.url,
     )
+    if args.gate:
+        from scripts.gate_harness_edit import main as gate_main
+        import sys as _sys
+        _sys.argv = [_sys.argv[0]]
+        gate_main()
 
 
 if __name__ == "__main__":

@@ -53,6 +53,30 @@ CONTEXT_DEFAULTS = {
     "search_tree_max_nodes": 15,
 }
 
+# Componentes funcionales del harness (mapeo AutoDesign, §2.1). Cada meta-edición
+# debe apuntar a UN componente para mantener el crédito atribuible de las ganancias.
+# Solo los componentes con prefijos en domain/ son editables por el agente; el resto
+# (runtime, orchestration, eval_feedback) son código del harness y no se editan aquí.
+HARNESS_COMPONENTS = {
+    "context_memory": ("generated",),       # skills, workflows, reglas globales
+    "tools_specs": ("archetypes",),         # arquetipos: reglas, stack, workflows
+}
+
+# Umbral de ceiling para candidatos que incumplen un gate bloqueante (Eq. 8 del
+# paper: un P0 gate capa la puntuación). Si un candidato no cumple las secciones
+# obligatorias de la tarea, su total no puede superar este techo.
+BLOCKING_CEILING = 40
+
+# Precios por 1M tokens (USD) para estimar el coste real de cada llamada.
+# clave "default" como fallback si el modelo no está listado.
+MODEL_PRICES = {
+    "gemini-3.1-pro-preview": (2.50, 15.00),
+    "gemini-3.1-pro-preview-customtools": (2.50, 15.00),
+    "gemini-3-flash-preview": (0.15, 0.60),
+    "gemini-3.1-flash-lite": (0.10, 0.40),
+    "default": (1.25, 5.00),
+}
+
 
 def ensure_dirs() -> None:
     for p in PATHS.values():

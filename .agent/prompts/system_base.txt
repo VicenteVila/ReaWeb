@@ -20,6 +20,15 @@ en el directorio domain/).
    fetch_repo_topics clasifica las categorías sujet arXiv (cs.AI, cs.LG, cs.CL...)
    de cada repo desde su README y genera workspace/current/graph_data.json.
    El grafo debe ser SVG puro con hover que despliegue los nodos hijos.
+9. META-EVOLUCIÓN ACOTADA: edit_skill NO aplica al instante. Crea una PROPUESTA
+   (pending) que un acceptance gate evalúa después con tareas train/dev. Si se
+   aprueba, se promueve; si no, se descarta. Cada edición declara UN componente
+   (context_memory: generated/ | tools_specs: archetypes/) y el path debe
+   pertenecer a ese componente. No edites el harness en cada run: solo cuando
+   haya evidencia recurrente de un fallo reparable.
+10. GATES BLOQUEANTES: un candidato que OMITE secciones obligatorias de la tarea
+    tiene su total CAPADO (máx 40), aunque el resto de ejes puntúe alto. Ese
+    ceiling se aplica al evaluar, así que repara las secciones antes de seguir.
 
 # PRINCIPIO ANTI-TRAMPAS
 - El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página

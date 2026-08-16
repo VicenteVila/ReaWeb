@@ -29,6 +29,8 @@ class LLMToolCall:
 class LLMResponse:
     text: str
     tool_calls: list[LLMToolCall] | None
+    input_tokens: int = 0
+    output_tokens: int = 0
 
 
 def _convert_args(raw) -> dict:
@@ -52,6 +54,8 @@ class LLM:
         if not api:
             raise RuntimeError("Falta GEMINI_API_KEY. Añádela al archivo .env (ver .env.example).")
         self.client = genai.Client(api_key=api)
+        self.last_usage: tuple[int, int] = (0, 0)
+        self.cost_so_far: float = 0.0
 
     def _tools(self, tools: list[dict] | None) -> list[types.Tool] | None:
         if not tools:
@@ -134,6 +138,8 @@ class LLM:
 
         text = ""
         tool_calls: list[LLMToolCall] = []
+        input_tokens = 0
+        output_tokens = 0
         if resp.candidates:
             cand = resp.candidates[0]
             if cand.content and cand.content.parts:
@@ -145,7 +151,18 @@ class LLM:
                         tool_calls.append(
                             LLMToolCall(name=fc.name, args=_convert_args(fc.args))
                         )
-        return LLMResponse(text=text, tool_calls=tool_calls or None)
+        usage = getattr(resp, "usage_metadata", None)
+        if usage is not None:
+            input_tokens = int(getattr(usage, "prompt_token_count", 0) or 0)
+            output_tokens = int(getattr(usage, "candidates_token_count", 0) or 0)
+        self.last_usage = (input_tokens, output_tokens)
+        self.cost_so_far += self.estimate_cost(input_tokens, output_tokens, self.model)
+        return LLMResponse(
+            text=text,
+            tool_calls=tool_calls or None,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+        )
 
     def count_tokens(self, text: str) -> int:
         try:
@@ -153,3 +170,10 @@ class LLM:
             return resp.total_tokens or 0
         except Exception:
             return len(text) // 4
+
+    @staticmethod
+    def estimate_cost(input_tokens: int, output_tokens: int, model: str | None = None) -> float:
+        """Coste en USD de una llamada según MODEL_PRICES (fallback 'default')."""
+        from config import MODEL_PRICES
+        price_in, price_out = MODEL_PRICES.get(model or "", MODEL_PRICES["default"])
+        return (input_tokens * price_in + output_tokens * price_out) / 1_000_000.0

@@ -255,6 +255,47 @@ def test_structure_missing_lowers_total():
     assert "integrations" in m["failures"]["structure"]
 
 
+def test_blocking_gate_caps_total_when_sections_missing():
+    """Anti-trampa ejecutable: si faltan secciones obligatorias, el total queda
+    CAPADO por el ceiling (P0 gate, Eq. 8 del paper) aunque el resto puntúe alto."""
+    html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title>
+    <meta name="description" content="desc">
+    <meta property="og:title" content="Corto"><link rel="canonical" href="https://e.com/">
+    <link rel="preload" as="image" href="x.webp">
+    </head>
+    <body><main><section><h1>Único</h1><img src="a.webp" alt="x" width="100" height="100"></section></main>
+    <a class="skip-link" href="#main">Skip</a><nav aria-label="x"><ul><li><a href="/">Home</a></li></ul></nav>
+    <style>@keyframes pulse{from{opacity:1}to{opacity:.5}} .x{animation:pulse 2s infinite}</style>
+    <script>const c=document.createElement('canvas');document.body.appendChild(c);
+    const ctx=c.getContext('2d');function f(){ctx.fillRect(Math.random()*10,0,2,2);requestAnimationFrame(f)}f();</script>
+    </body></html>"""
+    d = _write({"index.html": html}, "gate_missing_sections")
+    m = evaluate(d, structure=["navbar", "hero", "logo_bar", "stats", "features",
+                               "integrations", "social_proof", "faq", "cta", "footer"])
+    # pese a checks técnicos altos, el gate capa el total
+    assert "structure" in m["gates"] and m["gates"]["structure"]
+    assert m["total"] <= 40, m["total"]
+    # pero los ejes por separado no se degradan por el gate
+    assert m["seo"] > 60
+
+
+def test_blocking_gate_inactive_when_all_sections_present():
+    html = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>Corto</title></head>
+    <body>
+    <nav class="navbar"></nav><section class="hero"><h1>Único</h1></section>
+    <section class="logo-bar"></section><section id="stats"></section>
+    <section id="features"></section><section id="integrations"></section>
+    <section class="testimonial"></section><section id="faq"></section>
+    <a class="cta" href="#cta"></a><footer></footer></body></html>"""
+    d = _write({"index.html": html}, "gate_all_sections")
+    m = evaluate(d, structure=["navbar", "hero", "logo_bar", "stats", "features",
+                               "integrations", "social_proof", "faq", "cta", "footer"])
+    assert not m["gates"], m["gates"]
+    assert m["structure"] == 100
+
+
 def test_subdir_not_evaluated():
     """Archivos HTML/CSS/JS en subdirectorios NO inflan el contexto de evaluación."""
     html_root = """<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">

@@ -56,9 +56,22 @@ CREATE TABLE IF NOT EXISTS tree_nodes (
     description TEXT,
     PRIMARY KEY(run_id, node_id)
 );
+CREATE TABLE IF NOT EXISTS harness_edits (
+    id         TEXT PRIMARY KEY,
+    run_id     TEXT,
+    component  TEXT,
+    file       TEXT,
+    before     TEXT,
+    after      TEXT,
+    mode       TEXT,
+    plan       TEXT,
+    decision   TEXT,
+    ts         TEXT
+);
 CREATE INDEX IF NOT EXISTS idx_lessons_run ON lessons(run_id);
 CREATE INDEX IF NOT EXISTS idx_exp_run ON experiments(run_id);
 CREATE INDEX IF NOT EXISTS idx_tree_run ON tree_nodes(run_id);
+CREATE INDEX IF NOT EXISTS idx_he_run ON harness_edits(run_id);
 """
 
 
@@ -70,7 +83,7 @@ class MemoryDB:
     def __init__(self, path: Path | None = None):
         self.path = path or PATHS["memory"] / "memory.db"
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(self.path)
+        self.conn = sqlite3.connect(self.path, timeout=10)
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript(SCHEMA)
         # migración: columnas nuevas si la DB es anterior
@@ -207,6 +220,51 @@ class MemoryDB:
 
     def count_nodes(self) -> int:
         return self.conn.execute("SELECT COUNT(*) FROM tree_nodes").fetchone()[0]
+
+    # --- harness_edits (meta-evolución acotada) ---
+    def add_harness_edit(self, proposal_id: str, run_id: str, component: str,
+                         file: str, before: str, after: str, mode: str,
+                         plan: str, decision: str = "pending") -> None:
+        self.conn.execute(
+            "INSERT INTO harness_edits (id, run_id, component, file, before, after, mode, plan, decision, ts) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (proposal_id, run_id, component, file, before, after, mode, plan, decision, _now()),
+        )
+        self.conn.commit()
+
+    def harness_edits(self, decision: str | None = None, run_id: str | None = None,
+                      limit: int = 100) -> list[dict]:
+        sql = "SELECT * FROM harness_edits"
+        where, args = [], []
+        if decision:
+            where.append("decision=?")
+            args.append(decision)
+        if run_id:
+            where.append("run_id=?")
+            args.append(run_id)
+        if where:
+            sql += " WHERE " + " AND ".join(where)
+        sql += f" ORDER BY ts ASC LIMIT {int(limit)}"
+        rows = self.conn.execute(sql, args).fetchall()
+        return [dict(r) for r in rows]
+
+    def get_harness_edit(self, proposal_id: str) -> dict | None:
+        row = self.conn.execute("SELECT * FROM harness_edits WHERE id=?", (proposal_id,)).fetchone()
+        return dict(row) if row else None
+
+    def set_harness_edit_decision(self, proposal_id: str, decision: str) -> None:
+        self.conn.execute(
+            "UPDATE harness_edits SET decision=? WHERE id=?",
+            (decision, proposal_id),
+        )
+        self.conn.commit()
+
+    def count_harness_edits(self, decision: str | None = None) -> int:
+        if decision:
+            return self.conn.execute(
+                "SELECT COUNT(*) FROM harness_edits WHERE decision=?", (decision,)
+            ).fetchone()[0]
+        return self.conn.execute("SELECT COUNT(*) FROM harness_edits").fetchone()[0]
 
     def close(self) -> None:
         self.conn.close()

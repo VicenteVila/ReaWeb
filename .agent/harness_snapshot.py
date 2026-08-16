@@ -36,7 +36,7 @@ def _iter_harness_files() -> list[tuple[str, bytes]]:
         if not base.exists():
             continue
         for p in sorted(base.rglob("*")):
-            if p.is_file():
+            if p.is_file() and ".proposals" not in p.parts:
                 rel = str(p.relative_to(PATHS["root"]))
                 try:
                     out.append((rel, p.read_bytes()))

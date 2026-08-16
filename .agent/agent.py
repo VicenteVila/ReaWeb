@@ -350,6 +350,7 @@ class Agent:
                 tools=registry.schemas(),
                 history=history_slice,
             )
+            self._sync_budget_cost()
 
             self.history.append({"role": "user", "parts": [{"text": prompt}]})
 
@@ -390,6 +391,7 @@ class Agent:
                 )
                 if call.name == "generate_candidate" and node_id is not None:
                     self._snapshot(node_id)
+            self._sync_budget_cost()
 
             # verificamos si tras ejecutar tools el presupuesto pide stop
             if self.budget.done():
@@ -466,6 +468,14 @@ class Agent:
     def _current_best_score(self) -> float:
         best = self.tree.best()
         return float(best.metrics.get("total", 0.0)) if best else 0.0
+
+    def _sync_budget_cost(self) -> None:
+        """Refleja en el presupuesto el coste acumulado del LLM (llamadas del
+        agente principal + subagentes), activando max_cost_usd."""
+        budget_cost = getattr(self.budget, "cost_so_far", 0.0)
+        llm_cost = getattr(self.llm, "cost_so_far", 0.0)
+        if llm_cost > budget_cost:
+            self.budget.add_turn_cost(llm_cost - budget_cost)
 
     def _final_summary(self) -> str:
         best = self.tree.best()

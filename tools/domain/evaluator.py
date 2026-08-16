@@ -419,6 +419,16 @@ WEIGHTS = {
 }
 
 
+def _apply_blocking_gates(total: int, gates: dict, ceiling: int = None) -> int:
+    """Capa el total si algún gate bloqueante está activo (Eq. 8 del paper:
+    un P0 gate impone un techo a la puntuación aunque el resto de ejes puntúe alto)."""
+    if not gates:
+        return total
+    from config import BLOCKING_CEILING
+    cap = ceiling if ceiling is not None else BLOCKING_CEILING
+    return min(total, cap)
+
+
 def evaluate(project_dir: str | Path, requirements: list[str] | None = None, weights: dict | None = None,
              structure: list[str] | None = None) -> dict:
     """Evalúa un proyecto web estático. Devuelve métricas por categoría y total.
@@ -497,6 +507,14 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
     den = sum(w.get(k, 1.0) for k in axes)
     total = int(num / den) if den else 0
 
+    # GATES BLOQUEANTES (anti-trampa ejecutable, no solo prompt). Un candidato
+    # que omite secciones obligatorias de la tarea queda CAPADO por encima, aunque
+    # el resto de ejes puntúe alto. La estructura es gate P0: ceiling = 40.
+    gates: dict[str, list[str]] = {}
+    if structure_fails:
+        gates["structure"] = structure_fails
+    total = _apply_blocking_gates(total, gates)
+
     return {
         "total": total,
         "seo": seo,
@@ -507,6 +525,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
         "visual": visual,
         "task": task,
         "structure": structure_score,
+        "gates": gates,
         "failures": {
             "seo": seo_fails,
             "a11y": a11y_fails,

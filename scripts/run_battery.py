@@ -141,6 +141,8 @@ def main():
     parser.add_argument("--model", default=None, help="Modelo Gemini")
     parser.add_argument("--url", default="", help="URL de referencia para todas las runs (adaptar como H0)")
     parser.add_argument("--quiet", action="store_true", help="No imprimir detalle de cada run")
+    parser.add_argument("--gate", action="store_true",
+                        help="Ejecutar el acceptance gate tras la batería sobre propuestas pending")
     args = parser.parse_args()
 
     if args.config:
@@ -170,6 +172,10 @@ def main():
     print("\n" + "=" * 60)
     print(report)
     print(f"\nReporte guardado en: {out}")
+
+    if args.gate:
+        from scripts.gate_harness_edit import main as gate_main
+        gate_main()
 
 
 if __name__ == "__main__":

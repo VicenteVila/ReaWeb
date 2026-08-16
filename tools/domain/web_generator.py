@@ -316,6 +316,12 @@ class GenerateCandidate(Tool):
             f"resp={metrics.get('responsive')} bp={metrics.get('best_practices')} "
             f"visual={metrics.get('visual')}{task_metrics}{struct_metrics}"
         )
+        gate_lines = []
+        for cat, lst in (metrics.get("gates") or {}).items():
+            if lst:
+                gate_lines.append(f"{cat}: {', '.join(lst)}")
+        if gate_lines:
+            summary += "\nGATE BLOQUEANTE (total capado): faltan secciones obligatorias — " + "; ".join(gate_lines)
         if vuln_files:
             summary += " [PARSEO_FALLBACK]"
         return f"OK: {len(files)} archivos generados. {summary}"
@@ -375,11 +381,17 @@ class AuditPage(Tool):
                 fail_lines.append(f"{cat}: {', '.join(lst)}")
         task_part = f" task={result.get('task')}" if result.get('task') is not None else ""
         struct_part = f" structure={result.get('structure')}" if result.get('structure') is not None else ""
+        gate_lines = []
+        for cat, lst in (result.get("gates") or {}).items():
+            if lst:
+                gate_lines.append(f"{cat}: {', '.join(lst)}")
         res = (
             f"total={result.get('total')} | seo={result.get('seo')} a11y={result.get('a11y')} "
             f"perf={result.get('performance')} resp={result.get('responsive')} "
             f"bp={result.get('best_practices')} visual={result.get('visual')}{task_part}{struct_part} | verificación={result.get('verification')}"
         )
+        if gate_lines:
+            res += "\nGATE BLOQUEANTE (total capado): faltan secciones obligatorias — " + "; ".join(gate_lines)
         if fail_lines:
             res += "\nFallos detectados:\n" + "\n".join(fail_lines)
         res += f"\nArchivos: {result.get('files')}"

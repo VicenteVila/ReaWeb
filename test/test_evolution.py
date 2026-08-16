@@ -72,6 +72,26 @@ def test_db_run_has_harness_columns():
     db.close()
 
 
+def test_db_has_harness_edits_table():
+    """F1: la tabla harness_edits existe y guarda propuestas pending."""
+    db = MemoryDB()
+    tables = {r[0] for r in db.conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    assert "harness_edits" in tables
+    db.add_harness_edit("t-ed1", "t-r1", "context_memory", "generated/skills.yaml",
+                        before="b", after="a", mode="replace", plan="plan")
+    e = db.get_harness_edit("t-ed1")
+    assert e["decision"] == "pending"
+    assert e["component"] == "context_memory"
+    pending = db.harness_edits(decision="pending", run_id="t-r1")
+    assert [x["id"] for x in pending] == ["t-ed1"]
+    db.set_harness_edit_decision("t-ed1", "accepted")
+    assert db.get_harness_edit("t-ed1")["decision"] == "accepted"
+    assert db.count_harness_edits("accepted") >= 1
+    db.conn.execute("DELETE FROM harness_edits WHERE id='t-ed1'")
+    db.conn.commit()
+    db.close()
+
+
 def test_backfill_computes_delta():
     """El backfill asigna delta y node_id a generate_candidate/audit_page."""
     run_id = "tmp-evo-backfill"
@@ -130,7 +150,7 @@ if __name__ == "__main__":
     for fn in [test_snapshot_hashes_files, test_snapshot_includes_docs_and_memory,
                test_lessons_hash_derived_from_db, test_diff_snapshots_detects_change,
                test_task_hash_stable_and_normalized, test_db_run_has_harness_columns,
-               test_backfill_computes_delta]:
+               test_db_has_harness_edits_table, test_backfill_computes_delta]:
         fn()
         print(f"OK {fn.__name__}")
     print("Todos los tests de evolución OK")

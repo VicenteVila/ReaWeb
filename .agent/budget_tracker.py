@@ -73,6 +73,11 @@ class BudgetTracker:
             return f"Presupuesto de turnos agotado ({self.max_turns})."
         if self.cost_so_far >= self.max_cost_usd:
             return f"Presupuesto de coste agotado (${self.max_cost_usd:.2f})."
+        if self._flat_turns >= self.stagnation_hard_stop:
+            return (
+                f"Estancamiento: {self._flat_turns} turnos sin mejora "
+                f">{self.min_improvement_percent}%. Hard stop de stagnación."
+            )
         if self.elapsed_minutes() >= self.max_wall_time_minutes:
             return f"Tiempo agotado ({self.max_wall_time_minutes} min)."
         return None

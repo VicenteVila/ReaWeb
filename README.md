@@ -6,12 +6,24 @@ páginas web iterativamente (genera candidato → audita → mejora) y, además,
 
 Basado en:
 
-- **ReASearch** ("The Optimizer Is the Agent: Reasoning-Driven Search across Prompts,
-  Programs, and ML Workflows") — el agente es el optimizador: sin loop externo,
-  re-emisión de estado cada turno, memoria persistente y meta-evolución.
+- **ReASearch** — Li, J., Liu, B., Xu, C., Wang, Y., He, Y., Wang, Z., Liu, Q.,
+  & Yao, Z. (2026). *The Optimizer Is the Agent: Reasoning-Driven Search across
+  Prompts, Programs, and ML Workflows*. COLM 2026.
+  https://doi.org/10.48550/arXiv.2608.06714 — el agente es el optimizador: sin
+  loop externo, re-emisión de estado cada turno, memoria persistente y
+  meta-evolución.
 - **Propuesta Arquitectura de Agente Web** — diseño de carpetas, stack y estrategia
   free-tier.
 - **Docs/** — reglas globales, skills, workflows y 6 arquetipos de web development.
+
+Documentación del diseño (para humanos):
+
+- [`Docs/REASONING.md`](Docs/REASONING.md) — por qué y cómo se construyó el agente
+  (decisiones de diseño + historial real de desarrollo).
+- [`Docs/READAPTATION.md`](Docs/READAPTATION.md) — adaptación de ReASearch al
+  dominio web, con citación formal (APA + BibTeX) y tabla de mapeo.
+- [`Docs/EVOLUTION.md`](Docs/EVOLUTION.md) — cómo el aprendizaje se convierte en
+  nuevas reglas del harness y cómo se mide la evolución.
 
 ## Stack
 

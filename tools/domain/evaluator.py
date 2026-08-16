@@ -288,7 +288,21 @@ def extract_requirements(task: str, max_items: int = 16) -> list[str]:
                 "Esos", "Esas", "Incluye", "Incluyen", "Dise", "Diseño", "Descripción",
                 "Enlace", "Enlaces", "Muestra", "Muestran", "Expandido", "Expandidos",
                 "Expansión", "Expansion", "Leyenda", "Footer", "Dark", "Light",
-                "Local", "Locales", "Ruta", "Rutas", "PáginaLocal", "PaginaLocal"}
+                "Local", "Locales", "Ruta", "Rutas", "PáginaLocal", "PaginaLocal",
+                "MEJORA", "Mejora", "TICA", "Estetica", "Estética", "MUTA", "Muta",
+                "SIEMPRE", "Siempre", "CORRECCIONES", "Correcciones", "Exigidas",
+                "Exigidos", "DIBUJA", "Dibuja", "ENLAZA", "Enlaza", "AUMENTA",
+                "Aumenta", "DISTRIBUYE", "Distribuye", "FEEDBACK", "REQUISITOS",
+                "Requisitos", "REQUISITO", "Requisito", "CONSERVA", "Conserva",
+                "EXIGIDAS", "Exigida", "ARISTAS", "Aristas", "VISIBLES", "Visibles",
+                "Nada", "NADA", "Crítico", "Critico", "Diseñador", "Disenador",
+                "Screenshot", "screenshot", "VLM", "Vlm", "LEGIBILIDAD", "Legibilidad",
+                "HOVER", "DISE", "Storage", "LocalStorage", "Localstorage",
+                "Despu", "Despues", "Después", "Verificar", "Detectó", "Detecto",
+                "Resolvieron", "Resuelto", "Resueltos", "Fallo", "Fallos",
+                "Críticos", "Criticos", "Detectados", "generar", "GENERE",
+                "Escala", "Reduce", "JERARQU", "VISUAL", "Jerarqu", "Jerarquía",
+                "Jerarquia", "Contraste", "Peso", "Bold", "Negro", "Blanco"}
         for m in re.finditer(r"([A-Z][A-Za-z0-9]*(?:-[A-Za-z0-9]+)*)", task):
             name = m.group(1)
             if name in seen or name in skip or len(name) < 4:
@@ -554,3 +568,38 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
             "total_img_kb": round(img_bytes / 1024, 1),
         },
     }
+
+
+def blend_visual_total(metrics: dict, vlm: int | None, weights: dict | None = None) -> int | None:
+    """Recombina el total de un nodo cuando llega la crítica VLM estética.
+
+    El axis 'visual' (proxy estático) se sustituye por la mejor señal disponible:
+    si hay score VLM real, se usa max(visual_estatico, vlm). Así la búsqueda
+    recompensa mejoras estéticas reales (Eq. AutoDesign: feedback P0 guía la
+    siguiente mutación) en lugar de ignorarlas. Devuelve None si no hay total.
+    """
+    total = metrics.get("total")
+    if total is None:
+        return None
+    if vlm is None:
+        return total
+    visual_static = metrics.get("visual") or 0
+    axes = {
+        "seo": metrics.get("seo"),
+        "a11y": metrics.get("a11y"),
+        "performance": metrics.get("performance"),
+        "responsive": metrics.get("responsive"),
+        "best_practices": metrics.get("best_practices"),
+        "visual": max(visual_static, vlm),
+    }
+    for key in ("task", "structure"):
+        if metrics.get(key) is not None:
+            axes[key] = metrics[key]
+    w = {**WEIGHTS, **(weights or {})}
+    num = sum(axes[k] * w.get(k, 1.0) for k in axes)
+    den = sum(w.get(k, 1.0) for k in axes)
+    blended = int(num / den) if den else 0
+    gates = metrics.get("gates") or {}
+    if gates:
+        blended = _apply_blocking_gates(blended, gates)
+    return blended

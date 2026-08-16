@@ -256,20 +256,29 @@ class Agent:
         """
         import re
 
-        # audit_visual: feedback estético VLM, no participa en el total
+        # audit_visual: feedback estético VLM. Recombina el total del nodo
+        # sustituyendo el proxy visual estático por la mejor señal (max).
         if call.name == "audit_visual":
             m = re.search(r"visual_vlm=(\d+)", result)
             if not m:
                 return None
             vlm = int(m.group(1))
             node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
+            blended = None
             if node_id and node_id in self.tree.nodes:
                 existing = self.tree.nodes[node_id]
                 existing.metrics["vlm"] = vlm
+                from tools.domain.evaluator import blend_visual_total
+                blended = blend_visual_total(existing.metrics, vlm)
+                if blended is not None:
+                    existing.metrics["total"] = blended
+                    existing.metrics["visual"] = max(
+                        existing.metrics.get("visual") or 0, vlm)
                 existing.description = result[:200]
                 self.tree.add(existing)  # persiste en JSON y en DB (upsert_node)
             self._log("eval", {"candidate": node_id, "tool": "audit_visual",
-                               "vlm": vlm, "version": "visual"})
+                               "vlm": vlm, "total": blended,
+                               "version": "visual"})
             return node_id
 
         if call.name not in ("generate_candidate", "audit_page"):

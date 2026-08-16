@@ -8,6 +8,27 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.domain.visual_critic import AuditVisual, find_chrome, render_screenshot
+from tools.domain.evaluator import blend_visual_total
+
+
+def test_blend_visual_total_uses_max_when_vlm_higher():
+    m = {"total": 79, "seo": 75, "a11y": 80, "performance": 80,
+         "responsive": 100, "best_practices": 80, "visual": 46,
+         "task": 91, "structure": 100, "gates": {}}
+    assert blend_visual_total(m, 65) == 83
+    assert blend_visual_total(m, 75) == 85
+    assert blend_visual_total(m, None) == 79
+
+
+def test_blend_visual_total_keeps_blocking_gate():
+    m = {"total": 79, "seo": 75, "a11y": 80, "performance": 80,
+         "responsive": 100, "best_practices": 80, "visual": 46,
+         "task": 91, "structure": 100, "gates": {"structure": ["topics"]}}
+    assert blend_visual_total(m, 90) == 40
+
+
+def test_blend_visual_total_requires_total():
+    assert blend_visual_total({"visual": 50}, 60) is None
 
 
 def test_parse_clean_json():
@@ -104,7 +125,7 @@ def test_audit_visual_returns_error_without_html(tmp_path, monkeypatch):
 
 
 def test_handle_eval_result_registers_vlm_axis(tmp_path, monkeypatch):
-    """El handler del agente añade el axis vlm al nodo actual sin crear hipótesis."""
+    """El handler del agente añade el axis vlm al nodo y recombina el total."""
     from agent.agent import Agent
     from agent.state import TreeNode
 
@@ -121,9 +142,13 @@ def test_handle_eval_result_registers_vlm_axis(tmp_path, monkeypatch):
     agent.tree.path = run_dir / "search_tree.json"
     agent.tree.nodes = {}
 
-    # seed: H0 como nodo actual
+    # seed: H0 como nodo actual con ejes completos (como devuelve evaluate())
     agent.tree.add(TreeNode(id="H0", parent=None, action="seed_workspace",
-                            metrics={"total": 87}, status="best_branch"))
+                            metrics={"total": 79, "seo": 75, "a11y": 80,
+                                     "performance": 80, "responsive": 100,
+                                     "best_practices": 80, "visual": 46,
+                                     "task": 91, "structure": 100, "gates": {}},
+                            status="best_branch"))
     agent.hypothesis_count = 1
 
     class _Call:
@@ -133,6 +158,8 @@ def test_handle_eval_result_registers_vlm_axis(tmp_path, monkeypatch):
     node = agent._handle_eval_result(_Call(), "visual_vlm=63 | issues: x\nsugerencias: y")
     assert node == "H0"
     assert agent.tree.nodes["H0"].metrics.get("vlm") == 63
+    assert agent.tree.nodes["H0"].metrics.get("visual") == 63
+    assert agent.tree.nodes["H0"].metrics.get("total") == 83
     assert agent.hypothesis_count == 1, "no debe crear hipótesis nueva"
 
     import shutil

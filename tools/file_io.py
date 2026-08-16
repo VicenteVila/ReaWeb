@@ -7,21 +7,29 @@ from pathlib import Path
 from config import PATHS
 from tools.base import Tool
 
-ALLOWED_ROOTS = [PATHS["workspace"], PATHS["runs"], PATHS["memory"], PATHS["domain"], PATHS["templates"]]
+ALLOWED_ROOTS = [PATHS["root"], PATHS["workspace"], PATHS["runs"], PATHS["memory"], PATHS["domain"], PATHS["templates"]]
 
 
 def _resolve(path_str: str) -> Path:
     p = Path(path_str)
     if not p.is_absolute():
         s = str(p)
-        if s.startswith("domain/") or s.startswith("domain\\"):
-            p = PATHS["domain"] / s.split("/", 1)[1]
-        elif s.startswith("harness/") or s.startswith("harness\\"):
-            p = PATHS["root"] / s.split("/", 1)[1]
-        elif s in ("domain", ".") or s.startswith(("runs/", "memory/")):
-            p = PATHS["domain"] if s == "domain" else p
-            p = (PATHS["runs"] / p) if s.startswith("runs/") else p
-            p = (PATHS["memory"] / p) if s.startswith("memory/") else p
+        if s.startswith("domain/"):
+            p = PATHS["domain"] / s[len("domain/"):]
+        elif s.startswith("harness/"):
+            p = PATHS["root"] / s[len("harness/"):]
+        elif s.startswith("workspace/"):
+            p = PATHS["workspace"] / s[len("workspace/"):]
+        elif s.startswith("runs/"):
+            p = PATHS["runs"] / s[len("runs/"):]
+        elif s.startswith("memory/"):
+            p = PATHS["memory"] / s[len("memory/"):]
+        elif s.startswith("templates/"):
+            p = PATHS["templates"] / s[len("templates/"):]
+        elif s in ("domain", "workspace", "runs", "memory", "templates"):
+            p = PATHS[s]
+        elif s in (".", "harness"):
+            p = PATHS["root"]
         else:
             p = PATHS["current"] / p
     p = p.resolve()

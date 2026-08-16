@@ -305,6 +305,10 @@ def test_seed_from_workspace_registers_h0(tmp_path, monkeypatch):
     finally:
         import shutil
         shutil.rmtree(run_dir, ignore_errors=True)
+        # IMPORTANTE: no dejar el candidato de prueba en el workspace REAL, o el
+        # siguiente arranque del agente lo tomará como semilla (persistencia).
+        for f in ("index.html", "styles.css", "app.js"):
+            (wc / f).unlink(missing_ok=True)
 
 
 def test_seed_from_workspace_noop_without_candidate(tmp_path):

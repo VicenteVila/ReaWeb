@@ -119,6 +119,25 @@ class LLM:
             tools=tool_defs,
         )
         contents = list(history or []) + [prompt] if history else prompt
+        return self._complete(contents, config)
+
+    def generate_vision(
+        self,
+        prompt: str,
+        image_bytes: bytes,
+        mime_type: str = "image/png",
+        temperature: float = 0.3,
+    ) -> LLMResponse:
+        """Envío multimodal: imagen (screenshot) + prompt al VLM. Sin tools, salida
+        de texto. La imagen se adjunta como parte junto al texto (crítico estético
+        del paper AutoDesign)."""
+        image_part = types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
+        text_part = types.Part.from_text(text=prompt)
+        config = types.GenerateContentConfig(temperature=temperature)
+        return self._complete([text_part, image_part], config)
+
+    def _complete(self, contents, config) -> LLMResponse:
+        """Bucle interno: fallback de modelos + parseo de respuesta + coste real."""
         last_err = None
         for model in self._chain:
             try:

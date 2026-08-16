@@ -245,16 +245,35 @@ class Agent:
         return result, {}
 
     def _handle_eval_result(self, call, result: str) -> str | None:
-        """Interpreta métricas de generate_candidate o audit_page y actualiza el
-        árbol de búsqueda en términos de hipótesis H0..Hn.
+        """Interpreta métricas de generate_candidate, audit_page o audit_visual y
+        actualiza el árbol de búsqueda en términos de hipótesis H0..Hn.
 
         - generate_candidate: crea una NUEVA hipótesis H<i> (baseline H0 la primera).
         - audit_page: CONFIRMA (doble verificación) la hipótesis actual, actualizando
           sus métricas sin crear nodos duplicados.
+        - audit_visual: crítica VLM estética. Añade el axis `vlm` (0-100) al nodo
+          actual SIN crear hipótesis ni tocar el total (es feedback de diseño).
         """
+        import re
+
+        # audit_visual: feedback estético VLM, no participa en el total
+        if call.name == "audit_visual":
+            m = re.search(r"visual_vlm=(\d+)", result)
+            if not m:
+                return None
+            vlm = int(m.group(1))
+            node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
+            if node_id and node_id in self.tree.nodes:
+                existing = self.tree.nodes[node_id]
+                existing.metrics["vlm"] = vlm
+                existing.description = result[:200]
+                self.tree.add(existing)  # persiste en JSON y en DB (upsert_node)
+            self._log("eval", {"candidate": node_id, "tool": "audit_visual",
+                               "vlm": vlm, "version": "visual"})
+            return node_id
+
         if call.name not in ("generate_candidate", "audit_page"):
             return None
-        import re
 
         m = re.search(r"total=(\d+)", result)
         if not m:

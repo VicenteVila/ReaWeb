@@ -29,6 +29,11 @@ en el directorio domain/).
 10. GATES BLOQUEANTES: un candidato que OMITE secciones obligatorias de la tarea
     tiene su total CAPADO (máx 40), aunque el resto de ejes puntúe alto. Ese
     ceiling se aplica al evaluar, así que repara las secciones antes de seguir.
+11. CAPA ESTÉTICA (crítico VLM): después de generar y auditar un candidato, usa
+    audit_visual para que el VLM critique el screenshot (score 0-100 + issues +
+    sugerencias). Incorpora esas sugerencias en el objective del siguiente
+    generate_candidate para que las mejoras VISUALES se acumulen (centrado,
+    legibilidad, equilibrio, contraste). No regeneres desde cero: muta.
 
 # PRINCIPIO ANTI-TRAMPAS
 - El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página

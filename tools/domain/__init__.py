@@ -12,6 +12,7 @@ from tools.domain.repo_topics import FetchRepoTopics
 from tools.domain.meta_editor import EditSkill, ReviewHarness
 from tools.domain.bundle_analyzer import AnalyzeProject
 from tools.domain.deployer import DeployPreview, GitSnapshot
+from tools.domain.visual_critic import AuditVisual
 
 
 def build_domain_registry(llm, archetype: str = "", task: str = "", rules: str = "", stack: str = "") -> ToolRegistry:
@@ -27,6 +28,7 @@ def build_domain_registry(llm, archetype: str = "", task: str = "", rules: str =
             GenerateCandidate(llm=llm, archetype=archetype, task=task, rules=rules, stack=stack, requirements=requirements),
             AuditPage(requirements=requirements, task=task),
             AnalyzeProject(),
+            AuditVisual(llm=llm),
             UpdateLessons(),
             SelectFinal(),
             EditSkill(),

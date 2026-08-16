@@ -15,7 +15,7 @@ from agent.llm import LLMResponse
 from agent.memory_db import MemoryDB
 from agent.state import ContextManager, Experiment, Memory, SearchTree, TreeNode
 from agent import harness_snapshot
-from config import CONTEXT_DEFAULTS, ensure_dirs, PATHS
+from config import CONTEXT_DEFAULTS, ensure_dirs, LESSON_AUTO, PATHS
 
 
 class Agent:
@@ -51,6 +51,8 @@ class Agent:
         self.budget = BudgetTracker(max_turns=max_turns, max_cost_usd=max_cost_usd)
         self.db = MemoryDB()
         self.memory = Memory(run_dir=self.run_dir, db=self.db, run_id=self.run_id)
+        self._auto_lesson_keys: set[tuple] = set()
+        self._auto_lesson_count = 0
         self.tree = SearchTree(
             path=self.run_dir / "search_tree.json", run_id=self.run_id, db=self.db
         )
@@ -348,6 +350,41 @@ class Agent:
         )
         return node_id
 
+    def _maybe_auto_lesson(self, call, delta: float, node_id: str | None,
+                           result: str) -> None:
+        """Refuerzo automático de aprendizaje: si una tool de optimización produce
+        una mejora o regresión >= umbral (LESSON_AUTO), registra una lección
+        worked/didnt deduplicada en la run, sin depender de que el LLM llame a
+        update_lessons. Es el criterio objetivo que materializa EVOLUTION.md."""
+        if call.name not in ("generate_candidate", "audit_page", "audit_visual"):
+            return
+        if delta == 0 or abs(delta) < LESSON_AUTO["delta_threshold"]:
+            return
+        if self._auto_lesson_count >= LESSON_AUTO["max_per_run"]:
+            return
+
+        category = "worked" if delta > 0 else "didnt"
+        # Resumen corto del resultado (métricas) para dar contexto a la lección.
+        import re
+        m = re.search(r"total=(\d+)", result)
+        total = f"total={m.group(1)}" if m else ""
+        snippet = (result or "").strip().replace("\n", " ")[:140]
+        content = (
+            f"[auto:{call.name}] delta {delta:+.1f} ({total}) en {node_id or 'H?'}: "
+            f"{snippet}"
+        )
+        key = (category, call.name, snippet[:80])
+        if key in self._auto_lesson_keys:
+            return
+        self._auto_lesson_keys.add(key)
+        self._auto_lesson_count += 1
+
+        text = f"## What {category} - {datetime.now().isoformat(timespec='seconds')}\n{content}"
+        self.memory.append_incremental(text)
+        self._log("system", {"event": "auto_lesson", "category": category,
+                             "delta": f"{delta:+.1f}", "tool": call.name,
+                             "node": node_id})
+
     def _seed_from_workspace(self) -> None:
         """Si workspace/current tiene un candidato al arrancar, lo evalúa y lo
         registra como H0 baseline en el árbol de búsqueda (persistencia entre
@@ -463,6 +500,7 @@ class Agent:
                 )
                 if call.name == "generate_candidate" and node_id is not None:
                     self._snapshot(node_id)
+                self._maybe_auto_lesson(call, delta, node_id, result)
             self._sync_budget_cost()
 
             # verificamos si tras ejecutar tools el presupuesto pide stop

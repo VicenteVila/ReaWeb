@@ -53,6 +53,15 @@ CONTEXT_DEFAULTS = {
     "search_tree_max_nodes": 15,
 }
 
+# Auto-lecciones: cuando una tool de optimización produce un delta (mejora o
+# regresión del mejor score) mayor o igual a este umbral, el harness registra
+# una lección worked/didnt automáticamente en la run (deduplicada por contenido).
+# Es el refuerzo que no depende de que el LLM se acuerde de llamar a update_lessons.
+LESSON_AUTO = {
+    "delta_threshold": 4.0,   # |delta| >= umbral -> auto-lección
+    "max_per_run": 8,         # tope de auto-lecciones por run para no saturar
+}
+
 # Componentes funcionales del harness (mapeo AutoDesign, §2.1). Cada meta-edición
 # debe apuntar a UN componente para mantener el crédito atribuible de las ganancias.
 # Solo los componentes con prefijos en domain/ son editables por el agente; el resto

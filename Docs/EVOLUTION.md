@@ -68,7 +68,26 @@ score del candidato renderizado guía la siguiente mutación de
   `structure`**: el eje estético pesa el doble, coherente con el énfasis visual
   de AutoDesign.
 
-### 2.5 Medición de la evolución (cómo se sabe que hubo cambio)
+### 2.5 Auto-lecciones (criterio objetivo de aprendizaje)
+
+El aprendizaje de lecciones **no depende solo de que el agente se acuerde** de
+llamar a `update_lessons`: el harness registra automáticamente una lección
+cuando una tool de optimización (`generate_candidate`, `audit_page`,
+`audit_visual`) produce un **delta ≥ umbral** sobre el mejor score de la run
+(`LESSON_AUTO` en `config.py`, default 4.0). El criterio:
+
+- `delta > +4` → lección `worked` ("esta mutación funcionó").
+- `delta < -4` → lección `didnt` ("esta mutación regresó el score").
+- Se deduplica por `(run_id, category, content)` y se limita a
+  `max_per_run` (default 8) para no saturar la memoria.
+- Se persiste vía `Memory.append_incremental` (mismo camino que
+  `update_lessons`) y se loguea el evento `auto_lesson` en el transcript.
+
+Este refuerzo materializa el criterio 2 de la sección 3 ("Δ consistente"): el
+harness captura los deltas significativos aunque el LLM no los documente, y esas
+lecciones se inyectan en runs futuras.
+
+### 2.6 Medición de la evolución (cómo se sabe que hubo cambio)
 
 - Al abrir la run se toma un **snapshot del harness**: hash de `domain/`,
   `tools/`, `.agent/prompts/` y `Docs/` + hash de las lecciones de la DB

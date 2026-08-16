@@ -260,6 +260,75 @@ def test_llm_estimate_cost():
     assert c2 == 1.25
 
 
+class _FakeLLM:
+    model = "fake"
+
+
+def _seed_agent(tmp_path, task="grafo de repos", archetype="knowledge-graph"):
+    from agent.agent import Agent
+
+    run_dir = tmp_path / "runs" / "seed-test"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    agent = Agent(_FakeLLM(), archetype_name=archetype, task=task,
+                  run_dir=run_dir, verbose=False, max_turns=5)
+    agent.db = None
+    agent.tree.db = None
+    agent.tree.path = run_dir / "search_tree.json"
+    agent.tree.nodes = {}
+    return agent, run_dir
+
+
+def test_seed_from_workspace_registers_h0(tmp_path, monkeypatch):
+    """PERSISTENCIA: si workspace/current tiene candidato al arrancar, se registra
+    como H0 baseline (no se regenera desde cero)."""
+    wc = PATHS["current"]
+    wc.mkdir(parents=True, exist_ok=True)
+    (wc / "index.html").write_text(
+        "<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+        "<title>Semilla</title></head><body><h1>Grafo</h1>"
+        "<section class='graph-container'></section></body></html>"
+    )
+    (wc / "styles.css").write_text("body{color:red}")
+    (wc / "app.js").write_text("const svg=document.getElementById('graph');")
+
+    agent, run_dir = _seed_agent(tmp_path)
+    try:
+        agent._seed_from_workspace()
+        assert "H0" in agent.tree.nodes
+        n = agent.tree.nodes["H0"]
+        assert n.action == "seed_workspace"
+        assert n.metrics.get("total") is not None
+        assert agent.hypothesis_count == 1
+        assert agent.seeded is True
+        assert (run_dir / "candidates" / "H0" / "index.html").exists()
+    finally:
+        import shutil
+        shutil.rmtree(run_dir, ignore_errors=True)
+
+
+def test_seed_from_workspace_noop_without_candidate(tmp_path):
+    """Sin candidato previo en workspace, no se crea H0."""
+    wc = PATHS["current"]
+    wc.mkdir(parents=True, exist_ok=True)
+    had = (wc / "index.html").exists()
+    idx = wc / "index.html"
+    if had:
+        idx.rename(wc / "index.html.bak")
+
+    agent, run_dir = _seed_agent(tmp_path, archetype="landing-page", task="landing")
+    try:
+        agent._seed_from_workspace()
+        assert agent.tree.nodes == {}
+        assert agent.hypothesis_count == 0
+        assert not hasattr(agent, "seeded")
+    finally:
+        if had:
+            (wc / "index.html.bak").rename(wc / "index.html")
+        import shutil
+        shutil.rmtree(run_dir, ignore_errors=True)
+
+
 if __name__ == "__main__":
     import pytest
     sys.exit(pytest.main([__file__, "-q"]))

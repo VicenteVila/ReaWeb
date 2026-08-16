@@ -11,6 +11,16 @@
   (sirve de inspiración para H0, NO copies su contenido literal).
 {% endif %}
 
+{% if seeded %}
+### 🔁 PERSISTENCIA ENTRE RUNS (semilla detectada en workspace/current)
+- El candidato previo ya está registrado como **{{ best.id }}** con
+  total={{ best.metrics_summary.split('total=')[-1] }}.
+- El primer `generate_candidate` DEBE **MUTAR** este candidato (el código actual
+  se inyecta en su prompt como base a evolucionar), NO regenerar desde cero.
+- Si el objetivo es estético, conserva TODA la funcionalidad existente
+  (enlaces, hover, subnodos, temas) y mejora solo el diseño visual.
+{% endif %}
+
 {% if target_h %}
 ### 🎯 Objetivo de hipótesis (target-h={{ target_h }})
 - Hipótesis generadas hasta ahora: **{{ hypotheses_done }}/{{ target_h + 1 }}** (faltan H{{ hypotheses_done }}..H{{ target_h }}).

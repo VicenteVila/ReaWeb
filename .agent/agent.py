@@ -191,6 +191,7 @@ class Agent:
             archetype_name=self.archetype_name,
             task=self.task,
             initial_url=self.initial_url,
+            seeded=getattr(self, "seeded", False),
             turns_remaining=self.budget.turns_remaining(),
             turns_total=self.budget.max_turns,
             cost_so_far=self.budget.cost_so_far,
@@ -319,9 +320,52 @@ class Agent:
         )
         return node_id
 
+    def _seed_from_workspace(self) -> None:
+        """Si workspace/current tiene un candidato al arrancar, lo evalúa y lo
+        registra como H0 baseline en el árbol de búsqueda (persistencia entre
+        runs). Si no, no hace nada (la run genera H0 desde cero)."""
+        from tools.domain.evaluator import evaluate
+
+        src = PATHS["current"]
+        if not (src / "index.html").exists():
+            return
+        if self.tree.nodes:
+            return  # ya hay hipótesis (no re-seedar)
+
+        m = evaluate(src)
+        total = m.get("total")
+        if total is None:
+            return
+        metrics = {k: m[k] for k in ("seo", "a11y", "performance", "responsive",
+                                     "best_practices", "visual", "task", "structure")
+                   if k in m and m[k] is not None}
+        metrics["total"] = total
+        self.tree.add(TreeNode(
+            id="H0",
+            parent=None,
+            action="seed_workspace",
+            metrics=metrics,
+            status="best_branch",
+            description=f"Semilla: candidato previo de workspace/current (total={total})",
+        ))
+        self.hypothesis_count = 1
+        self.seeded = True
+        self._snapshot("H0")
+        self._log("eval", {"candidate": "H0", "tool": "seed_workspace",
+                           "total": total, "version": "seed"})
+        self._log("system", {"event": "seeded", "from": "workspace/current",
+                             "total": total,
+                             "note": "El candidato previo se registró como H0. Los próximos generate_candidate deben MUTARLO, no regenerar desde cero."})
+
     def run(self, registry, initial_url: str = "") -> str:
         self.budget.start()
         self._log("start", {"archetype": self.archetype_name, "task": self.task})
+
+        # PERSISTENCIA ENTRE RUNS: si workspace/current ya contiene un candidato
+        # (de una run previa o semilla), se evalúa y se registra como H0 baseline.
+        # Así el primer generate_candidate MUTA el candidato previo en vez de
+        # regenerarlo desde cero, y las mejoras visuales se acumulan entre runs.
+        self._seed_from_workspace()
 
         while True:
             self.turn += 1

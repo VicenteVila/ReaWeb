@@ -42,7 +42,7 @@ BUDGET_DEFAULTS = {
     "max_cost_usd": 5.0,
     "max_wall_time_minutes": 120,
     "stagnation_advisory": 3,
-    "stagnation_hard_stop": 7,
+    "stagnation_hard_stop": 12,
     "min_improvement_percent": 2.0,
 }
 

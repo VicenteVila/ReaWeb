@@ -258,6 +258,37 @@ class Agent:
         """
         import re
 
+        # audit_truth: juicio de verdad basado en datasets. Añade los axes
+        # `truth` (diseño VLM vs referencias reales) y `parts_ok` (partes
+        # integrantes conectadas) al nodo actual. Si hay design_score, recombina
+        # el total igual que audit_visual (max del proxy visual estático).
+        if call.name == "audit_truth":
+            m = re.search(r"diseño_vlm=(\d+)", result)
+            parts_ok = "partes=ok" in result
+            node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
+            design_score = int(m.group(1)) if m else None
+            blended = None
+            if node_id and node_id in self.tree.nodes:
+                existing = self.tree.nodes[node_id]
+                if design_score is not None:
+                    existing.metrics["truth"] = design_score
+                    from tools.domain.evaluator import blend_visual_total
+                    blended = blend_visual_total(existing.metrics, design_score)
+                    if blended is not None:
+                        existing.metrics["total"] = blended
+                        existing.metrics["visual"] = max(
+                            existing.metrics.get("visual") or 0, design_score)
+                if parts_ok:
+                    existing.metrics["parts_ok"] = 100
+                else:
+                    existing.metrics["parts_ok"] = 0
+                existing.description = result[:200]
+                self.tree.add(existing)
+            self._log("eval", {"candidate": node_id, "tool": "audit_truth",
+                               "truth": design_score, "total": blended,
+                               "parts_ok": parts_ok, "version": "truth"})
+            return node_id
+
         # audit_visual: feedback estético VLM. Recombina el total del nodo
         # sustituyendo el proxy visual estático por la mejor señal (max).
         if call.name == "audit_visual":
@@ -356,7 +387,7 @@ class Agent:
         una mejora o regresión >= umbral (LESSON_AUTO), registra una lección
         worked/didnt deduplicada en la run, sin depender de que el LLM llame a
         update_lessons. Es el criterio objetivo que materializa EVOLUTION.md."""
-        if call.name not in ("generate_candidate", "audit_page", "audit_visual"):
+        if call.name not in ("generate_candidate", "audit_page", "audit_visual", "audit_truth"):
             return
         if delta == 0 or abs(delta) < LESSON_AUTO["delta_threshold"]:
             return

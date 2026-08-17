@@ -34,6 +34,12 @@ en el directorio domain/).
     sugerencias). Incorpora esas sugerencias en el objective del siguiente
     generate_candidate para que las mejoras VISUALES se acumulen (centrado,
     legibilidad, equilibrio, contraste). No regeneres desde cero: muta.
+12. JUICIO DE VERDAD (datasets): usa audit_truth cuando quieras validar que el
+    candidato CONECTA todas sus partes (repos/ con index.html enlazados desde la
+    raíz, secciones presentes, sin links rotos) y comparar su diseño contra
+    referencias reales de un dataset de UI (score diseño_vlm). Un candidato con
+    repos fabricados pero NO enlazados es un fallo de integración aunque el
+    evaluador estático puntúe alto.
 
 # PRINCIPIO ANTI-TRAMPAS
 - El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página

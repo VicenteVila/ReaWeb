@@ -89,7 +89,7 @@ def test_task_requirements_missing():
 
 def test_task_absent_ignored():
     d = _write({"index.html": GOOD_HTML, "styles.css": "body{}", "app.js": ""}, "task_none")
-    m = evaluate(d)  # sin requirements
+    m = evaluate(d, run_functional=False)  # sin requirements
     assert m["task"] is None, m
     assert m["visual"] is not None, m
     # total ponderado con visual 2.0x

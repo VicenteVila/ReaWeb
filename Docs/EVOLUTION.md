@@ -100,6 +100,32 @@ lecciones se inyectan en runs futuras.
   Δ, cambios de versión del harness, actividad meta-evolutiva y lecciones por
   categoría.
 - `scripts/run_benchmark.py` re-ejecuta una tarea de referencia fija y compara
+
+### 2.7 Juicio de verdad funcional (test ejecutable anti-trampa)
+
+- **Problema que resuelve**: el evaluador estático puntúa por presencia de
+  strings, así que un candidato puede "parecer" completo (todas las secciones y
+  checks técnicos) y aun así no FUNCIONAR: JS con errores de consola, botones
+  que no hacen nada, formularios que recargan la página, enlaces internos
+  apuntando a ids inexistentes.
+- **Solución**: cada `evaluate()` ejecuta automáticamente
+  `tools/domain/functional_tester.py` — inyecta un runner en el HTML y lo
+  renderiza en Chrome headless (`--dump-dom` + `--virtual-time-budget`), hace
+  clicks reales sobre botones/selectores interactivos, dispara submits y captura
+  errores JS. Reporta un eje `functional` (0-100) con los tests individuales.
+- **Gate P0**: si `functional < 60`, el candidato queda CAPADO a 40 (mismo
+  ceiling que una sección obligatoria ausente) vía el gate `functional`. La
+  estética (audit_visual, audit_truth) NUNCA compensa una página que no
+  funciona: `blend_visual_total` conserva el gate. Principio: *primero
+  funcional, luego bonito*.
+- **Coste y degradación**: el test corre solo si Chrome está disponible; sin él
+  el eje queda `None` y no penaliza. El test tarda ~1-2 s por evaluación
+  (aceptable dentro del bucle de hipótesis).
+- **Discriminación verificada**: dashboard funcional → 100; HTML falso (JS roto
+  + enlaces rotos) → 0 (gate activo); página sin interactividad → 60.
+- Este eje convive con los demás criterios de evolución: las auto-lecciones
+  (§2.5) capturan las regresiones funcionales (delta negativo en candidates
+  capados) y el agente aprende a no reincidir.
   contra los históricos con el mismo `task_hash`.
 
 ## 3. De lección a regla: criterios

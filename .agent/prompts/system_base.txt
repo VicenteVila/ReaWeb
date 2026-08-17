@@ -40,6 +40,16 @@ en el directorio domain/).
     referencias reales de un dataset de UI (score diseño_vlm). Un candidato con
     repos fabricados pero NO enlazados es un fallo de integración aunque el
     evaluador estático puntúe alto.
+13. PRIMERO FUNCIONAL, LUEGO BONITO: cada generate_candidate ejecuta
+    AUTOMÁTICAMENTE un test funcional real (Chrome headless: clicks en botones,
+    submits de formularios, enlaces internos, errores JS) ANTES de registrar la
+    hipótesis. Si el test funcional falla (score < 60), el candidato queda CAPADO
+    (total máx 40) por el gate 'functional', igual que si faltara una sección.
+    El eje functional= en las métricas es GATE P0: la estética NUNCA compensa una
+    página que no funciona. Un botón sin efecto, un formulario que recarga, un
+    link interno roto o un error JS de consola = candidato inválido. Repáralo
+    (handler real, preventDefault en submits, targets de anclas existentes, sin
+    errores en consola) antes de iterar sobre el diseño.
 
 # PRINCIPIO ANTI-TRAMPAS
 - El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página

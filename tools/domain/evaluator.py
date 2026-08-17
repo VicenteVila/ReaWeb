@@ -448,6 +448,7 @@ WEIGHTS = {
     "best_practices": 1.0,
     "visual": 2.0,
     "structure": 2.0,
+    "functional": 1.0,
     "task": 1.0,
 }
 
@@ -463,7 +464,7 @@ def _apply_blocking_gates(total: int, gates: dict, ceiling: int = None) -> int:
 
 
 def evaluate(project_dir: str | Path, requirements: list[str] | None = None, weights: dict | None = None,
-             structure: list[str] | None = None) -> dict:
+             structure: list[str] | None = None, run_functional: bool = True) -> dict:
     """Evalúa un proyecto web estático. Devuelve métricas por categoría y total.
 
     requirements: lista de subcadenas que DEBEN aparecer en el código (html+css+js)
@@ -524,6 +525,26 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
     structure_fails = [s for s in structure if not _html_has_section(h, s)]
     structure_score = int(100 * (len(structure) - len(structure_fails)) / len(structure)) if structure else None
 
+    # Categoría 'functional': el candidato DEBE ser funcional de verdad (no solo
+    # parecerlo). Se ejecuta un test funcional real en Chrome headless: clicks,
+    # submits, enlaces internos, errores JS. Si el test no puede ejecutarse
+    # (Chrome ausente) el eje queda None y NO penaliza (gate solo con evidencia).
+    # run_functional=False permite aislar el blend (tests unitarios del evaluador).
+    functional = None
+    functional_fails: list[str] = []
+    if run_functional:
+        try:
+            from tools.domain.functional_tester import run_functional_test
+            _ft = run_functional_test(html_files[0])
+            if _ft.get("ok") and _ft.get("functional") is not None:
+                functional = _ft["functional"]
+                functional_fails = [
+                    f"[{t.get('n')}] {t.get('d')}" for t in _ft.get("tests", [])
+                    if t.get("p") != 1
+                ]
+        except Exception:
+            functional = None
+
     html_bytes = sum(p.stat().st_size for p in html_files)
     css_bytes = sum(p.stat().st_size for p in project_dir.rglob("*.css"))
     js_bytes = sum(p.stat().st_size for p in project_dir.rglob("*.js"))
@@ -535,6 +556,8 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
         axes["task"] = task
     if structure_score is not None:
         axes["structure"] = structure_score
+    if functional is not None:
+        axes["functional"] = functional
     w = {**WEIGHTS, **(weights or {})}
     num = sum(axes[k] * w.get(k, 1.0) for k in axes)
     den = sum(w.get(k, 1.0) for k in axes)
@@ -546,6 +569,13 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
     gates: dict[str, list[str]] = {}
     if structure_fails:
         gates["structure"] = structure_fails
+
+    # GATE FUNCIONAL (P0): si el candidato no es funcional de verdad (JS roto,
+    # interactivos sin efecto, enlaces rotos, formularios que recargan), queda
+    # capado igual que un candidato sin secciones. "Primero funcional, luego
+    # bonito": la estética nunca compensa una página que no funciona.
+    if functional is not None and functional < 60:
+        gates["functional"] = functional_fails or [f"test funcional fallido ({functional}/100)"]
 
     # GATE DE PARTES INTEGRANTES: si el candidato fabrica repos/ pero NO los
     # enlaza desde la raíz (repos huérfanos), queda capado igual que un candidato
@@ -580,6 +610,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
         "visual": visual,
         "task": task,
         "structure": structure_score,
+        "functional": functional,
         "gates": gates,
         "failures": {
             "seo": seo_fails,
@@ -590,6 +621,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
             "visual": visual_fails,
             "task": task_fails,
             "structure": structure_fails,
+            "functional": functional_fails,
         },
         "files": {
             "html": n_html,
@@ -623,7 +655,7 @@ def blend_visual_total(metrics: dict, vlm: int | None, weights: dict | None = No
         "best_practices": metrics.get("best_practices"),
         "visual": max(visual_static, vlm),
     }
-    for key in ("task", "structure"):
+    for key in ("task", "structure", "functional"):
         if metrics.get(key) is not None:
             axes[key] = metrics[key]
     w = {**WEIGHTS, **(weights or {})}

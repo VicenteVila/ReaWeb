@@ -331,6 +331,7 @@ class Agent:
             r"\bvisual=(\d+)": "visual",
             r"\btask=(\d+)": "task",
             r"\bstructure=(\d+)": "structure",
+            r"\bfunctional=(\d+)": "functional",
         }
         for token, key in mapping.items():
             m2 = re.search(token, result)

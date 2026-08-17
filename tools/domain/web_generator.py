@@ -425,11 +425,12 @@ class GenerateCandidate(Tool):
         metrics = evaluate(target, requirements=self.requirements, structure=self.sections)
         task_metrics = f" task={metrics.get('task')}" if metrics.get('task') is not None else ""
         struct_metrics = f" structure={metrics.get('structure')}" if metrics.get('structure') is not None else ""
+        func_metrics = f" functional={metrics.get('functional')}" if metrics.get('functional') is not None else ""
         summary = (
             f"Métricas: total={metrics.get('total')} seo={metrics.get('seo')} "
             f"a11y={metrics.get('a11y')} perf={metrics.get('performance')} "
             f"resp={metrics.get('responsive')} bp={metrics.get('best_practices')} "
-            f"visual={metrics.get('visual')}{task_metrics}{struct_metrics}"
+            f"visual={metrics.get('visual')}{task_metrics}{struct_metrics}{func_metrics}"
         )
         gate_lines = []
         for cat, lst in (metrics.get("gates") or {}).items():
@@ -481,7 +482,7 @@ class AuditPage(Tool):
         result = m1.copy()
         if verify:
             m2 = evaluate(target, requirements=self.requirements, structure=self.sections)
-            for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices", "visual", "task", "structure"):
+            for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices", "visual", "task", "structure", "functional"):
                 if k in m1 and k in m2 and m1.get(k) is not None and m2.get(k) is not None and abs(m1[k] - m2[k]) > 0:
                     # mantiene el más alto para no penalizar varianza
                     result[k] = max(m1[k], m2[k])
@@ -496,6 +497,7 @@ class AuditPage(Tool):
                 fail_lines.append(f"{cat}: {', '.join(lst)}")
         task_part = f" task={result.get('task')}" if result.get('task') is not None else ""
         struct_part = f" structure={result.get('structure')}" if result.get('structure') is not None else ""
+        func_part = f" functional={result.get('functional')}" if result.get('functional') is not None else ""
         gate_lines = []
         for cat, lst in (result.get("gates") or {}).items():
             if lst:
@@ -503,7 +505,7 @@ class AuditPage(Tool):
         res = (
             f"total={result.get('total')} | seo={result.get('seo')} a11y={result.get('a11y')} "
             f"perf={result.get('performance')} resp={result.get('responsive')} "
-            f"bp={result.get('best_practices')} visual={result.get('visual')}{task_part}{struct_part} | verificación={result.get('verification')}"
+            f"bp={result.get('best_practices')} visual={result.get('visual')}{task_part}{struct_part}{func_part} | verificación={result.get('verification')}"
         )
         if gate_lines:
             res += "\nGATE BLOQUEANTE (total capado): faltan secciones obligatorias — " + "; ".join(gate_lines)

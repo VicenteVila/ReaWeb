@@ -488,7 +488,15 @@ class Agent:
                 self.history.append({"role": "model", "parts": [{"function_call": {"name": call.name, "args": call.args}}]})
                 self.history.append({"role": "user", "parts": [{"function_response": {"name": call.name, "response": {"result": result}}}]})
                 node_id = self._handle_eval_result(call, result)
-                delta = self._current_best_score() - prev_best
+                # delta = total del nodo recién evaluado vs mejor previo. NO usar
+                # best_after - best_before: el mejor global nunca baja (los nodos
+                # peores no lo reemplazan), así que un candidato regresivo daría
+                # delta=0 y nunca generaría lección "didnt".
+                node_total = (
+                    float(self.tree.nodes[node_id].metrics.get("total", 0.0))
+                    if node_id and node_id in self.tree.nodes else 0.0
+                )
+                delta = node_total - prev_best
                 self.memory.add_experiment(
                     Experiment(
                         id=f"t{self.turn}",

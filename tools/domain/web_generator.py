@@ -375,6 +375,20 @@ class GenerateCandidate(Tool):
     def run(self, objective: str = "", **kwargs) -> str:
         from .evaluator import evaluate
 
+        # MODO EXPLORACIÓN (A2, loop explorar→explotar): si el objetivo pide
+        # explícitamente variar el diseño / romper el layout, el generador NO
+        # hereda el código actual (evita convergencia prematura del seed) y limpia
+        # el target de assets huérfanos del arquetipo anterior. En modo normal la
+        # mutación conserva current_code (mejoras acumulativas).
+        _obj = (objective or self.improve or "").lower()
+        EXPLORE_KEYWORDS = (
+            "explor", "varía el diseño", "varia el diseno", "rompe el layout",
+            "diseño distinto", "diseno distinto", "variación de diseño",
+            "variacion de diseno", "layout alternativo", "rediseña desde cero",
+            "redisenia desde cero", "nueva dirección visual",
+        )
+        explore = any(k in _obj for k in EXPLORE_KEYWORDS)
+
         ref_path = PATHS["current"].parent / "reference.html"
         if ref_path.exists():
             ref_text = ref_path.read_text(errors="replace")
@@ -384,13 +398,23 @@ class GenerateCandidate(Tool):
             reference = "(sin referencia: genera desde cero)"
 
         graph_path = PATHS["current"] / "graph_data.json"
-        if graph_path.exists():
+        if graph_path.exists() and not explore:
             graph_text = graph_path.read_text(errors="replace")
             graph_data = f"(graph_data.json, {len(graph_text)} chars):\n" + graph_text[:6000]
         else:
             graph_data = "(sin graph_data.json: no hay grafo de datos; si la tarea pide un grafo, llama antes a fetch_repo_topics)"
 
-        current_code = self._build_current_code()
+        if explore:
+            # Exploración: no se parte del código actual; se pide un diseño nuevo.
+            current_code = (
+                "(MODO EXPLORACIÓN: NO copies el layout actual. Diseña una variante "
+                "visual CLARAMENTE distinta — otra composición de grid, otra paleta, "
+                "otra jerarquía tipográfica — manteniendo las secciones y la "
+                "funcionalidad obligatorias de la tarea. Esta iteración busca "
+                "diversidad, no refinar lo ya visto.)"
+            )
+        else:
+            current_code = self._build_current_code()
 
         prompt = GENERATOR_PROMPT.format(
             task=self.task,
@@ -417,6 +441,15 @@ class GenerateCandidate(Tool):
 
         target = PATHS["current"]
         target.mkdir(parents=True, exist_ok=True)
+        if explore:
+            # En modo exploración limpiar el target: el candidato anterior (y sus
+            # assets huérfanos del arquetipo previo) no debe contaminar la variante.
+            import shutil as _sh
+            for _f in list(target.iterdir()):
+                if _f.is_file():
+                    _f.unlink()
+                elif _f.is_dir():
+                    _sh.rmtree(_f, ignore_errors=True)
         for fname, content in files.items():
             # solo permitir nombres seguros
             if fname.startswith(".") or "/" in fname or "\\" in fname:

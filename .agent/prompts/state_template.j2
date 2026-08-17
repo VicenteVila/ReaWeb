@@ -33,6 +33,13 @@
 - **ID:** {{ best.id }}
 - **Métricas:** {{ best.metrics_summary }}
 - **Path:** {{ best.path }}
+{% if best.novelty is defined and best.novelty is not none %}
+- **Novelty vs mejor previo:** {{ best.novelty }}/100
+  - B3 (explorar→explotar): novelty bajo (0-30) repetido = convergencia prematura
+    (estás repitiendo el seed). Si llevas varias hipótesis con novelty < 40, usa
+    generate_candidate con objective que contenga "explora" / "varía el diseño"
+    para romper el layout (A2), o revert_workspace si una mutación rompió algo.
+{% endif %}
 {% if best.sections and best.sections_fails %}
 - **Secciones obligatorias:** {{ best.sections_present }}/{{ best.sections_total }} presentes
   - FALTAN: {{ best.sections_fails | join(", ") }}

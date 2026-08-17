@@ -483,7 +483,8 @@ def test_visual_low_when_static_canvas_and_plain():
     assert m["visual"] <= 30, m
 
 # --- F1: loop de subtareas ---
-from tools.domain.evaluator import extract_subtasks, subtasks_status, format_subtasks_status
+from tools.domain.evaluator import extract_subtasks, subtasks_status, format_subtasks_status, novelty_score
+from tools.domain.web_generator import GenerateCandidate
 
 PORTFOLIO_TASK = (
     "Portfolio creativo con navbar, hero, stats, features, testimonial, faq, cta, "
@@ -536,3 +537,140 @@ def test_format_subtasks_status_shows_fail_with_detail():
     assert "CHECKLIST DE SUBTAREAS" in out
     assert "[FAIL] seccion:faq" in out
     assert "SUBTAREAS:" in out
+
+
+# ---------- B3: novelty_score (explorar→explotar) ----------
+
+def _cand(ref: dict, name: str) -> Path:
+    return _write(ref, name)
+
+
+def test_novelty_identical_is_zero():
+    c = {"index.html": '<html><body><section id="a" class="x"><h1>H</h1></section></body></html>',
+         "styles.css": "body{color:#111;background:#fff}",
+         "app.js": "document.querySelector('#a');"}
+    a = _cand(c, "novel_id")
+    b = _cand(c, "novel_id2")
+    assert novelty_score(a, b) == 0
+
+
+def test_novelty_layout_change_is_high():
+    base = {"index.html": '<html><body><header class="navbar"><nav><a id="h1">A</a></nav></header><main><section id="hero" class="grid-2"><h1>H</h1></section></main></body></html>',
+            "styles.css": "body{color:#111;background:#fff}.grid-2{display:grid;grid-template-columns:1fr 1fr}",
+            "app.js": "document.querySelector('#hero');"}
+    alt = {"index.html": '<html><body><div class="masonry"><article id="card-a" class="tile"><h2>T</h2></article><article id="card-b" class="tile"><h2>U</h2></article></div></body></html>',
+           "styles.css": "body{color:#ffd700;background:#0d0d0d}.masonry{display:grid;grid-template-areas:'a b' 'c d';gap:2rem}.tile{transform:rotate(-1deg) scale(1.02)}",
+           "app.js": "document.querySelectorAll('.tile');"}
+    a = _cand(base, "novel_base")
+    b = _cand(alt, "novel_alt")
+    assert novelty_score(a, b) >= 50
+
+
+def test_novelty_just_faq_id_edit_is_low():
+    base = {"index.html": '<html><body><section id="faq-1" aria-expanded="false"><h3>Q</h3></section></body></html>',
+            "styles.css": "body{color:#222}",
+            "app.js": ""}
+    alt = {"index.html": '<html><body><section id="faq-2" aria-expanded="false"><h3>Q</h3></section></body></html>',
+           "styles.css": "body{color:#222}",
+           "app.js": ""}
+    a = _cand(base, "novel_faq_a")
+    b = _cand(alt, "novel_faq_b")
+    assert novelty_score(a, b) < 20
+
+
+def test_novelty_missing_reference_files():
+    base = {"index.html": '<html><body><section><h1>H</h1></section></body></html>'}
+    alt = {"index.html": '<html><body><div><h2>X</h2></div></body></html>',
+           "styles.css": "body{color:#f00}", "app.js": "var x=1;"}
+    a = _cand(base, "novel_miss_a")
+    b = _cand(alt, "novel_miss_b")
+    assert 0 <= novelty_score(a, b) <= 100
+
+
+# ---------- A2: modo exploración en GenerateCandidate ----------
+
+class _FakeLLM:
+    def __init__(self, text):
+        self._text = text
+
+    def generate(self, prompt, temperature=0.7):
+        self.prompt = prompt
+        from types import SimpleNamespace
+        return SimpleNamespace(text=self._text)
+
+
+class _FakeEval:
+    """Reemplaza evaluate() para que el test no dependa del evaluador real."""
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, target, requirements=None, structure=None):
+        self.calls.append(str(target))
+        return {"total": 80, "seo": 80, "a11y": 80, "performance": 80,
+                "responsive": 80, "best_practices": 80, "visual": 80,
+                "task": 80, "structure": 80, "functional": 80}
+
+
+def _fake_generate(text: str) -> GenerateCandidate:
+    from tools.domain import web_generator as wg
+    from pathlib import Path
+    # workspace de prueba aislado (restaurar PATHS global tras el test)
+    _orig_current = wg.PATHS.get("current")
+    work = Path("/tmp/opencode") / "a2_ws"
+    if work.exists():
+        import shutil
+        shutil.rmtree(work)
+    work.mkdir(parents=True)
+    wg.PATHS["current"] = work
+    (work / "index.html").write_text("<html><body>SEED</body></html>")
+    (work / "styles.css").write_text("body{color:#111}")
+    (work / "app.js").write_text("var seed=1;")
+    # asset huérfano del arquetipo anterior (debe desaparecer en modo exploración)
+    (work / "graph_data.json").write_text("{'nodes':[]}")
+    (work / "dump.js").write_text("console.log(1)")
+    g = GenerateCandidate(llm=_FakeLLM(text), task=PORTFOLIO_TASK, archetype="portfolio")
+    g._orig_current = _orig_current
+    return g, work
+
+
+def _restore(g):
+    from tools.domain import web_generator as wg
+    if g._orig_current is not None:
+        wg.PATHS["current"] = g._orig_current
+
+
+def test_explore_mode_cleans_target_and_does_not_inject_current_code():
+    from unittest.mock import patch
+    from tools.domain import web_generator as wg
+    import tools.domain.evaluator as ev_mod
+    g, work = _fake_generate("```html\nindex.html\n<!DOCTYPE html><html lang='es'><body><section id='hero' class='masonry'><h1>NUEVO</h1></section></body></html>\n```\n```css\nstyles.css\nbody{color:#ffd700}\n```\n```js\napp.js\nvar nuevo=1;\n```")
+    with patch.object(ev_mod, "evaluate", _FakeEval()):
+        out = g.run(objective="explora una variación de diseño rompe el layout")
+    _restore(g)
+    # prompt del subagente: en modo exploración NO se inyecta el código actual
+    prompt = g.llm.prompt
+    assert "MODO EXPLORACIÓN" in prompt
+    assert "SEED" not in prompt
+    # asset huérfano eliminado, reemplazado por los nuevos archivos
+    assert not (work / "graph_data.json").exists()
+    assert not (work / "dump.js").exists()
+    assert (work / "index.html").exists()
+    assert "masonry" in (work / "index.html").read_text()
+    assert "OK:" in out
+
+
+def test_normal_mode_keeps_current_code_and_orphans():
+    from unittest.mock import patch
+    from tools.domain import web_generator as wg
+    import tools.domain.evaluator as ev_mod
+    g, work = _fake_generate("```html\nindex.html\n<!DOCTYPE html><html lang='es'><body><section id='hero'><h1>MEJORADO</h1></section></body></html>\n```\n```css\nstyles.css\nbody{color:#111}\n```")
+    with patch.object(ev_mod, "evaluate", _FakeEval()):
+        out = g.run(objective="mejora el contraste")
+    _restore(g)
+    prompt = g.llm.prompt
+    # modo normal: se hereda current_code y NO se limpian assets
+    assert "MODO EXPLORACIÓN" not in prompt
+    assert "SEED" in prompt
+    assert (work / "graph_data.json").exists()
+    assert (work / "dump.js").exists()
+    assert "MEJORADO" in (work / "index.html").read_text()

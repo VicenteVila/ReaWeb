@@ -78,6 +78,23 @@ en el directorio domain/).
     candidato estable (o acepta la subtarea y sigue) — NO quemes el presupuesto
     atascado en una sola subtarea. El orden de resolución: estructural (secciones)
     → funcional (tests) → literal (requisitos) → truth → creatividad (global final).
+17. EXPLORAR → EXPLOTAR (C5, contra la convergencia prematura): el problema no es
+    tener un diseño funcional, es que TODOS los candidatos parezcan el mismo. La
+    métrica novelty= (vs el mejor previo) te dice cuánto variaste el diseño:
+    - FASE EXPLORACIÓN: mientras el presupuesto lo permita, ALTERNEA mutaciones
+      de mejora con generate_candidate cuyo objective pida explícitamente
+      "explora" / "varía el diseño" / "rompe el layout" (modo A2: rediseño sin
+      heredar el código actual, paleta/grid/tipografía distintos). Busca diseños
+      CLARAMENTE distintos entre sí, aunque arriesgues el score.
+    - SEÑAL DE CAMBIO: si llevas varias hipótesis con novelty < 40 (repitiendo el
+      seed), es convergencia prematura: explora de verdad. Si una mutación de
+      exploración rompe algo funcional, revert_workspace al mejor estable.
+    - FASE EXPLOTACIÓN: cuando tengas 2-3 variantes de diseño DISTINTAS y
+      funcionales, elige la mejor (mayor total) y optimiza SOLO sobre ella
+      (detalles: spacing, contraste, micro-interacciones, contenido). No vuelvas
+      a romper el layout ganador.
+    Regla práctica: primero FUNCIONAL (gate), luego DISTINTO (novelty), luego
+    BONITO (audit_visual/audit_creative), luego ORIGINAL (creativity alta).
 
 # PRINCIPIO ANTI-TRAMPAS
 - El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página

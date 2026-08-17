@@ -182,6 +182,7 @@ class Agent:
                 best_fields["sections_total"] = len(sections)
         # CHECKLIST DE SUBTAREAS (loop F1): estado ok/fail por subtarea del mejor
         best_fields["subtasks"] = self._subtask_checklist(best.id if best else None)
+        best_fields["novelty"] = best.metrics.get("novelty") if best else None
         recent = []
         for exp in self.memory.recent_experiments[-8:]:
             recent.append(
@@ -613,6 +614,39 @@ class Agent:
         finally:
             self._truth_done = True
 
+    def _compute_novelty(self, node_id: str) -> None:
+        """Novelty (B3): mide cuánto difiere el candidato nuevo del MEJOR PREVIO
+        (el mejor que no sea él mismo). Lo expone como métrica del nodo y en el
+        transcript, para que el agente vea si su mutación varió el diseño o solo
+        repitió el seed. Un valor bajo repetido = convergencia prematura."""
+        try:
+            from tools.domain.evaluator import novelty_score
+            node = self.tree.nodes.get(node_id)
+            if node is None:
+                return
+            # mejor previo = el nodo con mayor total que no sea el nuevo
+            prev = None
+            prev_score = -1
+            for nd in self.tree.nodes.values():
+                if nd.id == node_id:
+                    continue
+                s = nd.metrics.get("total", -1)
+                if s > prev_score:
+                    prev, prev_score = nd, s
+            if prev is None:
+                return
+            ref_dir = self.run_dir / "candidates" / prev.id
+            cand_dir = self.run_dir / "candidates" / node_id
+            if not (ref_dir / "index.html").exists() or not (cand_dir / "index.html").exists():
+                return
+            novelty = novelty_score(ref_dir, cand_dir)
+            node.metrics["novelty"] = novelty
+            self.tree.add(node)
+            self._log("system", {"event": "novelty", "node": node_id,
+                                 "vs": prev.id, "novelty": novelty})
+        except Exception as e:
+            self._log("system", {"event": "novelty_error", "error": str(e)[:200]})
+
     def _seed_from_workspace(self) -> None:
         """Si workspace/current tiene un candidato al arrancar, lo evalúa y lo
         registra como H0 baseline en el árbol de búsqueda (persistencia entre
@@ -737,6 +771,8 @@ class Agent:
                 if call.name == "generate_candidate" and node_id is not None:
                     self._snapshot(node_id)
                     self._auto_truth_audit(registry, node_id)
+                if call.name == "generate_candidate" and node_id is not None:
+                    self._compute_novelty(node_id)
                 self._maybe_auto_lesson(call, delta, node_id, result)
                 if node_id is not None and call.name in ("generate_candidate", "audit_page"):
                     self._maybe_subtask_lesson(node_id)

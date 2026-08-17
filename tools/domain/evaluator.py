@@ -539,6 +539,80 @@ def format_subtasks_status(html: str, css: str, js: str, task: str,
     return "\n".join(lines)
 
 
+def _jaccard(a: set, b: set) -> float:
+    """Similitud de Jaccard 0-1 entre dos conjuntos. Vacíos = 0."""
+    if not a and not b:
+        return 0.0
+    inter = len(a & b)
+    union = len(a | b)
+    return inter / union if union else 0.0
+
+
+def _palette(css: str) -> set[str]:
+    """Extrae los colores de un CSS (hex, rgb, hsl) normalizados a minúsculas."""
+    colors = set()
+    colors |= set(re.findall(r"#[0-9a-fA-F]{3,8}\b", css))
+    colors |= set(re.findall(r"rgba?\([^)]*\)", css, re.I))
+    colors |= set(re.findall(r"hsla?\([^)]*\)", css, re.I))
+    colors |= set(re.findall(r"\b(black|white|gray|grey|red|blue|green|orange|purple|pink|teal|navy)\b", css, re.I))
+    return {c.lower() for c in colors}
+
+
+def _dom_structure(html: str) -> set[str]:
+    """Estructura DOM: ids, clases, tags y enlaces (lo que define el layout)."""
+    s = set()
+    s |= set(re.findall(r'id="([^"]+)"', html))
+    s |= set(re.findall(r'class="([^"]+)"', html))
+    for cls in re.findall(r'class="([^"]+)"', html):
+        s |= set(cls.split())
+    s |= {t for (_, t) in re.findall(r"<(/?)([a-z0-9]+)", html)}
+    s |= set(re.findall(r'href=["\']([^"\']+)["\']', html))
+    return {x.lower() for x in s}
+
+
+def novelty_score(reference_dir, candidate_dir, weights: dict | None = None) -> int:
+    """Mide cuánto DIFIERE el candidato del mejor previo (0-100).
+
+    Proxy barato SIN VLM (B3, loop explorar→explotar): compara paleta CSS
+    (colores), estructura DOM (ids/clases/tags/enlaces) y contenido (hash del
+    código). Un candidato casi idéntico al mejor previo → novelty bajo; un
+    rediseño real → alto. Empuja al agente a explorar diseños distintos en vez
+    de converger en el seed.
+    """
+    reference_dir = Path(reference_dir)
+    candidate_dir = Path(candidate_dir)
+
+    def _read(path: Path, name: str) -> str:
+        f = path / name
+        return f.read_text(errors="replace") if f.exists() else ""
+
+    r_html, c_html = _read(reference_dir, "index.html"), _read(candidate_dir, "index.html")
+    r_css, c_css = _read(reference_dir, "styles.css"), _read(candidate_dir, "styles.css")
+    r_js, c_js = _read(reference_dir, "app.js"), _read(candidate_dir, "app.js")
+
+    # dimensión 1: estructura DOM (0-100 de diferencia)
+    dom_sim = _jaccard(_dom_structure(r_html), _dom_structure(c_html))
+    dom_diff = (1 - dom_sim) * 100
+
+    # dimensión 2: paleta (0-100 de diferencia)
+    pal_sim = _jaccard(_palette(r_css), _palette(c_css))
+    pal_diff = (1 - pal_sim) * 100
+
+    # dimensión 3: contenido JS (diferencia relativa de tamaño + hash)
+    r_size = len(r_js)
+    c_size = len(c_js)
+    if r_size == 0 and c_size == 0:
+        js_diff = 0.0
+    elif r_size == 0 or c_size == 0:
+        js_diff = 100.0
+    else:
+        js_diff = abs(c_size - r_size) / max(r_size, c_size) * 100
+
+    w = weights or {"dom": 0.45, "palette": 0.35, "js": 0.20}
+    score = round(dom_diff * w["dom"] + pal_diff * w["palette"] + js_diff * w["js"])
+    return max(0, min(100, score))
+
+
 WEIGHTS = {
     "seo": 1.0,
     "a11y": 1.0,

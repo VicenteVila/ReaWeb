@@ -189,6 +189,43 @@ lecciones se inyectan en runs futuras.
   transform en hover...), no adjetivos. Feedback accionable para que la creatividad
   deje de clavarse en 25.
 
+### 2.10 Explorar → Explotar (contra la convergencia prematura)
+
+- **Problema que resuelve**: la run `20260817T114200` mostró que TODOS los
+  candidatos convergían: H1==H0 (el primer `generate_candidate` ni mutó el seed),
+  H2==H3 byte-idénticos, H4/H5 diferían solo en `id="faq-1"`/`aria-expanded`.
+  Causas raíz: (1) el prompt `GENERATOR_PROMPT` ordena "conserva TODA la
+  funcionalidad existente... no simplifiques ni elimines archivos" → penaliza
+  explorar; (2) el total no discrimina diseño (seo/a11y/perf/bp/structure
+  puntúan 85-100 en todo); (3) assets del arquetipo anterior (`dump.js`,
+  `shot_base.png`, `graph_data.json`) se arrastraban de `workspace/current` a
+  cada candidato y `graph_data.json` se inyectaba al prompt del generador.
+- **Fase A — mecánica de exploración**:
+  - **A1** (ya implícito en el flujo): cada `generate_candidate` recibe un
+    `objective` explícito.
+  - **A2**: modo exploración en `GenerateCandidate.run`. Si el objetivo contiene
+    keywords de exploración ("explora", "varía el diseño", "rompe el layout",
+    "nueva dirección visual", ...), el generador NO hereda `current_code`
+    (mensaje MODO EXPLORACIÓN: pide una variante visual claramente distinta),
+    NO inyecta `graph_data.json`, y LIMPIA el target de assets huérfanos antes
+    de escribir. En modo normal conserva la mutación acumulativa.
+- **Fase B — señal de novedad**:
+  - **B3**: `novelty_score(ref_dir, cand_dir)` en evaluator (proxy SIN VLM):
+    diferencia 0-100 entre dos snapshots por paleta CSS (Jaccard de colores),
+    estructura DOM (ids/clases/tags/enlaces) y contenido JS (delta de tamaño).
+    Verificado sobre el run 114200: candidatos casi idénticos → 2-9, rediseño
+    real → ≥50.
+  - El agente calcula `novelty` tras cada `generate_candidate` comparando el
+    snapshot nuevo contra el MEJOR PREVIO (`_compute_novelty`), lo guarda en
+    `metrics["novelty"]` del nodo y lo expone en el estado con guía de uso.
+- **Fase C — estrategia** (regla 17 en `system_base.txt`): FASE EXPLORACIÓN
+  mientras haya presupuesto, alternando mutaciones de mejora con `generate_candidate`
+  de exploración explícita; SEÑAL DE CAMBIO si varias hipótesis dan `novelty < 40`
+  (convergencia prematura → explora de verdad, o `revert_workspace` si se rompió);
+  FASE EXPLOTACIÓN cuando existan 2-3 variantes de diseño distintas y funcionales:
+  elegir la mejor y optimizar SOLO sobre ella. Orden: funcional (gate) → distinto
+  (novelty) → bonito (audit_visual/audit_creative) → original (creativity alta).
+
 ## 3. De lección a regla: criterios
 
 El agente dispone de lecciones (`worked/didnt/try`) y de experimentos con delta.

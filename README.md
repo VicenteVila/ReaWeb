@@ -31,6 +31,9 @@ Documentación del diseño (para humanos):
   AutoDesign al dominio web, con citaciones formales (APA + BibTeX) y tablas de mapeo.
 - [`Docs/EVOLUTION.md`](Docs/EVOLUTION.md) — cómo el aprendizaje se convierte en
   nuevas reglas del harness y cómo se mide la evolución.
+- [`Docs/cards/`](Docs/cards/) — tarjetas didácticas visuales: el agente ReaWeb y
+  su arnés (esfera-ojo LLM envuelta por cada módulo) y el flujo de trabajo
+  end-to-end con decisiones y bucles.
 
 ## Stack
 

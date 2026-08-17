@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1080px; height:1350px; overflow:hidden; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: radial-gradient(ellipse at 50% 30%, #161d38 0%, #0b0f1a 70%);
+    color:#e8ecf8; position:relative;
+  }
+  header { text-align:center; padding-top:44px; }
+  header h1 { font-size:40px; font-weight:800; letter-spacing:1px; }
+  header p { font-size:19px; color:#9aa7c4; margin-top:8px; }
+
+  .wrap { padding:28px 42px 90px; display:flex; flex-direction:column; gap:20px; }
+  .phase { font-size:22px; font-weight:800; margin-top:6px; letter-spacing:0.5px; }
+  .phase.f1 { color:#fbbf24; } .phase.f2 { color:#7aa2ff; } .phase.f3 { color:#4ade80; }
+
+  .row { display:flex; gap:20px; align-items:stretch; }
+  .box {
+    flex:1; background:#151c33; border:1.5px solid #2a3560; border-radius:14px;
+    padding:14px 16px; position:relative; min-width:0;
+  }
+  .box .num { font-family:Consolas,monospace; font-size:14px; font-weight:700; color:#7aa2ff; }
+  .box .ttl { font-size:17px; font-weight:700; margin-top:2px; }
+  .box .dsc { font-size:13px; color:#9aa7c4; margin-top:5px; line-height:1.45; }
+  .box .gate {
+    display:inline-block; margin-top:9px; font-family:Consolas,monospace; font-size:11.5px;
+    color:#0a0f1e; background:#fb7185; padding:3px 9px; border-radius:999px; font-weight:700;
+  }
+  .box .gate.good { background:#4ade80; color:#0a0f1e; }
+
+  .dec {
+    flex:1; background:#1a2140; border:2px solid #fbbf24; border-radius:14px;
+    padding:14px 16px; min-width:0;
+  }
+  .dec .num { font-family:Consolas,monospace; font-size:14px; font-weight:700; color:#fbbf24; }
+  .dec .ttl { font-size:17px; font-weight:700; margin-top:2px; }
+  .dec .dsc { font-size:13px; color:#9aa7c4; margin-top:5px; line-height:1.45; }
+
+  .arrow { text-align:center; color:#5a6a92; font-size:20px; line-height:1; margin:-6px 0; }
+  .loop {
+    margin:4px 0; padding:10px 16px; border:1.5px dashed #5a7fd9; border-radius:14px;
+    background:rgba(90,127,217,0.07); font-size:13.5px; color:#b7c4e8; line-height:1.5;
+  }
+  .loop b { color:#7aa2ff; }
+  footer {
+    position:absolute; bottom:32px; left:0; right:0; text-align:center;
+    font-size:15px; color:#9aa7c4; line-height:1.7;
+  }
+  footer b { color:#7aa2ff; }
+</style>
+</head>
+<body>
+<header>
+  <h1>FLUJO DE TRABAJO REAWEB</h1>
+  <p>Del prompt inicial al producto final: decisiones, bucles y gates del arnés</p>
+</header>
+
+<div class="wrap">
+
+  <div class="phase f1">FASE 1 · PREPARACIÓN</div>
+
+  <div class="row">
+    <div class="box"><div class="num">01</div><div class="ttl">Entrada</div>
+      <div class="dsc">Tarea (benchmark o cliente) + arquetipo desde domain/archetypes/</div></div>
+    <div class="box"><div class="num">02</div><div class="ttl">Snapshot del harness</div>
+      <div class="dsc">hash de domain/, tools/, prompts/ y Docs/ (harness_snapshot.py)</div></div>
+    <div class="box"><div class="num">03</div><div class="ttl">Semilla H0</div>
+      <div class="dsc">workspace/current previo evaluado como baseline (ver=seed)</div></div>
+  </div>
+
+  <div class="arrow">▼</div>
+  <div class="phase f2">FASE 2 · LOOP DE EVOLUCIÓN (repite)</div>
+
+  <div class="row">
+    <div class="box"><div class="num">04</div><div class="ttl">Prompt de estado</div>
+      <div class="dsc">state_template.j2: árbol H, mejores candidatos, lecciones de la DB</div></div>
+    <div class="box"><div class="num">05</div><div class="ttl">generate_candidate</div>
+      <div class="dsc">el LLM MUTA workspace/current (nunca regenera desde cero)</div></div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <div class="loop"><b>Juicio de verdad automático (sincrónico a cada candidato):</b>
+    se ejecuta el test funcional real en Chrome headless — clica botones, dispara
+    submits, comprueba enlaces internos y captura errores JS de consola — y se
+    verifica que las partes integrantes estén conectadas (repos enlazados).</div>
+
+  <div class="row">
+    <div class="dec"><div class="num">06</div><div class="ttl">¿Funciona de verdad?</div>
+      <div class="dsc">functional ≥ 60 y partes conectadas</div>
+      <div class="gate">si no → gate capa total a 40</div></div>
+    <div class="box"><div class="num">07</div><div class="ttl">Evaluación estática</div>
+      <div class="dsc">evaluator.py: seo·a11y·perf·resp·bp·visual·task·structure (blend ponderado)</div></div>
+    <div class="box"><div class="num">08</div><div class="ttl">¿Faltan secciones?</div>
+      <div class="dsc">structure incompleta → gate capa a 40</div>
+      <div class="gate">reparar antes de seguir</div></div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <div class="row">
+    <div class="box"><div class="num">09</div><div class="ttl">Crítica estética VLM</div>
+      <div class="dsc">audit_visual: screenshot → score 0-100 + issues → blend_visual_total</div></div>
+    <div class="box"><div class="num">10</div><div class="ttl">Auto-lección</div>
+      <div class="dsc">delta vs mejor ≥ umbral → lección worked/didnt deduplicada en la DB</div></div>
+  </div>
+
+  <div class="row">
+    <div class="dec"><div class="num">11</div><div class="ttl">¿Mejora el mejor?</div>
+      <div class="dsc">total nuevo ≥ mejor hasta ahora</div></div>
+    <div class="box"><div class="num">12</div><div class="ttl">Nueva hipótesis H</div>
+      <div class="dsc">se registra el nodo en el árbol; si empeora → REVERTIR al mejor anterior</div></div>
+  </div>
+
+  <div class="loop"><b>Bucle:</b> vuelve al paso 04 hasta agotar el presupuesto de
+    turnos/coste (budget_tracker.py) o alcanzar el target de hipótesis.</div>
+
+  <div class="arrow">▼</div>
+  <div class="phase f3">FASE 3 · CIERRE Y META-EVOLUCIÓN</div>
+
+  <div class="row">
+    <div class="box"><div class="num">13</div><div class="ttl">Selección final</div>
+      <div class="dsc">select_final razona sobre TODA la historia, no solo el total más alto</div></div>
+    <div class="box"><div class="num">14</div><div class="ttl">Export</div>
+      <div class="dsc">export_candidate → runs/&lt;id&gt;/final/ (producto entregable)</div></div>
+    <div class="box"><div class="num">15</div><div class="ttl">Meta-evolución</div>
+      <div class="dsc">edit_skill → propuesta pending → acceptance gate (train/dev)</div></div>
+  </div>
+
+</div>
+
+<footer>
+  <b>Principio:</b> primero funcional, luego bonito · la estética nunca compensa una página que no funciona<br>
+  <b>Gates P0:</b> structure · functional · parts_connected → total capado a 40 si fallan
+</footer>
+</body>
+</html>

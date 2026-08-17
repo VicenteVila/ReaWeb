@@ -38,5 +38,20 @@ juicio de verdad por datasets) y la meta-evolución con acceptance gate.
 ## Regenerar o editar
 
 - Edita `card1_src.html` / `card2_src.html` (HTML/CSS con flujo de texto).
-- Regenera el PNG con Chrome headless:
-  `chrome --headless=new --window-size=1080,1350 --screenshot=<salida>.png file://<fuente>.html`
+- `python -m scripts.gen_cards` **verifica el layout antes de exportar**: cada
+  fuente incluye un script `VERIFY` que comprueba en Chrome headless que ningún
+  elemento se sale del viewport, que las filas/tarjetas no se solapan y que no
+  hay overflow vertical. Solo si reporta `OK` se genera el PNG.
+
+## Árbol de decisión (tarjeta 2)
+
+La tarjeta 2 representa el flujo como árbol de decisión completo:
+
+- **Fase 1 · Preparación**: entrada + snapshot + semilla H0.
+- **Fase 2 · Loop de evolución**: generate_candidate → juicio de verdad
+  automático (test funcional + partes conectadas) → decisión "¿funciona de
+  verdad?" → evaluación estática → decisión "¿faltan secciones?" → crítica VLM
+  → auto-lección → decisión "¿mejora al mejor?" (si no, REVERTIR) → nueva
+  hipótesis H → bucle.
+- **Fase 3 · Cierre**: selección final (razona sobre toda la historia) → export
+  → meta-evolución con acceptance gate.

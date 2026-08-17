@@ -26,6 +26,34 @@ _SOURCES = {
 }
 
 
+def verify_layout(src: Path, size: str = "1080,1350") -> tuple[bool, str]:
+    """Reabre la fuente en Chrome headless y comprueba que el script VERIFY:
+    embebido reporte OK (sin solapamientos, sin elementos fuera del viewport,
+    sin overflow). Retorna (ok, mensaje)."""
+    chrome = find_chrome()
+    if not chrome:
+        return False, "chrome no disponible"
+    try:
+        if Path("/usr/bin/wslpath").exists():
+            win = lambda p: subprocess.run(["wslpath", "-w", str(p)],
+                                           capture_output=True, text=True).stdout.strip()
+        else:
+            win = lambda p: str(p).replace("/mnt/c/", "C:\\").replace("/", "\\")
+        cmd = [chrome, "--headless=new", "--disable-gpu",
+               f"--window-size={size}", "--dump-dom", "file://" + win(src)]
+        out = subprocess.run(cmd, capture_output=True, timeout=90)
+        dom = out.stdout.decode("utf-8", errors="replace")
+        m = None
+        for m in __import__("re").finditer(r"<title>VERIFY:([^<]*)</title>", dom):
+            pass
+        if not m:
+            return False, "sin reporte VERIFY en el DOM"
+        msg = m.group(1)
+        return msg.startswith("OK"), msg
+    except Exception as e:
+        return False, str(e)
+
+
 def render_src_to_png(src: Path, png: Path) -> bool:
     chrome = find_chrome()
     if not chrome:
@@ -57,6 +85,12 @@ def main():
         if not src.exists():
             print(f"[skip] fuente ausente: {src}")
             continue
+        vok, vmsg = verify_layout(src)
+        if not vok:
+            ok = False
+            print(f"[VERIFY FAIL] {png_name}: {vmsg}")
+            continue
+        print(f"[verify] {png_name}: {vmsg}")
         if render_src_to_png(src, png):
             print(f"[ok] {png.name} ({png.stat().st_size//1024} KB)")
         else:

@@ -129,5 +129,39 @@
   Cada <b>generate_candidate</b> muta workspace/current y se registra como hipótesis H<br>
   ReaWeb · harness de evolución web con juicio de verdad por datasets
 </footer>
+
+<script>
+  // VERIFICACIÓN AUTOMÁTICA ANTES DE EXPORTAR
+  window.addEventListener('load', function(){
+    var issues = [];
+    var H = document.body.clientHeight, W = document.body.clientWidth;
+    var all = document.querySelectorAll('.chip');
+    var boxes = [];
+    all.forEach(function(c, i){
+      var b = c.getBoundingClientRect();
+      if (b.left < 0 || b.right > W + 0.5 || b.top < 0 || b.bottom > H + 0.5) {
+        issues.push('chip' + i + ' fuera');
+      }
+      boxes.push({b: b, i: i});
+    });
+    for (var i = 0; i < boxes.length; i++) {
+      for (var j = i + 1; j < boxes.length; j++) {
+        var a = boxes[i].b, b = boxes[j].b;
+        if (!(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top)) {
+          issues.push('chip' + boxes[i].i + '/' + boxes[j].i + ' solapa');
+        }
+      }
+    }
+    // chips vs ojo (radio del ojo ~ 150px, centro ~ (540,702))
+    boxes.forEach(function(x){
+      var mx = (x.b.left + x.b.right) / 2, my = (x.b.top + x.b.bottom) / 2;
+      var d = Math.hypot(mx - 540, my - 702);
+      if (d < 165) issues.push('chip' + x.i + ' sobre ojo');
+    });
+    var sh = document.documentElement.scrollHeight;
+    if (sh > H + 1) issues.push('scrollHeight=' + sh + '>' + H);
+    document.title = 'VERIFY:' + (issues.length ? issues.join(';') : 'OK') + '|sh=' + sh;
+  });
+</script>
 </body>
 </html>

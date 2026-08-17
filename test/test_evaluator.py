@@ -674,3 +674,34 @@ def test_normal_mode_keeps_current_code_and_orphans():
     assert (work / "graph_data.json").exists()
     assert (work / "dump.js").exists()
     assert "MEJORADO" in (work / "index.html").read_text()
+
+
+# ---------- Punto 3 (Kimi K.3): salida estructurada de métricas ----------
+
+def test_metrics_block_roundtrip():
+    from tools.domain.evaluator import metrics_block, parse_metrics_block
+    blk = metrics_block({"total": 90, "seo": 100, "visual": 46, "functional": 90})
+    d = parse_metrics_block("texto antes\n" + blk + "\ntexto después")
+    assert d == {"total": 90, "seo": 100, "visual": 46, "functional": 90}
+
+
+def test_parse_metrics_block_missing_or_corrupt():
+    from tools.domain.evaluator import parse_metrics_block
+    assert parse_metrics_block("total=90 seo=100") is None
+    assert parse_metrics_block("###METRICS###\n{rot\n###END_METRICS###") is None
+    assert parse_metrics_block("###METRICS###\n[1,2,3]\n###END_METRICS###") is None
+
+
+def test_metrics_block_appended_to_generate_candidate_output():
+    from unittest.mock import patch
+    from tools.domain import web_generator as wg
+    import tools.domain.evaluator as ev_mod
+    from tools.domain.evaluator import parse_metrics_block
+    g, work = _fake_generate("```html\nindex.html\n<!DOCTYPE html><html lang='es'><body><section id='hero'><h1>X</h1></section></body></html>\n```\n```css\nstyles.css\nbody{}\n```")
+    fake = _FakeEval()
+    with patch.object(ev_mod, "evaluate", fake):
+        out = g.run(objective="mejora el contraste")
+    _restore(g)
+    blk = parse_metrics_block(out)
+    assert blk is not None and blk.get("total") == 80
+    assert blk.get("visual") == 80

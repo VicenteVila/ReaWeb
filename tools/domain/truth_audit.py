@@ -182,6 +182,11 @@ class AuditTruth(Tool):
                     parts_lines.append("PARTES VISUALES AUSENTES: " + "; ".join(missing))
                 if suggestions:
                     parts_lines.append("Sugerencias: " + "; ".join(suggestions))
+                from .evaluator import metrics_block
+                parts_lines.append(metrics_block({
+                    "diseño_vlm": design_score, "looks_real": bool(looks_real),
+                    "ref_count": ref_count,
+                }))
             except Exception as e:
                 parts_lines.insert(0, f"DISEÑO UI: ERROR VLM: {e}")
             finally:

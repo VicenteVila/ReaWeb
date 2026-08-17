@@ -304,10 +304,21 @@ class Agent:
         # integrantes conectadas) al nodo actual. Si hay design_score, recombina
         # el total igual que audit_visual (max del proxy visual estático).
         if call.name == "audit_truth":
-            m = re.search(r"diseño_vlm=(\d+)", result)
-            parts_ok = "partes=ok" in result
+            from tools.domain.evaluator import parse_metrics_block
+            _blk = parse_metrics_block(result)
+            design_score = None
+            if _blk is not None:
+                design_score = _blk.get("diseño_vlm")
+                if isinstance(design_score, str) and design_score.lstrip("-").isdigit():
+                    design_score = int(design_score)
+                if not isinstance(design_score, (int, float)):
+                    design_score = None
+                parts_ok = bool(_blk.get("parts_ok", "partes=ok" in result))
+            else:
+                m = re.search(r"diseño_vlm=(\d+)", result)
+                design_score = int(m.group(1)) if m else None
+                parts_ok = "partes=ok" in result
             node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
-            design_score = int(m.group(1)) if m else None
             blended = None
             if node_id and node_id in self.tree.nodes:
                 existing = self.tree.nodes[node_id]
@@ -333,10 +344,15 @@ class Agent:
         # audit_visual: feedback estético VLM. Recombina el total del nodo
         # sustituyendo el proxy visual estático por la mejor señal (max).
         if call.name == "audit_visual":
-            m = re.search(r"visual_vlm=(\d+)", result)
-            if not m:
-                return None
-            vlm = int(m.group(1))
+            from tools.domain.evaluator import parse_metrics_block
+            _blk = parse_metrics_block(result)
+            if _blk is not None and isinstance(_blk.get("visual_vlm"), (int, float)):
+                vlm = int(_blk["visual_vlm"])
+            else:
+                m = re.search(r"visual_vlm=(\d+)", result)
+                if not m:
+                    return None
+                vlm = int(m.group(1))
             node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
             blended = None
             if node_id and node_id in self.tree.nodes:
@@ -359,10 +375,15 @@ class Agent:
         # visible en el screenshot, no strings). Añade el axis `creativity`
         # (0-100) al nodo actual y recombina el total igual que audit_visual.
         if call.name == "audit_creative":
-            m = re.search(r"creativity_vlm=(\d+)", result)
-            if not m:
-                return None
-            cr = int(m.group(1))
+            from tools.domain.evaluator import parse_metrics_block
+            _blk = parse_metrics_block(result)
+            if _blk is not None and isinstance(_blk.get("creativity_vlm"), (int, float)):
+                cr = int(_blk["creativity_vlm"])
+            else:
+                m = re.search(r"creativity_vlm=(\d+)", result)
+                if not m:
+                    return None
+                cr = int(m.group(1))
             node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
             blended = None
             if node_id and node_id in self.tree.nodes:
@@ -383,28 +404,46 @@ class Agent:
         if call.name not in ("generate_candidate", "audit_page"):
             return None
 
-        m = re.search(r"total=(\d+)", result)
-        if not m:
-            return None
-        total = int(m.group(1))
-        metrics: dict = {}
-        mapping = {
-            r"\bseo=(\d+)": "seo",
-            r"\ba11y=(\d+)": "a11y",
-            r"\bperf=(\d+)": "performance",
-            r"\bresp=(\d+)": "responsive",
-            r"\bbp=(\d+)": "best_practices",
-            r"\bvisual=(\d+)": "visual",
-            r"\btask=(\d+)": "task",
-            r"\bstructure=(\d+)": "structure",
-            r"\bfunctional=(\d+)": "functional",
-            r"\bcreativity=(\d+)": "creativity",
-        }
-        for token, key in mapping.items():
-            m2 = re.search(token, result)
-            if m2:
-                metrics[key] = int(m2.group(1))
-        metrics["total"] = total
+        # Salida estructurada (bloque JSON canónico) primero; regex como fallback
+        # retrocompatible con runs históricas (Kimi K.3: "stringly-typed").
+        from tools.domain.evaluator import parse_metrics_block
+        _blk = parse_metrics_block(result)
+        if _blk is not None:
+            total = _blk.get("total")
+            if not isinstance(total, (int, float)):
+                return None
+            total = int(total)
+            metrics = {
+                k: int(v) for k, v in _blk.items()
+                if k in ("seo", "a11y", "performance", "responsive",
+                        "best_practices", "visual", "task", "structure",
+                        "functional", "creativity")
+                and isinstance(v, (int, float))
+            }
+            metrics["total"] = total
+        else:
+            m = re.search(r"total=(\d+)", result)
+            if not m:
+                return None
+            total = int(m.group(1))
+            metrics: dict = {}
+            mapping = {
+                r"\bseo=(\d+)": "seo",
+                r"\ba11y=(\d+)": "a11y",
+                r"\bperf=(\d+)": "performance",
+                r"\bresp=(\d+)": "responsive",
+                r"\bbp=(\d+)": "best_practices",
+                r"\bvisual=(\d+)": "visual",
+                r"\btask=(\d+)": "task",
+                r"\bstructure=(\d+)": "structure",
+                r"\bfunctional=(\d+)": "functional",
+                r"\bcreativity=(\d+)": "creativity",
+            }
+            for token, key in mapping.items():
+                m2 = re.search(token, result)
+                if m2:
+                    metrics[key] = int(m2.group(1))
+            metrics["total"] = total
 
         prev_best = self.tree.best()
         prev_score = prev_best.metrics.get("total", -1) if prev_best else -1

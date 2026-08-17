@@ -151,6 +151,8 @@ class AuditVisual(Tool):
         lines += [f"- {i}" for i in issues] or ["- (sin issues)"]
         lines.append(f"Sugerencias ({len(suggestions)}):")
         lines += [f"- {s}" for s in suggestions] or ["- (sin sugerencias)"]
+        from .evaluator import metrics_block
+        lines.append(metrics_block({"visual_vlm": score, "visual_estatico": baseline}))
         return "\n".join(lines)
 
     @staticmethod

@@ -485,6 +485,8 @@ class GenerateCandidate(Tool):
             summary += "\nGATE BLOQUEANTE (total capado): faltan secciones obligatorias — " + "; ".join(gate_lines)
         if vuln_files:
             summary += " [PARSEO_FALLBACK]"
+        from .evaluator import metrics_block
+        summary += "\n" + metrics_block(metrics)
         return f"OK: {len(files)} archivos generados. {summary}"
 
 
@@ -569,6 +571,8 @@ class AuditPage(Tool):
             res += "\n" + format_subtasks_status(_h, _css, _js, self.task_text or "", _fts)
         except Exception:
             pass
+        from .evaluator import metrics_block
+        res += "\n" + metrics_block(result)
         return res
 
 

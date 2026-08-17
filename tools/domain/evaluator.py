@@ -851,3 +851,42 @@ def blend_visual_total(metrics: dict, vlm: int | None, weights: dict | None = No
     if gates:
         blended = _apply_blocking_gates(blended, gates)
     return blended
+
+
+# --- Salida estructurada de métricas (anti "stringly-typed", Kimi K.3) ---
+#
+# Las tools emiten un bloque JSON canónico al final de su resultado, delimitado
+# por ###METRICS### ... ###END_METRICS###. El agente lo parsea con json.loads en
+# vez de regex sobre cadenas frágiles (total=(\d+), creativity_vlm=(\d+)...).
+# El regex se conserva SOLO como fallback para runs históricas.
+
+METRICS_OPEN = "###METRICS###"
+METRICS_CLOSE = "###END_METRICS###"
+
+
+def metrics_block(metrics: dict) -> str:
+    """Serializa métricas como bloque JSON delimitado, anexable al resultado de
+    una tool. Solo incluye valores numéricos/booleanos/string simples."""
+    import json
+    clean = {k: v for k, v in metrics.items()
+             if isinstance(v, (int, float, bool, str)) or v is None}
+    body = json.dumps(clean, ensure_ascii=False, default=str)
+    return f"{METRICS_OPEN}\n{body}\n{METRICS_CLOSE}"
+
+
+def parse_metrics_block(result: str) -> dict | None:
+    """Extrae y decodifica el bloque METRICS de un resultado de tool. None si no
+    hay bloque o el JSON está corrupto."""
+    import json
+    start = result.find(METRICS_OPEN)
+    if start == -1:
+        return None
+    start = result.find("\n", start) + 1
+    end = result.find(METRICS_CLOSE, start)
+    if end == -1:
+        return None
+    try:
+        data = json.loads(result[start:end].strip())
+        return data if isinstance(data, dict) else None
+    except json.JSONDecodeError:
+        return None

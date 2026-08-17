@@ -259,6 +259,21 @@ se codificaron como checks del evaluador y como principios en `system_base.txt`.
 Ese cambio se refleja hoy en `domain/` y en el snapshot (ver `REASONING.md`,
 hitos 8-9).
 
+### 4.1 Contrato de métricas estructurado (respuesta a "stringly-typed")
+
+- **Problema (crítica externa, Kimi K.3)**: el agente parseaba las métricas de
+  las tools con regex sobre cadenas (`total=(\d+)`, `creativity_vlm=(\d+)`,
+  `diseño_vlm=(\d+)`). Un cambio de formato en una tool rompía el árbol de
+  búsqueda **silenciosamente** (node creado sin métricas, total perdido).
+- **Solución**: todas las tools emiten ahora un **bloque JSON canónico** al final
+  de su resultado, delimitado por `###METRICS###` ... `###END_METRICS###`
+  (`metrics_block()`/`parse_metrics_block()` en `evaluator.py`). El agente lo
+  decodifica con `json.loads` en `_handle_eval_result` (los 4 puntos: audit_truth,
+  audit_visual, audit_creative, generate_candidate/audit_page). El regex se
+  conserva SOLO como fallback retrocompatible con runs históricas.
+- **Verificación**: `parse_metrics_block` round-trip, corrupción tolerada (None),
+  y el bloque aparece en la salida de `generate_candidate`. Suite: 121 tests PASS.
+
 ## 5. Límites y decisiones abiertas
 
 - **El umbral exacto** para promover una lección a regla sigue siendo criterio

@@ -1,4 +1,4 @@
-# reaweb-harness
+# ReaWeb
 
 Agente **ReASearch** de optimización web: dado un arquetipo y una tarea, desarrolla
 páginas web iterativamente (genera candidato → audita → mejora) y, además,
@@ -35,6 +35,19 @@ Documentación del diseño (para humanos):
   su arnés (esfera-ojo LLM envuelta por cada módulo) y el flujo de trabajo
   end-to-end con decisiones y bucles.
 
+## Demo visual (Show, don't tell)
+
+Una run real (benchmark portfolio, `20260817T124332`): el agente partió de H0,
+exploró variantes y exportó H2 como mejor candidato.
+
+| H0 (baseline, seed) | H2 (mejor candidato exportado) | H5 (variante de exploración) |
+|---|---|---|
+| ![H0](docs/demo/H0.png) | ![H2](docs/demo/H2.png) | ![H5](docs/demo/H5.png) |
+
+Las imágenes se renderizan con Chrome headless desde los snapshots congelados de
+la run (`runs/<ts>--portfolio/candidates/H<i>/`); se regeneran en cualquier
+momento con `scripts/render_dashboard.py --run <run_id>`.
+
 ## Stack
 
 - Python 3.12, `google-genai` (Gemini), Pydantic, Jinja2, YAML.
@@ -48,8 +61,8 @@ Documentación del diseño (para humanos):
 Requisitos: Python 3.10+ y [uv](https://docs.astral.sh/uv/) (o pip).
 
 ```bash
-git clone https://github.com/VicenteVila/reaweb-harness
-cd reaweb-harness
+git clone https://github.com/VicenteVila/ReaWeb
+cd ReaWeb
 
 # con uv (recomendado, usa pyproject.toml + uv.lock)
 uv sync --extra dev
@@ -65,6 +78,31 @@ Los tests no requieren API key (móckean LLM y red):
 ```bash
 uv run pytest -q
 ```
+
+## Inicio rápido (5 minutos)
+
+```bash
+# 1. clona e instala (arriba), pon tu GEMINI_API_KEY en .env
+
+# 2. lanza tu primera run end-to-end
+python -m scripts.run_agent \
+  --archetype landing-page \
+  --task "landing page para un SaaS de analítica de IA" \
+  --turns 6
+
+# 3. mira el resultado en pantalla (mejor candidato + total) y en disco:
+ls runs/            # runs/<timestamp>--landing-page/
+ls runs/<ts>--landing-page/final/
+
+# 4. (opcional) exporta el ganador a una carpeta limpia
+python -m scripts.export_candidate <ts>--landing-page /tmp/mi-landing
+
+# 5. (opcional) visualiza la evolución H0→Hn
+python -m scripts.render_dashboard --run runs/<ts>--landing-page
+```
+
+Sin API key no hay run real (el agente necesita Gemini); pero **todos los tests
+funcionan sin key**, y `render_dashboard` genera el dashboard incluso sin Chrome.
 
 ## Uso
 
@@ -269,6 +307,36 @@ guíe la siguiente mutación (`tools/domain/visual_critic.py`, `evaluator.py:582
 python3 -m pytest test          # si tienes pytest
 python3 -c "import sys; sys.path.insert(0,'.'); from test.test_evaluator import *; test_good_scores_high(); test_bad_scores_low(); test_visual_high_with_modern_design(); test_task_requirements_present(); print('OK')"
 ```
+
+## Benchmark reproducible
+
+Para medir si el harness mejora con el tiempo, usa una **tarea de referencia fija**
+(idéntica cada vez) y compara sus ejecuciones por `task_hash`:
+
+```bash
+# 1. lanza una run de referencia
+python -m scripts.run_benchmark \
+  --archetype landing-page \
+  --task "landing page para un SaaS de analítica de IA" \
+  --turns 20
+
+# 2. solo comparar históricos del mismo benchmark (sin gastar API)
+python -m scripts.run_benchmark --compare --task-hash <task_hash>
+```
+
+Genera `runs/reporte_benchmark_<ts>.md` con la tabla de históricos (baseline, best,
+Δ) y la tendencia. Ejemplo real del benchmark portfolio (task_hash `72b521df`):
+
+| Run | Baseline | Best | Δ |
+|---|---:|---:|---:|
+| 092433 | 84 | 85 | +1 |
+| 104003 | 79 | 87 | +8 |
+| 104852 | 78 | 90 | +12 |
+| 114200 | 81 | 90 | +9 |
+| 124332 | 81 | 90 | +9 |
+
+**Media: 87.7 · tendencia best: 85 → 90 (+5).** El reporte completo vive en
+`runs/reporte_benchmark_*.md`.
 
 ## Notas
 

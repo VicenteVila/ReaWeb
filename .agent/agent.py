@@ -416,6 +416,30 @@ class Agent:
                              "delta": f"{delta:+.1f}", "tool": call.name,
                              "node": node_id})
 
+    def _auto_truth_audit(self, registry, node_id: str | None) -> None:
+        """Juicio de verdad automático tras cada generate_candidate: verifica que
+        las partes integrantes estén CONECTADAS (repos enlazados desde la raíz) y
+        compara el diseño contra referencias reales del dataset UI (WebSight).
+        Es el criterio objetivo que refuerza la evolución de diseño sin depender
+        de que el LLM recuerde llamar a audit_truth."""
+        from types import SimpleNamespace
+
+        try:
+            tool = registry.get("audit_truth")
+            if tool is None or not getattr(self, "_truth_done", False):
+                pass
+            if tool is None:
+                return
+            call = SimpleNamespace(name="audit_truth", args={"references": 1})
+            result, _ = self._exec_tool(registry, call)
+            self._handle_eval_result(call, result)
+            self._log("system", {"event": "auto_truth", "node": node_id,
+                                 "result": result[:300]})
+        except Exception as e:
+            self._log("system", {"event": "auto_truth_error", "error": str(e)[:200]})
+        finally:
+            self._truth_done = True
+
     def _seed_from_workspace(self) -> None:
         """Si workspace/current tiene un candidato al arrancar, lo evalúa y lo
         registra como H0 baseline en el árbol de búsqueda (persistencia entre
@@ -539,6 +563,7 @@ class Agent:
                 )
                 if call.name == "generate_candidate" and node_id is not None:
                     self._snapshot(node_id)
+                    self._auto_truth_audit(registry, node_id)
                 self._maybe_auto_lesson(call, delta, node_id, result)
             self._sync_budget_cost()
 

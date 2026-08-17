@@ -546,6 +546,28 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
     gates: dict[str, list[str]] = {}
     if structure_fails:
         gates["structure"] = structure_fails
+
+    # GATE DE PARTES INTEGRANTES: si el candidato fabrica repos/ pero NO los
+    # enlaza desde la raíz (repos huérfanos), queda capado igual que un candidato
+    # sin secciones obligatorias. Un HTML fabricado y desconectado no es válido.
+    repos_dir = project_dir / "repos"
+    if repos_dir.is_dir():
+        linked = set(
+            re.findall(r'href=["\']([^"\']*repos/[^"\']*index\.html)["\']', h)
+        )
+        repo_dirs = sorted(
+            p for p in repos_dir.iterdir()
+            if p.is_dir() and (p / "index.html").exists()
+        )
+        orphan = [
+            p.name for p in repo_dirs
+            if f"repos/{p.name}/index.html" not in linked
+        ]
+        if orphan:
+            gates["parts_connected"] = [
+                f"repos huérfanos (fabricados pero NO enlazados): {', '.join(orphan[:5])}"
+            ]
+
     total = _apply_blocking_gates(total, gates)
 
     return {

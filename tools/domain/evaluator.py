@@ -449,6 +449,7 @@ WEIGHTS = {
     "visual": 2.0,
     "structure": 2.0,
     "functional": 1.0,
+    "creativity": 1.0,
     "task": 1.0,
 }
 
@@ -634,28 +635,37 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
 
 
 def blend_visual_total(metrics: dict, vlm: int | None, weights: dict | None = None) -> int | None:
-    """Recombina el total de un nodo cuando llega la crítica VLM estética.
+    """Recombina el total de un nodo cuando llega una señal VLM (estética o
+    creatividad).
 
     El axis 'visual' (proxy estático) se sustituye por la mejor señal disponible:
-    si hay score VLM real, se usa max(visual_estatico, vlm). Así la búsqueda
-    recompensa mejoras estéticas reales (Eq. AutoDesign: feedback P0 guía la
-    siguiente mutación) en lugar de ignorarlas. Devuelve None si no hay total.
+    si hay score VLM real, se usa max(visual_estatico, vlm, creativity). Así la
+    búsqueda recompensa mejoras estéticas/creativas reales (Eq. AutoDesign:
+    feedback P0 guía la siguiente mutación) en lugar de ignorarlas. Devuelve None
+    si no hay total.
     """
     total = metrics.get("total")
     if total is None:
         return None
-    if vlm is None:
+    has_vlm = vlm is not None
+    has_creativity = metrics.get("creativity") is not None
+    if not has_vlm and not has_creativity:
         return total
     visual_static = metrics.get("visual") or 0
+    best_visual = visual_static
+    if has_vlm:
+        best_visual = max(best_visual, vlm)
+    if has_creativity:
+        best_visual = max(best_visual, metrics["creativity"])
     axes = {
         "seo": metrics.get("seo"),
         "a11y": metrics.get("a11y"),
         "performance": metrics.get("performance"),
         "responsive": metrics.get("responsive"),
         "best_practices": metrics.get("best_practices"),
-        "visual": max(visual_static, vlm),
+        "visual": best_visual,
     }
-    for key in ("task", "structure", "functional"):
+    for key in ("task", "structure", "functional", "creativity"):
         if metrics.get(key) is not None:
             axes[key] = metrics[key]
     w = {**WEIGHTS, **(weights or {})}

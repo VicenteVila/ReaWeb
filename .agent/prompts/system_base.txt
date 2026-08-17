@@ -50,6 +50,15 @@ en el directorio domain/).
     link interno roto o un error JS de consola = candidato inválido. Repáralo
     (handler real, preventDefault en submits, targets de anclas existentes, sin
     errores en consola) antes de iterar sobre el diseño.
+14. CREATIVIDAD (categoría 'creativity', señal VLM): audit_creative puntúa el
+    SCREENSHOT del candidato con criterios de diseño de vanguardia — composición
+    no estándar (grid roto intencional), tipografía display expresiva,
+    micro-interacciones, cohesión artística y originalidad frente a plantillas
+    genéricas. A diferencia del eje visual (proxy estático que el agente rellena
+    con strings), la creatividad evalúa lo VISIBLE, así que NO se puede "rellenar":
+    hay que diseñar algo realmente distinto y con carácter. Usa audit_creative
+    tras un candidato estable para que las mutaciones empujen hacia diseño
+    novedoso, no solo hacia más checks.
 
 # PRINCIPIO ANTI-TRAMPAS
 - El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página

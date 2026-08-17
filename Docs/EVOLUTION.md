@@ -128,6 +128,32 @@ lecciones se inyectan en runs futuras.
   capados) y el agente aprende a no reincidir.
   contra los históricos con el mismo `task_hash`.
 
+### 2.8 Creatividad (categoría `creativity`, señal VLM sobre lo visible)
+
+- **Problema que resuelve**: el eje `visual` es un proxy ESTÁTICO (cuenta
+  `@keyframes`, canvas, gradientes, `sticky`, hover... en el código), así que el
+  agente lo "rellena" con strings sin que el resultado mejore. Comparación
+  real: el arnés produjo 8.2 KB de código con 5/13 checks visuales (score 38),
+  Gemini sin arnés produjo 43.6 KB con 9/13 checks (score 69) — el agente
+  optimizó el proxy, no el resultado. La evaluación con el MISMO LLM mostró que
+  el problema es la señal, no el modelo.
+- **Solución**: `tools/domain/creative_critic.py` (`AuditCreative`). Renderiza el
+  candidato a screenshot y un VLM puntúa la CREATIVIDAD de lo visible (0-100):
+  composición no estándar (grid roto intencional), tipografía display expresiva,
+  micro-interacciones, cohesión artística, originalidad frente a plantillas
+  genéricas. Es una señal sobre el resultado renderizado, NO sobre el código, por
+  lo que no es sobreajustable con strings.
+- **Integración**: `creativity` entra como axis con peso 1.0 en `WEIGHTS`; el
+  agente la obtiene vía `audit_creative` y `blend_visual_total` la incorpora
+  tomando `visual = max(visual_estatico, vlm, creativity)`. No es un gate: una
+  creatividad baja baja el total pero no capa (a diferencia de `functional` y
+  `parts_connected`). Los gates de funcionalidad siguen mandando: primero
+  funcional, luego bonito, luego original.
+- **Discriminación verificada**: el VLM puntuó ARNES=25 ("layout básico y
+  lineal") vs GEMINI=15 ("header genérico, dark mode estándar") — ambos bajos,
+  confirmando que ni el arnés ni Gemini hicieron diseño de vanguardia, aunque el
+  proxy estático daba 69 a Gemini. La creatividad mide lo que el proxy no ve.
+
 ## 3. De lección a regla: criterios
 
 El agente dispone de lecciones (`worked/didnt/try`) y de experimentos con delta.

@@ -13,6 +13,7 @@ from tools.domain.meta_editor import EditSkill, ReviewHarness
 from tools.domain.bundle_analyzer import AnalyzeProject
 from tools.domain.deployer import DeployPreview, GitSnapshot
 from tools.domain.visual_critic import AuditVisual
+from tools.domain.creative_critic import AuditCreative
 from tools.domain.truth_audit import AuditTruth
 
 
@@ -30,6 +31,7 @@ def build_domain_registry(llm, archetype: str = "", task: str = "", rules: str =
             AuditPage(requirements=requirements, task=task),
             AnalyzeProject(),
             AuditVisual(llm=llm),
+            AuditCreative(llm=llm),
             AuditTruth(llm=llm, task=task),
             UpdateLessons(),
             SelectFinal(),

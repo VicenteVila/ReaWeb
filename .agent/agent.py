@@ -314,6 +314,31 @@ class Agent:
                                "version": "visual"})
             return node_id
 
+        # audit_creative: señal VLM de CREATIVIDAD (diseño de vanguardia, lo
+        # visible en el screenshot, no strings). Añade el axis `creativity`
+        # (0-100) al nodo actual y recombina el total igual que audit_visual.
+        if call.name == "audit_creative":
+            m = re.search(r"creativity_vlm=(\d+)", result)
+            if not m:
+                return None
+            cr = int(m.group(1))
+            node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
+            blended = None
+            if node_id and node_id in self.tree.nodes:
+                existing = self.tree.nodes[node_id]
+                existing.metrics["creativity"] = cr
+                from tools.domain.evaluator import blend_visual_total
+                vlm_prev = existing.metrics.get("vlm")
+                blended = blend_visual_total(existing.metrics, vlm_prev)
+                if blended is not None:
+                    existing.metrics["total"] = blended
+                existing.description = result[:200]
+                self.tree.add(existing)
+            self._log("eval", {"candidate": node_id, "tool": "audit_creative",
+                               "creativity": cr, "total": blended,
+                               "version": "creative"})
+            return node_id
+
         if call.name not in ("generate_candidate", "audit_page"):
             return None
 
@@ -332,6 +357,7 @@ class Agent:
             r"\btask=(\d+)": "task",
             r"\bstructure=(\d+)": "structure",
             r"\bfunctional=(\d+)": "functional",
+            r"\bcreativity=(\d+)": "creativity",
         }
         for token, key in mapping.items():
             m2 = re.search(token, result)
@@ -388,7 +414,7 @@ class Agent:
         una mejora o regresión >= umbral (LESSON_AUTO), registra una lección
         worked/didnt deduplicada en la run, sin depender de que el LLM llame a
         update_lessons. Es el criterio objetivo que materializa EVOLUTION.md."""
-        if call.name not in ("generate_candidate", "audit_page", "audit_visual", "audit_truth"):
+        if call.name not in ("generate_candidate", "audit_page", "audit_visual", "audit_truth", "audit_creative"):
             return
         if delta == 0 or abs(delta) < LESSON_AUTO["delta_threshold"]:
             return

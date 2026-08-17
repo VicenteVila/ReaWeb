@@ -11,4 +11,4 @@ workspace/reference.html
 memory/*.json
 memory/*.db
 dist/
-build/
+build/datasets/

@@ -76,6 +76,17 @@ HARNESS_COMPONENTS = {
 # obligatorias de la tarea, su total no puede superar este techo.
 BLOCKING_CEILING = 40
 
+# Caché semántica de LLM (Punto 2, Qwen 3.8): reutiliza respuestas de llamadas
+# repetidas (mismas tareas/estados re-ejecutados) cuando el embedding del prompt
+# supera LLM_CACHE_THRESHOLD. Desactivable con LLM_CACHE_ENABLED=0 o --no-cache.
+LLM_CACHE_ENABLED = os.environ.get("LLM_CACHE_ENABLED", "1") != "0"
+LLM_CACHE_THRESHOLD = float(os.environ.get("LLM_CACHE_THRESHOLD", "0.80"))
+LLM_CACHE_TTL_DAYS = int(os.environ.get("LLM_CACHE_TTL_DAYS", "7"))
+
+# Sandbox de ejecución de código (Punto 8): "restricted" aplica allowlist de
+# módulos Python + prlimit/ulimit en bash; "off" deshabilita la ejecución.
+CODE_EXEC_MODE = os.environ.get("CODE_EXEC_MODE", "restricted")
+
 # Precios por 1M tokens (USD) para estimar el coste real de cada llamada.
 # clave "default" como fallback si el modelo no está listado.
 MODEL_PRICES = {

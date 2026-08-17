@@ -338,6 +338,57 @@ Genera `runs/reporte_benchmark_<ts>.md` con la tabla de históricos (baseline, b
 **Media: 87.7 · tendencia best: 85 → 90 (+5).** El reporte completo vive en
 `runs/reporte_benchmark_*.md`.
 
+### Suite pública + leaderboard (benchmark/)
+
+La suite re-ejecutable vive en `benchmark/tasks.yaml` (7 tareas fijas en distintos
+arquetipos, mismas tareas => mismo `task_hash` => comparables entre commits):
+
+```bash
+# ejecuta toda la suite y regenera benchmark/leaderboard.json + .md
+python -m scripts.run_benchmark --suite --leaderboard --json-out benchmark/leaderboard.json
+
+# solo leaderboard con los históricos ya en memory/ (sin gastar API)
+python -m scripts.run_benchmark --compare --task-hash <task_hash> --leaderboard
+```
+
+El workflow `.github/workflows/leaderboard.yml` corre la suite en CI y hace **commit
+automático** del leaderboard (github-actions[bot]). Ejemplo real (portfolio, task_hash
+`72b521df`, media **87.7**):
+
+| Run | Baseline | Best | Δ |
+|---|---|---:|---:|---:|
+| 092433 | 84 | 85 | +1 |
+| 104003 | 79 | 87 | +8 |
+| 104852 | 78 | 90 | +12 |
+| 114200 | 81 | 90 | +9 |
+| 124332 | 81 | 90 | +9 |
+
+## Caché semántica de LLM (ahorro de costes)
+
+`.agent/llm_cache.py` cachea respuestas de Gemini por **similitud de coseno** del
+embedding del prompt (umbral `LLM_CACHE_THRESHOLD`, por defecto **0.80**) en una tabla
+SQLite (`memory/memory.db`) con índice FAISS. Re-runs de la misma tarea/estado
+devuelven la respuesta previa sin pagar tokens. Configurable:
+
+- `LLM_CACHE_ENABLED=0` desactiva la caché
+- `LLM_CACHE_THRESHOLD` umbral de similitud (0.80 por defecto)
+- `LLM_CACHE_TTL_DAYS` caducidad (7 días)
+- `--no-cache` en `scripts/run_agent.py` desactiva la caché para una run concreta
+
+## Sandbox de ejecución de código
+
+`tools/code_exec.py` (Punto 8) aísla la ejecución de código del agente:
+
+- **Fase 1 — Python**: allowlist de módulos (`math`, `json`, `re`, `statistics`,
+  `collections`, `itertools`, ...), builtins peligrosos eliminados (`open`, `eval`,
+  `exec`, `input`, `__import__`, ...) y chequeo por AST que rechaza imports o accesos
+  a `os`/`subprocess`/`sys`/`pathlib`/`requests`/red.
+- **Fase 2 — Bash**: blocklist ampliada (borrados, red, paquetes, kernel) y límites de
+  recursos vía `prlimit` (memoria 512 MiB, CPU 10 s, 32 procesos) con fallback a
+  `ulimit`.
+- `CODE_EXEC_MODE=off` deshabilita la ejecución. Sin Docker: aislamiento de recursos
+  y de superficie de API, no de kernel.
+
 ## Notas
 
 - El evaluador ligero mide métricas estáticas (no Core Web Vitals reales). Migrar a

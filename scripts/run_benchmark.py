@@ -134,9 +134,18 @@ def main():
     ap.add_argument("--max-cost", type=float, default=5.0, help="Presupuesto máx USD")
     ap.add_argument("--compare", action="store_true", help="Solo comparar históricos (no lanzar run)")
     ap.add_argument("--task-hash", default=None, help="task_hash concreto (para --compare)")
+    ap.add_argument("--suite", action="store_true",
+                    help="Ejecutar la suite completa de benchmark/tasks.yaml")
+    ap.add_argument("--leaderboard", action="store_true",
+                    help="Tras la suite, regenerar benchmark/leaderboard.json + .md")
+    ap.add_argument("--json-out", default=None,
+                    help="Ruta donde escribir los resultados como JSON (para CI)")
     args = ap.parse_args()
 
     db = MemoryDB()
+
+    if args.suite:
+        return _run_suite(args, db)
 
     if args.compare:
         th = args.task_hash or task_hash(args.task or "")
@@ -147,6 +156,27 @@ def main():
         out = PATHS["runs"] / f"reporte_benchmark_{datetime.now().strftime('%Y%m%dT%H%M%S')}.md"
         out.write_text(report)
         print(f"\nReporte guardado en: {out}")
+        if args.leaderboard:
+            import json
+            bests = [r["best_score"] for r in hist if r.get("best_score") is not None]
+            agg = {
+                "generated": datetime.now().astimezone().isoformat(timespec="seconds"),
+                "task_hash": th,
+                "n_tasks": len(bests),
+                "n_passed": len(bests),
+                "mean_best": round(sum(bests) / len(bests), 1) if bests else None,
+                "results": [
+                    {"task_id": "?", "archetype": r.get("archetype"), "task_hash": th,
+                     "baseline": r.get("_baseline"), "best": r.get("best_score"),
+                     "run_id": r["id"], "started": (r.get("started") or "")[:10],
+                     "model": r.get("model")}
+                    for r in hist
+                ],
+            }
+            if args.json_out:
+                Path(args.json_out).parent.mkdir(parents=True, exist_ok=True)
+                Path(args.json_out).write_text(json.dumps(agg, ensure_ascii=False, indent=2))
+            _write_leaderboard(agg)
         return
 
     if not args.archetype or not args.task:
@@ -177,6 +207,121 @@ def main():
     out = PATHS["runs"] / f"reporte_benchmark_{datetime.now().strftime('%Y%m%dT%H%M%S')}.md"
     out.write_text(report)
     print(f"\nReporte guardado en: {out}")
+
+
+def _run_suite(args, db):
+    """Ejecuta benchmark/tasks.yaml tarea a tarea y (opcional) regenera el
+    leaderboard agregado en benchmark/."""
+    import json
+
+    import yaml
+
+    from scripts._common import run_single
+    from scripts.run_battery import curve_from_transcript
+
+    suite_file = PATHS["root"] / "benchmark" / "tasks.yaml"
+    if not suite_file.exists():
+        db.close()
+        raise SystemExit(f"Falta la suite: {suite_file}")
+    suite = yaml.safe_load(suite_file.read_text()).get("suite", [])
+    print(f"Suite: {len(suite)} tareas ({datetime.now().isoformat(timespec='seconds')})\n")
+
+    results = []
+    for task_def in suite:
+        tid = task_def["id"]
+        print(f"{'='*60}\n[{tid}] {task_def['archetype']}: {task_def['task'][:70]}...")
+        try:
+            agent = run_single(
+                archetype=task_def["archetype"],
+                task=task_def["task"],
+                turns=task_def.get("turns", 16),
+                max_cost=args.max_cost,
+                target_h=task_def.get("target_h", 0),
+                verbose=False,
+            )
+            curve = curve_from_transcript(agent.run_dir)
+            best = curve[-1]["total"] if curve else None
+            baseline = curve[0]["total"] if curve else None
+        except Exception as e:
+            print(f"  [ERROR] {e}")
+            best = baseline = None
+        th = task_hash(task_def["task"])
+        results.append({
+            "task_id": tid,
+            "archetype": task_def["archetype"],
+            "task_hash": th,
+            "baseline": baseline,
+            "best": best,
+            "run_id": getattr(agent, "run_id", None) if "agent" in locals() else None,
+            "started": datetime.now().isoformat(timespec="seconds"),
+            "model": agent.model if "agent" in locals() else None,
+        })
+        print(f"  => best={best} baseline={baseline} hash={th}")
+
+    agg = {
+        "generated": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "task_hash": results[0]["task_hash"] if results else None,
+        "n_tasks": len(results),
+        "n_passed": sum(1 for r in results if r["best"] is not None),
+        "mean_best": round(sum(r["best"] for r in results if r["best"] is not None)
+                          / max(1, sum(1 for r in results if r["best"] is not None)), 1),
+        "results": results,
+    }
+    print(f"\n=== AGREGADO: {agg['n_passed']}/{agg['n_tasks']} tareas, "
+          f"media best {agg['mean_best']} ===")
+
+    if args.json_out:
+        out = Path(args.json_out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(agg, ensure_ascii=False, indent=2))
+        print(f"JSON en: {out}")
+
+    if args.leaderboard:
+        _write_leaderboard(agg)
+    db.close()
+
+
+def _write_leaderboard(agg: dict) -> None:
+    """Escribe benchmark/leaderboard.json y leaderboard.md (commit automático CI)."""
+    import json
+
+    bench_dir = PATHS["root"] / "benchmark"
+    bench_dir.mkdir(parents=True, exist_ok=True)
+
+    json_path = bench_dir / "leaderboard.json"
+    prev = {}
+    if json_path.exists():
+        try:
+            prev = json.loads(json_path.read_text())
+        except Exception:
+            prev = {}
+    json_path.write_text(json.dumps(agg, ensure_ascii=False, indent=2))
+
+    md_lines = [
+        "# Leaderboard ReaWeb",
+        "",
+        f"Generado: {agg['generated']} · {agg['n_passed']}/{agg['n_tasks']} tareas "
+        f"· media best **{agg['mean_best'] if agg.get('mean_best') is not None else '-'}**",
+        "",
+        "| Tarea | Arquetipo | Baseline | Best | Δ | Run |",
+        "|---|---|---:|---:|---:|:---:|",
+    ]
+    for r in sorted(agg["results"], key=lambda x: -(x["best"] or 0)):
+        delta = ""
+        if r.get("best") is not None and r.get("baseline") is not None:
+            delta = f"{r['best'] - r['baseline']:+g}"
+        md_lines.append(
+            f"| {r['task_id']} | {r['archetype']} | {_f(r.get('baseline'))} "
+            f"| {_f(r.get('best'))} | {delta} | {r['run_id'] or '-'} |"
+        )
+    prev_mean = prev.get("mean_best")
+    if prev_mean is not None:
+        md_lines.append(
+            f"\nMedia best vs anterior: {agg['mean_best']} vs {prev_mean} "
+            f"({agg['mean_best'] - prev_mean:+g})"
+        )
+    (bench_dir / "leaderboard.md").write_text("\n".join(md_lines) + "\n")
+    print(f"Leaderboard actualizado: {bench_dir / 'leaderboard.md'}")
 
 
 if __name__ == "__main__":

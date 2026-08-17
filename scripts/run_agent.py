@@ -26,6 +26,8 @@ def main():
                         help="URL de referencia a analizar (HTML crudo) para adaptar su contenido como H0")
     parser.add_argument("--gate", action="store_true",
                         help="Ejecutar el acceptance gate tras la run sobre propuestas pending")
+    parser.add_argument("--no-cache", action="store_true",
+                        help="Deshabilitar la caché semántica de LLM para esta run")
     args = parser.parse_args()
 
     agent = run_single(
@@ -38,6 +40,7 @@ def main():
         verbose=True,
         target_h=args.target_h,
         initial_url=args.url,
+        use_cache=not args.no_cache,
     )
     if args.gate:
         from scripts.gate_harness_edit import main as gate_main

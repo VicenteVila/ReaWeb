@@ -1,6 +1,7 @@
 """Cliente del modelo Gemini (google-genai SDK) con tool-calling estructurado."""
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass
 
@@ -8,6 +9,11 @@ from google import genai
 from google.genai import types
 
 from config import GEMINI_API_KEY, GEMINI_MODEL
+
+try:
+    from .llm_cache import LLMCache
+except ImportError:  # compat: import directo (tests)
+    from llm_cache import LLMCache
 
 # Cadena de fallback: preferido primero (el más potente de Gemini 3.1),
 # degradando automáticamente si el free tier agota la quota.
@@ -47,7 +53,8 @@ def _convert_args(raw) -> dict:
 
 
 class LLM:
-    def __init__(self, model: str | None = None, api_key: str | None = None):
+    def __init__(self, model: str | None = None, api_key: str | None = None,
+                 use_cache: bool = True):
         self.model = model or GEMINI_MODEL
         self._chain = [self.model] + [m for m in FALLBACK_MODELS if m != self.model]
         api = api_key or GEMINI_API_KEY
@@ -56,6 +63,43 @@ class LLM:
         self.client = genai.Client(api_key=api)
         self.last_usage: tuple[int, int] = (0, 0)
         self.cost_so_far: float = 0.0
+        # Caché semántica (Punto 2): activa salvo LLM_CACHE_ENABLED=0 o --no-cache.
+        self.cache: LLMCache | None = None
+        from config import LLM_CACHE_ENABLED
+        if use_cache and LLM_CACHE_ENABLED:
+            try:
+                self.cache = LLMCache()
+            except Exception:
+                self.cache = None
+
+    @staticmethod
+    def _cache_key(contents, config) -> str:
+        """Clave estable para la caché: serializa el contenido (incluye hash de
+        imágenes en llamadas vision) + tools + temperatura."""
+        text_parts: list[str] = []
+        img_hashes: list[str] = []
+        if isinstance(contents, str):
+            text_parts.append(contents)
+        else:
+            for part in contents:
+                if isinstance(part, str):
+                    text_parts.append(part)
+                    continue
+                txt = getattr(part, "text", None)
+                if txt:
+                    text_parts.append(str(txt))
+                    continue
+                data = getattr(getattr(part, "inline_data", None), "data", None)
+                if data:
+                    img_hashes.append(hashlib.sha256(bytes(data)).hexdigest()[:16])
+        tool_names = [t.function_declarations[0].name for t in (config.tools or [])]
+        payload = {
+            "text": "\n".join(text_parts),
+            "imgs": img_hashes,
+            "tools": tool_names,
+            "temperature": config.temperature,
+        }
+        return json.dumps(payload, ensure_ascii=False, sort_keys=True)
 
     def _tools(self, tools: list[dict] | None) -> list[types.Tool] | None:
         if not tools:
@@ -134,10 +178,30 @@ class LLM:
         image_part = types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
         text_part = types.Part.from_text(text=prompt)
         config = types.GenerateContentConfig(temperature=temperature)
-        return self._complete([text_part, image_part], config)
+        return self._complete([text_part, image_part], config, kind="vision")
 
-    def _complete(self, contents, config) -> LLMResponse:
-        """Bucle interno: fallback de modelos + parseo de respuesta + coste real."""
+    def _complete(self, contents, config, kind: str = "text") -> LLMResponse:
+        """Bucle interno: caché semántica + fallback de modelos + parseo + coste real."""
+        cache = self.cache
+        key = None
+        if cache is not None:
+            key = self._cache_key(contents, config)
+            hit = cache.get(key, self.model, kind)
+            if hit is not None:
+                tc = None
+                if hit["tool_calls"]:
+                    tc = [LLMToolCall(name=t["name"], args=dict(t["args"])) for t in hit["tool_calls"]]
+                saved = self.estimate_cost(hit["input_tokens"], hit["output_tokens"], self.model)
+                cache.cost_saved_usd += saved
+                self.cost_so_far += 0.0  # no sumamos coste (no hubo llamada)
+                self.last_usage = (hit["input_tokens"], hit["output_tokens"])
+                return LLMResponse(
+                    text=hit["response"] or "",
+                    tool_calls=tc,
+                    input_tokens=hit["input_tokens"],
+                    output_tokens=hit["output_tokens"],
+                )
+
         last_err = None
         for model in self._chain:
             try:
@@ -176,6 +240,19 @@ class LLM:
             output_tokens = int(getattr(usage, "candidates_token_count", 0) or 0)
         self.last_usage = (input_tokens, output_tokens)
         self.cost_so_far += self.estimate_cost(input_tokens, output_tokens, self.model)
+
+        # Guardar en caché (sin tools: las respuestas con function_call son efímeras).
+        if cache is not None and not tool_calls:
+            try:
+                cache.put(
+                    key, self.model, kind,
+                    response=text,
+                    tool_calls=None,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                )
+            except Exception:
+                pass
         return LLMResponse(
             text=text,
             tool_calls=tool_calls or None,

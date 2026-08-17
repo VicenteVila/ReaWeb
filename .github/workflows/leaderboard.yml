@@ -1,0 +1,55 @@
+# Leaderboard del benchmark (Punto 7, Qwen 3.8): ejecuta la suite de
+# benchmark/tasks.yaml en un runner limpio y hace COMMIT AUTOMÁTICO del
+# benchmark/leaderboard.json + .md con el resultado agregado.
+#
+# - Se dispara en push a main y manualmente (workflow_dispatch).
+# - Si no hay GEMINI_API_KEY (fork/PR), solo regenera el leaderboard con los
+#   históricos ya en memory/ (vía --compare), sin gastar llamadas.
+# - El commit lo hace github-actions[bot] con el token GITHUB_TOKEN y NO
+#   re-dispara este workflow (ruta benchmark/).
+name: leaderboard
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "benchmark/**"
+      - ".agent/**"
+      - "tools/**"
+      - "config.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run benchmark suite (live run si hay API key)
+        run: |
+          if [ -n "$GEMINI_API_KEY" ]; then
+            uv run python -m scripts.run_benchmark --suite --leaderboard \
+              --json-out benchmark/leaderboard.json --max-cost 5.0
+          else
+            echo "Sin GEMINI_API_KEY: solo leaderboard con históricos."
+            uv run python -m scripts.run_benchmark --compare --leaderboard \
+              --json-out benchmark/leaderboard.json || true
+          fi
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Commit leaderboard
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmark/leaderboard.json benchmark/leaderboard.md
+          if ! git diff --cached --quiet; then
+            git commit -m "bench: actualiza leaderboard (suite benchmark)"
+            git push
+          else
+            echo "Sin cambios en el leaderboard."
+          fi

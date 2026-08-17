@@ -26,7 +26,14 @@ def test_snapshot_includes_docs_and_memory():
     s = snapshot()
     assert any(k.startswith("Docs/") for k in s["files"]), "Docs/ debe estar versionado"
     assert s["n_files"] > sum(1 for k in s["files"] if k.startswith("Docs/"))
-    assert "memory/lessons.db" in s["files"]  # la memoria es parte viva del harness
+    # La memoria es parte viva del harness SOLO cuando existe y tiene lecciones:
+    # en un checkout limpio (CI) la DB no está, así que la clave puede no existir.
+    lh = lessons_hash()
+    if lh:
+        assert "memory/lessons.db" in s["files"]
+        assert s["files"]["memory/lessons.db"] == lh
+    else:
+        assert "memory/lessons.db" not in s["files"]
 
 
 def test_lessons_hash_derived_from_db():

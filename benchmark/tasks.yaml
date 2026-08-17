@@ -1,0 +1,48 @@
+# Suite de benchmark público de ReaWeb (Punto 7, Qwen 3.8).
+# Cada tarea es fija y re-ejecutable: mismas tareas => mismo task_hash =>
+# comparable entre runs (mejora del harness con el tiempo).
+# Ejecutar: python -m scripts.run_benchmark --suite
+# Resultado agregado: benchmark/leaderboard.json + leaderboard.md (commit CI).
+
+suite:
+  - id: landing-saas-ia
+    archetype: landing-page
+    task: "Crea una landing para un SaaS de IA de análisis de datos. Debe tener hero con titular y CTA, sección de features con 4 tarjetas, pricing con 3 planes, y footer. Usa HTML+CSS con diseño limpio y moderno."
+    turns: 16
+    target_h: 3
+
+  - id: ecommerce-sneakers
+    archetype: ecommerce
+    task: "Crea una tienda online de sneakers. Home con grid de productos (fotos placeholder, precio, botón añadir), página de producto individual, y carrito con total. HTML+CSS+JS vanilla."
+    turns: 16
+    target_h: 3
+
+  - id: saas-dashboard
+    archetype: saas-dashboard
+    task: "Crea un dashboard SaaS de métricas. Sidebar de navegación, header con búsqueda, 4 tarjetas KPI (ingresos, usuarios, conversión, churn) y un gráfico de barras simple con datos de ejemplo."
+    turns: 16
+    target_h: 3
+
+  - id: knowledge-graph
+    archetype: knowledge-graph
+    task: "Crea una landing centrada en un grafo de conocimientos sobre un tema de tu elección. El grafo debe representarse visualmente con nodos y conexiones, con leyenda e interacción básica."
+    turns: 16
+    target_h: 3
+
+  - id: corporate-blog
+    archetype: blog-content
+    task: "Crea un blog corporativo. Header con logo y menú, listado de 3 artículos con extracto y fecha, página de artículo con contenido estructurado, y newsletter en el footer."
+    turns: 16
+    target_h: 3
+
+  - id: corporate-business
+    archetype: corporate-business
+    task: "Crea la web corporativa de una consultora. Hero institucional, sección 'sobre nosotros' con valores, servicios en 4 bloques, testimonios, y formulario de contacto."
+    turns: 16
+    target_h: 3
+
+  - id: portfolio-creative
+    archetype: portfolio-creative
+    task: "Crea un portfolio creativo de un diseñador. Hero con nombre y rol, grid de 6 proyectos con imagen y título, sección 'sobre mí', y contacto. Estilo visual distintivo y coherente."
+    turns: 16
+    target_h: 3

@@ -1,0 +1,79 @@
+{
+  "generated": "2026-08-17T14:51:16+02:00",
+  "task_hash": "72b521df3da6846e",
+  "n_tasks": 6,
+  "n_passed": 6,
+  "mean_best": 87.7,
+  "results": [
+    {
+      "task_id": "?",
+      "archetype": "portfolio-creative",
+      "task_hash": "72b521df3da6846e",
+      "baseline": 84,
+      "best": 85.0,
+      "run_id": "20260817T092433--portfolio-creative",
+      "started": "2026-08-17",
+      "model": "gemini-3.1-pro-preview"
+    },
+    {
+      "task_id": "?",
+      "archetype": "portfolio-creative",
+      "task_hash": "72b521df3da6846e",
+      "baseline": 79,
+      "best": null,
+      "run_id": "20260817T103706--portfolio-creative",
+      "started": "2026-08-17",
+      "model": "gemini-3.1-pro-preview"
+    },
+    {
+      "task_id": "?",
+      "archetype": "portfolio-creative",
+      "task_hash": "72b521df3da6846e",
+      "baseline": 79,
+      "best": 87.0,
+      "run_id": "20260817T104003--portfolio-creative",
+      "started": "2026-08-17",
+      "model": "gemini-3.1-pro-preview"
+    },
+    {
+      "task_id": "?",
+      "archetype": "portfolio-creative",
+      "task_hash": "72b521df3da6846e",
+      "baseline": 78,
+      "best": 90.0,
+      "run_id": "20260817T104852--portfolio-creative",
+      "started": "2026-08-17",
+      "model": "gemini-3.1-pro-preview"
+    },
+    {
+      "task_id": "?",
+      "archetype": "portfolio-creative",
+      "task_hash": "72b521df3da6846e",
+      "baseline": 81,
+      "best": 90.0,
+      "run_id": "20260817T114200--portfolio-creative",
+      "started": "2026-08-17",
+      "model": "gemini-3.1-pro-preview"
+    },
+    {
+      "task_id": "?",
+      "archetype": "portfolio",
+      "task_hash": "72b521df3da6846e",
+      "baseline": 82,
+      "best": 84.0,
+      "run_id": "20260817T121636--portfolio",
+      "started": "2026-08-17",
+      "model": "gemini-3.1-pro-preview"
+    },
+    {
+      "task_id": "?",
+      "archetype": "portfolio",
+      "task_hash": "72b521df3da6846e",
+      "baseline": 81,
+      "best": 90.0,
+      "run_id": "20260817T124332--portfolio",
+      "started": "2026-08-17",
+      "model": "gemini-3.1-pro-preview"
+    }
+  ]
+}

@@ -440,6 +440,105 @@ def _html_has_section(h: str, key: str) -> bool:
     return False
 
 
+# Subtareas FUNCIONALES verificables: se corresponden 1:1 con los tests que
+# inyecta functional_tester.py en Chrome headless. Cada una es un cheque concreto
+# que se puede marcar ok/fail de forma objetiva (el DOM tras clicks reales).
+FUNCTIONAL_SUBTASKS = [
+    ("nav_links_validos", "los enlaces de navegación apuntan a secciones que existen"),
+    ("botones_click_sin_error", "los botones responden al click sin lanzar error JS"),
+    ("formularios_no_recargan", "los formularios capturan el submit sin recargar la página"),
+    ("interactivos_responden", "los elementos interactivos cambian el DOM tras el click"),
+    ("js_sin_errores", "no hay errores de JS en consola"),
+]
+
+
+def extract_subtasks(task: str) -> list[dict]:
+    """Descompone la tarea en SUBTAREAS con criterio de aceptación verificable.
+
+    Devuelve una lista de dicts con claves: id, tipo (estructural|funcional|
+    literal), cheque (descripción del criterio de aceptación). Estructurales =
+    secciones obligatorias de extract_sections; funcionales = tests del
+    functional_tester; literales = requisitos textuales de extract_requirements.
+    Es el plan que el agente debe cumplir SUBTAREA A SUBTAREA (loop F1): el
+    estado muestra ok/fail por subtarea y el fallo se itera de forma enfocada.
+    """
+    subtasks: list[dict] = []
+    for key in extract_sections(task):
+        aliases = SECTION_ALIASES.get(key, [key])
+        subtasks.append({
+            "id": f"seccion:{key}",
+            "tipo": "estructural",
+            "cheque": f"la sección '{key}' está presente en el HTML (alias: {', '.join(aliases)})",
+        })
+    for name, desc in FUNCTIONAL_SUBTASKS:
+        subtasks.append({
+            "id": f"funcional:{name}",
+            "tipo": "funcional",
+            "cheque": desc,
+        })
+    for req in extract_requirements(task):
+        subtasks.append({
+            "id": f"literal:{req}",
+            "tipo": "literal",
+            "cheque": f"el requisito literal '{req}' aparece en el código",
+        })
+    return subtasks
+
+
+def subtasks_status(html: str, css: str, js: str, task: str,
+                    func_tests: list | None = None) -> dict[str, dict]:
+    """Evalúa cada subtarea del plan y devuelve {subtask_id: {ok, detail}}.
+
+    - estructural: _html_has_section sobre el HTML.
+    - literal: requisito presente en html+css+js (case-sensitive, como el task score).
+    - funcional: el test individual del functional_tester (si se ejecutó).
+    """
+    status: dict[str, dict] = {}
+    ft_by_name = {t.get("n"): t for t in (func_tests or [])}
+    for sub in extract_subtasks(task):
+        sid = sub["id"]
+        if sid.startswith("seccion:"):
+            key = sid.split(":", 1)[1]
+            ok = _html_has_section(html, key)
+            detail = "" if ok else f"no se encontró la sección '{key}'"
+        elif sid.startswith("literal:"):
+            req = sid.split(":", 1)[1]
+            ok = req in (html + css + js)
+            detail = "" if ok else f"no aparece '{req}' en el código"
+        elif sid.startswith("funcional:"):
+            name = sid.split(":", 1)[1]
+            t = ft_by_name.get(name)
+            if t is None:
+                ok = False
+                detail = "test funcional no ejecutado"
+            else:
+                ok = t.get("p") == 1
+                detail = "" if ok else str(t.get("d") or "falla")
+        else:
+            continue
+        status[sid] = {"ok": ok, "detail": detail, "tipo": sub["tipo"]}
+    return status
+
+
+def format_subtasks_status(html: str, css: str, js: str, task: str,
+                          func_tests: list | None = None) -> str:
+    """Formatea el checklist de subtareas como líneas "[ok]/[fail] id — cheque".
+
+    Se inyecta en la salida de generate_candidate/audit_page para que el agente
+    vea QUÉ subtarea falla y por qué (loop F1), sin re-ejecutar Chrome por turno.
+    """
+    status = subtasks_status(html, css, js, task, func_tests)
+    lines = ["CHECKLIST DE SUBTAREAS (loop F1):"]
+    ordered = sorted(status.items(), key=lambda kv: (kv[1]["tipo"], kv[0]))
+    for sid, s in ordered:
+        mark = "ok" if s["ok"] else "FAIL"
+        detail = f"  <-- {s['detail']}" if s["detail"] else ""
+        lines.append(f"  [{mark}] {sid}{detail}")
+    fails = [sid for sid, s in status.items() if not s["ok"]]
+    lines.append(f"SUBTAREAS: {len(status)-len(fails)}/{len(status)} ok · fallan: {', '.join(fails) or '-'}")
+    return "\n".join(lines)
+
+
 WEIGHTS = {
     "seo": 1.0,
     "a11y": 1.0,
@@ -533,6 +632,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
     # run_functional=False permite aislar el blend (tests unitarios del evaluador).
     functional = None
     functional_fails: list[str] = []
+    _ft = None
     if run_functional:
         try:
             from tools.domain.functional_tester import run_functional_test
@@ -612,6 +712,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
         "task": task,
         "structure": structure_score,
         "functional": functional,
+        "functional_tests": (_ft.get("tests") if run_functional and _ft else None),
         "gates": gates,
         "failures": {
             "seo": seo_fails,

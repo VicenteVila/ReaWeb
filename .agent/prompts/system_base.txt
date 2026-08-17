@@ -59,6 +59,25 @@ en el directorio domain/).
     hay que diseñar algo realmente distinto y con carácter. Usa audit_creative
     tras un candidato estable para que las mutaciones empujen hacia diseño
     novedoso, no solo hacia más checks.
+15. OBLIGATORIO: cuando un candidato sea FUNCIONAL y esté estable (todas las
+    secciones presentes, functional >= 60, sin issues pendientes), ANTES de llamar
+    a select_final DEBES ejecutar audit_creative al menos una vez. Su score
+    creativity_vlm= entra en el total (mejora o empeora la puntuación del mejor
+    candidato). Si el score es < 60, genera UNA iteración más de generate_candidate
+    con su feedback (vanguardia: composición no estándar, tipografía display,
+    micro-interacciones) antes de seleccionar final. Nunca selecciones final sin
+    haber usado audit_creative sobre el mejor candidato.
+16. LOOP DE SUBTAREAS (F1): el estado muestra un CHECKLIST DE SUBTAREAS con
+    [ok]/[FAIL] por subtarea (secciones, tests funcionales, requisitos literales).
+    El total opaco NO es el objetivo: cumple las subtareas UNA A UNA. En cada
+    iteración elige UNA subtarea en FAIL, razona su CAUSA (¿falta en el HTML?,
+    ¿el handler no toglea?, ¿el formulario recarga?, ¿error JS?), y muta el
+    candidato para resolverla. Verifica que la subtarea pasa a ok en la siguiente
+    generate_candidate/audit_page ANTES de pasar a la siguiente. Si una subtarea
+    persiste 3 intentos sin resolverse, usa revert_workspace para volver al mejor
+    candidato estable (o acepta la subtarea y sigue) — NO quemes el presupuesto
+    atascado en una sola subtarea. El orden de resolución: estructural (secciones)
+    → funcional (tests) → literal (requisitos) → truth → creatividad (global final).
 
 # PRINCIPIO ANTI-TRAMPAS
 - El score agregado es una SEÑAL, no el objetivo. Lo importante es que la página

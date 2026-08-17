@@ -6,6 +6,7 @@ from tools.domain.web_generator import (
     UpdateLessons,
     SelectFinal,
     InspectArchetype,
+    RevertWorkspace,
 )
 from tools.domain.readme_fetcher import FetchReadme
 from tools.domain.repo_topics import FetchRepoTopics
@@ -35,6 +36,7 @@ def build_domain_registry(llm, archetype: str = "", task: str = "", rules: str =
             AuditTruth(llm=llm, task=task),
             UpdateLessons(),
             SelectFinal(),
+            RevertWorkspace(),
             EditSkill(),
             ReviewHarness(),
             DeployPreview(),

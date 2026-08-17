@@ -481,3 +481,58 @@ def test_visual_low_when_static_canvas_and_plain():
     d = _write({"index.html": GOOD_HTML, "styles.css": "body{color:black}", "app.js": ""}, "visual_low2")
     m = evaluate(d)
     assert m["visual"] <= 30, m
+
+# --- F1: loop de subtareas ---
+from tools.domain.evaluator import extract_subtasks, subtasks_status, format_subtasks_status
+
+PORTFOLIO_TASK = (
+    "Portfolio creativo con navbar, hero, stats, features, testimonial, faq, cta, "
+    "footer, contact, about y filtros de proyectos que funcionan"
+)
+
+
+def test_extract_subtasks_includes_structure_func_and_literal():
+    subs = extract_subtasks(PORTFOLIO_TASK)
+    tipos = {s["tipo"] for s in subs}
+    ids = [s["id"] for s in subs]
+    assert "estructural" in tipos and "funcional" in tipos
+    assert "seccion:navbar" in ids and "funcional:js_sin_errores" in ids
+    # cada subtarea tiene criterio de aceptación verificable
+    for s in subs:
+        assert s["id"] and s["cheque"], s
+
+
+def test_subtasks_status_marks_missing_section_and_broken_functional():
+    html = """
+    <html><body><header id="navbar"><nav><a href="#hero">H</a></nav></header>
+    <section id="hero"><h1>Hola</h1></section></body></html>"""
+    st = subtasks_status(html, "", "", PORTFOLIO_TASK, None)
+    assert st["seccion:navbar"]["ok"] is True
+    assert st["seccion:hero"]["ok"] is True
+    assert st["seccion:faq"]["ok"] is False, st  # no hay FAQ en el HTML
+    # funcionales sin test ejecutado -> FAIL informativo
+    assert st["funcional:js_sin_errores"]["ok"] is False
+    assert "no ejecutado" in st["funcional:js_sin_errores"]["detail"]
+
+
+def test_subtasks_status_functional_from_ft_tests():
+    html = '<html><body><section id="hero"><h1>x</h1></section></body></html>'
+    ft = [
+        {"n": "nav_links_validos", "p": 1, "d": ""},
+        {"n": "botones_click_sin_error", "p": 1, "d": ""},
+        {"n": "formularios_no_recargan", "p": 0, "d": "submit recarga"},
+        {"n": "interactivos_responden", "p": 1, "d": ""},
+        {"n": "js_sin_errores", "p": 1, "d": ""},
+    ]
+    st = subtasks_status(html, "", "", PORTFOLIO_TASK, ft)
+    assert st["funcional:formularios_no_recargan"]["ok"] is False
+    assert "recarga" in st["funcional:formularios_no_recargan"]["detail"]
+    assert st["funcional:js_sin_errores"]["ok"] is True
+
+
+def test_format_subtasks_status_shows_fail_with_detail():
+    html = '<html><body><section id="hero"><h1>x</h1></section></body></html>'
+    out = format_subtasks_status(html, "", "", PORTFOLIO_TASK, None)
+    assert "CHECKLIST DE SUBTAREAS" in out
+    assert "[FAIL] seccion:faq" in out
+    assert "SUBTAREAS:" in out

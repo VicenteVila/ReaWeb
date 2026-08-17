@@ -154,6 +154,41 @@ lecciones se inyectan en runs futuras.
   confirmando que ni el arnés ni Gemini hicieron diseño de vanguardia, aunque el
   proxy estático daba 69 a Gemini. La creatividad mide lo que el proxy no ve.
 
+### 2.9 Loop de subtareas (descomposición + verificación + iteración enfocada)
+
+- **Problema que resuelve**: el bucle clásico "generar → total opaco → mutar"
+  deja que el agente optimice un scalar sin saber QUÉ le falla. La run
+  `20260817T104852` lo mostró: total=90 (empate con Gemini sin arnés), la
+  creatividad clavada en 25 dos veces, y lecciones auto-generadas que "aprendían"
+  que llamar a `audit_creative` es malo (porque su score bajo bajaba el total,
+  aunque medir lo que es bajo es INFORMACIÓN, no regresión).
+- **Solución (loop F1)**:
+  1. `extract_subtasks(task)` descompone la tarea en subtareas con criterio de
+     aceptación verificable: `seccion:*` (estructurales, vía `_html_has_section`),
+     `funcional:*` (1:1 con los tests de `functional_tester.py`), `literal:*`
+     (requisitos textuales de `extract_requirements`).
+  2. Cada `generate_candidate`/`audit_page` inyecta el `CHECKLIST DE SUBTAREAS`
+     en su salida (`format_subtasks_status`): `[ok]/[FAIL]` por subtarea con el
+     detalle del cheque. El estado del agente lo muestra también (del snapshot del
+     mejor candidato).
+  3. El agente elige UNA subtarea en FAIL, razona su causa, y muta enfocado en
+     resolverla. Si persiste 3 intentos, revierte con `revert_workspace` o acepta.
+  4. Orden de resolución: estructural → funcional → literal → truth → creatividad
+     (global final, no descomponible).
+- **Lecciones por subtarea** (F0a): las tools de diagnóstico VLM
+  (`audit_creative`/`audit_truth`/`audit_visual`) ya NO generan lecciones por el
+  delta del total (eso producía lecciones anti-señal). Ahora `_maybe_content_lesson`
+  las genera por CONTENIDO: score bajo → 'didnt' con la causa (issues) y la
+  solución (sugerencias); score alto → 'worked'. Además `_maybe_subtask_lesson`
+  registra 'worked' cuando una subtarea pasa de FAIL a ok entre candidatos.
+- **`revert_workspace`** (F0b): tool para restaurar `workspace/current` desde un
+  snapshot congelado (`runs/<run_id>/candidates/H<n>/`). Elimina el patrón de
+  reconstruir manualmente (la run 104852 usó `bash` manual en el turno 6).
+- **F2**: el prompt de `AuditCreative` ahora exige SUGERENCIAS COMO MUTACIONES
+  CONCRETAS en código (grid-template-areas asimétrico, font-family display,
+  transform en hover...), no adjetivos. Feedback accionable para que la creatividad
+  deje de clavarse en 25.
+
 ## 3. De lección a regla: criterios
 
 El agente dispone de lecciones (`worked/didnt/try`) y de experimentos con delta.

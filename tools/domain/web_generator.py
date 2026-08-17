@@ -264,6 +264,7 @@ class GenerateCandidate(Tool):
         self.llm = llm
         self.archetype = archetype
         self.task = task
+        self.task_text = task
         self.rules = rules
         self.stack = stack
         self.improve = improve
@@ -423,6 +424,7 @@ class GenerateCandidate(Tool):
             (target / fname).write_text(content)
 
         metrics = evaluate(target, requirements=self.requirements, structure=self.sections)
+        self.last_functional_tests = metrics.get("functional_tests")
         task_metrics = f" task={metrics.get('task')}" if metrics.get('task') is not None else ""
         struct_metrics = f" structure={metrics.get('structure')}" if metrics.get('structure') is not None else ""
         func_metrics = f" functional={metrics.get('functional')}" if metrics.get('functional') is not None else ""
@@ -432,6 +434,16 @@ class GenerateCandidate(Tool):
             f"resp={metrics.get('responsive')} bp={metrics.get('best_practices')} "
             f"visual={metrics.get('visual')}{task_metrics}{struct_metrics}{func_metrics}"
         )
+        # CHECKLIST DE SUBTAREAS (loop F1): qué subtarea falla y por qué
+        try:
+            from .evaluator import format_subtasks_status
+            _h = (target / "index.html").read_text(errors="replace") if (target / "index.html").exists() else ""
+            _css = " ".join(p.read_text(errors="replace") for p in target.glob("*.css"))
+            _js = " ".join(p.read_text(errors="replace") for p in target.glob("*.js"))
+            _fts = metrics.get("functional_tests")
+            summary += "\n" + format_subtasks_status(_h, _css, _js, self.task_text or "", _fts)
+        except Exception:
+            pass
         gate_lines = []
         for cat, lst in (metrics.get("gates") or {}).items():
             if lst:
@@ -455,6 +467,7 @@ class AuditPage(Tool):
         from .evaluator import extract_requirements, extract_sections
         self.requirements = requirements or extract_requirements(task) if task else []
         self.sections = extract_sections(task) if task else []
+        self.task_text = task
         super().__init__()
 
     def schema(self) -> dict:
@@ -480,6 +493,7 @@ class AuditPage(Tool):
             return f"ERROR: no existe index.html en {target}"
         m1 = evaluate(target, requirements=self.requirements, structure=self.sections)
         result = m1.copy()
+        self.last_functional_tests = m1.get("functional_tests")
         if verify:
             m2 = evaluate(target, requirements=self.requirements, structure=self.sections)
             for k in ("total", "seo", "a11y", "performance", "responsive", "best_practices", "visual", "task", "structure", "functional"):
@@ -512,6 +526,16 @@ class AuditPage(Tool):
         if fail_lines:
             res += "\nFallos detectados:\n" + "\n".join(fail_lines)
         res += f"\nArchivos: {result.get('files')}"
+        # CHECKLIST DE SUBTAREAS (loop F1): qué subtarea falla y por qué
+        try:
+            from .evaluator import format_subtasks_status
+            _h = (target / "index.html").read_text(errors="replace") if (target / "index.html").exists() else ""
+            _css = " ".join(p.read_text(errors="replace") for p in target.glob("*.css"))
+            _js = " ".join(p.read_text(errors="replace") for p in target.glob("*.js"))
+            _fts = result.get("functional_tests")
+            res += "\n" + format_subtasks_status(_h, _css, _js, self.task_text or "", _fts)
+        except Exception:
+            pass
         return res
 
 
@@ -590,3 +614,70 @@ class SelectFinal(Tool):
         shutil.rmtree(dst, ignore_errors=True)
         shutil.copytree(src, dst)
         return f"OK: candidato exportado a {dst}\nRazón: {reason or '(no dada)'}"
+
+
+class RevertWorkspace(Tool):
+    name = "revert_workspace"
+    description = (
+        "Restaura workspace/current desde un snapshot congelado de la run "
+        "(runs/<run_id>/candidates/<node_id>/). Úsala cuando una mutación haya "
+        "EMPEORADO el candidato o haya dejado el workspace inestable: en vez de "
+        "reconstruir manualmente, vuelve a un candidato previo (el mejor conocido "
+        "por defecto) y sigue iterando desde ahí. Los snapshots se congelan tras "
+        "cada generate_candidate (H0, H1, H2...)."
+    )
+
+    def schema(self) -> dict:
+        return {
+            "name": self.name,
+            "description": self.description,
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "candidate": {
+                        "type": "string",
+                        "description": "Id del candidato a restaurar (p. ej. 'H2'). "
+                                       "Vacío = restaurar el MEJOR candidato de la run.",
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "Por qué se revierte (para el transcript)",
+                    },
+                },
+            },
+        }
+
+    def run(self, candidate: str = "", reason: str = "", **kwargs) -> str:
+        import shutil
+        run_id = kwargs.get("run_id") or ""
+        candidates_dir = PATHS["runs"] / (run_id or "latest") / "candidates"
+        src = None
+        if candidate:
+            src = candidates_dir / candidate
+            if not (src / "index.html").exists():
+                return f"ERROR: no existe snapshot {candidate} en {candidates_dir}"
+        else:
+            # elegir el mejor snapshot por antigüedad de archivos no es robusto;
+            # el agente pasa run_id y candidate explícito normalmente. Sin
+            # candidate, buscar el índice numerado más alto (H<n>).
+            best = None
+            for d in sorted(candidates_dir.glob("H*")):
+                if (d / "index.html").exists():
+                    best = d
+            src = best
+            if src is None:
+                return f"ERROR: no hay snapshots en {candidates_dir}"
+            candidate = src.name
+        dst = PATHS["current"]
+        if dst.exists():
+            for f in dst.iterdir():
+                if f.is_file():
+                    f.unlink()
+                elif f.is_dir():
+                    shutil.rmtree(f, ignore_errors=True)
+        for f in src.iterdir():
+            if f.is_file():
+                shutil.copy2(f, dst / f.name)
+            elif f.is_dir():
+                shutil.copytree(f, dst / f.name)
+        return f"OK: workspace/current restaurado desde {candidate}\nRazón: {reason or '(no dada)'}"

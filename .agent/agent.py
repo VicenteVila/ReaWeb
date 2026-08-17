@@ -53,6 +53,8 @@ class Agent:
         self.memory = Memory(run_dir=self.run_dir, db=self.db, run_id=self.run_id)
         self._auto_lesson_keys: set[tuple] = set()
         self._auto_lesson_count = 0
+        self._content_lesson_count = 0
+        self._last_functional_tests = None
         self.tree = SearchTree(
             path=self.run_dir / "search_tree.json", run_id=self.run_id, db=self.db
         )
@@ -178,6 +180,8 @@ class Agent:
                 best_fields["sections_fails"] = fails
                 best_fields["sections_present"] = len(sections) - len(fails)
                 best_fields["sections_total"] = len(sections)
+        # CHECKLIST DE SUBTAREAS (loop F1): estado ok/fail por subtarea del mejor
+        best_fields["subtasks"] = self._subtask_checklist(best.id if best else None)
         recent = []
         for exp in self.memory.recent_experiments[-8:]:
             recent.append(
@@ -214,6 +218,38 @@ class Agent:
         return "-"
 
     # --- ejecución de tools ---
+    def _subtask_checklist(self, candidate_id: str | None) -> list[dict]:
+        """Estado ok/fail de cada subtarea del plan (loop F1) para un candidato.
+
+        Usa el snapshot congelado del candidato (runs/.../candidates/<id>/), que
+        es estable entre turnos. Los tests funcionales vienen del último evaluate()
+        guardado en las métricas del nodo (sin re-ejecutar Chrome por turno)."""
+        from tools.domain.evaluator import subtasks_status, extract_subtasks
+        if candidate_id is None:
+            return []
+        cand_dir = self.run_dir / "candidates" / candidate_id
+        if not (cand_dir / "index.html").exists():
+            return []
+        h = (cand_dir / "index.html").read_text(errors="replace")
+        css = " ".join(p.read_text(errors="replace") for p in cand_dir.glob("*.css"))
+        js = " ".join(p.read_text(errors="replace") for p in cand_dir.glob("*.js"))
+        node = self.tree.nodes.get(candidate_id)
+        func_tests = node.metrics.get("functional_tests") if node else None
+        if not func_tests:
+            func_tests = self._last_functional_tests
+        status = subtasks_status(h, css, js, self.task, func_tests)
+        cheques = {st["id"]: st["cheque"] for st in extract_subtasks(self.task)}
+        return [
+            {
+                "id": sid,
+                "tipo": s["tipo"],
+                "ok": s["ok"],
+                "detail": s["detail"],
+                "cheque": cheques.get(sid, ""),
+            }
+            for sid, s in sorted(status.items())
+        ]
+
     def _safe_history_slice(self) -> list:
         """Devuelve un slice del historial que empieza SIEMPRE en un mensaje de
         texto (user/model), nunca en un function_response/call suelto. La API de
@@ -243,6 +279,10 @@ class Agent:
             result = tool.run(**kwargs)
         except Exception as e:
             result = f"ERROR ejecutando {call.name}: {e}"
+        # Guardar los tests funcionales si la tool los expone (loop F1): permite
+        # al checklist de subtareas marcar ok/fail funcional sin re-ejecutar Chrome.
+        if hasattr(tool, "last_functional_tests") and tool.last_functional_tests:
+            self._last_functional_tests = tool.last_functional_tests
         self._log("tool", {"tool": call.name, "args": call.args, "result": result[:2000]})
         return result, {}
 
@@ -408,13 +448,57 @@ class Agent:
         )
         return node_id
 
+    def _maybe_subtask_lesson(self, node_id: str | None) -> None:
+        """Lección por RESOLUCIÓN DE SUBTAREA (loop F1): cuando un candidato nuevo
+        pasa una subtarea que el mejor previo tenía en FAIL, se registra una
+        lección 'worked' con el cheque y su detalle (qué se arregló). A diferencia
+        de la lección por delta global, esta ata la lección al cheque concreto."""
+        if not node_id or self._content_lesson_count >= LESSON_AUTO["max_per_run"]:
+            return
+        node = self.tree.nodes.get(node_id)
+        if node is None:
+            return
+        checklist = self._subtask_checklist(node_id)
+        if not checklist:
+            return
+        prev_best = self.tree.best()
+        prev_check = self._subtask_checklist(prev_best.id) if prev_best and prev_best.id != node_id else []
+        prev_map = {c["id"]: c for c in prev_check}
+        for c in checklist:
+            prev = prev_map.get(c["id"])
+            if prev and not prev["ok"] and c["ok"]:
+                key = ("worked", f"subtask:{c['id']}", c["cheque"][:80])
+                if key in self._auto_lesson_keys:
+                    continue
+                self._auto_lesson_keys.add(key)
+                self._content_lesson_count += 1
+                content = (
+                    f"[auto:subtask] RESUELTA en {node_id}: {c['id']} — {c['cheque']}"
+                )
+                text = f"## What worked - {datetime.now().isoformat(timespec='seconds')}\n{content}"
+                self.memory.append_incremental(text)
+                self._log("system", {"event": "auto_lesson", "category": "worked",
+                                     "tool": "subtask", "subtask": c["id"],
+                                     "node": node_id, "por": "resolucion"})
+
     def _maybe_auto_lesson(self, call, delta: float, node_id: str | None,
                            result: str) -> None:
         """Refuerzo automático de aprendizaje: si una tool de optimización produce
         una mejora o regresión >= umbral (LESSON_AUTO), registra una lección
         worked/didnt deduplicada en la run, sin depender de que el LLM llame a
-        update_lessons. Es el criterio objetivo que materializa EVOLUTION.md."""
+        update_lessons. Es el criterio objetivo que materializa EVOLUTION.md.
+
+        Las tools de DIAGNÓSTICO VLM (audit_creative/audit_truth/audit_visual)
+        no se categorizan por el delta del total: su puntuación BAJA es
+        información (miden algo que era bajo), no una regresión de la tool. Si se
+        registrara como 'didnt', el harness "aprendería" que llamar a audit_creative
+        es malo (lección anti-señal). Para ellas la lección sale del CONTENIDO:
+        score bajo -> 'didnt' con el cheque concreto y su sugerencia; score alto
+        -> 'worked'."""
         if call.name not in ("generate_candidate", "audit_page", "audit_visual", "audit_truth", "audit_creative"):
+            return
+        if call.name in ("audit_creative", "audit_truth", "audit_visual"):
+            self._maybe_content_lesson(call, result, node_id)
             return
         if delta == 0 or abs(delta) < LESSON_AUTO["delta_threshold"]:
             return
@@ -442,6 +526,68 @@ class Agent:
         self._log("system", {"event": "auto_lesson", "category": category,
                              "delta": f"{delta:+.1f}", "tool": call.name,
                              "node": node_id})
+
+    def _maybe_content_lesson(self, call, result: str, node_id: str | None) -> None:
+        """Lección por CONTENIDO de una tool de diagnóstico VLM (audit_creative,
+        audit_truth, audit_visual). A diferencia de la lección por delta, aquí la
+        puntuación baja NO es una regresión de la tool: es un cheque concreto que
+        falla. La lección ata la causa (issues) con la solución (sugerencias) al
+        cheque específico, y solo se genera una vez por cheque (dedupe)."""
+        import re
+        if self._content_lesson_count >= LESSON_AUTO["max_per_run"]:
+            return
+        result = result or ""
+        # extraer el score de la señal VLM y sus issues/sugerencias
+        score = None
+        for pat in (r"creativity_vlm=(\d+)", r"diseño_vlm=(\d+)", r"visual_vlm=(\d+)",
+                    r"truth=(\d+)"):
+            m = re.search(pat, result)
+            if m:
+                score = int(m.group(1))
+                break
+        if score is None:
+            return
+        # issues -> causa; sugerencias -> solución. Separar secciones: el bloque
+        # "Issues (n):" es la causa; "Sugerencias (n):" es la solución.
+        lines = result.splitlines()
+        in_issues = in_sugg = False
+        issues: list[str] = []
+        sugg: list[str] = []
+        for l in lines:
+            low = l.strip().lower()
+            if "issues" in low and ":" in low:
+                in_issues, in_sugg = True, False
+                continue
+            if "sugerencias" in low and ":" in low:
+                in_issues, in_sugg = False, True
+                continue
+            s = l.strip()
+            if s.startswith("- "):
+                item = s[2:].strip()
+                if in_issues and item:
+                    issues.append(item)
+                elif in_sugg and item:
+                    sugg.append(item)
+        category = "worked" if score >= 85 else "didnt"
+        cheque = issues[0][:80] if issues else f"{call.name}=bajo"
+        key = (category, call.name, cheque[:80])
+        if key in self._auto_lesson_keys:
+            return
+        self._auto_lesson_keys.add(key)
+        self._content_lesson_count += 1
+        content = (
+            f"[auto:{call.name}] {call.name}={score} en {node_id or 'H?'}: "
+            f"{cheque}"
+        )
+        if len(issues) > 1:
+            content += f" | causas: {'; '.join(issues[1:3])}"
+        if sugg:
+            content += f" | solución: {sugg[0][:100]}"
+        text = f"## What {category} - {datetime.now().isoformat(timespec='seconds')}\n{content}"
+        self.memory.append_incremental(text)
+        self._log("system", {"event": "auto_lesson", "category": category,
+                             "tool": call.name, "score": score,
+                             "node": node_id, "por": "contenido"})
 
     def _auto_truth_audit(self, registry, node_id: str | None) -> None:
         """Juicio de verdad automático tras cada generate_candidate: verifica que
@@ -592,6 +738,8 @@ class Agent:
                     self._snapshot(node_id)
                     self._auto_truth_audit(registry, node_id)
                 self._maybe_auto_lesson(call, delta, node_id, result)
+                if node_id is not None and call.name in ("generate_candidate", "audit_page"):
+                    self._maybe_subtask_lesson(node_id)
             self._sync_budget_cost()
 
             # verificamos si tras ejecutar tools el presupuesto pide stop

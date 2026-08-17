@@ -40,11 +40,19 @@ Devuelve EXCLUSIVAMENTE JSON válido (sin markdown, sin texto extra):
 {
   "score": 0-100,
   "issues": ["aspecto concreto visible en el screenshot que baja la creatividad"],
-  "suggestions": ["idea visual específica y accionable para el siguiente generate_candidate"]
+  "suggestions": ["MUTACIÓN CONCRETA y EJECUTABLE en CSS/JS/HTML para el siguiente generate_candidate"]
 }
 Reglas:
-- Máximo 4 issues y 4 suggestions. Concretos y visibles en el screenshot.
-- Si el screenshot no permite distinguir algo, no lo inventes.
+- Máximo 4 issues y 4 suggestions.
+- Las SUGERENCIAS deben ser MUTACIONES ACCIONABLES en código, no adjetivos ni deseos.
+  Cada sugerencia DEBE especificar exactamente QUÉ cambiar y CÓMO, p. ej.:
+  - "Cambia el hero a un grid asimétrico: grid-template-areas con dos columnas 3fr/2fr y un bloque de datos en la derecha más baja que el título"
+  - "Usa una tipografía display de carácter para el h1 del hero: font-family serif display (p. ej. 'Playfair Display' si es descargable o una stack serif) con font-size clamp(3rem, 8vw, 6rem)"
+  - "Rompe la simetría del grid de proyectos: haz que las tarjetas 1 y 4 ocupen 2 columnas y las 2,3,5 sean de 1 columna con desplazamiento vertical"
+  - "Añade un acento visual: una etiqueta o badge en diagonal con el año del proyecto, o un número grande de fondo semitransparente"
+  - "Añade un efecto de hover con micro-interacción: transform: rotate(-1deg) scale(1.02) y una sombra de color en el acento"
+  - "Cambia el scroll-reveal por uno con intención: los elementos entran con translateY(24px) y blur, con stagger por índice"
+- Si algo no se distingue bien en el screenshot, no lo inventes: solo reporta lo visible.
 - Sé exigente: el diseño genérico es la norma, la creatividad es la excepción.
 """
 

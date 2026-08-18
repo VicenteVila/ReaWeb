@@ -11,7 +11,7 @@ python -m scripts.gen_cards          # (los .src.html se generan y renderizan)
 
 ## 1. Agente ReaWeb — el LLM y su arnés
 
-![Agente ReaWeb](reaweb_agente_y_arnes.png)
+![Agente ReaWeb](Arnes%20ReaWeb.jfif)
 
 La esfera central (el ojo) es el **LLM**; a su alrededor, orbitando, cada pieza
 del arnés desarrollado para ReaWeb:
@@ -25,23 +25,29 @@ del arnés desarrollado para ReaWeb:
 - **Generación**: `web_generator.py` (generate_candidate), `domain/archetypes/`.
 - **Meta-evolución**: `meta_editor.py` (propuestas), `harness_snapshot.py`
   (diff del harness por run).
+- **Gobernanza de skills** (Punto 9 — "Practice Makes Unsafe"): `skill_auditor.py`
+  (crítico + deleter delete-only), retrieval `safe_only=True` y SAFEEVOLVE
+  (`record_reuse` + retirement) protegen `lessons.db` para que la auto-mejora no
+  perpetúe técnicas inseguras (ver `EVOLUTION.md` §2.11).
 
 ## 2. Flujo de trabajo end-to-end
 
-![Flujo end-to-end](reaweb_flujo_end_to_end.png)
+![Flujo end-to-end](Diagrama%20de%20Flujo%20ReaWeb.jfif)
 
 Del prompt inicial al producto final, con las **decisiones y bucles** reales del
 arnés (no una simple secuencia): el gate funcional que capa candidatos rotos, el
 bucle de hipótesis que muta en vez de regenerar, la doble señal (VLM estético +
 juicio de verdad por datasets) y la meta-evolución con acceptance gate.
 
-## Regenerar o editar
+## Editar o regenerar
 
-- Edita `card1_src.html` / `card2_src.html` (HTML/CSS con flujo de texto).
-- `python -m scripts.gen_cards` **verifica el layout antes de exportar**: cada
-  fuente incluye un script `VERIFY` que comprueba en Chrome headless que ningún
-  elemento se sale del viewport, que las filas/tarjetas no se solapan y que no
-  hay overflow vertical. Solo si reporta `OK` se genera el PNG.
+Las tarjetas actuales (`Arnes ReaWeb.jfif`, `Diagrama de Flujo ReaWeb.jfif`) se
+generan externamente y se colocan aquí. El flujo anterior (render por Chrome
+headless desde `cardN_src.html`) queda como referencia histórica:
+
+- Edita `card1_src.html` / `card2_src.html` (HTML/CSS con flujo de texto) y
+  `python -m scripts.gen_cards` verifica el layout y exporta a PNG.
+- Git y GitHub renderizan `.jfif` inline en markdown.
 
 ## Árbol de decisión (tarjeta 2)
 

@@ -19,6 +19,12 @@ Basado en:
   https://doi.org/10.48550/arXiv.2608.13560 — meta-harness optimization con
   rollout feedback: el harness se mejora a sí mismo y un **crítico estético VLM**
   (§3.4) guía la siguiente mutación.
+- **Practice Makes Unsafe** — Mao, X., Zhao, L., Zheng, X., & Wang, C. (2026).
+  *Practice Makes Unsafe: Skill Misevolution in Self-Improving LLM Agents*.
+  arXiv:2608.12851. https://doi.org/10.48550/arXiv.2608.12851 — un éxito inseguro
+  puede convertirse en política reutilizable (skill misevolution); motivó la capa
+  de **gobernanza de skills** (write / retrieval / reuse gates sobre
+  `lessons.db`, ver sección *Gobernanza de skills* abajo).
 - **Propuesta Arquitectura de Agente Web** — diseño de carpetas, stack y estrategia
   free-tier.
 - **Docs/** — reglas globales, skills, workflows y 6 arquetipos de web development.
@@ -27,10 +33,12 @@ Documentación del diseño (para humanos):
 
 - [`Docs/REASONING.md`](Docs/REASONING.md) — por qué y cómo se construyó el agente
   (decisiones de diseño + historial real de desarrollo).
-- [`Docs/READAPTATION.md`](Docs/READAPTATION.md) — adaptación de ReASearch y
-  AutoDesign al dominio web, con citaciones formales (APA + BibTeX) y tablas de mapeo.
+- [`Docs/READAPTATION.md`](Docs/READAPTATION.md) — adaptación de ReASearch,
+  AutoDesign y "Practice Makes Unsafe" al dominio web, con citaciones formales
+  (APA + BibTeX) y tablas de mapeo.
 - [`Docs/EVOLUTION.md`](Docs/EVOLUTION.md) — cómo el aprendizaje se convierte en
-  nuevas reglas del harness y cómo se mide la evolución.
+  nuevas reglas del harness, cómo se mide la evolución y cómo se **gobierna el
+  riesgo** de esa evolución (§2.11, skill misevolution).
 - [`Docs/cards/`](Docs/cards/) — tarjetas didácticas visuales: el agente ReaWeb y
   su arnés (esfera-ojo LLM envuelta por cada módulo) y el flujo de trabajo
   end-to-end con decisiones y bucles.

@@ -54,6 +54,17 @@ mejora** con feedback del rollout (`HARNESS_COMPONENTS`, `BLOCKING_CEILING`,
 `EVOLUTION.md`), y (2) un **crítico VLM** puntúa el candidato renderizado y
 recombina el total (`blend_visual_total`, `tools/domain/visual_critic.py`).
 
+Un tercer trabajo cierra la tesis sobre el *riesgo* de la auto-mejora (ver
+`READAPTATION.md`, sección 3): **"Practice Makes Unsafe"** muestra que un agente
+que convierte éxitos en lecciones persistentes puede perpetuar una **técnica
+insegura como política reutilizable** después de que el input malicioso
+desaparece (skill misevolution), y propone gobernarlo con un lifecycle gated
+(write → reuse → execution), el benchmark SKILLMISEVO-BENCH y el wrapper
+SAFEEVOLVE. De este estudio adoptamos la **capa de gobernanza de skills**:
+write gate (crítico + deleter delete-only), retrieval gate (`safe_only=True`) y
+reuse gate (atribución de daño + retirement), junto con el benchmark M/B/P de
+simulacro marcado (`EVOLUTION.md` §2.11).
+
 ## 3. Decisiones de diseño y su porqué
 
 | Decisión | Por qué |
@@ -72,6 +83,7 @@ recombina el total (`blend_visual_total`, `tools/domain/visual_critic.py`).
 | **Presupuesto con detección de estancamiento** (`BudgetTracker`) | ReASearch "asigna presupuesto y explota/explora"; aquí se traduce en avisos de meseta y parada dura. |
 | **Meta-evolución restringida a `domain/`** con validación YAML (`edit_skill`) | Para que el agente mejore sus propias reglas de forma verificable y sin salirse del sandbox del conocimiento. |
 | **Snapshot del harness + trend + benchmark** | Añadido por nosotros: necesitábamos *medir* si el harness mejora entre runs (ver `EVOLUTION.md`). |
+| **Gobernanza de skills (write/retrieval/reuse gates)** | El estudio "Practice Makes Unsafe" muestra que una lección `worked` insegura se vuelve política reutilizable tras desaparecer el input malicioso; gobernamos `lessons.db` para que la auto-mejora no perpetúe técnicas inseguras (ver `EVOLUTION.md` §2.11). |
 
 ## 4. Historial real de desarrollo
 
@@ -107,6 +119,12 @@ El razonamiento no fue lineal; fue incremental, con capas de defensa ante
     (`LESSON_AUTO`), sin depender de que el LLM llame a `update_lessons`.
 13. **Empaquetado para GitHub** (`65a05ca`): Docs/ dentro del repo, LICENSE,
     uv.lock, CI, quickstart.
+14. **Gobernanza de skills / misevolution** (`1c77e2a`, Punto 9): tras leer el
+    estudio "Practice Makes Unsafe", implementamos la capa de seguridad del
+    lifecycle de lecciones — write gate (`skill_auditor` + deleter delete-only),
+    retrieval gate (`safe_only=True`) y reuse gate (SAFEEVOLVE: atribución de
+    daño + retirement) — con benchmark M/B/P de simulacro marcado
+    (`benchmark/misevo_tasks.yaml`, `scripts/run_misevo.py`) y 11 tests nuevos.
 
 ### Lecciones del propio proceso de desarrollo
 
@@ -125,10 +143,18 @@ El razonamiento no fue lineal; fue incremental, con capas de defensa ante
 - **Docs/ vs domain/** se separó a propósito: la especificación humana no debe
   ser pisada por la meta-evolución (ver README); re-sincronizar es un paso
   manual consciente.
+- La **seguridad de la auto-mejora llegó de un estudio externo**: el riesgo de
+  skill misevolution (un éxito inseguro que se vuelve política persistente) no
+  era evidente en las primeras runs, donde `lessons.db` se escribía y se
+  reutilizaba sin filtrar. El paper "Practice Makes Unsafe" lo formalizó y
+  motivó la capa de gobernanza (Punto 9).
 
 ## 5. Decisiones abiertas (futuro)
 
 - Migrar el evaluador estático a **Lighthouse CI** para Core Web Vitals reales.
 - Decidir si `Docs/` debe re-sincronizarse automáticamente desde `domain/`.
+- El crítico de seguridad de skills cae a un heurístico determinista cuando no hay
+  VLM disponible (sin API key); valorar un jurado LLM de respaldo más barato para
+  no perder granularidad de CU/UG/Stealth en runs offline.
 - Definir un umbral objetivo para que una lección repetida se convierta en regla
   (hoy depende del criterio del agente; ver `EVOLUTION.md`).

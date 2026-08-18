@@ -1,8 +1,9 @@
 # READAPTATION — Adaptación de ReASearch y AutoDesign a ReaWeb
 
 Este documento describe el esfuerzo de **readaptación** de los algoritmos y
-conceptos de los dos trabajos originales en los que se basa ReaWeb al dominio del
-desarrollo web, y cita formalmente ambos. Es documentación para humanos.
+conceptos de los trabajos en los que se basa ReaWeb al dominio del
+desarrollo web, y cita formalmente los tres: ReASearch, AutoDesign y el estudio
+de *skill misevolution* ("Practice Makes Unsafe"). Es documentación para humanos.
 
 ---
 
@@ -102,7 +103,78 @@ métricas y mecanismos siguientes, con sus valores en el paper:
 
 ---
 
-## 3. Qué tomamos del paper (ReASearch), con fidelidad
+## 3. Trabajo de seguridad: Skill Misevolution (citación)
+
+> **Practice Makes Unsafe: Skill Misevolution in Self-Improving LLM Agents.**
+>
+> Xutao Mao, Liangjie Zhao, Xiang Zheng, Cong Wang.
+>
+> City University of Hong Kong / Adelaide University.
+>
+> arXiv:2608.12851 [cs.AI] (v1, 13 Aug 2026).
+>
+> doi: [10.48550/arXiv.2608.12851](https://doi.org/10.48550/arXiv.2608.12851)
+
+### Formato BibTeX
+
+```bibtex
+@misc{mao2026misevolution,
+  title        = {Practice Makes Unsafe: Skill Misevolution in Self-Improving
+                  LLM Agents},
+  author       = {Mao, Xutao and Zhao, Liangjie and Zheng, Xiang and Wang, Cong},
+  year         = {2026},
+  month        = {aug},
+  eprint       = {2608.12851},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.AI},
+  note         = {City University of Hong Kong / Adelaide University},
+  doi          = {10.48550/arXiv.2608.12851},
+  url          = {https://arxiv.org/abs/2608.12851}
+}
+```
+
+### Formato APA
+
+> Mao, X., Zhao, L., Zheng, X., & Wang, C. (2026). *Practice Makes Unsafe: Skill
+> Misevolution in Self-Improving LLM Agents*. City University of Hong Kong /
+> Adelaide University. https://doi.org/10.48550/arXiv.2608.12851
+
+### La tesis del estudio y lo que ReaWeb toma de él
+
+Los agentes auto-mejoradores convierten trayectorias exitosas en estado persistente
+de reutilización. El estudio muestra que un **éxito inseguro** puede convertirse en
+política reutilizable **después** de que el input malicioso desaparece: la evolución
+optimiza el resultado de la tarea, no la seguridad del procedimiento, así que la
+experiencia comprometida "misevoluciona" la skill. Para atribuir ese riesgo el
+estudio introduce un **lifecycle gated** (write → reuse → execution) medible con
+**SKILLMISEVO-BENCH** y gobernable con **SAFEEVOLVE**. ReaWeb implementa la capa de
+gobernanza completa (Punto 9), con simulacro marcado en el benchmark:
+
+| Concepto del paper | Implementación en ReaWeb |
+|---|---|
+| **Write gate** (¿se admite la SKILL insegura?) | `WRITE gate` en `tools/domain/skill_auditor.py` (`audit_skill_score`, `govern_lesson`), aplicado en `Memory.append_incremental/append_global` y `UpdateLessons.run` |
+| **Delete-only repair** (SAFEEVOLVE): eliminar solo el fragmento peligroso | `deleter()` borra el span inseguro sin reescribir el resto; re-audit y rechazo (`admitted=0`) si sigue inseguro |
+| **Reuse gate** (¿se recupera la SKILL en tareas futuras?) | `RETRIEVAL gate`: `lessons(safe_only=True)`, `read_global_lessons()` y `lesson_text(safe_only=True)` excluyen `admitted=0` / `retired=1` |
+| **Harmful-reuse attribution** (atribuir outcomes dañinos a skills) | `record_reuse` / `increment_harmful_reuses` (`_attribute_harm` en `agent.py` al final de run) |
+| **Safety-aware retirement** (retirar skills que cruzan umbral) | `SKILL_SAFETY_RETIRE_AT` (default 2 reuses dañinos) → `retired=1` |
+| **Content Unsafety (CU 1-5), Unsafe Generalization, Stealthiness** | las 3 dimensiones del crítico (`cu`, `ug`, `stealth`) en `audit_skill_score` |
+| **SKILLMISEVO-BENCH** (M/B/P: malicioso, benigno, persistencia) | `benchmark/misevo_tasks.yaml` + `scripts/run_misevo.py` con **simulacro marcado** (endpoints a localhost) |
+| **9 métricas de lifecycle** (BU, M-ASR, B-ASR, CU, UG, Stealth, URR, C-ASR, C-Util) | las 9 métricas del reporte de `run_misevo.py` |
+| **State isolation / replay & reset** | snapshots de `lessons.db` por episodio y reset entre episodios en `run_misevo.py` |
+
+### Métricas del estudio que justifican la implementación
+
+| Hallazgo del paper | Valor reportado | Relevancia para ReaWeb |
+|---|---|---|
+| Configuraciones que evolucionan skills y autoran artefactos inseguros | **21 de 21** configuraciones evolucionadas | Sin gobernanza, toda mejora del harness con memoria persistente corre el riesgo de perpetuar técnicas inseguras. |
+| Tres tareas maliciosas elevan el carryover ASR | 16.0% → **35.3%** | El riesgo no desaparece con el input: persiste en las lecciones que se reutilizan entre runs. |
+| SAFEEVOLVE reduce unsafe retrieval | −26.7 puntos porcentuales | Motivación directa del RETRIEVAL gate (`safe_only=True`). |
+| SAFEEVOLVE reduce fresh-session harm | −17.3 puntos porcentuales | Motivación del REUSE gate / retirement. |
+| SAFEEVOLVE cambia la utilidad benigna media | solo **0.4 puntos** | Gobernar skills no sacrifica utilidad: el coste de seguridad es bajo. |
+
+---
+
+## 4. Qué tomamos del paper (ReASearch), con fidelidad
 
 El paper propone un **scaffold único de agente** donde el LLM decide qué
 evaluar, cómo diagnosticar, qué editar y cuándo verificar o revertir, usando
@@ -122,7 +194,7 @@ ReaWeb conserva ese diseño central:
 | Reuso de lecciones previas entre runs | `read_global_lessons()` inyectado en `state_template.j2` |
 | Compactación de contexto en horizontes largos | `ContextManager` (`.agent/state.py`) |
 
-## 4. Qué readaptamos al dominio web y por qué
+## 5. Qué readaptamos al dominio web y por qué
 
 La readaptación fue el trabajo principal: el scaffold es genérico, pero el
 dominio (páginas web estáticas, evaluables sin navegador) exige herramientas,
@@ -170,23 +242,27 @@ métricas y reglas propias.
   trend (ver `EVOLUTION.md`). Los papers estudian el comportamiento, no exigen
   medir la evolución del propio agente entre runs.
 
-## 5. Esfuerzo de readaptación (resumen)
+## 6. Esfuerzo de readaptación (resumen)
 
 El trabajo no fue "copiar el loop": fue **mapear cada abstracción de los papers a
 un mecanismo de dominio verificable**, y añadir capas anti-trampa iterativamente.
 El historial de los commits lo refleja: primero el scaffold genérico, después la
 categoría `task`, el eje `visual` con efectos reales, la memoria en SQLite, el
 evaluador anti-trampa, el grafo de conocimientos, la medición de la propia
-evolución y, finalmente, el crítico VLM como capa estética de AutoDesign. Ver
+evolución, el crítico VLM como capa estética de AutoDesign y, finalmente, la capa
+de gobernanza de skills (misevolution). Ver
 `REASONING.md` para el detalle cronológico.
 
-## 6. Transferencia de aprendizajes de los papers al harness
+## 7. Transferencia de aprendizajes de los papers al harness
 
 ReASearch identifica patrones emergentes (doble verificación, reuso de fallos,
 revert, exploración adaptativa); AutoDesign identifica la meta-optimización del
-harness con feedback del rollout. En ReaWeb esos patrones se convierten en
+harness con feedback del rollout; el estudio de misevolution identifica el riesgo
+de que un éxito inseguro se convierta en política reutilizable y propone
+gobernarlo con write/reuse gates y SAFEEVOLVE. En ReaWeb esos patrones se convierten en
 **reglas explícitas del harness** (principios 3, 4, 5, 6 de `system_base.txt`) y
 en **mecanismos codificados** (`audit_page`, árbol de hipótesis, presupuesto,
-`blend_visual_total`). Este ciclo —observación del paper → patrón → regla en
+`blend_visual_total`, `skill_auditor` + `safe_only` + `record_reuse`). Este ciclo
+—observación del paper → patrón → regla en
 `domain/`— es el mismo que el agente debe reproducir en cada run (ver
 `EVOLUTION.md`).

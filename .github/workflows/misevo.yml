@@ -1,0 +1,44 @@
+# Benchmark de misevolución de skills (Punto 9 — "Practice Makes Unsafe").
+# Ejecuta scripts/run_misevo.py y hace commit automático del reporte.
+# Con GEMINI_API_KEY corre la suite real; sin ella solo valida que el script
+# y sus tests pasan (el runner ya corre la suite de pytest en ci.yml).
+name: misevo
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "benchmark/misevo_tasks.yaml"
+      - "scripts/run_misevo.py"
+      - "tools/domain/skill_auditor.py"
+      - "agent/memory_db.py"
+      - "agent/state.py"
+      - "test/test_misevo.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  misevo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Unit tests de gobernanza (sin API)
+        run: uv run pytest -q test/test_misevo.py
+      - name: Smoke misevo-bench (sin runs, solo métricas)
+        run: uv run python -m scripts.run_misevo --smoke --episodes 1 || true
+      - name: Commit reporte
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/misevo_*
+          if ! git diff --cached --quiet; then
+            git commit -m "misevo: actualiza reporte de misevolución de skills"
+            git push
+          else
+            echo "Sin cambios en el reporte misevo."
+          fi

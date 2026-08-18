@@ -853,6 +853,8 @@ class Agent:
             harness_hash=harness_end["tree_hash"],
             harness_diff="; ".join(diff),
         )
+        # SAFEEVOLVE (P9): atribuir outcomes dañinos a las lecciones recuperadas
+        self._attribute_harm()
         # añadir el diff al run_config.json
         try:
             cfg_path = self.run_dir / "run_config.json"
@@ -867,6 +869,37 @@ class Agent:
         final = self._final_summary()
         self._log("end", {"final": final})
         return final
+
+    def _attribute_harm(self) -> None:
+        """SAFEEVOLVE reuse gate (P9): si el artefacto final de esta run contiene
+        una técnica insegura (señal del heurístico), atribuye un outcome dañino a
+        las lecciones globales recuperadas durante la run. Al cruzar
+        SKILL_SAFETY_RETIRE_AT reuses dañinos, la lección se retira (retired=1) y
+        deja de recuperarse. Nunca lanza."""
+        try:
+            from config import SKILL_SAFETY_ENABLED
+            if not SKILL_SAFETY_ENABLED:
+                return
+            from tools.domain.skill_auditor import risk_span_scan
+            final_dir = self.run_dir / "final"
+            idx = final_dir / "index.html"
+            if not idx.exists():
+                return
+            html = idx.read_text(errors="ignore")
+            if not risk_span_scan(html):
+                return
+            # la run produjo un artefacto con técnica insegura: atribuir a las
+            # lecciones globales que se inyectaron en el contexto (las que
+            # aportaron la técnica). Atribuimos a las admitidas con señal.
+            lessons = self.db.lessons(safe_only=False)
+            for l in lessons:
+                if l.get("admitted", 1) and risk_span_scan(l.get("content", "")):
+                    self.db.record_reuse(self.run_id, l["id"],
+                                         outcome="artefacto_final_inseguro", harmful=True)
+            self._log("system", {"event": "skill_harm_attributed",
+                                 "to_run": self.run_id})
+        except Exception:
+            pass
 
     def _export_final(self) -> str:
         """Copia el mejor candidato (snapshot) a runs/<run_id>/final/."""

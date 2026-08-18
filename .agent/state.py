@@ -116,7 +116,8 @@ class Memory:
 
     def read_global_lessons(self, max_items: int = 12) -> str:
         if self.db is not None:
-            return self.db.lesson_text(run_id=None, max_items=max_items)
+            # RETRIEVAL gate: solo lecciones admitidas y no retiradas
+            return self.db.lesson_text(run_id=None, max_items=max_items, safe_only=True)
         if not self.global_lessons.exists():
             return "Sin lecciones aún."
         text = self.global_lessons.read_text()
@@ -127,10 +128,16 @@ class Memory:
     def append_global(self, text: str) -> None:
         if self.db is not None:
             # persiste cada bloque "## What <category> - <ts>" como lección deduplicada
+            # pasando por el WRITE gate de gobernanza (skill misevolution, P9)
             for category, content, ts in _parse_lesson_blocks(text):
+                governed = _govern_lesson_block(content)
+                if governed is None:
+                    continue
                 self.db.add_lesson(
                     run_id=self.run_id or "global", category=category,
-                    content=content, ts=ts,
+                    content=governed["content"], ts=ts,
+                    cu=governed["cu"], ug=governed["ug"], stealth=governed["stealth"],
+                    admitted=governed["admitted"], repaired=governed["repaired"],
                 )
             return
         self.global_lessons.parent.mkdir(parents=True, exist_ok=True)
@@ -140,9 +147,14 @@ class Memory:
     def append_incremental(self, text: str) -> None:
         if self.db is not None:
             for category, content, ts in _parse_lesson_blocks(text):
+                governed = _govern_lesson_block(content)
+                if governed is None:
+                    continue
                 self.db.add_lesson(
                     run_id=self.run_id or self.run_dir.name, category=category,
-                    content=content, ts=ts,
+                    content=governed["content"], ts=ts,
+                    cu=governed["cu"], ug=governed["ug"], stealth=governed["stealth"],
+                    admitted=governed["admitted"], repaired=governed["repaired"],
                 )
         self.run_dir.mkdir(parents=True, exist_ok=True)
         with self.incremental.open("a") as f:
@@ -179,6 +191,30 @@ def _parse_lesson_blocks(text: str) -> list[tuple[str, str, str | None]]:
         if plain:
             out.append(("general", plain, None))
     return out
+
+
+def _govern_lesson_block(content: str) -> dict | None:
+    """WRITE gate de lecciones (skill misevolution, P9): aplica el crítico de
+    seguridad y devuelve el dict de gobernanza. Devuelve un dict passthrough
+    (contenido original, admitted=1) si la gobernanza está deshabilitada o
+    falla — la lección NUNCA se pierde por un error del crítico. None solo
+    cuando el crítico rechaza explícitamente la lección."""
+    try:
+        from config import SKILL_SAFETY_ENABLED
+    except Exception:
+        SKILL_SAFETY_ENABLED = True
+    if not SKILL_SAFETY_ENABLED:
+        return {"content": content, "cu": 0, "ug": 0, "stealth": 0,
+                "admitted": 1, "repaired": 0, "verdict": "pass"}
+    try:
+        from tools.domain.skill_auditor import govern_lesson
+        governed = govern_lesson(content, llm=None, context="")
+        if governed["admitted"]:
+            return governed
+        return None  # rechazada: no se persiste
+    except Exception:
+        return {"content": content, "cu": 0, "ug": 0, "stealth": 0,
+                "admitted": 1, "repaired": 0, "verdict": "pass"}
 
 
 class ContextManager:

@@ -389,6 +389,29 @@ devuelven la respuesta previa sin pagar tokens. Configurable:
 - `CODE_EXEC_MODE=off` deshabilita la ejecución. Sin Docker: aislamiento de recursos
   y de superficie de API, no de kernel.
 
+## Gobernanza de skills (misevolution)
+
+Basado en *"Practice Makes Unsafe: Skill Misevolution in Self-Improving LLM Agents"*.
+Un agente auto-mejorador convierte trayectorias exitosas en lecciones persistentes
+que se reutilizan entre runs; un éxito inseguro puede volverse política reutilizable
+tras desaparecer el input malicioso. ReaWeb gobierna `memory/lessons.db` con tres
+gates (`tools/domain/skill_auditor.py`):
+
+- **WRITE**: un crítico puntúa cada lección en Content Unsafety (cu 1-5); si `cu>=3`,
+  un deleter delete-only elimina el span inseguro, o la lección se rechaza.
+- **RETRIEVAL**: solo lecciones `admitted` y no `retired` entran al contexto.
+- **REUSE (SAFEEVOLVE)**: outcomes dañinos se atribuyen a las lecciones; tras
+  `SKILL_SAFETY_RETIRE_AT` reuses, se retiran.
+
+Config: `SKILL_SAFETY_ENABLED`, `SKILL_SAFETY_MIN_CU`, `SKILL_SAFETY_RETIRE_AT`.
+Benchmark M/B/P (simulacro marcado, endpoints a localhost) en `benchmark/misevo_tasks.yaml`,
+orquestado por `scripts/run_misevo.py`:
+
+```bash
+python -m scripts.run_misevo --episodes 3          # suite real (63 runs)
+python -m scripts.run_misevo --smoke --episodes 1  # humo sin API
+```
+
 ## Notas
 
 - El evaluador ligero mide métricas estáticas (no Core Web Vitals reales). Migrar a

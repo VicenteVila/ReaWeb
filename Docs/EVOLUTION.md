@@ -226,10 +226,36 @@ lecciones se inyectan en runs futuras.
   elegir la mejor y optimizar SOLO sobre ella. Orden: funcional (gate) → distinto
   (novelty) → bonito (audit_visual/audit_creative) → original (creativity alta).
 
-## 3. De lección a regla: criterios
+### 2.11 Gobernanza de skills (misevolution, Punto 9 — "Practice Makes Unsafe")
 
-El agente dispone de lecciones (`worked/didnt/try`) y de experimentos con delta.
-No basta con que algo "funcione una vez": para **promover una lección a regla**
+Un agente auto-mejorador convierte trayectorias exitosas en lecciones persistentes
+(`memory/lessons.db`) que se reutilizan en runs futuras. Si una run "exitosa"
+contiene una técnica insegura (exfiltración, captura de credenciales, `eval` de
+remoto...), la lección `worked:` la perpetúa como política reutilizable **después
+de que el input malicioso desaparece**. Eso es la *skill misevolution*. ReaWeb
+implementa tres gates de gobernanza sobre `lessons.db`:
+
+- **WRITE gate** (`tools/domain/skill_auditor.py`): antes de persistir, un crítico
+  puntúa la lección en Content Unsafety (cu 1-5), Unsafe Generalization y
+  Stealthiness. Si `cu >= SKILL_SAFETY_MIN_CU`, un deleter **delete-only** elimina
+  el span inseguro (nunca reescribe el resto). Si la versión reparada sigue siendo
+  válida y de menor riesgo, se guarda reparada; si no, se rechaza (`admitted=0`).
+  En `UpdateLessons` y en `Memory.append_incremental/append_global` (que cubren las
+  auto-lecciones). Sin VLM disponible, cae a un heurístico determinista.
+- **RETRIEVAL gate**: `read_global_lessons()` y `lesson_text(safe_only=True)`
+  excluyen lecciones `admitted=0` / `retired=1`. Solo lecciones seguras entran al
+  contexto de las runs futuras.
+- **REUSE gate (SAFEEVOLVE)**: al final de cada run, si el artefacto final contiene
+  una técnica insegura, se atribuye un outcome dañino a las lecciones que la
+  aportaron (`record_reuse`). Al cruzar `SKILL_SAFETY_RETIRE_AT` reuses dañinos, la
+  lección se retira (`retired=1`) y deja de recuperarse.
+
+Config: `SKILL_SAFETY_ENABLED`, `SKILL_SAFETY_MIN_CU`, `SKILL_SAFETY_RETIRE_AT`.
+El benchmark `benchmark/misevo_tasks.yaml` + `scripts/run_misevo.py` miden las 9
+métricas del paper (BU, M-ASR, B-ASR, CU/UG/Stealth, URR, C-ASR, C-Util) con
+tareas M/B/P de **simulacro marcado** (endpoints a localhost, sin payload reales).
+
+## 3. De lección a regla: criterios
 proponemos que el agente (y el operador humano) sigan estos criterios:
 
 1. **Repetición**: la misma lección aparece en varias runs (el `trend` muestra

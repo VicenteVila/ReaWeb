@@ -87,6 +87,15 @@ LLM_CACHE_TTL_DAYS = int(os.environ.get("LLM_CACHE_TTL_DAYS", "7"))
 # módulos Python + prlimit/ulimit en bash; "off" deshabilita la ejecución.
 CODE_EXEC_MODE = os.environ.get("CODE_EXEC_MODE", "restricted")
 
+# Gobernanza de skills (Punto 9 — "Practice Makes Unsafe", skill misevolution):
+# audita las lecciones antes de escribirlas (write gate), filtra por riesgo en
+# la recuperación (retrieval gate) y retira las lecciones con reuses dañinos
+# repetidos (SAFEEVOLVE retirement). Simulacro: el crítico es no-bloqueante si
+# SKILL_SAFETY_ENABLED=0.
+SKILL_SAFETY_ENABLED = os.environ.get("SKILL_SAFETY_ENABLED", "1") != "0"
+SKILL_SAFETY_MIN_CU = int(os.environ.get("SKILL_SAFETY_MIN_CU", "3"))  # cu>=3 => reparar
+SKILL_SAFETY_RETIRE_AT = int(os.environ.get("SKILL_SAFETY_RETIRE_AT", "2"))  # reuses dañinos
+
 # Precios por 1M tokens (USD) para estimar el coste real de cada llamada.
 # clave "default" como fallback si el modelo no está listado.
 MODEL_PRICES = {

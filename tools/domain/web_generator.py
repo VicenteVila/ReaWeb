@@ -599,9 +599,14 @@ class UpdateLessons(Tool):
 
     def run(self, category: str = "", lesson: str = "", **kwargs) -> str:
         from agent.memory_db import MemoryDB
-        from agent.state import Memory
+        from agent.state import Memory, _govern_lesson_block
 
         run_id = kwargs.get("run_id")
+        # WRITE gate: auditar y reparar la lección antes de persistirla
+        governed = _govern_lesson_block(lesson)
+        if governed is None:
+            return "RECHAZADA: la lección contenía técnica insegura y no sobrevive a la reparación."
+        lesson = governed["content"]
         db = MemoryDB()
         if run_id:
             mem = Memory(run_dir=PATHS["runs"] / run_id, db=db, run_id=run_id)
@@ -609,6 +614,8 @@ class UpdateLessons(Tool):
             mem = Memory(db=db)
         text = f"## What {category} - {self._now()}\n{lesson}"
         mem.append_incremental(text)
+        if governed["repaired"]:
+            return f"OK: lección {category} guardada (span inseguro eliminado, cu={governed['cu']})."
         return f"OK: lección {category} guardada."
 
     @staticmethod

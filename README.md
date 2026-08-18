@@ -50,7 +50,7 @@ exploró variantes y exportó H2 como mejor candidato.
 
 | H0 (baseline, seed) | H2 (mejor candidato exportado) | H5 (variante de exploración) |
 |---|---|---|
-| ![H0](docs/demo/H0.png) | ![H2](docs/demo/H2.png) | ![H5](docs/demo/H5.png) |
+| ![H0](Docs/demo/H0.png) | ![H2](Docs/demo/H2.png) | ![H5](Docs/demo/H5.png) |
 
 Las imágenes se renderizan con Chrome headless desde los snapshots congelados de
 la run (`runs/<ts>--portfolio/candidates/H<i>/`); se regeneran en cualquier

@@ -1,0 +1,97 @@
+# Publica una GitHub Release al empujar un tag v*.
+#
+#   git tag v0.2.0 && git push origin v0.2.0
+#
+# Valida que el tag coincide con la versión de pyproject.toml, corre la suite
+# y crea el release con notas auto-generadas (comparación de tags previos).
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versión a publicar (p. ej. 0.2.1). Crea el tag si no existe."
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Resolver versión
+        id: version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            V="${{ github.event.inputs.version }}"
+            if ! git rev-parse -q --verify "refs/tags/v${V}" >/dev/null; then
+              echo "Creando tag v${V}"
+              git tag "v${V}"
+              git push origin "v${V}"
+            fi
+            echo "tag=v${V}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validar versión con pyproject.toml
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          PYP=$(python -c "import tomllib;print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          if [ "${TAG#v}" != "$PYP" ]; then
+            echo "ERROR: tag ${TAG} != version ${PYP} en pyproject.toml"
+            exit 1
+          fi
+          echo "Versión OK: ${TAG} == pyproject ${PYP}"
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run tests
+        run: uv run pytest -q
+
+      - name: Verificar entry point CLI
+        run: |
+          uv run reaweb --help | grep -q "reaweb"
+          echo "Entry point 'reaweb' OK"
+
+      - name: Generar notas de release
+        id: notes
+        run: |
+          PREV=$(git tag --sort=-v:refname | sed -n 2p || true)
+          if [ -n "$PREV" ]; then
+            NOTES=$(git log --oneline --no-merges "$PREV"..HEAD || true)
+          else
+            NOTES=$(git log --oneline --no-merges | head -50 || true)
+          fi
+          {
+            echo "## Cambios en esta release"
+            echo ""
+            if [ -n "$NOTES" ]; then echo "$NOTES"; else echo "_Sin commits nuevos._"; fi
+          } > release_notes.md
+          # incluir CHANGELOG como cuerpo adicional
+          echo "" >> release_notes.md
+          echo "## Changelog" >> release_notes.md
+          echo "" >> release_notes.md
+          sed -n '1,60p' CHANGELOG.md >> release_notes.md
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ReaWeb ${{ steps.version.outputs.tag }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: true

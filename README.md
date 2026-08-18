@@ -1,5 +1,11 @@
 # ReaWeb
 
+[![CI](https://github.com/VicenteVila/ReaWeb/actions/workflows/ci.yml/badge.svg)](https://github.com/VicenteVila/ReaWeb/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](pyproject.toml)
+[![License](https://img.shields.io/github/license/VicenteVila/ReaWeb)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/VicenteVila/ReaWeb?include_prereleases)](https://github.com/VicenteVila/ReaWeb/releases)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+
 Agente **ReASearch** de optimización web: dado un arquetipo y una tarea, desarrolla
 páginas web iterativamente (genera candidato → audita → mejora) y, además,
 **evoluciona su propio harness** (reglas, skills y workflows en `domain/`).
@@ -64,6 +70,30 @@ momento con `scripts/render_dashboard.py --run <run_id>`.
 - Evaluador ligero (sin Chrome): scores SEO, A11y, Performance, Responsive,
   Best Practices (0-100).
 
+## Empieza en 30 segundos
+
+Con Python 3.10+ y [uv](https://docs.astral.sh/uv/) instalado:
+
+```bash
+git clone https://github.com/VicenteVila/ReaWeb
+cd ReaWeb
+uv sync --extra dev
+cp .env.example .env          # pega tu GEMINI_API_KEY
+uv run reaweb --quick "landing para un SaaS de analítica de IA"
+```
+
+En `--quick` el agente genera el candidato inicial (H0), lo audita, mejora una
+vez (H1) y exporta el final con presupuesto mínimo (4 turnos, $0.50, sin
+meta-evolución ni críticos VLM). Resultado en `workspace/current/` y copia en
+`runs/<fecha>--landing-page/final/`.
+
+¿Quieres la suite completa de investigación (más hipótesis, críticos VLM,
+meta-evolución)? Omita `--quick`:
+
+```bash
+uv run reaweb "landing para un SaaS de analítica de IA"
+```
+
 ## Instalación
 
 Requisitos: Python 3.10+ y [uv](https://docs.astral.sh/uv/) (o pip).
@@ -75,13 +105,15 @@ cd ReaWeb
 # con uv (recomendado, usa pyproject.toml + uv.lock)
 uv sync --extra dev
 
-# o con pip
+# o con pip (instala también el entry point `reaweb`)
 pip install -e ".[dev]"
 
 cp .env.example .env   # edita GEMINI_API_KEY
 ```
 
-Los tests no requieren API key (móckean LLM y red):
+Con esto queda disponible la CLI `reaweb` (`uv run reaweb ...` con uv, o
+`reaweb ...` directamente con pip). Los tests no requieren API key (móckean
+LLM y red):
 
 ```bash
 uv run pytest -q
@@ -92,11 +124,8 @@ uv run pytest -q
 ```bash
 # 1. clona e instala (arriba), pon tu GEMINI_API_KEY en .env
 
-# 2. lanza tu primera run end-to-end
-python -m scripts.run_agent \
-  --archetype landing-page \
-  --task "landing page para un SaaS de analítica de IA" \
-  --turns 6
+# 2. lanza tu primera run end-to-end (modo rápido)
+uv run reaweb --quick "landing page para un SaaS de analítica de IA"
 
 # 3. mira el resultado en pantalla (mejor candidato + total) y en disco:
 ls runs/            # runs/<timestamp>--landing-page/
@@ -113,6 +142,30 @@ Sin API key no hay run real (el agente necesita Gemini); pero **todos los tests
 funcionan sin key**, y `render_dashboard` genera el dashboard incluso sin Chrome.
 
 ## Uso
+
+### CLI `reaweb` (recomendada)
+
+La CLI instalable (`uv run reaweb`, o `reaweb` tras `pip install -e .`) ofrece
+la experiencia "prompt y obtén tu web":
+
+```bash
+# modo rápido (H0 → H1 → final; 4 turnos, $0.50, sin VLM ni meta-evolución)
+reaweb --quick "landing para un SaaS de analítica de IA"
+
+# suite de investigación (16 turnos, $5.00, meta-evolución y críticos VLM)
+reaweb "landing para un SaaS de analítica de IA"
+
+# arquetipo y URL de referencia
+reaweb --archetype ecommerce --url https://ejemplo.com "tienda de sneakers"
+```
+
+Opciones de la CLI: `--archetype`, `--quick`, `--url`, `--model`, `--turns`,
+`--max-cost`, `--target-h`, `--no-cache`, `--no-meta`, `--verbose`. Ver
+`reaweb --help`. Arquetipos: `landing-page` (default), `ecommerce`,
+`corporate-business`, `saas-dashboard`, `portfolio-creative`, `blog-content`,
+`knowledge-graph`.
+
+### Invocación directa (scripts.run_agent)
 
 ```bash
 # run básica
@@ -137,6 +190,34 @@ Opciones: `--model`, `--turns`, `--max-cost`, `--no-meta` (deshabilita meta-evol
 auditar H0..H3 antes de poder cerrar), `--url <URL>` (URL de referencia a analizar:
 la tool `fetch_url` descarga su HTML crudo, lo guarda en la run y el generador la usa
 como referencia de estructura/estética para H0, adaptando el contenido a la tarea).
+
+### Docker
+
+Ejecuta ReaWeb sin configurar el entorno local:
+
+```bash
+docker build -t reaweb .
+docker run --rm -v $PWD/workspace:/app/workspace \
+  -e GEMINI_API_KEY=... \
+  reaweb --quick "landing para un SaaS de analítica de IA"
+```
+
+El volumen sobre `/app/workspace` conserva los candidatos entre ejecuciones.
+Sin `GEMINI_API_KEY` el contenedor arranca pero la run no puede llamar al LLM.
+
+### Releases
+
+ReaWeb sigue versionado semántico. Los tags `v*` disparan el workflow
+[`release.yml`](.github/workflows/release.yml), que valida que el tag coincide
+con la versión de `pyproject.toml`, corre la suite y crea una **GitHub Release**
+con notas automáticas. Las versiones 0.x son prototipos de investigación (API no
+estable):
+
+```bash
+git tag v0.2.0 && git push origin v0.2.0
+```
+
+El historial está en [`CHANGELOG.md`](CHANGELOG.md).
 
 ### Flujo (UX)
 

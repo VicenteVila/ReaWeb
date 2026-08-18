@@ -1,0 +1,28 @@
+---
+name: Feature request
+about: Propuesta de mejora o nueva capacidad
+title: "[feat] "
+labels: enhancement
+assignees: ""
+---
+
+**Problema / motivación**
+Qué capacidad falta y por qué importa.
+
+**Contexto de investigación (opcional)**
+¿Se basa en un paper, una observación de una run o una crítica externa?
+Indica la referencia (arXiv/DOI) o la run (`runs/<ts>--...`).
+
+**Solución propuesta**
+Cómo lo implementarías (tools, evaluador, script, workflow CI...).
+
+**Verificación**
+Cómo se comprobaría que funciona (tests con mocks, benchmark, run local).
+
+**Ámbito**
+- [ ] Evaluador / verificación
+- [ ] Agente / bucle de búsqueda
+- [ ] Memoria / evolución del harness
+- [ ] Seguridad / gobernanza de skills
+- [ ] Empaquetado / CLI / Docker / CI
+- [ ] Documentación

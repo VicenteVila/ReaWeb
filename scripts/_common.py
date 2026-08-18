@@ -30,7 +30,7 @@ def load_archetype(archetype: str) -> tuple[str, str]:
 def build_agent(archetype: str, task: str, model: str | None, turns: int,
                 max_cost: float, allow_meta: bool, verbose: bool,
                 target_h: int = 0, initial_url: str = "",
-                use_cache: bool = True) -> tuple[Agent, object]:
+                use_cache: bool = True, quick: bool = False) -> tuple[Agent, object]:
     """Construye el agente + registry listos para ejecutar una run."""
     ensure_dirs()
     llm = LLM(model=model, use_cache=use_cache)
@@ -52,6 +52,7 @@ def build_agent(archetype: str, task: str, model: str | None, turns: int,
         verbose=verbose,
         target_h=target_h,
         initial_url=initial_url,
+        quick=quick,
     )
 
     registry = build_domain_registry(
@@ -66,6 +67,11 @@ def build_agent(archetype: str, task: str, model: str | None, turns: int,
             registry._tools[tool_name] = base_registry.get(tool_name)
         except KeyError:
             pass
+    if quick:
+        # modo rápido: eliminar críticos VLM (coste) y meta-edición
+        for tool_name in ("audit_visual", "audit_creative", "audit_truth",
+                          "edit_skill", "review_harness"):
+            registry._tools.pop(tool_name, None)
     return agent, registry
 
 
@@ -73,11 +79,11 @@ def run_single(archetype: str, task: str, model: str | None = None,
                turns: int = 20, max_cost: float = 5.0,
                allow_meta: bool = True, verbose: bool = True,
                target_h: int = 0, initial_url: str = "",
-               use_cache: bool = True) -> Agent:
+               use_cache: bool = True, quick: bool = False) -> Agent:
     """Ejecuta una run completa y devuelve el agente (con run_dir resuelto)."""
     agent, registry = build_agent(
         archetype, task, model, turns, max_cost, allow_meta, verbose, target_h,
-        initial_url, use_cache,
+        initial_url, use_cache, quick,
     )
     final = agent.run(registry)
     if verbose:

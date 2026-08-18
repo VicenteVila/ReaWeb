@@ -1,0 +1,24 @@
+---
+name: Bug report
+about: Algo no funciona como esperado
+title: "[bug] "
+labels: bug
+assignees: ""
+---
+
+**Describe el bug**
+Qué esperabas y qué pasó.
+
+**Reproducir**
+- Comando usado (p. ej. `uv run reaweb --quick "..."`)
+- Modo (quick / investigación), arquetipo, modelo
+- ¿Tests afectados? (`uv run pytest -q`)
+
+**Entorno**
+- SO / WSL, Python, versión de ReaWeb (o commit `git rev-parse --short HEAD`)
+
+**Logs / salida**
+Pega el transcript o el resumen de la run (o el fallo del test).
+
+**Contexto adicional**
+¿Es una regresión? ¿Desde qué versión/commit?

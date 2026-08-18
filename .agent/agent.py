@@ -33,6 +33,7 @@ class Agent:
         verbose: bool = True,
         target_h: int = 0,
         initial_url: str = "",
+        quick: bool = False,
     ):
         self.llm = llm
         self.archetype_name = archetype_name
@@ -42,6 +43,7 @@ class Agent:
         self.allow_meta_edits = allow_meta_edits
         self.verbose = verbose
         self.initial_url = initial_url
+        self.quick = quick
 
         run_id = datetime.now().strftime("%Y%m%dT%H%M%S") + "--" + archetype_name
         self.run_dir = run_dir or (PATHS["runs"] / run_id)
@@ -117,6 +119,12 @@ class Agent:
         meta_note = ""
         if not self.allow_meta_edits:
             meta_note = "\nNOTA: la meta-evolución (edit_skill/review_harness) está deshabilitada en esta run."
+        if self.quick:
+            meta_note += (
+                "\nNOTA MODO RÁPIDO: sin críticos VLM (audit_visual/audit_creative/audit_truth). "
+                "Prioriza cumplir las secciones obligatorias y el test funcional; "
+                "selecciona el final lo antes posible sin iteraciones estéticas."
+            )
         target_note = ""
         if self.target_h:
             target_note = (

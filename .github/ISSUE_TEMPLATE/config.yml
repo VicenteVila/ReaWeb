@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentación
+    url: https://github.com/VicenteVila/ReaWeb/tree/main/Docs
+    about: REASONING, READAPTATION, EVOLUTION y guías del harness.
+  - name: Changelog
+    url: https://github.com/VicenteVila/ReaWeb/blob/main/CHANGELOG.md
+    about: Historial de versiones.

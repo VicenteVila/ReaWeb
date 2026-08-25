@@ -10,6 +10,10 @@ Donde J(H) es un benchmark corto (short-run) de la tarea train/dev. Si se
 aprueba, el cambio se aplica a domain/ (el staging se promueve); si no, se
 revierte al contenido `before` guardado y se descarta.
 
+Por defecto las tareas train/dev ya no son fijas: con historial suficiente en
+task_evals, Task-CoEvolve (Punto 10) elige las 2 más discriminativas (mayor
+varianza histórica de score). Usa --fixed-tasks para el comportamiento antiguo.
+
 Uso:
     python -m scripts.gate_harness_edit                          # todas las pending
     python -m scripts.gate_harness_edit --proposal <id>          # solo una
@@ -121,6 +125,21 @@ def _persist(proposal_id: str, decision: str) -> None:
         db.close()
 
 
+def _adaptive_train_dev(db) -> list[dict]:
+    """Task-CoEvolve (Punto 10): las 2 tareas de validación más discriminativas
+    según la varianza histórica de sus scores en task_evals (train la más alta,
+    dev la segunda con arquetipo distinto a ser posible). [] si no hay historial."""
+    from config import TASK_COEVOLVE_ENABLED
+    from tools.domain.task_coevolve import adaptive_tasks_from_db
+
+    if not TASK_COEVOLVE_ENABLED:
+        return []
+    try:
+        return adaptive_tasks_from_db(db, k=2)
+    except Exception:
+        return []
+
+
 def _cleanup_staging(edit: dict) -> None:
     staged = PATHS["domain"] / ".proposals" / edit["id"]
     if staged.exists():
@@ -136,6 +155,9 @@ def main():
     ap.add_argument("--dev-task", default="Tienda online de sneakers con carrito")
     ap.add_argument("--turns", type=int, default=GATE_DEFAULTS["turns"])
     ap.add_argument("--target-h", type=int, default=GATE_DEFAULTS["target_h"])
+    ap.add_argument("--fixed-tasks", action="store_true",
+                    help="Usar las train/dev fijas aunque haya historial "
+                         "(desactiva la selección adaptativa de Task-CoEvolve)")
     ap.add_argument("--dry-run", action="store_true", help="Decide sin aplicar cambios ni persistir")
     args = ap.parse_args()
 
@@ -144,6 +166,20 @@ def main():
         edits = db.harness_edits(decision="pending", run_id=args.proposal) if args.proposal else db.harness_edits(decision="pending")
         if args.proposal:
             edits = [e for e in edits if e["id"] == args.proposal]
+
+        train_archetype, train_task, dev_archetype, dev_task = (
+            args.train_archetype, args.train_task, args.dev_archetype, args.dev_task)
+        adaptive_note = "fijas (sin historial suficiente)"
+        if not args.fixed_tasks:
+            picked = _adaptive_train_dev(db)
+            if len(picked) >= 2:
+                train_archetype, train_task = picked[0]["archetype"], picked[0]["task"]
+                dev_archetype, dev_task = picked[1]["archetype"], picked[1]["task"]
+                adaptive_note = (
+                    f"adaptativas (Task-CoEvolve): train={picked[0]['task_id']} "
+                    f"(w={picked[0]['weight']:.3f}), dev={picked[1]['task_id']} "
+                    f"(w={picked[1]['weight']:.3f})")
+        print(f"Tareas de validación: {adaptive_note}")
     finally:
         db.close()
 
@@ -155,10 +191,10 @@ def main():
     for edit in edits:
         r = gate_proposal(
             edit,
-            train_archetype=args.train_archetype,
-            train_task=args.train_task,
-            dev_archetype=args.dev_archetype,
-            dev_task=args.dev_task,
+            train_archetype=train_archetype,
+            train_task=train_task,
+            dev_archetype=dev_archetype,
+            dev_task=dev_task,
             turns=args.turns,
             target_h=args.target_h,
             dry_run=args.dry_run,

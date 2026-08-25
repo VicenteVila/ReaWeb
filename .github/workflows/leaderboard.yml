@@ -2,6 +2,10 @@
 # benchmark/tasks.yaml en un runner limpio y hace COMMIT AUTOMÁTICO del
 # benchmark/leaderboard.json + .md con el resultado agregado.
 #
+# Usa --full a propósito: el leaderboard debe ser comparable entre commits.
+# El muestreo adaptativo de Task-CoEvolve (Punto 10, --rho) es para búsquedas
+# locales donde importa el coste; sus evaluaciones alimentan task_evals.
+#
 # - Se dispara en push a main y manualmente (workflow_dispatch).
 # - Si no hay GEMINI_API_KEY (fork/PR), solo regenera el leaderboard con los
 #   históricos ya en memory/ (vía --compare), sin gastar llamadas.
@@ -33,7 +37,7 @@ jobs:
       - name: Run benchmark suite (live run si hay API key)
         run: |
           if [ -n "$GEMINI_API_KEY" ]; then
-            uv run python -m scripts.run_benchmark --suite --leaderboard \
+            uv run python -m scripts.run_benchmark --suite --full --leaderboard \
               --json-out benchmark/leaderboard.json --max-cost 5.0
           else
             echo "Sin GEMINI_API_KEY: solo leaderboard con históricos."

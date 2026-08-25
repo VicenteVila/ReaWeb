@@ -96,6 +96,18 @@ SKILL_SAFETY_ENABLED = os.environ.get("SKILL_SAFETY_ENABLED", "1") != "0"
 SKILL_SAFETY_MIN_CU = int(os.environ.get("SKILL_SAFETY_MIN_CU", "3"))  # cu>=3 => reparar
 SKILL_SAFETY_RETIRE_AT = int(os.environ.get("SKILL_SAFETY_RETIRE_AT", "2"))  # reuses dañinos
 
+# Selección adaptativa de tareas de validación (Punto 10 — "Task-CoEvolve",
+# Miyai et al., arXiv:2608.20169): la suite/gate no evalúa el pool completo en
+# cada pasada sino un subconjunto muestreado con pesos proporcionales a la
+# varianza histórica del score (tareas donde los candidatos discrepan), y estima
+# el score full-suite corrigiendo por la probabilidad de inclusión π_t.
+TASK_COEVOLVE_ENABLED = os.environ.get("TASK_COEVOLVE_ENABLED", "1") != "0"
+TASK_COEVOLVE_RHO = float(os.environ.get("TASK_COEVOLVE_RHO", "0.5"))   # fracción del pool
+TASK_COEVOLVE_L = float(os.environ.get("TASK_COEVOLVE_L", "0.125"))     # suelo ℓ (nunca evaluadas)
+TASK_COEVOLVE_LAMBDA = float(os.environ.get("TASK_COEVOLVE_LAMBDA", "0.025"))  # λ/√n
+TASK_COEVOLVE_MC_REPS = int(os.environ.get("TASK_COEVOLVE_MC_REPS", "4000"))   # reps Monte Carlo para π_t
+TASK_COEVOLVE_SEED = int(os.environ.get("TASK_COEVOLVE_SEED", "13"))
+
 # Precios por 1M tokens (USD) para estimar el coste real de cada llamada.
 # clave "default" como fallback si el modelo no está listado.
 MODEL_PRICES = {

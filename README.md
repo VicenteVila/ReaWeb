@@ -31,6 +31,13 @@ Basado en:
   puede convertirse en política reutilizable (skill misevolution); motivó la capa
   de **gobernanza de skills** (write / retrieval / reuse gates sobre
   `lessons.db`, ver sección *Gobernanza de skills* abajo).
+- **Task-CoEvolve** — Miyai, A., Aizawa, K., & Yamasaki, T. (2026). *Task-CoEvolve:
+  Efficient Harness Optimization via Adaptive Validation Task Selection*.
+  arXiv:2608.20169. https://doi.org/10.48550/arXiv.2608.20169 — selección
+  adaptativa de tareas de validación: el pool no se evalúa entero en cada
+  pasada, sino un subconjunto muestreado por poder discriminante con estimación
+  sampling-aware del score full-suite (`tools/domain/task_coevolve.py`, ver
+  [`Docs/TASK_CO_EVOLUTION.md`](Docs/TASK_CO_EVOLUTION.md)).
 - **Propuesta Arquitectura de Agente Web** — diseño de carpetas, stack y estrategia
   free-tier.
 - **Docs/** — reglas globales, skills, workflows y 6 arquetipos de web development.
@@ -48,6 +55,9 @@ Documentación del diseño (para humanos):
 - [`Docs/cards/`](Docs/cards/) — tarjetas didácticas visuales: el agente ReaWeb y
   su arnés (esfera-ojo LLM envuelta por cada módulo) y el flujo de trabajo
   end-to-end con decisiones y bucles.
+- [`Docs/TASK_CO_EVOLUTION.md`](Docs/TASK_CO_EVOLUTION.md) — adaptación de
+  Task-CoEvolve (selección adaptativa de validación) con citaciones y tablas de
+  mapeo.
 
 ## Demo visual (Show, don't tell)
 
@@ -429,12 +439,12 @@ Genera `runs/reporte_benchmark_<ts>.md` con la tabla de históricos (baseline, b
 
 ### Suite pública + leaderboard (benchmark/)
 
-La suite re-ejecutable vive en `benchmark/tasks.yaml` (7 tareas fijas en distintos
-arquetipos, mismas tareas => mismo `task_hash` => comparables entre commits):
+La suite re-ejecutable vive en `benchmark/tasks.yaml` (**14 tareas fijas**, dos
+por arquetipo; mismas tareas => mismo `task_hash` => comparables entre commits):
 
 ```bash
 # ejecuta toda la suite y regenera benchmark/leaderboard.json + .md
-python -m scripts.run_benchmark --suite --leaderboard --json-out benchmark/leaderboard.json
+python -m scripts.run_benchmark --suite --full --leaderboard --json-out benchmark/leaderboard.json
 
 # solo leaderboard con los históricos ya en memory/ (sin gastar API)
 python -m scripts.run_benchmark --compare --task-hash <task_hash> --leaderboard
@@ -445,12 +455,42 @@ automático** del leaderboard (github-actions[bot]). Ejemplo real (portfolio, ta
 `72b521df`, media **87.7**):
 
 | Run | Baseline | Best | Δ |
-|---|---|---:|---:|---:|
+|---|---|---:|---:|
 | 092433 | 84 | 85 | +1 |
 | 104003 | 79 | 87 | +8 |
 | 104852 | 78 | 90 | +12 |
 | 114200 | 81 | 90 | +9 |
 | 124332 | 81 | 90 | +9 |
+
+El workflow usa `--full` a propósito: el leaderboard debe ser comparable entre
+commits. Para búsquedas locales donde importa el coste, usa `--rho` (abajo).
+
+## Selección adaptativa de validación (Task-CoEvolve, Punto 10)
+
+Basada en *Task-CoEvolve* (Miyai et al., arXiv:2608.20169; mapeo completo en
+[`Docs/TASK_CO_EVOLUTION.md`](Docs/TASK_CO_EVOLUTION.md)). La suite y el gate
+de meta-evolución ya no evalúan siempre el mismo set fijo de tareas:
+
+- **Suite**: con `--rho X` (default `TASK_COEVOLVE_RHO=0.5`) solo se ejecuta un
+  subconjunto ⌈ρN⌉ de tareas, elegidas con pesos proporcionales a la varianza
+  histórica de su score (las tareas donde los candidatos discrepan pesan más);
+  el score full-suite Ŝ se estima corrigiendo por las probabilidades de
+  inclusión π_t (Hájek o diferencia anclada según la regla del §3.3). El
+  leaderboard reporta Ŝ junto al crudo.
+
+  ```bash
+  python -m scripts.run_benchmark --suite --rho 0.5    # ~la mitad del coste
+  python -m scripts.run_benchmark --suite --full       # comportamiento clásico
+  ```
+
+- **Gate de meta-evolución**: las train/dev fijas se sustituyen (si hay
+  historial suficiente) por las 2 tareas más discriminativas de `task_evals`;
+  `--fixed-tasks` restaura las fijas.
+- **Historial**: cada tarea evaluada queda en la tabla `task_evals` de
+  `memory/memory.db` y alimenta futuras selecciones.
+
+Config: `TASK_COEVOLVE_ENABLED/RHO/L/LAMBDA/MC_REPS/SEED`. Tests:
+`uv run pytest test/test_task_coevolve.py -q`.
 
 ## Caché semántica de LLM (ahorro de costes)
 

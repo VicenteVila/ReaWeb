@@ -1,7 +1,9 @@
-# Suite de benchmark público de ReaWeb (Punto 7, Qwen 3.8).
+# Suite de benchmark público de ReaWeb (Punto 7, Qwen 3.8; ampliada a 14 tareas
+# por Punto 10 / Task-CoEvolve: un pool mayor hace significativo el muestreo
+# adaptativo de validación).
 # Cada tarea es fija y re-ejecutable: mismas tareas => mismo task_hash =>
 # comparable entre runs (mejora del harness con el tiempo).
-# Ejecutar: python -m scripts.run_benchmark --suite
+# Ejecutar: python -m scripts.run_benchmark --suite [--rho 0.5 | --full]
 # Resultado agregado: benchmark/leaderboard.json + leaderboard.md (commit CI).
 
 suite:
@@ -44,5 +46,49 @@ suite:
   - id: portfolio-creative
     archetype: portfolio-creative
     task: "Crea un portfolio creativo de un diseñador. Hero con nombre y rol, grid de 6 proyectos con imagen y título, sección 'sobre mí', y contacto. Estilo visual distintivo y coherente."
+    turns: 16
+    target_h: 3
+
+  # --- tareas añadidas por Punto 10 (Task-CoEvolve): pool de 14 ---
+
+  - id: landing-evento-tech
+    archetype: landing-page
+    task: "Crea una landing de evento tech (conferencia de IA). Hero con fecha y lugar, agenda con 3 tracks, sección de ponentes en grid de 4, tickets con 2 modalidades y FAQ desplegable. HTML+CSS+JS."
+    turns: 16
+    target_h: 3
+
+  - id: ecommerce-cafe
+    archetype: ecommerce
+    task: "Crea una tienda online de café de especialidad. Hero con producto estrella, catálogo de 6 cafés con origen y precio, filtro por intensidad con JS, y carrito lateral con total. HTML+CSS+JS vanilla."
+    turns: 16
+    target_h: 3
+
+  - id: dashboard-finance
+    archetype: saas-dashboard
+    task: "Crea un dashboard financiero personal. Resumen de balance con 3 tarjetas (ingresos, gastos, ahorro), tabla de últimas 8 transacciones, gráfico de evolución mensual con canvas o SVG, y dark mode."
+    turns: 16
+    target_h: 3
+
+  - id: knowledge-graph-espacial
+    archetype: knowledge-graph
+    task: "Crea un grafo de conocimientos interactivo sobre el sistema solar. Nodos para el sol y los 8 planetas con conexiones jerárquicas, tooltip al pasar el ratón con datos de cada nodo, zoom con rueda y panel lateral de detalle."
+    turns: 16
+    target_h: 3
+
+  - id: blog-recetas
+    archetype: blog-content
+    task: "Crea un blog de recetas. Portada con receta destacada, listado de 4 recetas con imagen, tiempo y dificultad, vista de receta con ingredientes e pasos numerados, y buscador por texto con JS."
+    turns: 16
+    target_h: 3
+
+  - id: corporate-agencia
+    archetype: corporate-business
+    task: "Crea la web de una agencia de diseño. Hero con claim animado, servicios en tabs con JS, casos de éxito en carrusel simple, equipo en grid, y CTA final con formulario validado."
+    turns: 16
+    target_h: 3
+
+  - id: portfolio-fotografo
+    archetype: portfolio-creative
+    task: "Crea el portfolio de un fotógrafo. Galería masonry de 9 fotos placeholder con lightbox al hacer clic, filtros por categoría (retrato, paisaje, urbano), sobre mí, y modo pantalla completa para la galería."
     turns: 16
     target_h: 3

@@ -3,6 +3,43 @@
 Todas las versiones notables de ReaWeb. El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [Unreleased]
+
+### Added
+
+- **Selección adaptativa de tareas de validación** (Punto 10 — "Task-CoEvolve",
+  Miyai et al., arXiv:2608.20169): motor `tools/domain/task_coevolve.py` con
+  pesos de varianza histórica del score (adaptación continua de la Eq. 2),
+  muestreo sin reemplazo ponderado determinista (Efraimidis-Spirakis), π_t por
+  Monte Carlo y estimadores Hájek / diferencia anclada (Eqs. 3-4) con la regla
+  de elección del §3.3.
+- **Tabla `task_evals`** en `memory/memory.db` (`agent/memory_db.py`): una fila
+  por tarea evaluada (task_hash, score, baseline, harness_hash); alimenta las
+  futuras selecciones y sirve de historial fino del benchmark.
+- **Suite con presupuesto** (`scripts/run_benchmark.py`): flags `--rho X`
+  (default 0.5) y `--full`; con rho<1 solo se ejecuta el subconjunto muestreado
+  y el leaderboard reporta Ŝ full-suite estimada junto a la media cruda. Cada
+  tarea ejecutada se registra en `task_evals`. CI anclado a `--full` para que
+  el leaderboard siga siendo comparable entre commits.
+- **Gate adaptativo** (`scripts/gate_harness_edit.py`): las train/dev fijas se
+  sustituyen por las 2 tareas más discriminativas según varianza histórica;
+  `--fixed-tasks` restaura el comportamiento antiguo.
+- **Pool ampliado**: `benchmark/tasks.yaml` pasa de 7 a **14 tareas** (dos por
+  arquetipo) para que el muestreo adaptativo sea estadísticamente significativo.
+- Config `TASK_COEVOLVE_ENABLED/RHO/L/LAMBDA/MC_REPS/SEED` en `config.py`;
+  tests en `test/test_task_coevolve.py` (15, sin API key); documentación en
+  `Docs/TASK_CO_EVOLUTION.md`.
+
+### Fixed
+
+- **Crash en `_run_suite`** (`scripts/run_benchmark.py`): `agent.model` no
+  existe en `Agent` → ahora se lee `agent.llm.model`.
+- **Contaminación de benchmark por caché semántica**: la suite con fallback a
+  flash-lite reciclaba respuestas por similitud de coseno (una entrada alcanzó
+  178 hits) y las runs degeneraban en 1-2 tool calls. Nuevo flag
+  `--no-cache` en `run_benchmark.py` (`use_cache=False` en `run_single`) para
+  que el benchmark mida el harness y no la caché.
+
 ## [0.2.0] - 2026-08-18
 
 Versión con control de versiones (tags + releases), CLI simplificada, Docker,

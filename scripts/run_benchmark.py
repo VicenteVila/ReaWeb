@@ -136,6 +136,14 @@ def main():
     ap.add_argument("--task-hash", default=None, help="task_hash concreto (para --compare)")
     ap.add_argument("--suite", action="store_true",
                     help="Ejecutar la suite completa de benchmark/tasks.yaml")
+    ap.add_argument("--rho", type=float, default=None,
+                    help="Task-CoEvolve: fracción del pool a evaluar por pasada "
+                         "(0<rho<=1). Default: TASK_COEVOLVE_RHO (0.5).")
+    ap.add_argument("--full", action="store_true",
+                    help="Evaluar la suite completa (ignora rho)")
+    ap.add_argument("--no-cache", action="store_true",
+                    help="Desactiva la caché semántica de LLM para esta suite "
+                         "(los benchmarks deben medir el harness, no la caché)")
     ap.add_argument("--leaderboard", action="store_true",
                     help="Tras la suite, regenerar benchmark/leaderboard.json + .md")
     ap.add_argument("--json-out", default=None,
@@ -211,24 +219,66 @@ def main():
 
 def _run_suite(args, db):
     """Ejecuta benchmark/tasks.yaml tarea a tarea y (opcional) regenera el
-    leaderboard agregado en benchmark/."""
+    leaderboard agregado en benchmark/.
+
+    Con Task-CoEvolve (Punto 10) y rho<1, solo se ejecuta un subconjunto
+    muestreado con pesos de varianza histórica; el score full-suite se estima
+    corrigiendo por las probabilidades de inclusión (Hájek / diferencia
+    anclada). Cada tarea evaluada se registra en task_evals.
+    """
     import json
 
     import yaml
 
+    from config import TASK_COEVOLVE_ENABLED, TASK_COEVOLVE_RHO
     from scripts._common import run_single
     from scripts.run_battery import curve_from_transcript
+    from tools.domain.task_coevolve import TaskSelector, load_history
 
     suite_file = PATHS["root"] / "benchmark" / "tasks.yaml"
     if not suite_file.exists():
         db.close()
         raise SystemExit(f"Falta la suite: {suite_file}")
     suite = yaml.safe_load(suite_file.read_text()).get("suite", [])
+
+    # --- Task-CoEvolve: selección del subconjunto de validación ---
+    rho = 1.0
+    selector = sel = None
+    history = {}
+    if args.full:
+        rho = 1.0
+    elif not args.rho and not TASK_COEVOLVE_ENABLED:
+        rho = 1.0
+    else:
+        rho = min(max(args.rho if args.rho is not None else TASK_COEVOLVE_RHO,
+                      1e-6), 1.0)
+    if rho < 1.0:
+        hashes = {td["id"]: task_hash(td["task"]) for td in suite}
+        hist_by_hash = load_history(db)
+        history = {tid: hist_by_hash.get(h, []) for tid, h in hashes.items()}
+        selector = TaskSelector(history)
+        sel = selector.select([td["id"] for td in suite], rho=rho)
+        selected_ids = set(sel.selected)
+        print(f"Task-CoEvolve: rho={rho:g} -> {len(selected_ids)}/{len(suite)} "
+              f"tareas {sorted(selected_ids)} (estimador: {sel.estimator})\n")
+    else:
+        selected_ids = {td["id"] for td in suite}
+
     print(f"Suite: {len(suite)} tareas ({datetime.now().isoformat(timespec='seconds')})\n")
 
     results = []
     for task_def in suite:
         tid = task_def["id"]
+        sampled = tid in selected_ids
+        if not sampled:
+            results.append({
+                "task_id": tid, "archetype": task_def["archetype"],
+                "task_hash": task_hash(task_def["task"]),
+                "baseline": None, "best": None, "run_id": None,
+                "started": datetime.now().isoformat(timespec="seconds"),
+                "model": None, "sampled": False,
+            })
+            continue
         print(f"{'='*60}\n[{tid}] {task_def['archetype']}: {task_def['task'][:70]}...")
         try:
             agent = run_single(
@@ -238,6 +288,7 @@ def _run_suite(args, db):
                 max_cost=args.max_cost,
                 target_h=task_def.get("target_h", 0),
                 verbose=False,
+                use_cache=not args.no_cache,
             )
             curve = curve_from_transcript(agent.run_dir)
             best = curve[-1]["total"] if curve else None
@@ -254,21 +305,42 @@ def _run_suite(args, db):
             "best": best,
             "run_id": getattr(agent, "run_id", None) if "agent" in locals() else None,
             "started": datetime.now().isoformat(timespec="seconds"),
-            "model": agent.model if "agent" in locals() else None,
+            "model": getattr(getattr(agent, "llm", None), "model", None)
+            if "agent" in locals() else None,
+            "sampled": True,
         })
+        # historial para futuras selecciones (Punto 10)
+        db.add_task_eval(
+            run_id=results[-1]["run_id"], task_id=tid, task_hash=th,
+            archetype=task_def["archetype"], task=task_def["task"],
+            score=best, baseline=baseline,
+            harness_hash=getattr(agent, "harness_hash", None) if "agent" in locals() else None,
+        )
         print(f"  => best={best} baseline={baseline} hash={th}")
 
+    evaluated = [r for r in results if r["best"] is not None]
+    mean_best = round(sum(r["best"] for r in evaluated) / len(evaluated), 1) \
+        if evaluated else None
     agg = {
         "generated": datetime.now().astimezone().isoformat(timespec="seconds"),
         "task_hash": results[0]["task_hash"] if results else None,
         "n_tasks": len(results),
-        "n_passed": sum(1 for r in results if r["best"] is not None),
-        "mean_best": round(sum(r["best"] for r in results if r["best"] is not None)
-                          / max(1, sum(1 for r in results if r["best"] is not None)), 1),
+        "n_passed": len(evaluated),
+        "mean_best": mean_best,
+        "rho": round(rho, 3),
+        "estimated_full": None,
+        "estimator": sel.estimator if sel else "full",
+        "selected": sorted(selected_ids),
         "results": results,
     }
-    print(f"\n=== AGREGADO: {agg['n_passed']}/{agg['n_tasks']} tareas, "
-          f"media best {agg['mean_best']} ===")
+    if selector is not None and sel is not None:
+        sampled_scores = {r["task_id"]: r["best"] / 100.0 for r in evaluated}
+        agg["estimated_full"] = selector.estimate_suite(sampled_scores, sel,
+                                                        pool_size=len(results))
+    extra = f" · Ŝ full-suite ~ {agg['estimated_full']} ({agg['estimator']})" \
+        if agg["estimated_full"] is not None else ""
+    print(f"\n=== AGREGADO: {agg['n_passed']}/{agg['n_tasks']} tareas evaluadas "
+          f"(rho={rho:g}), media best {agg['mean_best']}{extra} ===")
 
     if args.json_out:
         out = Path(args.json_out)
@@ -303,9 +375,15 @@ def _write_leaderboard(agg: dict) -> None:
         f"Generado: {agg['generated']} · {agg['n_passed']}/{agg['n_tasks']} tareas "
         f"· media best **{agg['mean_best'] if agg.get('mean_best') is not None else '-'}**",
         "",
+    ]
+    if agg.get("rho") is not None and agg["rho"] < 1.0:
+        md_lines.insert(2,
+            f"Task-CoEvolve: ρ={agg['rho']:g} · estimador `{agg.get('estimator')}` "
+            f"· Ŝ full-suite ~ **{agg.get('estimated_full')}**")
+    md_lines.extend([
         "| Tarea | Arquetipo | Baseline | Best | Δ | Run |",
         "|---|---|---:|---:|---:|:---:|",
-    ]
+    ])
     for r in sorted(agg["results"], key=lambda x: -(x["best"] or 0)):
         delta = ""
         if r.get("best") is not None and r.get("baseline") is not None:

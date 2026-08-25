@@ -81,6 +81,19 @@ CREATE TABLE IF NOT EXISTS lesson_reuse (
     ts        TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_lr_lesson ON lesson_reuse(lesson_id);
+CREATE TABLE IF NOT EXISTS task_evals (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_id       TEXT,
+    task_id      TEXT,
+    task_hash    TEXT,
+    archetype    TEXT,
+    task         TEXT,
+    score        REAL,
+    baseline     REAL,
+    harness_hash TEXT,
+    ts           TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_te_hash ON task_evals(task_hash);
 """
 
 
@@ -364,6 +377,37 @@ class MemoryDB:
                 "SELECT COUNT(*) FROM harness_edits WHERE decision=?", (decision,)
             ).fetchone()[0]
         return self.conn.execute("SELECT COUNT(*) FROM harness_edits").fetchone()[0]
+
+    # --- task_evals (Task-CoEvolve, Punto 10) ---
+    def add_task_eval(self, run_id: str | None, task_id: str | None,
+                      task_hash: str | None, archetype: str | None,
+                      task: str, score: float | None, baseline: float | None = None,
+                      harness_hash: str | None = None,
+                      ts: str | None = None) -> int:
+        """Registra la evaluación de una tarea de validación (suite o gate)."""
+        cur = self.conn.execute(
+            "INSERT INTO task_evals "
+            "(run_id, task_id, task_hash, archetype, task, score, baseline, harness_hash, ts) "
+            "VALUES (?,?,?,?,?,?,?,?,?)",
+            (run_id, task_id, task_hash, archetype, task, score, baseline,
+             harness_hash, ts or _now()),
+        )
+        self.conn.commit()
+        return cur.lastrowid
+
+    def task_evals(self, task_hash: str | None = None,
+                   limit: int = 500) -> list[dict]:
+        sql = "SELECT * FROM task_evals"
+        args: list = []
+        if task_hash:
+            sql += " WHERE task_hash=?"
+            args.append(task_hash)
+        sql += f" ORDER BY id DESC LIMIT {int(limit)}"
+        rows = self.conn.execute(sql, args).fetchall()
+        return [dict(r) for r in rows]
+
+    def count_task_evals(self) -> int:
+        return self.conn.execute("SELECT COUNT(*) FROM task_evals").fetchone()[0]
 
     def close(self) -> None:
         self.conn.close()

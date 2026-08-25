@@ -18,7 +18,9 @@ codifican relaciones operativas:
                  llamada cueste tokens reales).
 
 El bloque derivado se inyecta en el estado del agente como advertencias
-dinámicas: violaciones observadas hasta el turno actual + resumen de aristas.
+dinámicas: violaciones observadas hasta el turno actual (deps_warnings, reactiva)
++ prerequisitos pendientes de tools no ejecutadas (deps_pending, predictiva,
+Punto 12b) + resumen de aristas.
 Es conocimiento declarativo en domain/generated/skill_deps.yaml, editable vía
 meta-evolución (edit_skill pasa por el acceptance gate).
 """
@@ -93,6 +95,30 @@ def deps_warnings(executed: list[str]) -> list[str]:
     return warns[:5]
 
 
+def deps_pending(executed: list[str]) -> list[str]:
+    """Versión predictiva (Punto 12b): herramientas no ejecutadas cuyo
+    prerequisito tampoco está ejecutado. Avisa ANTES de que el agente intente
+    llamarlas, evitando la violación reactiva de deps_warnings()."""
+    deps = load_deps()
+    seen = set(executed)
+    pending: list[str] = []
+
+    for tool, spec in deps.items():
+        if tool in seen:
+            continue  # ya ejecutada — no hay nada pendiente
+        if not isinstance(spec, dict):
+            continue
+        pres = spec.get("depends_on") or []
+        missing = [p for p in pres if p not in seen]
+        if missing:
+            pending.append(
+                f"`{tool}` no ejecutado — requiere previamente "
+                + ", ".join(f"`{p}`" for p in missing)
+                + ". Ejecuta primero el prerequisito."
+            )
+    return pending[:5]
+
+
 def deps_edges_summary() -> list[str]:
     """Resumen compacto de las aristas del grafo (para el estado del agente)."""
     lines = []
@@ -111,16 +137,21 @@ def deps_edges_summary() -> list[str]:
 
 
 def deps_block(executed: list[str]) -> str:
-    """Bloque completo para el estado del agente: advertencias dinámicas +
-    aristas del grafo. Cadena vacía si no hay grafo ni violaciones."""
+    """Bloque completo para el estado del agente: violaciones reactivas +
+    prerequisitos pendientes (predictivo) + aristas del grafo. Cadena vacía
+    si no hay grafo, violaciones ni pendientes."""
     warns = deps_warnings(executed)
+    pending = deps_pending(executed)
     edges = deps_edges_summary()
-    if not warns and not edges:
+    if not warns and not pending and not edges:
         return ""
     out = []
     if warns:
         out.append("VIOLACIONES DETECTADAS en esta run:")
         out.extend(f"- {w}" for w in warns)
+    if pending:
+        out.append("PASOS PENDIENTES (prerequisitos no ejecutados aún):")
+        out.extend(f"- {p}" for p in pending)
     if edges:
         out.append("Aristas activas:")
         out.extend(edges)

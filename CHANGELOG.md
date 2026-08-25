@@ -15,7 +15,9 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
     `domain/generated/skill_deps.yaml` + `tools/domain/skill_graph.py` — aristas
     `depends_on`/`inhibits`/`repeat_guard` entre tools; las violaciones
     observadas en la secuencia real de la run se inyectan como advertencias en
-    el estado del agente (bloque "🕸 Grafo de dependencias").
+    el estado del agente (bloque "🕸 Grafo de dependencias"). Punto 12b:
+    `deps_pending()` añade un bloque "PASOS PENDIENTES" predictivo que avisa
+    *antes* de que el agente ejecute una tool sin prerequisitos cumplidos.
   - **Atribución causal de fallos** (Who&When / MAST, §4.4.2):
     `detect_root_cause()` mapea el eje más débil bajo umbral a un enum cerrado
     (`visual_alignment`, `creative_stale`, `functional_broken`, ...) y viaja en

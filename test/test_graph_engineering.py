@@ -213,3 +213,38 @@ def test_deps_block_renders_edges_and_warnings():
     block = deps_block(["select_final"])  # viola depends_on de select_final
     assert "VIOLACIONES DETECTADAS" in block
     assert "Aristas activas:" in block
+
+
+# --- Punto 12b: deps_pending (predictivo) ---
+
+def test_deps_pending_empty_when_all_critical_done():
+    """Con los prerequisitos clave ejecutados, no quedan pendientes relevantes
+    (edit_skill/review_harness quedan pero no bloquean el flujo principal)."""
+    from tools.domain.skill_graph import deps_pending
+    done = ["fetch_readme", "generate_candidate", "audit_page",
+            "audit_visual", "select_final"]
+    pending = deps_pending(done)
+    # edit_skill/review_harness siguen pendientes pero no bloquean select_final
+    assert not any("select_final" in p for p in pending)
+
+
+def test_deps_pending_warns_select_final_without_audit():
+    """select_final con audit_page pendiente genera warning predictivo."""
+    from tools.domain.skill_graph import deps_pending
+    pending = deps_pending(["generate_candidate"])
+    assert any("select_final" in p and "audit_page" in p for p in pending)
+
+
+def test_deps_pending_no_false_positive_after_audit():
+    """Tras ejecutar audit_page, select_final ya no aparece como pendiente."""
+    from tools.domain.skill_graph import deps_pending
+    pending = deps_pending(["generate_candidate", "audit_page"])
+    assert not any("select_final" in p for p in pending)
+
+
+def test_deps_block_includes_pending_section():
+    """deps_block muestra la sección PASOS PENDIENTES cuando hay prerequisitos
+    por ejecutar."""
+    block = deps_block(["generate_candidate"])
+    assert "PASOS PENDIENTES" in block
+    assert "select_final" in block or "audit_page" in block

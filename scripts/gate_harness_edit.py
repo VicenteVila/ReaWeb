@@ -101,10 +101,21 @@ def gate_proposal(edit: dict, train_archetype: str, train_task: str,
         accept, reason = True, f"train {before['train']:g}->{after['train']:g}, dev {before['dev'] if before['dev'] is not None else '-'}->{after['dev'] if after['dev'] is not None else '-'}"
 
     decision = "accepted" if accept else "rejected"
+    # Punto 12 (Who&When, granularidad gate): clasificar el rechazo para que la
+    # atribución causal sea consultable (rejected_causes_summary). La granularidad
+    # de run (visual_alignment etc.) la asigna detect_root_cause en el evaluador.
+    root_cause = None
+    if not accept:
+        if before["train"] is None or after["train"] is None:
+            root_cause = "unmeasurable"
+        elif after["dev"] is not None and before["dev"] is not None and after["dev"] < before["dev"] and after["train"] > before["train"]:
+            root_cause = "dev_degradation"
+        else:
+            root_cause = "no_improvement"
     if not dry_run:
         if not accept:
             _revert(edit)
-        _persist(edit["id"], decision)
+        _persist(edit["id"], decision, root_cause)
 
     return {
         "proposal": edit["id"],
@@ -112,15 +123,16 @@ def gate_proposal(edit: dict, train_archetype: str, train_task: str,
         "component": edit.get("component"),
         "decision": decision,
         "reason": reason,
+        "root_cause": root_cause,
         "before": before,
         "after": after,
     }
 
 
-def _persist(proposal_id: str, decision: str) -> None:
+def _persist(proposal_id: str, decision: str, root_cause: str | None = None) -> None:
     db = MemoryDB()
     try:
-        db.set_harness_edit_decision(proposal_id, decision)
+        db.set_harness_edit_decision(proposal_id, decision, root_cause=root_cause)
     finally:
         db.close()
 
@@ -217,8 +229,9 @@ def main():
         "",
     ]
     for r in results:
+        cause = f" [causa: {r['root_cause']}]" if r.get("root_cause") else ""
         lines.append(
-            f"- **{r['decision']}** `{r['proposal']}` {r['file']} [{r['component']}] — {r['reason']}"
+            f"- **{r['decision']}** `{r['proposal']}` {r['file']} [{r['component']}] — {r['reason']}{cause}"
         )
     out.write_text("\n".join(lines))
     print(f"\nReporte guardado en: {out}")

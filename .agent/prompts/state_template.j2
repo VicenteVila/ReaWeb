@@ -51,6 +51,8 @@
 {% if best.fails %}
 ### 🔧 FALLOS DEL MEJOR CANDIDATO (evaluador estructurado)
 Tu siguiente mutación DEBE atacar estos fallos concretos (uno o dos por iteración):
+{% if best.root_cause %}- **Causa dominante (Who&When):** {{ best.root_cause }} — ataca la raíz, no el síntoma.
+{% endif %}
 {% for f in best.fails %}
 - {{ f }}
 {% endfor %}
@@ -99,6 +101,13 @@ generate_candidate (son cambios de código concretos, no deseos):
 
 ### Lecciones persistentes (de lessons.md)
 {{ lessons }}
+
+{% if skill_deps %}
+### 🕸 Grafo de dependencias de herramientas (Punto 12)
+Respeta las aristas del grafo: un prerequisito ausente invalida la señal y una
+crítica repetida sin mutación intermedia desperdicia turnos.
+{{ skill_deps }}
+{% endif %}
 
 ### Stagnation
 {% if stagnation %}

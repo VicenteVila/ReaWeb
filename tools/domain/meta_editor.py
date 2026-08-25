@@ -142,6 +142,9 @@ class EditSkill(Tool):
 
         db = MemoryDB()
         try:
+            # Punto 12 (genealogía EvoFlow): esta propuesta deriva del contenido
+            # dejado por la última edición ACEPTADA del mismo fichero (o es raíz)
+            parent_id = db.latest_accepted_edit_for_file(path)
             db.add_harness_edit(
                 proposal_id=proposal_id,
                 run_id=run_id,
@@ -151,12 +154,14 @@ class EditSkill(Tool):
                 after=after,
                 mode=mode,
                 plan=instruction[:500],
+                parent_id=parent_id,
             )
         finally:
             db.close()
 
+        lineage = f" · deriva de {parent_id}" if parent_id else ""
         return (
-            f"OK: propuesta {proposal_id} registrada (pending). No se ha aplicado a domain/ todavía. "
+            f"OK: propuesta {proposal_id} registrada (pending){lineage}. No se ha aplicado a domain/ todavía. "
             f"El acceptance gate la evaluará en train/dev; si se aprueba, se promueve; si no, se descarta. "
             f"Componente: {comp} · archivo: {path}."
         )

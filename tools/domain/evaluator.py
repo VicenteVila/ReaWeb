@@ -853,8 +853,47 @@ def blend_visual_total(metrics: dict, vlm: int | None, weights: dict | None = No
     return blended
 
 
-# --- Salida estructurada de métricas (anti "stringly-typed", Kimi K.3) ---
+# --- Atribución causal de fallos (Punto 12 — "Graph Engineering", §4.4.2) ---
 #
+# Adaptación de Who&When (Zhang et al., 2025) y MAST (Cemri et al., 2025):
+# cuando un candidato puntúa mal, el evaluador no solo registra QUÉ falló
+# (lista `fails`) sino la CAUSA dominante, para que la siguiente mutación ataque
+# la raíz y no el síntoma. Granularidad de run: el eje con peor score mapea a
+# una causa del enum ROOT_CAUSES. El gate de meta-ediciones usa su propia
+# granularidad (gate-level: unmeasurable/no_improvement/dev_degradation).
+
+ROOT_CAUSES = {
+    "visual": "visual_alignment",     # el render no transmite el design system
+    "creativity": "creative_stale",   # diseño genérico, sin personalidad
+    "functional": "functional_broken",  # enlaces/formularios/JS rotos
+    "structure": "structure_missing",   # faltan secciones obligatorias
+    "task": "task_mismatch",            # el artefacto no cumple lo pedido
+    "a11y": "a11y_violations",
+    "seo": "seo_gaps",
+    "performance": "perf_regression",
+    "responsive": "responsive_breaks",
+    "best_practices": "quality_regression",
+}
+
+ROOT_CAUSE_THRESHOLD = 70  # por debajo: el eje se considera causa activa
+
+
+def detect_root_cause(metrics: dict) -> tuple[str | None, str]:
+    """Devuelve (causa, detalle) para un dict de métricas con ejes numéricos.
+    Causa = eje con menor score entre los que quedan bajo el umbral; None si
+    todos los ejes están sanos. El detalle incluye eje y score para el estado."""
+    scored = [
+        (axis, int(v)) for axis, v in metrics.items()
+        if axis in ROOT_CAUSES and isinstance(v, (int, float))
+    ]
+    weak = [(axis, v) for axis, v in scored if v < ROOT_CAUSE_THRESHOLD]
+    if not weak:
+        return None, ""
+    axis, value = min(weak, key=lambda x: x[1])
+    return ROOT_CAUSES[axis], f"{axis}={value}"
+
+
+# --- Salida estructurada de métricas (anti "stringly-typed", Kimi K.3) ---#
 # Las tools emiten un bloque JSON canónico al final de su resultado, delimitado
 # por ###METRICS### ... ###END_METRICS###. El agente lo parsea con json.loads en
 # vez de regex sobre cadenas frágiles (total=(\d+), creativity_vlm=(\d+)...).

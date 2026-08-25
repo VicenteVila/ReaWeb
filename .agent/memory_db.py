@@ -66,7 +66,9 @@ CREATE TABLE IF NOT EXISTS harness_edits (
     mode       TEXT,
     plan       TEXT,
     decision   TEXT,
-    ts         TEXT
+    ts         TEXT,
+    parent_id  TEXT,
+    root_cause TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_lessons_run ON lessons(run_id);
 CREATE INDEX IF NOT EXISTS idx_exp_run ON experiments(run_id);
@@ -121,6 +123,8 @@ class MemoryDB:
         # migración de safety (skill misevolution, P9): campos de gobernanza de
         # lecciones añadidos a tablas preexistentes
         self._migrate_lessons_safety()
+        # migración graph engineering (P12): genealogía y causa raíz en edits
+        self._migrate_harness_edits_graph()
         self.conn.commit()
 
     def _migrate_lessons_safety(self) -> None:
@@ -140,6 +144,18 @@ class MemoryDB:
             ("source_tool", "ALTER TABLE lessons ADD COLUMN source_tool TEXT"),
         ):
             if col not in lcols:
+                self.conn.execute(ddl)
+
+    def _migrate_harness_edits_graph(self) -> None:
+        """Punto 12 (Graph Engineering): columnas de genealogía (parent_id, árbol
+        de evolución de ediciones) y atribución causal (root_cause, Who&When)
+        en harness_edits preexistentes. Idempotente."""
+        hcols = {r[1] for r in self.conn.execute("PRAGMA table_info(harness_edits)")}
+        for col, ddl in (
+            ("parent_id", "ALTER TABLE harness_edits ADD COLUMN parent_id TEXT"),
+            ("root_cause", "ALTER TABLE harness_edits ADD COLUMN root_cause TEXT"),
+        ):
+            if col not in hcols:
                 self.conn.execute(ddl)
 
     # --- runs ---
@@ -336,13 +352,57 @@ class MemoryDB:
     # --- harness_edits (meta-evolución acotada) ---
     def add_harness_edit(self, proposal_id: str, run_id: str, component: str,
                          file: str, before: str, after: str, mode: str,
-                         plan: str, decision: str = "pending") -> None:
+                         plan: str, decision: str = "pending",
+                         parent_id: str | None = None,
+                         root_cause: str | None = None) -> None:
+        """parent_id (Punto 12, genealogía EvoFlow): id de la edición aceptada
+        de la que deriva esta propuesta. root_cause (Punto 12, Who&When): causa
+        atribuida si el gate la rechaza."""
         self.conn.execute(
-            "INSERT INTO harness_edits (id, run_id, component, file, before, after, mode, plan, decision, ts) "
-            "VALUES (?,?,?,?,?,?,?,?,?,?)",
-            (proposal_id, run_id, component, file, before, after, mode, plan, decision, _now()),
+            "INSERT INTO harness_edits (id, run_id, component, file, before, after, mode, plan, decision, ts, parent_id, root_cause) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            (proposal_id, run_id, component, file, before, after, mode, plan,
+             decision, _now(), parent_id, root_cause),
         )
         self.conn.commit()
+
+    def latest_accepted_edit_for_file(self, file: str) -> str | None:
+        """Punto 12 (genealogía): id de la última edición ACEPTADA de un fichero
+        (ancestro de contenido). None si el fichero nunca fue editado con éxito."""
+        row = self.conn.execute(
+            "SELECT id FROM harness_edits WHERE file=? AND decision='accepted' "
+            "ORDER BY ts DESC LIMIT 1",
+            (file,),
+        ).fetchone()
+        return row["id"] if row else None
+
+    def edit_genealogy(self, proposal_id: str) -> list[dict]:
+        """Punto 12 (EvoFlow): cadena de ancestros de una edición vía parent_id
+        (CTE recursiva). Devuelve [{id, parent_id, file, decision, ts, depth}]
+        ordenada de raíz a hoja; depth = distancia hasta la edición consultada
+        (0 = la consultada, crece hacia la raíz)."""
+        rows = self.conn.execute(
+            """
+            WITH RECURSIVE tree AS (
+                SELECT id, parent_id, file, decision, ts, 0 AS depth
+                FROM harness_edits WHERE id = :start
+                UNION ALL
+                SELECT he.id, he.parent_id, he.file, he.decision, he.ts, t.depth + 1
+                FROM harness_edits he JOIN tree t ON he.id = t.parent_id
+            )
+            SELECT * FROM tree ORDER BY depth DESC
+            """,
+            {"start": proposal_id},
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+    def rejected_causes_summary(self) -> dict[str, int]:
+        """Punto 12 (Who&When): recuento de rechazos del gate por causa raíz."""
+        rows = self.conn.execute(
+            "SELECT root_cause, COUNT(*) AS n FROM harness_edits "
+            "WHERE decision='rejected' GROUP BY root_cause ORDER BY n DESC"
+        ).fetchall()
+        return {r["root_cause"] or "unclassified": int(r["n"]) for r in rows}
 
     def harness_edits(self, decision: str | None = None, run_id: str | None = None,
                       limit: int = 100) -> list[dict]:
@@ -364,10 +424,11 @@ class MemoryDB:
         row = self.conn.execute("SELECT * FROM harness_edits WHERE id=?", (proposal_id,)).fetchone()
         return dict(row) if row else None
 
-    def set_harness_edit_decision(self, proposal_id: str, decision: str) -> None:
+    def set_harness_edit_decision(self, proposal_id: str, decision: str,
+                                  root_cause: str | None = None) -> None:
         self.conn.execute(
-            "UPDATE harness_edits SET decision=? WHERE id=?",
-            (decision, proposal_id),
+            "UPDATE harness_edits SET decision=?, root_cause=? WHERE id=?",
+            (decision, root_cause, proposal_id),
         )
         self.conn.commit()
 

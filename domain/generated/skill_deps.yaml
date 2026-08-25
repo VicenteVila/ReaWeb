@@ -1,0 +1,47 @@
+# Grafo de dependencias de capacidades ejecutables del harness (Punto 12).
+# Adaptación de "Graph of Skills" / "SkillDAG" del estudio "Graph Engineering
+# in the Era of LLM Agents: From Individual Intelligence to System Intelligence"
+# (Feng et al., 2026, §3.3 y §5.1): las tools son nodos tipados y las aristas
+# codifican prerequisitos y competencias operativas.
+#
+# Relaciones soportadas por tools/domain/skill_graph.py:
+#   depends_on   : lista de prerequisitos duros (deben ejecutarse antes en la run)
+#   inhibits     : capacidades que compiten; coexistir desperdicia turnos
+#                  (sin aristas activas hoy: los críticos VLM son complementarios)
+#   repeat_guard : true si repetir la llamada sin un generate_candidate
+#                  intermedio produce el mismo juicio sobre el mismo candidato
+#
+# Este fichero es parte del harness declarativo: editable por el agente vía
+# edit_skill (component=context_memory) con validación del acceptance gate.
+
+generate_candidate:
+  depends_on: []
+
+audit_page:
+  depends_on: [generate_candidate]
+
+audit_visual:
+  depends_on: [generate_candidate]
+  repeat_guard: true
+
+audit_creative:
+  depends_on: [generate_candidate]
+  repeat_guard: true
+
+audit_truth:
+  depends_on: [generate_candidate]
+
+select_final:
+  depends_on: [audit_page]
+
+git_snapshot:
+  depends_on: [generate_candidate]
+
+edit_skill:
+  depends_on: [review_harness]
+
+fetch_repo_topics:
+  depends_on: [fetch_readme]
+
+revert_workspace:
+  depends_on: []

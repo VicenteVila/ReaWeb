@@ -7,6 +7,26 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Added
 
+- **Graph Engineering** (Punto 12 — Feng et al., "Graph Engineering in the Era
+  of LLM Agents", 2026; ver `Docs/GRAPH_ENGINEERING.md`): tres primitivas
+  estructurales adaptadas de la capa de sistema del paper a un arnés de agente
+  único:
+  - **Grafo de dependencias de capacidades** (Graph of Skills, §3.3):
+    `domain/generated/skill_deps.yaml` + `tools/domain/skill_graph.py` — aristas
+    `depends_on`/`inhibits`/`repeat_guard` entre tools; las violaciones
+    observadas en la secuencia real de la run se inyectan como advertencias en
+    el estado del agente (bloque "🕸 Grafo de dependencias").
+  - **Atribución causal de fallos** (Who&When / MAST, §4.4.2):
+    `detect_root_cause()` mapea el eje más débil bajo umbral a un enum cerrado
+    (`visual_alignment`, `creative_stale`, `functional_broken`, ...) y viaja en
+    el nodo del árbol y el estado ("Causa dominante — ataca la raíz, no el
+    síntoma"); el acceptance gate clasifica sus rechazos como `unmeasurable`,
+    `no_improvement` o `dev_degradation` en `harness_edits.root_cause`, con
+    agregación vía `rejected_causes_summary()`.
+  - **Genealogía de meta-ediciones** (EvoFlow / gobernanza estructural, §4.5 y
+    §5.2): `harness_edits.parent_id` enlaza cada propuesta con la última edición
+    aceptada del mismo fichero; `edit_genealogy(id)` (CTE recursiva) devuelve la
+    cadena raíz→hoja para podar líneas que mutan sin mejorar.
 - **Pipeline de diseño** (Punto 11 — calidad estética de los artefactos):
   - **Críticos VLM sin caché**: `generate_vision(use_cache=False)` en
     `audit_visual`/`audit_creative` — el embedding semántico del key colisionaba

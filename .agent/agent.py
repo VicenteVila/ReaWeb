@@ -210,6 +210,8 @@ class Agent:
         # F2: fallos del evaluador + último feedback VLM del mejor candidato,
         # como objetivos explícitos de la siguiente mutación
         best_fields["fails"] = best.metrics.get("fails") if best else None
+        # Punto 12 (Who&When): causa dominante del peor eje del mejor candidato
+        best_fields["root_cause"] = best.metrics.get("root_cause") if best else None
         vlm = getattr(self, "last_vlm", None) or {}
         best_fields["vlm_issues"] = vlm.get("issues") or []
         best_fields["vlm_suggestions"] = vlm.get("suggestions") or []
@@ -223,6 +225,12 @@ class Agent:
                     "delta": exp.delta,
                 }
             )
+        # Punto 12 (grafo de dependencias): advertencias de aristas violadas
+        try:
+            from tools.domain.skill_graph import deps_block
+            skill_deps = deps_block([e.action for e in self.memory.recent_experiments])
+        except Exception:
+            skill_deps = ""
         return tmpl.render(
             turn_number=self.turn,
             archetype_name=self.archetype_name,
@@ -236,6 +244,7 @@ class Agent:
             recent=recent,
             tree=self.tree.summary(max_nodes=CONTEXT_DEFAULTS["search_tree_max_nodes"]),
             lessons=self.memory.read_global_lessons()[:3000],
+            skill_deps=skill_deps,
             stagnation=stagnation,
             last_action_summary=self._last_action_summary(),
             target_h=self.target_h,
@@ -455,6 +464,11 @@ class Agent:
             metrics["total"] = total
             if isinstance(_blk.get("fails"), list) and _blk["fails"]:
                 metrics["fails"] = [str(x)[:160] for x in _blk["fails"][:8]]
+            # Punto 12 (Who&When): atribuir la causa dominante si hay síntomas
+            from tools.domain.evaluator import detect_root_cause
+            cause, _detail = detect_root_cause(metrics)
+            if cause:
+                metrics["root_cause"] = cause
         else:
             m = re.search(r"total=(\d+)", result)
             if not m:
@@ -478,6 +492,10 @@ class Agent:
                 if m2:
                     metrics[key] = int(m2.group(1))
             metrics["total"] = total
+            from tools.domain.evaluator import detect_root_cause
+            cause, _detail = detect_root_cause(metrics)
+            if cause:
+                metrics["root_cause"] = cause
 
         prev_best = self.tree.best()
         prev_score = prev_best.metrics.get("total", -1) if prev_best else -1

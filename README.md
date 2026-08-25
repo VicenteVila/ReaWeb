@@ -58,6 +58,9 @@ Documentación del diseño (para humanos):
 - [`Docs/TASK_CO_EVOLUTION.md`](Docs/TASK_CO_EVOLUTION.md) — adaptación de
   Task-CoEvolve (selección adaptativa de validación) con citaciones y tablas de
   mapeo.
+- [`Docs/GRAPH_ENGINEERING.md`](Docs/GRAPH_ENGINEERING.md) — adaptación de
+  Graph Engineering (genealogía de ediciones, causalidad de fallos, grafo de
+  dependencias de tools) con citaciones y límites de la adaptación.
 
 ## Demo visual (Show, don't tell)
 
@@ -491,6 +494,30 @@ de meta-evolución ya no evalúan siempre el mismo set fijo de tareas:
 
 Config: `TASK_COEVOLVE_ENABLED/RHO/L/LAMBDA/MC_REPS/SEED`. Tests:
 `uv run pytest test/test_task_coevolve.py -q`.
+
+## Graph Engineering (Punto 12)
+
+Basado en *Graph Engineering in the Era of LLM Agents* (Feng et al., 2026;
+mapeo completo en [`Docs/GRAPH_ENGINEERING.md`](Docs/GRAPH_ENGINEERING.md)).
+Del estudio se toman tres primitivas estructurales y se adaptan al arnés de
+agente único (se descarta la capa multi-agente: topologías de equipo, routing,
+ontología formal):
+
+- **Grafo de dependencias de capacidades** (Graph of Skills): las tools son
+  nodos y `domain/generated/skill_deps.yaml` declara aristas
+  `depends_on`/`inhibits`/`repeat_guard`. El motor (`tools/domain/skill_graph.py`)
+  detecta violaciones en la secuencia real de la run y el estado del agente las
+  muestra como advertencias antes de gastar otro turno.
+- **Atribución causal** (Who&When): cuando un candidato falla, el evaluador
+  marca la causa dominante (`visual_alignment`, `functional_broken`, ...) en el
+  nodo y en el estado; el gate clasifica sus rechazos
+  (`no_improvement`, `dev_degradation`, `unmeasurable`) en
+  `harness_edits.root_cause`.
+- **Genealogía de meta-ediciones** (EvoFlow): cada propuesta `edit_skill`
+  referencia a la última edición aceptada del fichero (`parent_id`);
+  `edit_genealogy()` traza la cadena raíz→hoja para podas informadas.
+
+Tests: `uv run pytest test/test_graph_engineering.py -q`.
 
 ## Caché semántica de LLM (ahorro de costes)
 

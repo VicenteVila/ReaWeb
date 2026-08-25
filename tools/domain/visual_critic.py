@@ -76,6 +76,7 @@ def render_screenshot(html_path: Path, png_path: Path, viewport: str = "1280,900
             "--headless=new",
             "--disable-gpu",
             "--hide-scrollbars",
+            "--virtual-time-budget=5000",
             f"--window-size={viewport}",
             "--screenshot=" + shot,
             url,

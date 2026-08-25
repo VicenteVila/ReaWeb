@@ -38,11 +38,11 @@ PATHS = {
 }
 
 BUDGET_DEFAULTS = {
-    "max_turns": 20,
+    "max_turns": 24,
     "max_cost_usd": 5.0,
     "max_wall_time_minutes": 120,
-    "stagnation_advisory": 3,
-    "stagnation_hard_stop": 12,
+    "stagnation_advisory": 4,
+    "stagnation_hard_stop": 16,
     "min_improvement_percent": 2.0,
 }
 

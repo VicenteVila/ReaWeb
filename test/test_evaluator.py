@@ -135,7 +135,13 @@ def test_visual_high_with_modern_design():
     """
     js = ('const c=document.getElementById("c").getContext("2d");'
           'function a(){c.fillRect(Math.random()*99,Math.random()*99,2,2);requestAnimationFrame(a)}a();'
-          'const t=localStorage.getItem("theme");document.body.classList.toggle("dark",t==="dark");')
+          'const t=localStorage.getItem("theme");document.body.classList.toggle("dark",t==="dark");'
+          'fetch("graph_data.json").then(r=>r.json()).then(d=>{'
+          'const svg=document.getElementById("knowledge-svg");'
+          'const NS="http://www.w3.org/2000/svg";'
+          'const circle=document.createElementNS(NS,"circle");'
+          'const line=document.createElementNS(NS,"line");'
+          'svg.appendChild(circle);svg.appendChild(line);})')
     d = _write({"index.html": html, "styles.css": css, "app.js": js}, "visual_high")
     m = evaluate(d)
     assert m["visual"] >= 90, m

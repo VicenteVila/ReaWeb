@@ -103,6 +103,20 @@ FUNC_RUNNER = r"""
     rec('js_sin_errores', jsErrors.length === 0,
         jsErrors.length ? jsErrors.join(' | ') : 'sin errores JS');
 
+    // Punto 12c: grafo de conocimiento — el SVG #knowledge-svg debe tener
+    // al menos 3 nodos (circle) y 2 edges (line) para considerarse renderizado.
+    var ksvg = document.getElementById('knowledge-svg');
+    if (ksvg) {
+      var circles = ksvg.querySelectorAll('circle');
+      var lines = ksvg.querySelectorAll('line');
+      var texts = ksvg.querySelectorAll('text');
+      var hasContent = circles.length >= 3 && lines.length >= 2;
+      rec('grafo_visible', hasContent,
+          hasContent
+            ? circles.length + ' nodos, ' + lines.length + ' edges, ' + texts.length + ' textos'
+            : 'SVG vacío o incompleto: ' + circles.length + ' circles, ' + lines.length + ' lines');
+    }
+
     function finish(){
       var passed = window.__funcResults.tests.filter(function(t){return t.p===1;}).length;
       var total = window.__funcResults.tests.length;

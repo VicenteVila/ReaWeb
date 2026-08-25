@@ -161,6 +161,51 @@ class Agent:
         self._log("system", {"event": "snapshot", "node": node_id, "to": str(dst)})
         return str(dst)
 
+    def _snapshot_workspace(self) -> dict[str, int]:
+        """Punto 12c: captura tamaños de archivos del workspace antes de una mutación
+        para generar un resumen de diff en las lecciones automáticas."""
+        import hashlib
+        snap: dict[str, int] = {}
+        target = PATHS["current"]
+        if not target.exists():
+            return snap
+        for f in target.iterdir():
+            if f.is_file():
+                try:
+                    data = f.read_bytes()
+                    snap[f.name] = len(data)
+                except Exception:
+                    pass
+        return snap
+
+    def _workspace_diff_summary(self, pre: dict[str, int]) -> str:
+        """Punto 12c: compara estado del workspace post-mutación contra el
+        snapshot previo y devuelve un resumen tipo: +index.html(+1200b), -styles.css(-300b)"""
+        import hashlib
+        post: dict[str, int] = {}
+        target = PATHS["current"]
+        if not target.exists():
+            return ""
+        for f in target.iterdir():
+            if f.is_file():
+                try:
+                    post[f.name] = len(f.read_bytes())
+                except Exception:
+                    pass
+        changes: list[str] = []
+        all_files = set(pre.keys()) | set(post.keys())
+        for fname in sorted(all_files):
+            old = pre.get(fname)
+            new = post.get(fname)
+            if old is None:
+                changes.append(f"+{fname}(+{new}b)")
+            elif new is None:
+                changes.append(f"-{fname}(-{old}b)")
+            elif new != old:
+                delta = new - old
+                changes.append(f"~{fname}({delta:+d}b)")
+        return ", ".join(changes[:6]) if changes else "sin cambios"
+
     def _stash_vlm(self, blk: dict | None, issues_key: str, sug_key: str) -> None:
         """Guarda el último feedback VLM estructurado (issues/suggestions) para
         inyectarlo en el estado como objetivo de la siguiente mutación."""
@@ -574,7 +619,7 @@ class Agent:
                                      "node": node_id, "por": "resolucion"})
 
     def _maybe_auto_lesson(self, call, delta: float, node_id: str | None,
-                           result: str) -> None:
+                           result: str, file_diff: str = "") -> None:
         """Refuerzo automático de aprendizaje: si una tool de optimización produce
         una mejora o regresión >= umbral (LESSON_AUTO), registra una lección
         worked/didnt deduplicada en la run, sin depender de que el LLM llame a
@@ -598,14 +643,15 @@ class Agent:
             return
 
         category = "worked" if delta > 0 else "didnt"
-        # Resumen corto del resultado (métricas) para dar contexto a la lección.
+        # Resumen corto del resultado (métricas) + diff de archivos para contexto
         import re
         m = re.search(r"total=(\d+)", result)
         total = f"total={m.group(1)}" if m else ""
         snippet = (result or "").strip().replace("\n", " ")[:140]
+        diff_tag = f" | archivos: {file_diff}" if file_diff and file_diff != "sin cambios" else ""
         content = (
             f"[auto:{call.name}] delta {delta:+.1f} ({total}) en {node_id or 'H?'}: "
-            f"{snippet}"
+            f"{snippet}{diff_tag}"
         )
         key = (category, call.name, snippet[:80])
         if key in self._auto_lesson_keys:
@@ -837,6 +883,8 @@ class Agent:
 
             for call in resp.tool_calls:
                 prev_best = self._current_best_score()
+                # Punto 12c: snapshot antes de generate_candidate para diff de lecciones
+                pre_snapshot = self._snapshot_workspace() if call.name == "generate_candidate" else None
                 result, _ = self._exec_tool(registry, call)
                 self.history.append({"role": "model", "parts": [{"function_call": {"name": call.name, "args": call.args}}]})
                 self.history.append({"role": "user", "parts": [{"function_response": {"name": call.name, "response": {"result": result}}}]})
@@ -864,7 +912,11 @@ class Agent:
                     self._auto_truth_audit(registry, node_id)
                 if call.name == "generate_candidate" and node_id is not None:
                     self._compute_novelty(node_id)
-                self._maybe_auto_lesson(call, delta, node_id, result)
+                # Punto 12c: diff de archivos para enriquecer la lección
+                file_diff = ""
+                if call.name == "generate_candidate" and pre_snapshot is not None:
+                    file_diff = self._workspace_diff_summary(pre_snapshot)
+                self._maybe_auto_lesson(call, delta, node_id, result, file_diff=file_diff)
                 if node_id is not None and call.name in ("generate_candidate", "audit_page"):
                     self._maybe_subtask_lesson(node_id)
             self._sync_budget_cost()

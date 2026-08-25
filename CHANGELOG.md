@@ -7,6 +7,30 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Added
 
+- **Grafo de conocimiento funcional** (Punto 12c — corrección del pipeline de
+  rendering): resuelve el fallo sistémico donde el agente generaba
+  `graph_data.json` con los datos pero hardcodeaba un SVG mínimo en `app.js`
+  (2 nodos, sin edges, font 7px) y nunca hacía `fetch()`.
+  - **Prompt corregido** (`tools/domain/web_generator.py`): instrucción explícita
+    de escribir `fetch('graph_data.json')` + `renderGraph(data)` en vez de
+    "usar literalmente" (que el LLM interpretaba como hardcodear inline).
+  - **Template app.js** (`templates/static/app.js`): semilla completa con
+    `renderGraph()` — fetch del JSON, layout circular, edges por topics
+    compartidos, leyenda, hover effects, font ≥10px.
+  - **Evaluador ampliado** (`tools/domain/evaluator.py`): dos nuevos checks
+    visuales (`graph_fetch`, `svg_edges`) y subtask funcional `grafo_visible`
+    que valida ≥3 nodos circles + ≥2 edges lines en el SVG renderizado.
+  - **Functional tester** (`tools/domain/functional_tester.py`): test JS que
+    verifica `#knowledge-svg` tiene circles + lines reales en el DOM.
+  - **Virtual time budget** (`tools/domain/visual_critic.py`): `--virtual-time-budget=5000`
+    para que Chrome headless complete el fetch + rendering del grafo antes del
+    screenshot (antes el VLM veía el SVG vacío).
+  - **Lecciones con diff de archivos** (`agent/agent.py`): `_snapshot_workspace()`
+    + `_workspace_diff_summary()` graban qué archivos cambiaron (+/- bytes)
+    en la lección automática, no solo el score delta.
+  - **Budget ampliado** (`config.py`): 24 turnos default (antes 20),
+    `stagnation_hard_stop=16` (antes 12) para que el agente tenga margen de
+    corregir después del feedback VLM.
 - **Graph Engineering** (Punto 12 — Feng et al., "Graph Engineering in the Era
   of LLM Agents", 2026; ver `Docs/GRAPH_ENGINEERING.md`): tres primitivas
   estructurales adaptadas de la capa de sistema del paper a un arnés de agente

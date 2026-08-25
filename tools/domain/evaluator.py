@@ -133,6 +133,15 @@ VISUAL_CHECKS = {
         "contenido real: >=3 secciones semánticas o >=80 palabras en el body",
         lambda c: _has_content_richness(c),
     ),
+    "graph_fetch": (
+        "grafo dinámico: app.js hace fetch('graph_data.json') en vez de hardcodear datos",
+        lambda c: "fetch" in c and "graph_data.json" in c,
+    ),
+    "svg_edges": (
+        "grafo con edges: JS crea <line> elementos SVG para conectar nodos",
+        lambda c: "createElementNS" in c and "line" in c.lower()
+                  and ("edge" in c.lower() or "stroke" in c.lower()),
+    ),
 }
 
 
@@ -449,6 +458,7 @@ FUNCTIONAL_SUBTASKS = [
     ("formularios_no_recargan", "los formularios capturan el submit sin recargar la página"),
     ("interactivos_responden", "los elementos interactivos cambian el DOM tras el click"),
     ("js_sin_errores", "no hay errores de JS en consola"),
+    ("grafo_visible", "si existe SVG #knowledge-svg, tiene >=3 nodos circles y >=2 edges lines"),
 ]
 
 

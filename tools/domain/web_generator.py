@@ -60,8 +60,14 @@ REFERENCIA (HTML analizado de una URL; adapta su estructura, estética y patrone
 de contenido a la tarea, NO copies su contenido literal):
 {reference}
 
-DATOS DEL GRAFO DE CONOCIMIENTOS (si existe, úsalos literalmente para el grafo SVG:
-nodo raíz con nombre y email, un nodo por repo, y las categorías sujet arXiv por repo):
+DATOS DEL GRAFO DE CONOCIMIENTOS (si existe en graph_data.json):
+- En app.js: Escribe fetch('graph_data.json').then(r=>r.json()).then(d=>renderGraph(d))
+  y una función renderGraph(data) que cree el SVG dinámicamente.
+- NUNCA hardcodees los datos del grafo como array inline; SIEMPRE léelos del JSON.
+- renderGraph debe: dibujar nodo raíz (Vicente Vila) en el centro,
+  nodos repos en círculo alrededor, edges (SVG <line>) entre repos que compartan
+  topics, y una leyenda de colores por topic (cs.AI=azul, cs.SE=verde, cs.CL=púrpura).
+- font-size mínimo 10px en los nodos del grafo.
 {graph_data}
 
 CÓDIGO ACTUAL EN workspace/current (es el punto de partida a MUTAR, no lo ignores).

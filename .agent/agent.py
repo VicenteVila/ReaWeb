@@ -255,6 +255,23 @@ class Agent:
         # F2: fallos del evaluador + último feedback VLM del mejor candidato,
         # como objetivos explícitos de la siguiente mutación
         best_fields["fails"] = best.metrics.get("fails") if best else None
+        # F2: repos huérfanos — lista explícita para el template
+        best_fields["parts_fails"] = []
+        if best:
+            cand_dir = self.run_dir / "candidates" / best.id
+            repos_dir = cand_dir / "repos"
+            if repos_dir.is_dir():
+                import re as _re
+                h = (cand_dir / "index.html").read_text(errors="replace") if (cand_dir / "index.html").exists() else ""
+                linked = set(_re.findall(r'href=["\']([^"\']*repos/[^"\']*index\.html)["\']', h))
+                orphan = [p.name for p in repos_dir.iterdir()
+                          if p.is_dir() and (p / "index.html").exists()
+                          and f"repos/{p.name}/index.html" not in linked]
+                if orphan:
+                    best_fields["parts_fails"] = [
+                        f"REPOS HUÉRFANOS: {', '.join(orphan)} — añade <a href=\"repos/{r}/index.html\"> para cada uno en index.html"
+                        for r in orphan[:6]
+                    ]
         # Punto 12 (Who&When): causa dominante del peor eje del mejor candidato
         best_fields["root_cause"] = best.metrics.get("root_cause") if best else None
         vlm = getattr(self, "last_vlm", None) or {}
@@ -751,6 +768,24 @@ class Agent:
         finally:
             self._truth_done = True
 
+    def _auto_visual_audit(self, registry, node_id: str | None) -> None:
+        """Crítica VLM automática tras cada generate_candidate: toma screenshot y
+        pide al VLM que evalúe calidad visual + diseño. Antes de esta corrección el
+        agente solo llamaba audit_truth (sin VLM) y el score visual stagnaba en
+        valores bajos sin feedback que guiara las mutaciones."""
+        from types import SimpleNamespace
+        try:
+            tool = registry.get("audit_visual")
+            if tool is None:
+                return
+            call = SimpleNamespace(name="audit_visual", args={})
+            result, _ = self._exec_tool(registry, call)
+            self._handle_eval_result(call, result)
+            self._log("system", {"event": "auto_visual", "node": node_id,
+                                 "result": result[:300]})
+        except Exception as e:
+            self._log("system", {"event": "auto_visual_error", "error": str(e)[:200]})
+
     def _compute_novelty(self, node_id: str) -> None:
         """Novelty (B3): mide cuánto difiere el candidato nuevo del MEJOR PREVIO
         (el mejor que no sea él mismo). Lo expone como métrica del nodo y en el
@@ -910,6 +945,7 @@ class Agent:
                 if call.name == "generate_candidate" and node_id is not None:
                     self._snapshot(node_id)
                     self._auto_truth_audit(registry, node_id)
+                    self._auto_visual_audit(registry, node_id)
                 if call.name == "generate_candidate" and node_id is not None:
                     self._compute_novelty(node_id)
                 # Punto 12c: diff de archivos para enriquecer la lección

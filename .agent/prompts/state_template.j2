@@ -58,6 +58,16 @@ Tu siguiente mutación DEBE atacar estos fallos concretos (uno o dos por iteraci
 {% endfor %}
 {% endif %}
 
+{% if best.parts_fails %}
+### 🚨 REPOS HUÉRFANOS (gate parts_connected — CAPA total a máx 40)
+Tienes repos con HTML pero SIN enlace desde la raíz. Cada repos/<repo>/index.html
+DEBE tener un <a href="repos/<repo>/index.html"> en index.html. Si no lo enlazas,
+el candidato queda CAPADO aunque todo lo demás esté perfecto.
+{% for p in best.parts_fails %}
+- {{ p }}
+{% endfor %}
+{% endif %}
+
 {% if vlm_suggestions %}
 ### 🎨 ÚLTIMO FEEDBACK VLM (juicio estético sobre el screenshot real)
 Issues visibles:

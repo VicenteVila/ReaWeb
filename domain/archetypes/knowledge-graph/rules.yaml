@@ -47,3 +47,27 @@
 - '- No inventes categorías: usa las que devuelve fetch_repo_topics'
 - '- Los enlaces README deben apuntar a repos/<repo>/index.html (no a GitHub)'
 - ''
+
+# Sistema de diseño real del arquetipo (Punto 11):
+design_system:
+  personalidad: técnico-editorial, exploración visual
+  paleta:
+    primario: '#0E7490'
+    fondo_claro: '#F0FDFA'
+    fondo_oscuro: '#083344'
+    texto: '#134E4A'
+    acento_nodos: '#84CC16'
+    enlaces: '#94A3B8'
+  tipografia:
+    display: Instrument Sans (600-700) para títulos y etiquetas de nodos
+    cuerpo: Instrument Sans (400)
+    detalles: JetBrains Mono para metadatos/counts
+  hero:
+  - 'el grafo ES el hero: SVG a pantalla completa bajo un header fino'
+  - panel lateral deslizante con detalle del nodo seleccionado
+  microinteracciones:
+  - 'hover en nodo: expande radio con transición y muestra tooltip con conexiones'
+  - zoom con rueda + pan con drag (transform del <g> raíz, sin librerías)
+  - 'leyenda interactiva: click en categoría atenúa el resto (opacity con transition)'
+  - entrada animada de nodos con @keyframes stagger (scale 0→1) al cargar
+  canvas: 'SVG puro mejor que canvas aquí: nodos como <circle>/<g> con listeners reales'

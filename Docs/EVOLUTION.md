@@ -335,6 +335,14 @@ hitos 8-9).
   estética no se genera y el total vuelve al proxy estático (ver
   `blend_visual_total`). AutoDesign asume infraestructura de render; aquí es un
   requisito opcional por coste.
+- **La gobernanza de meta-ediciones es estructural, no semántica**: el write
+  gate (`govern_lesson`) solo cubre lecciones; `edit_skill` se valida por FORMA
+  YAML estricta (`_is_well_shaped` en `tools/domain/meta_editor.py`: mapping de
+  mappings/listas, strings-valor cortos y mono-línea) y por el acceptance gate
+  train/dev. Un párrafo de prosa concatenado con append ya no pasa (caso real:
+  "Añadir regla para portfolios interactivos" dentro de landing-page, limpiado
+  en el Punto 11), pero una regla cross-arquetipo bien formateada seguiría
+  pasando la forma — el gate de score es quien debe rechazarla por no mejorar.
 - **El re-sync `domain/ → Docs/`** no es automático: la especificación humana se
   actualiza manualmente (ver README, "Docs/ vs domain/").
 - **Las runs anteriores al hito de medición** (antes de `d18eb4b`) no tienen

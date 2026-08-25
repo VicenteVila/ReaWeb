@@ -102,7 +102,8 @@ class AuditCreative(Tool):
             prompt += f"\n\nEnfócate especialmente en: {focus}."
 
         try:
-            resp = self.llm.generate_vision(prompt, png.read_bytes(), "image/png")
+            resp = self.llm.generate_vision(prompt, png.read_bytes(), "image/png",
+                                            use_cache=False)
             raw = resp.text
         except Exception as e:
             return f"ERROR: crítica VLM de creatividad falló: {e}"
@@ -116,7 +117,12 @@ class AuditCreative(Tool):
         lines.append(f"Sugerencias ({len(suggestions)}):")
         lines += [f"- {s}" for s in suggestions] or ["- (sin sugerencias)"]
         from .evaluator import metrics_block
-        lines.append(metrics_block({"creativity_vlm": score}))
+        # feedback VLM estructurado (mismo conducto que audit_visual)
+        lines.append(metrics_block({
+            "creativity_vlm": score,
+            "creativity_issues": issues,
+            "creativity_suggestions": suggestions,
+        }))
         return "\n".join(lines)
 
     @staticmethod

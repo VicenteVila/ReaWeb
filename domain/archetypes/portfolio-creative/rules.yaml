@@ -54,3 +54,26 @@
 - '- Response time expectation (ej: "Respondo en 24h")'
 - '- FAQ para preguntas comunes (proceso, rates, timeline)'
 - '- Download resume/CV opcional'
+
+# Sistema de diseño real del arquetipo (Punto 11):
+design_system:
+  personalidad: expresivo, dark-first, tipografía protagonista
+  paleta:
+    primario: '#FAFAF9'
+    fondo_oscuro: '#0A0A0A'
+    acento_electrico: '#FACC15'
+    secundario: '#DB2777'
+    grises_tarjeta: '#171717'
+  tipografia:
+    display: Syne (700-800) mayúsculas para nombre/títulos, tamaños XXL
+    cuerpo: Manrope (400/600)
+    detalle: etiquetas uppercase letterspacing wide
+  hero:
+  - nombre gigante ocupando viewport con outline/solid mix y marquee sutil de especialidades
+  - cursor personalizado o spotlight radial que sigue al ratón (rAF, barato en CPU)
+  microinteracciones:
+  - galería masonry con lightbox propio (dialog nativo + transición scale/fade)
+  - filtros de proyectos con layout FLIP simple o fade por categorías
+  - 'hovers de proyecto: imagen escala + título se desplaza con clip-path reveal'
+  - 'reduced-motion respetado: todo lo anterior se desactiva limpio'
+  canvas: 'opcional: fondo de partículas/grano muy sutil con rAF y pausa cuando no visible'

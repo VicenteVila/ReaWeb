@@ -2,4 +2,28 @@ conversion_rules:
   - mobile_first
   - minimal_forms
 
-Añadir regla para portfolios interactivos: 1. Los filtros deben ser combinables (categoría + búsqueda). 2. El tema (dark/light) debe persistirse en localStorage. 3. Las visualizaciones de relaciones entre proyectos deben usar SVG puro para máxima compatibilidad y velocidad.
+# Sistema de diseño real del arquetipo (Punto 11):
+design_system:
+  personalidad: conversión clara y energía optimista
+  paleta:
+    primario: '#4F46E5'
+    fondo_claro: '#F8FAFC'
+    fondo_oscuro: '#0F172A'
+    texto: '#1E293B'
+    acento_cta: '#F59E0B'
+    exito: '#10B981'
+  tipografia:
+    display: Sora (700-800) para h1/h2
+    cuerpo: Inter (400/600)
+    escala: 'clamp: h1 clamp(2.6rem,6vw,4.2rem), h2 clamp(1.6rem,3vw,2.2rem), body 1rem/1.65'
+  hero:
+  - grid asimétrico 3fr/2fr con copy a la izquierda y visual (canvas de datos animado o mockup CSS) a
+    la derecha
+  - badge superior con pill de acento y micro-etiqueta
+  - gradiente radial sutil de fondo + CTA doble (primario sólido + secundario ghost)
+  microinteracciones:
+  - CTA con hover translateY(-2px) + shadow de color del acento y transicion 180ms
+  - cards de features con hover lift + icono SVG que rota levemente
+  - 'scroll-reveal con IntersectionObserver: opacity 0→1, translateY(24px)→0, stagger 80ms'
+  - nav sticky con backdrop-filter blur al hacer scroll
+  canvas: un canvas con RAF en el hero (partículas/red de nodos ligera) si aporta a la narrativa de datos

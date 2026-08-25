@@ -17,13 +17,14 @@ from tools.base import Tool
 
 CRITIC_PROMPT = """Eres un crítico de diseño web senior (VLM). Mira el screenshot de la página renderizada.
 
-Evalúa la CALIDAD ESTÉTICA y de UX VISUAL, no el código. Es una landing de
-grafo de conocimientos personal (SVG interactivo de repositorios de IA).
+Evalúa la CALIDAD ESTÉTICA y de UX VISUAL, no el código. Aplica los criterios al
+tipo de página que veas (landing, dashboard, tienda, portfolio...), juzgando
+contra lo que una versión profesional de ESA página exigiría.
 
 Puntúa del 0 al 100 según:
 - Jerarquía visual y equilibrio (todo centrado/alineado, sin solapamientos ni descentramiento)
-- Legibilidad (contraste, tamaño tipográfico, texto dentro de los círculos)
-- Interactividad visible (hover, nodos expandibles, feedback al usuario)
+- Legibilidad (contraste, tamaño tipográfico, texto dentro de sus contenedores)
+- Interactividad visible (hover, estados, feedback al usuario)
 - Coherencia estética (paleta, dark/light, espaciados, sombras, gradientes)
 - Ausencia de espacios vacíos o elementos cortados
 
@@ -136,7 +137,8 @@ class AuditVisual(Tool):
             prompt += f"\n\nEnfócate especialmente en: {focus}."
 
         try:
-            resp = self.llm.generate_vision(prompt, png.read_bytes(), "image/png")
+            resp = self.llm.generate_vision(prompt, png.read_bytes(), "image/png",
+                                            use_cache=False)
             raw = resp.text
         except Exception as e:
             return f"ERROR: crítica VLM falló: {e} (visual estático={baseline})"
@@ -152,7 +154,14 @@ class AuditVisual(Tool):
         lines.append(f"Sugerencias ({len(suggestions)}):")
         lines += [f"- {s}" for s in suggestions] or ["- (sin sugerencias)"]
         from .evaluator import metrics_block
-        lines.append(metrics_block({"visual_vlm": score, "visual_estatico": baseline}))
+        # feedback VLM estructurado: el agente lo usa como objetivo de la
+        # siguiente mutación (llega al estado vía last_vlm)
+        lines.append(metrics_block({
+            "visual_vlm": score,
+            "visual_estatico": baseline,
+            "vlm_issues": issues,
+            "vlm_suggestions": suggestions,
+        }))
         return "\n".join(lines)
 
     @staticmethod

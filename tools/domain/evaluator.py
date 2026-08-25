@@ -866,10 +866,24 @@ METRICS_CLOSE = "###END_METRICS###"
 
 def metrics_block(metrics: dict) -> str:
     """Serializa métricas como bloque JSON delimitado, anexable al resultado de
-    una tool. Solo incluye valores numéricos/booleanos/string simples."""
+    una tool. Solo incluye valores numéricos/booleanos/string simples y listas
+    cortas de strings (p. ej. fallos del evaluador o sugerencias VLM), que son
+    el feedback estructurado que guía la siguiente mutación."""
     import json
-    clean = {k: v for k, v in metrics.items()
-             if isinstance(v, (int, float, bool, str)) or v is None}
+
+    def _clean(v):
+        if isinstance(v, list):
+            return [str(x)[:160] for x in v if str(x).strip()][:6]
+        return v
+
+    clean = {}
+    for k, v in metrics.items():
+        if isinstance(v, (int, float, bool, str)) or v is None:
+            clean[k] = v
+        elif isinstance(v, list):
+            cl = _clean(v)
+            if cl:
+                clean[k] = cl
     body = json.dumps(clean, ensure_ascii=False, default=str)
     return f"{METRICS_OPEN}\n{body}\n{METRICS_CLOSE}"
 

@@ -55,3 +55,29 @@
 - '- Throttle en scroll y resize events'
 - '- Web Workers para cálculos pesados'
 - '- Lazy load de charts y componentes pesados'
+
+# Sistema de diseño real del arquetipo (Punto 11):
+design_system:
+  personalidad: denso, preciso, modo oscuro primero
+  paleta:
+    primario: '#7C3AED'
+    fondo_oscuro: '#09090B'
+    panel: '#18181B'
+    borde: '#27272A'
+    texto: '#E4E4E7'
+    datos_1: '#22D3EE'
+    datos_2: '#A78BFA'
+    alerta: '#FB7185'
+  tipografia:
+    display: Space Grotesk (600) para KPIs y titulares
+    cuerpo: IBM Plex Sans (400/500)
+    numeros: tabular-nums SIEMPRE en métricas
+  hero:
+  - 'no hay hero: header compacto sticky con búsqueda global y avatar'
+  - fila de 4 KPI cards con delta (+/-) coloreado y sparkline SVG/canvas
+  microinteracciones:
+  - gráfico de barras/linea en canvas con RAF y tooltip que sigue al cursor
+  - sidebar colapsable con transition width 200ms e iconos con tooltip
+  - filas de tabla con hover background y estado seleccionado persistente
+  - toggle dark/light funcional (default dark) persistido en localStorage
+  canvas: 'SÍ: gráfico principal con requestAnimationFrame y datos de ejemplo actualizándose suavemente'

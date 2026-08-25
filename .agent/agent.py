@@ -161,6 +161,19 @@ class Agent:
         self._log("system", {"event": "snapshot", "node": node_id, "to": str(dst)})
         return str(dst)
 
+    def _stash_vlm(self, blk: dict | None, issues_key: str, sug_key: str) -> None:
+        """Guarda el último feedback VLM estructurado (issues/suggestions) para
+        inyectarlo en el estado como objetivo de la siguiente mutación."""
+        if not isinstance(blk, dict):
+            return
+        issues = blk.get(issues_key)
+        sugs = blk.get(sug_key)
+        if isinstance(issues, list) or isinstance(sugs, list):
+            self.last_vlm = {
+                "issues": [str(x)[:200] for x in (issues or [])][:4],
+                "suggestions": [str(x)[:300] for x in (sugs or [])][:4],
+            }
+
     def _render_state(self, stagnation: str | None) -> str:
         env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(PATHS["prompts"])))
         tmpl = env.get_template("state_template.j2")
@@ -168,7 +181,10 @@ class Agent:
         best_fields = {
             "id": best.id if best else "-",
             "metrics_summary": (
-                ", ".join(f"{k}={v}" for k, v in sorted(best.metrics.items()) if k != "total")
+                ", ".join(
+                    f"{k}={v}" for k, v in sorted(best.metrics.items())
+                    if k not in ("total", "fails")
+                )
                 + f" | total={best.metrics.get('total','-')}"
                 if best
                 else "-"
@@ -191,6 +207,12 @@ class Agent:
         # CHECKLIST DE SUBTAREAS (loop F1): estado ok/fail por subtarea del mejor
         best_fields["subtasks"] = self._subtask_checklist(best.id if best else None)
         best_fields["novelty"] = best.metrics.get("novelty") if best else None
+        # F2: fallos del evaluador + último feedback VLM del mejor candidato,
+        # como objetivos explícitos de la siguiente mutación
+        best_fields["fails"] = best.metrics.get("fails") if best else None
+        vlm = getattr(self, "last_vlm", None) or {}
+        best_fields["vlm_issues"] = vlm.get("issues") or []
+        best_fields["vlm_suggestions"] = vlm.get("suggestions") or []
         recent = []
         for exp in self.memory.recent_experiments[-8:]:
             recent.append(
@@ -361,6 +383,7 @@ class Agent:
                 if not m:
                     return None
                 vlm = int(m.group(1))
+            self._stash_vlm(_blk, "vlm_issues", "vlm_suggestions")
             node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
             blended = None
             if node_id and node_id in self.tree.nodes:
@@ -392,6 +415,7 @@ class Agent:
                 if not m:
                     return None
                 cr = int(m.group(1))
+            self._stash_vlm(_blk, "creativity_issues", "creativity_suggestions")
             node_id = f"H{self.hypothesis_count - 1}" if self.hypothesis_count else None
             blended = None
             if node_id and node_id in self.tree.nodes:
@@ -429,6 +453,8 @@ class Agent:
                 and isinstance(v, (int, float))
             }
             metrics["total"] = total
+            if isinstance(_blk.get("fails"), list) and _blk["fails"]:
+                metrics["fails"] = [str(x)[:160] for x in _blk["fails"][:8]]
         else:
             m = re.search(r"total=(\d+)", result)
             if not m:

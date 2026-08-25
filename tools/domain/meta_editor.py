@@ -32,6 +32,31 @@ def resolve_component(path: str) -> str | None:
     return None
 
 
+def _is_well_shaped(data) -> bool:
+    """Forma YAML estricta para el harness declarativo: mapping cuyos valores son
+    mappings o listas (con strings/escalars en las hojas). Rechaza párrafos sueltos
+    convertidos en clave (el modo append concatenando prosa producía claves tipo
+    'Añadir regla para...' — contaminación cross-arquetipo que parseaba como YAML
+    válido)."""
+    if not isinstance(data, dict):
+        return False
+    for v in data.values():
+        if isinstance(v, dict):
+            if not _is_well_shaped(v):
+                return False
+        elif isinstance(v, list):
+            continue  # los items pueden ser strings/escalars/dicts
+        elif isinstance(v, str):
+            # un string como valor de clave solo si es etiqueta corta y en una
+            # línea (los tokens reales del harness miden <100 chars); un párrafo
+            # entero colgado de una clave es prosa, no configuración
+            if len(v) > 120 or "\n" in v.strip():
+                return False
+        else:
+            continue
+    return True
+
+
 class EditSkill(Tool):
     name = "edit_skill"
     description = (
@@ -85,7 +110,7 @@ class EditSkill(Tool):
         target.parent.mkdir(parents=True, exist_ok=True)
         before = target.read_text() if target.exists() else ""
 
-        # Calcular el contenido AFTER (según mode), validando YAML.
+        # Calcular el contenido AFTER (según mode), validando YAML y FORMA.
         if mode == "append":
             after = before + ("\n" if before and not before.endswith("\n") else "") + instruction + "\n"
         else:
@@ -97,9 +122,15 @@ class EditSkill(Tool):
             except yaml.YAMLError as e:
                 return f"ERROR: YAML inválido: {e}"
         try:
-            yaml.safe_load(after)
+            parsed_after = yaml.safe_load(after)
         except yaml.YAMLError as e:
             return f"ERROR: el YAML resultante es inválido: {e}"
+        if not _is_well_shaped(parsed_after):
+            return (
+                "ERROR: el YAML resultante no tiene forma declarativa válida "
+                "(mapping de mappings/listas; sin párrafos sueltos ni prosa como "
+                "valor). Reformula la edición como estructura YAML."
+            )
 
         run_id = kwargs.get("run_id") or "global"
         proposal_id = f"{datetime.now().strftime('%Y%m%dT%H%M%S%f')}"

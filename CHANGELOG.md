@@ -7,6 +7,24 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Added
 
+- **Pipeline de diseño** (Punto 11 — calidad estética de los artefactos):
+  - **Críticos VLM sin caché**: `generate_vision(use_cache=False)` en
+    `audit_visual`/`audit_creative` — el embedding semántico del key colisionaba
+    entre screenshots distintos (hash de imagen = 16 hex chars en un payload casi
+    idéntico) y devolvía la crítica de una iteración anterior, cegando el loop
+    estético (una entrada vision acumuló 18 hits con críticas idénticas en T1-T9).
+  - **Feedback estructurado al generador**: `metrics_block` transporta listas
+    cortas de strings; `audit_page` emite `fails` (fallos del evaluador), los
+    críticos emiten `vlm_issues`/`vlm_suggestions`; el estado del agente los
+    muestra como objetivo obligatorio de la siguiente mutación.
+  - **Sistemas de diseño reales por arquetipo**: sección `design_system` en los
+    7 `rules.yaml` (paleta, Google Fonts, escala tipográfica, tratamientos de
+    hero, microinteracciones alineadas con el eje `visual`) y `stack.json`
+    reescritos al stack real (vanilla HTML/CSS/JS, sin build step) — se elimina
+    la ficción Next.js/Tailwind que el generador no podía usar.
+  - **Seed CSS**: H0 parte de `templates/static/` (design tokens + base
+    accesible + utilidades reveal/sticky/reduced-motion) en vez de una página
+    en blanco.
 - **Selección adaptativa de tareas de validación** (Punto 10 — "Task-CoEvolve",
   Miyai et al., arXiv:2608.20169): motor `tools/domain/task_coevolve.py` con
   pesos de varianza histórica del score (adaptación continua de la Eq. 2),
@@ -39,6 +57,12 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
   178 hits) y las runs degeneraban en 1-2 tool calls. Nuevo flag
   `--no-cache` en `run_benchmark.py` (`use_cache=False` en `run_single`) para
   que el benchmark mida el harness y no la caché.
+- **Hueco del write-gate en meta-evolución**: `edit_skill` no pasaba por
+  gobernanza y su modo `append` concatenaba prosa cruda (contaminación real en
+  `landing-page/rules.yaml`: párrafo sobre portfolios dentro del arquetipo
+  equivocado). Ahora el YAML resultante debe tener forma declarativa estricta
+  (mapping de mappings/listas, strings-valor cortos y mono-línea); limpieza de
+  la contaminación existente. Ver `Docs/EVOLUTION.md` §gobernanza.
 
 ## [0.2.0] - 2026-08-18
 

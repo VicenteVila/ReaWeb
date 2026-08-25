@@ -55,3 +55,27 @@
 - '- CDN para assets (Cloudflare o similar)'
 - '- Optimización de imágenes: WebP, responsive sizes'
 - '- Font subsetting (solo caracteres necesarios)'
+
+# Sistema de diseño real del arquetipo (Punto 11):
+design_system:
+  personalidad: editorial sereno, lectura larga protagonista
+  paleta:
+    primario: '#C2410C'
+    fondo_claro: '#FAFAF9'
+    fondo_oscuro: '#1C1917'
+    texto: '#1C1917'
+    texto_secundario: '#57534E'
+    destacado: '#FED7AA'
+  tipografia:
+    display: Archivo (700) para titulares y navegación
+    cuerpo: Newsreader (400/italic) tamaño 1.125rem, line-height 1.75
+    medida: máx 68ch para párrafos
+  hero:
+  - post destacado a sangre completa con imagen y overlay degradado a tinta
+  - 'listado editorial: filas amplias con fecha en columna propia (estilo periódico)'
+  microinteracciones:
+  - links de texto con subrayado animado (background-size 0→100%)
+  - progress bar de lectura fija arriba (JS con scroll listener)
+  - modo lectura oscuro con toggle persistido
+  - imágenes de post con caption y hover que revela zoom ligero
+  canvas: no aplique salvo visualización de datos de un post; prioriza tipografía

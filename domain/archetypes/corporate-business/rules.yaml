@@ -53,3 +53,27 @@
 - '- Resource center con gated content (lead generation)'
 - '- Event calendar (webinars, conferences)'
 - '- Chat de ventas (Drift, Intercom, o similar)'
+
+# Sistema de diseño real del arquetipo (Punto 11):
+design_system:
+  personalidad: institucional sobrio con detalles premium
+  paleta:
+    primario: '#1E3A8A'
+    fondo_claro: '#FFFFFF'
+    fondo_oscuro: '#0F172A'
+    texto: '#334155'
+    acento_premium: '#CA8A04'
+    secciones_alternas: '#F1F5F9'
+  tipografia:
+    display: Libre Franklin (600-700), tracking apretado en h1
+    cuerpo: Libre Franklin (400)
+    citas: Source Serif 4 italic para testimonios
+  hero:
+  - hero institucional con claim grande a dos líneas y foto corporativa tratada (duotono con el primario)
+  - franja de clientes/logos debajo en gris
+  microinteracciones:
+  - tabs de servicios con indicador deslizante (transform translateX animada)
+  - contador numérico animado (@keyframes o rAF) en cifras clave
+  - formulario validado con estados de error accesibles (:focus-visible ring del acento)
+  - scroll-reveal sobrio (fade + 12px) para secciones alternas
+  canvas: 'no aplica: sobriedad; el detalle premium va en tipografía y espaciado'

@@ -48,6 +48,27 @@
     el total más alto.
 {% endif %}
 
+{% if best.fails %}
+### 🔧 FALLOS DEL MEJOR CANDIDATO (evaluador estructurado)
+Tu siguiente mutación DEBE atacar estos fallos concretos (uno o dos por iteración):
+{% for f in best.fails %}
+- {{ f }}
+{% endfor %}
+{% endif %}
+
+{% if vlm_suggestions %}
+### 🎨 ÚLTIMO FEEDBACK VLM (juicio estético sobre el screenshot real)
+Issues visibles:
+{% for i in vlm_issues %}
+- {{ i }}
+{% endfor %}
+MUTACIONES SUGERIDAS — incorpora al menos una en el objective del siguiente
+generate_candidate (son cambios de código concretos, no deseos):
+{% for s in vlm_suggestions %}
+- {{ s }}
+{% endfor %}
+{% endif %}
+
 {% if best.subtasks %}
 ### CHECKLIST DE SUBTAREAS (loop F1) — qué falta y por qué
 {% set ns = namespace(ok=0, fail=0) %}

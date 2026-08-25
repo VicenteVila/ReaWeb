@@ -171,6 +171,7 @@ class LLM:
         image_bytes: bytes,
         mime_type: str = "image/png",
         temperature: float = 0.3,
+        use_cache: bool = True,
     ) -> LLMResponse:
         """Envío multimodal: imagen (screenshot) + prompt al VLM. Sin tools, salida
         de texto. La imagen se adjunta como parte junto al texto (crítico estético
@@ -178,11 +179,19 @@ class LLM:
         image_part = types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
         text_part = types.Part.from_text(text=prompt)
         config = types.GenerateContentConfig(temperature=temperature)
-        return self._complete([text_part, image_part], config, kind="vision")
+        return self._complete([text_part, image_part], config, kind="vision",
+                              use_cache=use_cache)
 
-    def _complete(self, contents, config, kind: str = "text") -> LLMResponse:
-        """Bucle interno: caché semántica + fallback de modelos + parseo + coste real."""
-        cache = self.cache
+    def _complete(self, contents, config, kind: str = "text",
+                  use_cache: bool = True) -> LLMResponse:
+        """Bucle interno: caché semántica + fallback de modelos + parseo + coste real.
+
+        use_cache=False salta la caché por completo (lectura Y escritura): obligatorio
+        para los juicios estéticos — el embedding semántico del key colisiona entre
+        screenshots distintos (el hash de imagen son 16 hex chars dentro de un payload
+        casi idéntico), y devolver la crítica de un screenshot anterior ciega el loop
+        estético."""
+        cache = self.cache if use_cache else None
         key = None
         if cache is not None:
             key = self._cache_key(contents, config)

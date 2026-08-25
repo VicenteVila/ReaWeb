@@ -372,6 +372,26 @@ class GenerateCandidate(Tool):
             return "(workspace vacío: versión inicial desde cero)"
         return "\n\n".join(parts)[:20000]
 
+    @staticmethod
+    def _seed_workspace() -> bool:
+        """Punto 11: si workspace/current está vacío, lo siembra con el boilerplate
+        de templates/static (design tokens + base accesible) para que H0 nazca de
+        un suelo estético en vez de una página en blanco. Devuelve True si sembró."""
+        target = PATHS["current"]
+        if (target / "index.html").exists():
+            return False
+        src = PATHS["templates"] / "static"
+        if not src.exists():
+            return False
+        copied = False
+        for fname in ("index.html", "styles.css", "app.js"):
+            f = src / fname
+            if f.exists():
+                target.mkdir(parents=True, exist_ok=True)
+                (target / fname).write_text(f.read_text(errors="replace"))
+                copied = True
+        return copied
+
     def run(self, objective: str = "", **kwargs) -> str:
         from .evaluator import evaluate
 
@@ -388,6 +408,13 @@ class GenerateCandidate(Tool):
             "redisenia desde cero", "nueva dirección visual",
         )
         explore = any(k in _obj for k in EXPLORE_KEYWORDS)
+
+        # Punto 11: semilla estética si el workspace está vacío (H0 parte de
+        # design tokens, no de una página en blanco)
+        try:
+            self._seed_workspace()
+        except Exception:
+            pass
 
         ref_path = PATHS["current"].parent / "reference.html"
         if ref_path.exists():
@@ -572,7 +599,10 @@ class AuditPage(Tool):
         except Exception:
             pass
         from .evaluator import metrics_block
-        res += "\n" + metrics_block(result)
+        # fails compacto: feedback estructurado que el agente inyecta en la
+        # siguiente mutación (llega al estado vía node.metrics["fails"])
+        fails_compact = [f"{cat}: {msg}" for cat, lst in fails.items() for msg in lst]
+        res += "\n" + metrics_block({**result, "fails": fails_compact[:8]})
         return res
 
 

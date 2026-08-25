@@ -51,3 +51,27 @@
 - '- Chat de soporte visible'
 - '- Teléfono de contacto visible'
 - '- Reviews de Trustpilot o Google Business integradas'
+
+# Sistema de diseño real del arquetipo (Punto 11):
+design_system:
+  personalidad: confianza comercial cálida, producto protagonista
+  paleta:
+    primario: '#047857'
+    fondo_claro: '#FAFAF9'
+    fondo_oscuro: '#1C1917'
+    texto: '#292524'
+    acento_cta: '#EA580C'
+    oferta: '#DC2626'
+  tipografia:
+    display: Fraunces (600-700) para titulares y precios destacados
+    cuerpo: Inter (400/500)
+    precios: 'font-variant-numeric: tabular-nums'
+  hero:
+  - hero split con imagen grande de producto (picsum) y copy corto sobre fondo de color primario suave
+  - 'barra de trust bajo el hero: envío, devoluciones, pago seguro con iconos SVG'
+  microinteracciones:
+  - 'tarjeta de producto con hover: zoom sutil de imagen scale(1.04) y aparece botón añadir'
+  - carrito lateral con slide-in transition y badge contador que pulsa (@keyframes scale) al añadir
+  - filtros con chips seleccionables (estado :checked + estilo activo)
+  - toast de confirmación al añadir al carrito con auto-dismiss animado
+  canvas: 'no aplica: prioriza imágenes reales sobre efectos decorativos'

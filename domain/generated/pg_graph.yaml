@@ -1,0 +1,167 @@
+# Procedural Graph de ReaWeb (adaptación de "Procedural Graphs: Self-Evolving
+# Execution Structures for LLM Agents", Lu et al., Google Research, 2026).
+#
+# Un PG organiza conocimiento PROCEDIMENTAL en triplets (procedimiento, relación,
+# procedimiento) — análogo a cómo un KG organiza conocimiento factual en
+# (entidad, relación, entidad) — para responder a la pregunta "¿qué hacer ahora?".
+#
+# Nodos: fases/tools del agente (a_n, con phase y metadata de navegación).
+# Aristas: transiciones válidas (u, r, v) donde v es admisible después de u bajo
+# la relación r, con atributos de texto:
+#   condition : precondición semántica de cuándo aplicar la transición.
+#   guidance  : instrucción detallada de cómo proceder y la razón estratégica.
+#   pitfalls  : errores comunes / acciones prematuras a evitar.
+#
+# Relaciones tipadas: LEADS_TO, TRIGGERS, PROVIDES_INPUT_FOR, CONVERGES_TO.
+#
+# Este fichero es parte del harness declarativo: editable por el agente vía
+# edit_skill (component=context_memory) o por el PG Proposer post-run
+# (component=pg_graph) con validación del acceptance gate.
+
+meta:
+  version: 1
+  source: "Procedural Graphs (Lu et al., 2026)"
+  neighborhood_hops: 2   # subgrafo localizado en inferencia (paper: h=2)
+
+nodes:
+  - id: generate_candidate
+    label: "Generar candidato"
+    description: "Crea o muta el candidato web vía subagente LLM y ejecuta test funcional antes de registrar la hipótesis."
+    phase: mutation
+
+  - id: audit_page
+    label: "Auditar estructura"
+    description: "Evaluador estático multi-eje (SEO, A11y, Performance, Responsive, Best Practices, structure, task)."
+    phase: validation
+
+  - id: audit_visual
+    label: "Crítica VLM estética"
+    description: "Visual critic sobre el screenshot real del candidato (score 0-100 + issues + sugerencias)."
+    phase: validation
+    repeat_guard: true
+
+  - id: audit_creative
+    label: "Crítica VLM creativa"
+    description: "Creative critic: composición no estándar, tipografía expresiva, micro-interacciones."
+    phase: validation
+    repeat_guard: true
+    mandatory_before: [select_final]
+
+  - id: audit_truth
+    label: "Juicio de verdad"
+    description: "Valida partes integrantes (repos enlazados) y compara diseño contra referencias de dataset."
+    phase: validation
+
+  - id: select_final
+    label: "Seleccionar candidato final"
+    description: "Elige el mejor candidato razonando sobre TODA la historia (Best-Node-Recall), exporta a runs/."
+    phase: finalization
+
+  - id: revert_workspace
+    label: "Revertir workspace"
+    description: "Restaura workspace/current desde un snapshot congelado cuando una mutación empeoró."
+    phase: recovery
+
+  - id: review_harness
+    label: "Revisar harness"
+    description: "Lista los archivos del harness por componente funcional para decidir dónde mejorar."
+    phase: meta_evolution
+
+  - id: edit_skill
+    label: "Meta-evolución"
+    description: "Propone edición del harness (reglas, skills, workflows, arquetipos). No instantánea: pasa por el acceptance gate."
+    phase: meta_evolution
+    requires_evidence: true
+
+  - id: fetch_readme
+    label: "Descargar READMEs"
+    description: "Descarga READMEs de github.com/VicenteVila y genera páginas HTML locales por repo."
+    phase: preparation
+
+  - id: fetch_repo_topics
+    label: "Clasificar temas"
+    description: "Clasifica categorías sujet arXiv de cada repo desde su README y genera graph_data.json."
+    phase: preparation
+
+  - id: git_snapshot
+    label: "Snapshot versionado"
+    description: "Congela el candidato actual en runs/<run_id>/candidates/<id>."
+    phase: recovery
+
+edges:
+  - from: generate_candidate
+    to: audit_page
+    relation: LEADS_TO
+    condition: "Siempre después de generar o mutar un candidato; confirma la hipótesis."
+    guidance: "Ejecuta audit_page para obtener métricas estructurales y el checklist de subtareas tras cada generate_candidate."
+    pitfalls: "No declares fin ni selecciones final sin haber auditado la última hipótesis."
+
+  - from: generate_candidate
+    to: audit_visual
+    relation: LEADS_TO
+    condition: "Tras un candidato estable y funcional, para obtener feedback estético del screenshot real."
+    guidance: "Incorpora los issues/sugerencias del crítico en el objective del siguiente generate_candidate (cambios de código concretos)."
+    pitfalls: "No repitas audit_visual sin mutate intermedio (repeat_guard): criticarías el mismo candidato con el mismo juicio."
+
+  - from: generate_candidate
+    to: audit_creative
+    relation: LEADS_TO
+    condition: "Obligatorio antes de select_final sobre un candidato funcional y estable (regla 15)."
+    guidance: "Si el crítico penaliza, cambia la ESTRUCTURA del layout (jerarquía/asimetría), no solo colores o contenido."
+    pitfalls: "Iterar superficialmente sobre el mismo layout no resuelve la penalización creativa (patrón bucle-audit-creative)."
+
+  - from: generate_candidate
+    to: audit_truth
+    relation: PROVIDES_INPUT_FOR
+    condition: "Para validar integración completa: repos enlazados en el índice raíz y diseño contra referencias UI del dataset."
+    guidance: "Ejecuta audit_truth cuando haya partes que verificar (repos) o referencias visuales que comparar."
+    pitfalls: "No lo ejecutes antes de tener los repos enlazados en el HTML: las partes ausentes capan el total a 40 (parts_connected)."
+
+  - from: audit_page
+    to: select_final
+    relation: LEADS_TO
+    condition: "Cuando no hay fallas P0 bloqueantes y el total es aceptable."
+    guidance: "Razona sobre TODA la historia del árbol (Best-Node-Recall), no solo el mejor score: revisa el histórico de métricas por nodo."
+    pitfalls: "Seleccionar final sin auditar es 0/13 positivo en datos (patrón regresion-select-final)."
+
+  - from: generate_candidate
+    to: revert_workspace
+    relation: TRIGGERS
+    condition: "Cuando una mutación empeoró o desestabilizó el candidato, o una subtarea persiste 3 intentos sin resolverse."
+    guidance: "Revert al último snapshot estable con revert_workspace; luego continúa con parches incrementales, no regenerando desde cero."
+    pitfalls: "No uses revert como respuesta automática a auditorías (patrón regresion-revert-workspace: 0/13 positivos en datos)."
+
+  - from: generate_candidate
+    to: generate_candidate
+    relation: LEADS_TO
+    condition: "Cuando hay subtareas FAIL concretas que resolver, o tras 2 deltas negativos que indican iteración sobre el mismo layout."
+    guidance: "Cada mutación debe cambiar la ESTRUCTURA (layout, jerarquía, paleta), no solo el contenido. Usa novelty para detectar convergencia."
+    pitfalls: "Iterar sobre el mismo layout causa ~43% de las regresiones (patrón bucle-generate-candidate). Si novelty < 40 repetido, explora."
+
+  - from: review_harness
+    to: edit_skill
+    relation: LEADS_TO
+    condition: "Cuando hay evidencia recurrente de un fallo reparable en el harness."
+    guidance: "Revisa el harness por componente funcional y propone UN cambio acotado con evidencia; el acceptance gate lo validará en train/dev."
+    pitfalls: "Solo edit_skill con evidencia recurrente (>=2 ocurrencias convergentes); declarar el componente correcto (context_memory/tools_specs/skills/pg_graph)."
+
+  - from: fetch_readme
+    to: fetch_repo_topics
+    relation: PROVIDES_INPUT_FOR
+    condition: "En tareas de grafo de conocimientos, tras descargar los READMEs."
+    guidance: "Ejecuta fetch_repo_topics para clasificar categorías sujet arXiv y generar graph_data.json para el grafo."
+    pitfalls: "No ejecutes fetch_repo_topics sin READMEs descargados: no tendrá material que clasificar."
+
+  - from: generate_candidate
+    to: git_snapshot
+    relation: CONVERGES_TO
+    condition: "Tras cada generate_candidate aceptado para congelar la hipótesis."
+    guidance: "El snapshot se hace automáticamente; úsalo como base para revert_workspace si la siguiente mutación empeora."
+    pitfalls: "No confundas snapshots automáticos con el candidato final exportado: select_final exporta a runs/."
+
+  - from: audit_creative
+    to: select_final
+    relation: LEADS_TO
+    condition: "Siempre antes de seleccionar el candidato final (regla 15)."
+    guidance: "Tras audit_creative sobre un candidato funcional y estable, decide el final razonando la historia completa."
+    pitfalls: "Nunca selecciones final sin haber pasado audit_creative (mandatory_before)."

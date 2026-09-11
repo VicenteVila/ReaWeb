@@ -8,8 +8,8 @@ workspace/current/
 workspace/temp/
 workspace/cache/
 workspace/reference.html
-memory/*.json
-memory/*.db
+# estado de memoria de runtime (DB sqlite + sidecars + wiki global generado)
+memory/
 dist/
 datasets/
 build/datasets/

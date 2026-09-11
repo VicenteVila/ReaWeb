@@ -3,6 +3,7 @@ memoria, presupuesto y compactación de contexto."""
 from __future__ import annotations
 
 import json
+import os
 import sys
 import time
 from datetime import datetime
@@ -80,9 +81,24 @@ class Agent:
         )
         self.history: list = []
         self.turn = 0
+        self._no_tool_streak = 0
         self.last_transcript: list = []
         self.target_h = target_h
         self.hypothesis_count = 0
+
+        # Procedural Graph (PG): nodo activo estimado de la última tool call,
+        # camino recorrido en el grafo y json de la run config.
+        # Leído de env en tiempo de run (no de la constante congelada de config)
+        # para que el driver de baterías pueda alternar on/off por proceso.
+        self.pg_enabled = os.environ.get("PG_GRAPH_ENABLED", "1") != "0"
+        self.pg_node = None
+        self.pg_phase = None
+        self.pg_path: list[str] = []
+        try:
+            from tools.domain.pg_graph import load_graph
+            self.pg_graph = load_graph() if self.pg_enabled else None
+        except Exception:
+            self.pg_graph = None
 
         # registrar run en transcript
         (self.run_dir / "run_config.json").write_text(
@@ -95,6 +111,7 @@ class Agent:
                     "max_turns": max_turns,
                     "started": datetime.now().isoformat(),
                     "initial_url": initial_url,
+                    "flags": {"pg_enabled": self.pg_enabled},
                     "harness": {
                         "start": self.harness_start["tree_hash"],
                         "n_files": self.harness_start["n_files"],
@@ -139,7 +156,97 @@ class Agent:
         rules_block = ""
         if self.rules:
             rules_block = "\n\n# REGLAS Y STACK DEL ARQUETIPO (contexto precargado)\n" + self.rules[:4000]
-        return base + meta_note + target_note + rules_block
+        skills_block = self._active_skills_prompt()
+        pg_block = ""
+        if self.pg_enabled and self.pg_graph is not None:
+            try:
+                from tools.domain.pg_graph import pg_structure_block
+                pg_block = pg_structure_block()
+            except Exception:
+                pg_block = ""
+        return base + meta_note + target_note + rules_block + skills_block + pg_block
+
+    def _active_skills_prompt(self) -> str:
+        """WikiSkill §3.2.1 (full injection) + PEARL/PG: inyecta los SKILL.md
+        activos (aceptados por el gate, presentes en domain/skills/), RE-RANKEADOS
+        por relevancia semántica (LPRA, PG_RERANK_ENABLED) y con separación
+        core/contextual (SCL): los skills core (>= PG_CORE_CONVERGENT_COUNT usos
+        convergentes) siempre van; los contextuales se recortan al pool top-K."""
+        try:
+            if not self._wiki_enabled():
+                return ""
+            sk_root = PATHS["skills"]
+            if not sk_root.exists():
+                return ""
+            blocks = []
+            for d in sorted(sk_root.iterdir()):
+                sk = d / "SKILL.md"
+                if d.is_dir() and sk.exists():
+                    blocks.append(f"## SKILL {d.name}\n{sk.read_text(errors='replace')[:4000]}")
+            if not blocks:
+                return ""
+
+            from tools.domain.pg_reranker import parse_skill_name, rerank_skills
+            from config import PG_CORE_CONVERGENT_COUNT, PG_RERANK_ENABLED, \
+                PG_RERANK_MIN_SCORE, PG_RERANK_TOP_K
+
+            # Fase 6 (SCL): dividir core vs contextuales por uso convergente
+            core_names = set()
+            try:
+                from agent.memory_db import MemoryDB
+                db = MemoryDB()
+                try:
+                    counts = db.usage_counts_by_skill(min_count=PG_CORE_CONVERGENT_COUNT)
+                    core_names = set(counts.keys())
+                finally:
+                    db.close()
+            except Exception:
+                core_names = set()
+            core = [b for b in blocks if parse_skill_name(b) in core_names]
+            contextual = [b for b in blocks if b not in core]
+
+            # Fase 5 (LPRA): re-rankear el grupo contextual (no toca el core)
+            try:
+                if PG_RERANK_ENABLED and contextual:
+                    pg_ctx = f"nodo={self.pg_node or '-'}, fase={self.pg_phase or '-'}"
+                    contextual = rerank_skills(
+                        contextual, self.llm, task=self.task, pg_context=pg_ctx,
+                        top_k=PG_RERANK_TOP_K, min_score=PG_RERANK_MIN_SCORE,
+                    )
+                else:
+                    contextual = contextual[:PG_RERANK_TOP_K]
+            except Exception:
+                contextual = contextual[:PG_RERANK_TOP_K]
+
+            blocks = core + contextual
+            if not blocks:
+                return ""
+            out = []
+            if len(core) > 0:
+                out.append("## SKILLS CORE (siempre presentes — uso convergente)")
+                out.extend(core)
+            if len(contextual) > 0:
+                out.append("\n## SKILLS CONTEXTUALES (seleccionados para esta tarea — LPRA)")
+                out.extend(contextual)
+            return "\n".join(out)
+        except Exception:
+            return ""
+
+    def _track_pg(self) -> None:
+        """Matching de nodo activo del Procedural Graph (u_t = Match(a_{t-1}, V)):
+        mapea las últimas acciones ejecutadas al nodo PG y actualiza el camino
+        recorrido. No bloqueante; nunca lanza."""
+        if not self.pg_enabled or self.pg_graph is None:
+            return
+        try:
+            node = self.pg_graph.current_node(self.memory.recent_experiments)
+            self.pg_node = node
+            self.pg_phase = self.pg_graph.node_phase(node) if node else None
+            if node and (not self.pg_path or self.pg_path[-1] != node):
+                self.pg_path.append(node)
+                self.pg_path = self.pg_path[-20:]
+        except Exception:
+            pass
 
     def _snapshot(self, node_id: str) -> str:
         """Congela workspace/current en runs/<run_id>/candidates/<node_id>/."""
@@ -293,6 +400,14 @@ class Agent:
             skill_deps = deps_block([e.action for e in self.memory.recent_experiments])
         except Exception:
             skill_deps = ""
+        # Procedural Graph: guidance situacional del nodo activo
+        pg_state = ""
+        if self.pg_enabled and self.pg_graph is not None:
+            try:
+                self._track_pg()
+                pg_state = self.pg_graph.state_block(self.memory.recent_experiments)
+            except Exception:
+                pg_state = ""
         return tmpl.render(
             turn_number=self.turn,
             archetype_name=self.archetype_name,
@@ -307,6 +422,7 @@ class Agent:
             tree=self.tree.summary(max_nodes=CONTEXT_DEFAULTS["search_tree_max_nodes"]),
             lessons=self.memory.read_global_lessons()[:3000],
             skill_deps=skill_deps,
+            pg_state=pg_state,
             stagnation=stagnation,
             last_action_summary=self._last_action_summary(),
             target_h=self.target_h,
@@ -378,6 +494,35 @@ class Agent:
             kwargs["run_id"] = self.run_id
             if call.name == "inspect_archetype" and not kwargs.get("archetype"):
                 kwargs["archetype"] = self.archetype_name
+            # --- Gate estricto A2: select_final requiere checklist 100% ok ----
+            if call.name == "select_final":
+                best = self.tree.best()
+                if best:
+                    fails = [s["id"] for s in self._subtask_checklist(best.id)
+                             if not s.get("ok")]
+                    if fails:
+                        msg = (
+                            f"ERROR: select_final bloqueado — subtareas en FAIL: "
+                            f"{fails}. Resuélvelas primero con generate_candidate."
+                        )
+                        self._log("tool", {
+                            "tool": call.name, "args": call.args,
+                            "result": msg[:500],
+                        })
+                        return msg, {}
+            # --- fin gate select_final ----------------------------------------
+            # --- Temperatura B: escalera por fase (fase creativa post-H0) -----
+            if call.name == "generate_candidate":
+                from config import GENERATOR_CREATIVE_TEMP
+                best_n = self.tree.best()
+                cl_ok = True
+                if best_n and best_n.id:
+                    cl = self._subtask_checklist(best_n.id)
+                    cl_ok = (len(cl) > 0 and not any(not s.get("ok") for s in cl))
+                temp = (GENERATOR_CREATIVE_TEMP
+                        if cl_ok and self.hypothesis_count >= 1 else 0.7)
+                kwargs["temperature"] = temp
+            # --- fin temperatura ----------------------------------------------
             result = tool.run(**kwargs)
         except Exception as e:
             result = f"ERROR ejecutando {call.name}: {e}"
@@ -387,6 +532,91 @@ class Agent:
             self._last_functional_tests = tool.last_functional_tests
         self._log("tool", {"tool": call.name, "args": call.args, "result": result[:2000]})
         return result, {}
+
+    def _handle_tool_call(self, registry, call) -> None:
+        """Ejecuta una tool con TODA la semántica posterior del loop (snapshot,
+        memoria de experimentos, tracking PG, audits automáticos, lessons).
+        Compartida entre las tool_calls del modelo y el auto-unblock por stall
+        del harness (garantiza progreso si el agente se bloquea repitiendo)."""
+        prev_best = self._current_best_score()
+        pre_snapshot = self._snapshot_workspace() if call.name == "generate_candidate" else None
+        result, _ = self._exec_tool(registry, call)
+        self.history.append({"role": "model", "parts": [{"function_call": {"name": call.name, "args": call.args}}]})
+        self.history.append({"role": "user", "parts": [{"function_response": {"name": call.name, "response": {"result": result}}}]})
+        node_id = self._handle_eval_result(call, result)
+        node_total = (
+            float(self.tree.nodes[node_id].metrics.get("total", 0.0))
+            if node_id and node_id in self.tree.nodes else 0.0
+        )
+        delta = node_total - prev_best
+        pg_node = pg_phase = None
+        if self.pg_enabled and self.pg_graph is not None:
+            try:
+                from tools.domain.pg_graph import _TOOL_NODE_ALIASES
+                cn = _TOOL_NODE_ALIASES.get(call.name)
+                if cn and self.pg_graph.has_node(cn):
+                    pg_node = cn
+                    pg_phase = self.pg_graph.node_phase(cn)
+            except Exception:
+                pass
+        self.memory.add_experiment(
+            Experiment(
+                id=f"t{self.turn}",
+                action=call.name,
+                result=result[:200],
+                delta=f"{delta:+.1f}",
+                node_id=node_id,
+                pg_node=pg_node,
+                pg_phase=pg_phase,
+            )
+        )
+        self._track_pg()
+        self._log("pg", {"tool": call.name, "pg_node": self.pg_node,
+                         "pg_phase": self.pg_phase,
+                         "pg_path": list(self.pg_path)})
+        if call.name == "generate_candidate" and node_id is not None:
+            self._snapshot(node_id)
+            self._auto_truth_audit(registry, node_id)
+            self._auto_visual_audit(registry, node_id)
+        if call.name == "generate_candidate" and node_id is not None:
+            self._compute_novelty(node_id)
+        file_diff = ""
+        if call.name == "generate_candidate" and pre_snapshot is not None:
+            file_diff = self._workspace_diff_summary(pre_snapshot)
+        self._maybe_auto_lesson(call, delta, node_id, result, file_diff=file_diff)
+        if node_id is not None and call.name in ("generate_candidate", "audit_page"):
+            self._maybe_subtask_lesson(node_id)
+
+    def _auto_unblock(self, registry) -> None:
+        """Escalada estricta: si el agente lleva N turnos sin tool_call (stall,
+        p.ej. repite un meta JSON inválido), el harness toma el control y ejecuta
+        una mutación útil (reparar subtareas pendientes o refinar estética).
+        Es la versión EJECUTABLE de 'si algo no está bien, se repite'."""
+        from types import SimpleNamespace
+        best = self.tree.best()
+        missing: list[str] = []
+        if best and best.id:
+            missing = [s["id"] for s in self._subtask_checklist(best.id) if not s.get("ok")]
+        if missing:
+            obj = (
+                "Repara de inmediato las subtareas pendientes (estructural/funcional): "
+                + ", ".join(missing)
+                + ". Conserva lo que ya funciona y completa TODAS las secciones del checklist."
+            )
+            ev = {"event": "auto_unblock", "missing": missing}
+        else:
+            obj = (
+                "El mejor candidato ya está completo. Refina la ESTÉTICA y las "
+                "micro-interacciones (tipografía display, jerarquía, hover, dark-mode), "
+                "manteniendo todas las funciones y secciones."
+            )
+            ev = {"event": "auto_unblock", "missing": []}
+        self._log("system", dict(ev, objective=obj[:160]))
+        call = SimpleNamespace(name="generate_candidate", args={"objective": obj})
+        try:
+            self._handle_tool_call(registry, call)
+        except Exception as e:
+            self._log("system", {"event": "auto_unblock", "error": str(e)[:200]})
 
     def _handle_eval_result(self, call, result: str) -> str | None:
         """Interpreta métricas de generate_candidate, audit_page o audit_visual y
@@ -888,10 +1118,17 @@ class Agent:
             )
 
             history_slice = self._safe_history_slice()
+            # Bypass de llm cache en el bucle táctico: el estado cambia cada turno
+            # pero el embedding del prompt es muy similar (task/rules/ref estáticos),
+            # así que con el umbral 0.80 la caché re-sirve la MISMA decisión — y
+            # re-sirve también el texto de stall (p.ej. "create_patterns" JSON) con
+            # lo que el agente no puede salir del bucle. Sin caché, cada turno es
+            # una decisión fresca sobre el estado real.
             resp = self.llm.generate(
                 prompt,
                 tools=registry.schemas(),
                 history=history_slice,
+                use_cache=False,
             )
             self._sync_budget_cost()
 
@@ -900,8 +1137,50 @@ class Agent:
             if not resp.tool_calls:
                 text = resp.text or "(sin respuesta)"
                 self._log("assistant", {"text": text[:2000]})
-                # si el agente no invoca tools pero dice DONE o FIN, terminar
-                if any(k in text.lower() for k in ("done", "fin", "finalizado", "terminado")):
+                # El agente a veces emite JSON/meta en texto (p.ej. create_patterns
+                # inventado) o razonamientos largos con la palabra 'final'; eso NO es
+                # un cierre. Substrings como 'fin' en 'select_final' disparaban un
+                # falso positivo que cortaba la run tras H0. Solo se considera cierre
+                # un texto declarativo CORTO sin JSON/bloques y con señal explícita.
+                import re as _re
+                t = text.lower().strip()
+                is_meta = ("create_pattern" in t or "```" in t or "{" in t)
+                closed = bool(_re.search(
+                    r"\b(done|fin|finalizado|final|terminado|completad[ao])\b", t))
+                if closed and not is_meta and len(t) < 400:
+                    # --- Gate estricto (A): no auto-detener si hay subtareas
+                    # pendientes o no se alcanzó el mínimo de hipótesis --------
+                    from config import MIN_HYPOTHESES
+                    best_node = self.tree.best()
+                    fail_ids: list[str] = []
+                    has_subtasks = False
+                    if best_node and best_node.id:
+                        checklist = self._subtask_checklist(best_node.id)
+                        has_subtasks = len(checklist) > 0
+                        fail_ids = [s["id"] for s in checklist if not s.get("ok")]
+                    all_ok = not fail_ids and has_subtasks  # True si checklist 100% ok; True si sin subtareas
+                    hyp_ok = (self.hypothesis_count >= MIN_HYPOTHESES) if MIN_HYPOTHESES else True
+                    if not all_ok and not hyp_ok:
+                        self._log("system", {
+                            "event": "early_close_blocked",
+                            "fail_ids": fail_ids,
+                            "hypotheses": self.hypothesis_count,
+                            "min_h": MIN_HYPOTHESES,
+                        })
+                        self.history.append({
+                            "role": "user",
+                            "parts": [{
+                                "text": (
+                                    "Cierre bloqueado: subtareas en fallo "
+                                    f"{fail_ids if fail_ids else '(pendientes)'}; "
+                                    f"hipótesis {self.hypothesis_count}/{MIN_HYPOTHESES}. "
+                                    "Resuelve con generate_candidate (estructural/funcional) "
+                                    "o completa todo antes de select_final."
+                                ),
+                            }],
+                        })
+                        continue
+                    # --- fin gate estricto ------------------------------------
                     if self.target_h and self.hypothesis_count <= self.target_h:
                         self._log(
                             "system",
@@ -914,47 +1193,36 @@ class Agent:
                     stop_reason = "El agente finalizó por sí mismo."
                     self._log("stop", {"reason": stop_reason})
                     break
+                # Acción de texto no reconocida como cierre: si parece JSON/meta
+                # (p.ej. create_patterns inventado), rechaza EXPLÍCITAMENTE para
+                # romper el bucle donde el agente repite lo mismo turno a turno.
+                stall = getattr(self, "_no_tool_streak", 0) + 1
+                self._no_tool_streak = stall
+                if is_meta:
+                    self.history.append({
+                        "role": "user",
+                        "parts": [{
+                            "text": (
+                                "ACCIÓN RECHAZADA: tu acción de texto no es un cierre "
+                                "válido. La meta-evolución se hace con tool_calls "
+                                "(edit_skill, review_harness), no con JSON en texto "
+                                "plano. Para avanzar, ejecuta generate_candidate o "
+                                "audit_page ahora."
+                            ),
+                        }],
+                    })
+                    from config import AUTO_UNBLOCK_AT_STALL
+                    if stall >= AUTO_UNBLOCK_AT_STALL:
+                        self._no_tool_streak = 0
+                        self._log("system", {"event": "auto_unblock_trigger",
+                                             "turn": self.turn, "stall": stall})
+                        self._auto_unblock(registry)
+                        self._sync_budget_cost()
                 continue
 
             for call in resp.tool_calls:
-                prev_best = self._current_best_score()
-                # Punto 12c: snapshot antes de generate_candidate para diff de lecciones
-                pre_snapshot = self._snapshot_workspace() if call.name == "generate_candidate" else None
-                result, _ = self._exec_tool(registry, call)
-                self.history.append({"role": "model", "parts": [{"function_call": {"name": call.name, "args": call.args}}]})
-                self.history.append({"role": "user", "parts": [{"function_response": {"name": call.name, "response": {"result": result}}}]})
-                node_id = self._handle_eval_result(call, result)
-                # delta = total del nodo recién evaluado vs mejor previo. NO usar
-                # best_after - best_before: el mejor global nunca baja (los nodos
-                # peores no lo reemplazan), así que un candidato regresivo daría
-                # delta=0 y nunca generaría lección "didnt".
-                node_total = (
-                    float(self.tree.nodes[node_id].metrics.get("total", 0.0))
-                    if node_id and node_id in self.tree.nodes else 0.0
-                )
-                delta = node_total - prev_best
-                self.memory.add_experiment(
-                    Experiment(
-                        id=f"t{self.turn}",
-                        action=call.name,
-                        result=result[:200],
-                        delta=f"{delta:+.1f}",
-                        node_id=node_id,
-                    )
-                )
-                if call.name == "generate_candidate" and node_id is not None:
-                    self._snapshot(node_id)
-                    self._auto_truth_audit(registry, node_id)
-                    self._auto_visual_audit(registry, node_id)
-                if call.name == "generate_candidate" and node_id is not None:
-                    self._compute_novelty(node_id)
-                # Punto 12c: diff de archivos para enriquecer la lección
-                file_diff = ""
-                if call.name == "generate_candidate" and pre_snapshot is not None:
-                    file_diff = self._workspace_diff_summary(pre_snapshot)
-                self._maybe_auto_lesson(call, delta, node_id, result, file_diff=file_diff)
-                if node_id is not None and call.name in ("generate_candidate", "audit_page"):
-                    self._maybe_subtask_lesson(node_id)
+                self._no_tool_streak = 0
+                self._handle_tool_call(registry, call)
             self._sync_budget_cost()
 
             # verificamos si tras ejecutar tools el presupuesto pide stop
@@ -977,6 +1245,12 @@ class Agent:
             lessons = self.memory.incremental.read_text()
             self.memory.append_global(lessons)
             self._log("system", {"event": "lessons_merged"})
+
+        # WikiSkill Phase 2: consolidar en wiki + proposer post-run (fuera del loop)
+        self._wiki_maintain()
+        self._propose_wiki_skill()
+        # Procedural Graphs self-evolution: proposer post-run (add/delete nodes/edges)
+        self._propose_pg_graph()
 
         # exportación automática del mejor candidato si el agente no llamó a select_final
         self._export_final()
@@ -1040,6 +1314,485 @@ class Agent:
                                  "to_run": self.run_id})
         except Exception:
             pass
+
+    # ------------------------------------------------------------------
+    # WikiSkill Phase 2 — Maintainer + Skill Proposer (post-loop, fuera del loop)
+    # ------------------------------------------------------------------
+
+    def _wiki_enabled(self) -> bool:
+        """WIKI_ENABLED leído en runtime (permite togglear desde el orquestador
+        wiki_evolve.py sin reimportar config). Gobierna la Skill Layer completa
+        (maintainer + proposer + inyección de skills activos)."""
+        import os
+        return os.environ.get("WIKI_ENABLED", "1") != "0"
+
+    def _wiki_maintain_enabled(self) -> bool:
+        """WIKI_MAINTAIN_ENABLED leído en runtime. Altas: el gate de wiki_evolve
+        evalúa el skill candidato en dev SIN consolidar wiki ni proponer skills
+        (inyección de skills sí permanece vía _wiki_enabled)."""
+        import os
+        return os.environ.get("WIKI_MAINTAIN_ENABLED", "1") != "0"
+
+    def _wiki_maintain(self) -> None:
+        """Consolida esta run en el wiki global (memory/wiki/). No-bloqueante:
+        si falla, la run termina con normalidad (log warning)."""
+        try:
+            if not (self._wiki_enabled() and self._wiki_maintain_enabled()):
+                return
+            from scripts.wiki_consolidate import consolidate
+            status, _ = consolidate(dry_run=False, run_id=self.run_id, llm=self.llm)
+            self._log("system", {"event": "wiki_maintained", "status": status})
+        except Exception as e:
+            self._log("system", {"event": "wiki_maintained", "error": str(e)[:300]})
+
+    def _apply_skill_edits(self, content: str, edits: list) -> str:
+        """Aplica operandos de patch (§E.3 finish()): append | replace | insert_after
+        sobre el contenido SKILL.md actual. Devuelve el contenido resultante (o el
+        original si un target no se encuentra)."""
+        out = content
+        for e in edits:
+            if not isinstance(e, dict):
+                continue
+            op = (e.get("op") or "").strip()
+            if op == "append":
+                out = out.rstrip("\n") + "\n" + str(e.get("content", "")) + "\n"
+            elif op == "replace":
+                target = str(e.get("target", ""))
+                if target and target in out:
+                    out = out.replace(target, str(e.get("content", "")), 1)
+            elif op == "insert_after":
+                target = str(e.get("target", ""))
+                if target and target in out:
+                    out = out.replace(target, target + "\n" + str(e.get("content", "")), 1)
+        return out
+
+    def _proposer_read(self, path: str) -> str:
+        """read_file restringido para el Skill Proposer: solo wiki/, runs/ y
+        skills/. Devuelve el contenido o un error descriptivo (nunca lanza)."""
+        p = Path(path)
+        try:
+            if path.startswith("memory/wiki/"):
+                resolved = (PATHS["memory"] / "wiki" / path[len("memory/wiki/"):]).resolve()
+            elif path.startswith("wiki/"):
+                resolved = (PATHS["memory"] / "wiki" / path[len("wiki/"):]).resolve()
+            elif path.startswith("runs/"):
+                resolved = (PATHS["runs"] / path[len("runs/"):]).resolve()
+            elif path.startswith("skills/"):
+                resolved = (PATHS["skills"] / path[len("skills/"):]).resolve()
+            elif path.startswith("domain/skills/"):
+                resolved = (PATHS["skills"] / path[len("domain/skills/"):]).resolve()
+            elif path.startswith("generated/"):
+                resolved = (PATHS["domain"] / "generated" / path[len("generated/"):]).resolve()
+            else:
+                return f"ERROR: ruta fuera del sandbox del proposer: {path}"
+        except Exception as e:
+            return f"ERROR: ruta inválida '{path}': {e}"
+        if not resolved.exists():
+            return f"ERROR: no existe {resolved}"
+        try:
+            return f"{resolved}:\n" + resolved.read_text(errors="replace")[:6000]
+        except Exception as e:
+            return f"ERROR: no se pudo leer {resolved}: {e}"
+
+    def _register_skill_proposal(self, parsed: dict, reads: int) -> None:
+        """Registra la propuesta de skill (create/patch) en harness_edits +
+        staging + skill-impact.md. Genera las propuestas pending que el gate de
+        wiki_evolve evaluará contra el baseline."""
+        wiki_dir = PATHS["memory"] / "wiki"
+        action = (parsed.get("action") or "").strip()
+        name = (parsed.get("name") or "").strip().replace(" ", "_").replace("/", "_")
+        if not name or action not in ("create", "patch"):
+            return
+
+        sk_dir = PATHS["skills"] / name
+        sk_path = f"skills/{name}/SKILL.md"
+        existing = (sk_dir / "SKILL.md").read_text(errors="replace") if (sk_dir / "SKILL.md").exists() else ""
+
+        if action == "create":
+            after = (parsed.get("skill_md") or "").strip()
+            purpose = (parsed.get("purpose_md") or "").strip()
+            if not after or not purpose:
+                self._log("system", {"event": "wiki_skill_proposal", "result": "missing_create_fields"})
+                return
+            mode = "create"
+            before = ""
+        else:
+            edits = parsed.get("edits") or []
+            if not isinstance(edits, list) or not edits:
+                self._log("system", {"event": "wiki_skill_proposal", "result": "missing_edits"})
+                return
+            if not existing:
+                self._log("system", {"event": "wiki_skill_proposal", "result": "patch_missing_skill"})
+                return
+            before = existing
+            after = self._apply_skill_edits(existing, edits)
+            purpose = (parsed.get("purpose_md") or "").strip() or "(patch)"
+            mode = "patch"
+
+        # validación YAML frontmatter del SKILL.md resultante
+        import yaml as _yaml
+        from tools.domain.meta_editor import _is_well_shaped
+        if not after.split("---", 2)[:1] or "---" not in after:
+            self._log("system", {"event": "wiki_skill_proposal", "result": "no_frontmatter"})
+            return
+        try:
+            fm_text = after.split("---", 2)[1]
+            fm = _yaml.safe_load(fm_text)
+        except Exception:
+            self._log("system", {"event": "wiki_skill_proposal", "result": "yaml_frontmatter_error"})
+            return
+        if not isinstance(fm, dict) or not fm.get("name") or not fm.get("description"):
+            self._log("system", {"event": "wiki_skill_proposal", "result": "frontmatter_incomplete"})
+            return
+        if not _is_well_shaped(after):
+            self._log("system", {"event": "wiki_skill_proposal", "result": "not_well_shaped"})
+            return
+
+        proposal_id = datetime.now().strftime("%Y%m%dT%H%M%S%f")
+        # staging: propuesta lista para el gate (skills/<name>/SKILL.md + PURPOSE.md)
+        staged = PATHS["domain"] / ".proposals" / proposal_id / "skills" / name
+        (staged / "SKILL.md").parent.mkdir(parents=True, exist_ok=True)
+        (staged / "SKILL.md").write_text(after)
+        (staged / "PURPOSE.md").write_text(purpose or "# PURPOSE.md\n")
+
+        from agent.memory_db import MemoryDB
+        db = MemoryDB()
+        try:
+            parent_id = db.latest_accepted_edit_for_file(sk_path)
+            db.add_harness_edit(
+                proposal_id=proposal_id, run_id=self.run_id,
+                component="skills", file=sk_path, before=before, after=after,
+                mode=mode, plan=f"[WIKI PROPOSER] name={name} reads={reads}",
+                parent_id=parent_id,
+            )
+        finally:
+            db.close()
+
+        si_path = wiki_dir / "skill-impact.md"
+        impact_line = (
+            f"\n- **{proposal_id}** [{datetime.now().strftime('%Y-%m-%d %H:%M')}] "
+            f"run={self.run_id} | action={action} | skill={name} | file={sk_path} | "
+            f"status=pending | purpose={purpose[:100].replace(chr(10), ' ')}\n"
+        )
+        with si_path.open("a") as f:
+            f.write(impact_line)
+
+        self._log("system", {
+            "event": "wiki_skill_proposal", "result": "registered",
+            "proposal_id": proposal_id, "action": action, "skill": name,
+        })
+
+    def _propose_wiki_skill(self) -> None:
+        """Skill Proposer ReAct post-run (WikiSkill §E.3): lee el wiki (index,
+        skill-impact, patrones, traces) de forma iterativa y propone un skill
+        create|patch en domain/skills/, registrado como propuesta pending.
+        No-bloqueante."""
+        try:
+            from config import WIKI_PROPOSER_MAX_TURNS
+            if not (self._wiki_enabled() and self._wiki_maintain_enabled()):
+                return
+            wiki_dir = PATHS["memory"] / "wiki"
+            prompt_path = PATHS["prompts"] / "wiki_proposer.txt"
+            if not (wiki_dir / "index.md").exists() or not prompt_path.exists():
+                return
+
+            idx_text = (wiki_dir / "index.md").read_text(errors="replace")[:4000]
+            si_path = wiki_dir / "skill-impact.md"
+            si_text = si_path.read_text(errors="replace")[:2500] if si_path.exists() else "(sin entradas aún)"
+
+            patterns_dir = wiki_dir / "patterns"
+            recent_patterns = []
+            if patterns_dir.is_dir():
+                for p in sorted(patterns_dir.glob("*.md"), key=lambda f: f.stat().st_mtime, reverse=True)[:5]:
+                    recent_patterns.append(f"## {p.stem}\n{p.read_text(errors='replace')[:600]}")
+            patterns_text = "\n\n".join(recent_patterns) if recent_patterns else "(sin patrones)"
+
+            best = self.tree.best()
+            best_info = f"{best.id}: total={best.metrics.get('total', '-')}" if best else "(sin mejor)"
+
+            task_desc = f"la tarea '{self.task}' (arquetipo {self.archetype_name})"
+            system = prompt_path.read_text().replace("{task_desc}", task_desc)
+
+            run_summary = (
+                f"--- CONTEXTO DE LA RUN RECIÉN TERMINADA ---\n"
+                f"run_id: {self.run_id}\n"
+                f"mejor_candidato: {best_info}\n"
+                f"transcript: runs/{self.run_id}/transcript.jsonl (puedes leerlo con read_file)\n"
+                f"--- WIKI INDEX ---\n{idx_text}\n"
+                f"--- SKILL IMPACT (propuestas previas) ---\n{si_text}\n"
+                f"--- PATRONES RECIENTES DEL WIKI ---\n{patterns_text}\n"
+            )
+
+            history: list[str] = []
+            reads = 0
+            last_raw = ""
+            for _turn in range(WIKI_PROPOSER_MAX_TURNS):
+                history_blk = "\n\n".join(history) if history else "(aún sin lecturas)"
+                prompt = (
+                    system
+                    + "\n\n"
+                    + run_summary
+                    + "\n\n--- HISTORIAL DE LECTURAS (read_file) ---\n"
+                    + history_blk
+                    + "\n\nAhora responde: si necesitas leer otro archivo, emite SOLO "
+                    "una línea con 'READ_FILE:<ruta>'. Si ya tienes toda la evidencia, "
+                    "emite el JSON de la propuesta final (finish) o {\"action\": "
+                    "\"no_action\"}."
+                )
+                resp = self.llm.generate(prompt, temperature=0.15)
+                raw = resp.text.strip()
+                last_raw = raw
+
+                if raw.upper().startswith("READ_FILE:"):
+                    path = raw.split(":", 1)[1].strip()
+                    content = self._proposer_read(path)
+                    history.append(f"## read_file({path})\n{content}")
+                    reads += 1
+                    continue
+
+                # propuesta final o NO_ACTION
+                import json as _json
+                try:
+                    parsed = _json.loads(raw)
+                except Exception:
+                    try:
+                        import yaml as _yaml
+                        parsed = _yaml.safe_load(raw)
+                    except Exception:
+                        parsed = None
+                if isinstance(parsed, dict):
+                    action = (parsed.get("action") or "").strip()
+                    if action == "no_action" or "NO_ACTION" in raw.upper():
+                        self._log("system", {"event": "wiki_skill_proposal", "result": "no_action"})
+                        return
+                    if reads < 2 and action in ("create", "patch"):
+                        self._log("system", {"event": "wiki_skill_proposal", "result": "too_few_reads"})
+                        return
+                    self._register_skill_proposal(parsed, reads)
+                    return
+                # no es READ ni JSON: registro un fallo de parseo
+                self._log("system", {"event": "wiki_skill_proposal", "result": "parse_error"})
+                return
+
+            # se agotó el número de turnos sin propuesta
+            self._log("system", {"event": "wiki_skill_proposal", "result": "max_turns_reached"})
+        except Exception as e:
+            self._log("system", {"event": "wiki_skill_proposal", "error": str(e)[:300]})
+
+    def _pg_proposal_enabled(self) -> bool:
+        """PG Proposer activo? Desactivable con PG_GRAPH_ENABLED=0
+        o PG_MAINTAIN_ENABLED=0 (no proponga en runs de evaluación/dev)."""
+        if os.environ.get("PG_GRAPH_ENABLED", "1") == "0":
+            return False
+        return os.environ.get("PG_MAINTAIN_ENABLED", "1") != "0"
+
+    def _register_pg_proposal(self, parsed: dict, reads: int) -> None:
+        """Registra una propuesta de edición del PG (add/delete nodes/edges) en
+        harness_edits + staging. La propuesta es el nuevo contenido íntegro de
+        pg_graph.yaml (after); el gate la evaluará contra el baseline y revertirá
+        al `before` si no mejora (Modelo de rejectión del paper)."""
+        pg_path = PATHS["domain"] / "generated" / "pg_graph.yaml"
+        if not pg_path.exists():
+            self._log("system", {"event": "pg_graph_proposal", "result": "no_pg_file"})
+            return
+        before = pg_path.read_text(errors="replace")
+        edits = {
+            "add_nodes": parsed.get("add_nodes") or [],
+            "delete_nodes": parsed.get("delete_nodes") or [],
+            "add_edges": parsed.get("add_edges") or [],
+            "delete_edges": parsed.get("delete_edges") or [],
+        }
+        if not any(v for v in edits.values()):
+            self._log("system", {"event": "pg_graph_proposal", "result": "empty_edits"})
+            return
+
+        from tools.domain.pg_graph import apply_pg_edits
+        after, errors = apply_pg_edits(before, edits)
+        if after is None or errors:
+            self._log("system", {
+                "event": "pg_graph_proposal", "result": "invalid_edits",
+                "errors": errors[:5],
+            })
+            return
+
+        proposal_id = datetime.now().strftime("%Y%m%dT%H%M%S%f")
+        rationale = str(parsed.get("rationale") or "")[:500]
+        # staging: guardar el YAML candidato para el gate
+        staged = PATHS["domain"] / ".proposals" / proposal_id
+        (staged / "generated").mkdir(parents=True, exist_ok=True)
+        (staged / "generated" / "pg_graph.yaml").write_text(after)
+
+        from agent.memory_db import MemoryDB
+        db = MemoryDB()
+        try:
+            parent_id = db.latest_accepted_edit_for_file("generated/pg_graph.yaml")
+            db.add_harness_edit(
+                proposal_id=proposal_id, run_id=self.run_id,
+                component="pg_graph", file="generated/pg_graph.yaml",
+                before=before, after=after, mode="propose",
+                plan=f"[PG PROPOSER] reads={reads} | {rationale}",
+                parent_id=parent_id,
+            )
+        finally:
+            db.close()
+
+        self._log("system", {
+            "event": "pg_graph_proposal", "result": "registered",
+            "proposal_id": proposal_id,
+            "summary": {
+                "add_nodes": len(edits["add_nodes"]),
+                "delete_nodes": len(edits["delete_nodes"]),
+                "add_edges": len(edits["add_edges"]),
+                "delete_edges": len(edits["delete_edges"]),
+            },
+        })
+
+    def _propose_pg_graph(self) -> None:
+        """PG Proposer ReAct post-run (Procedural Graphs, §3.3 — self-evolution):
+        lee el PG actual + trazas + rejection memory y propone ediciones
+        estructurales (add/delete nodes/edges). No-bloqueante."""
+        try:
+            from config import PG_GRAPH_ENABLED, PG_PROPOSER_MAX_TURNS
+            if not PG_GRAPH_ENABLED or not self._pg_proposal_enabled():
+                return
+            prompt_path = PATHS["prompts"] / "pg_proposer.txt"
+            pg_path = PATHS["domain"] / "generated" / "pg_graph.yaml"
+            if not prompt_path.exists() or not pg_path.exists():
+                return
+
+            pg_text = pg_path.read_text(errors="replace")[:5000]
+            wiki_dir = PATHS["memory"] / "wiki"
+            si_path = wiki_dir / "skill-impact.md"
+            si_text = si_path.read_text(errors="replace")[:2500] if si_path.exists() else "(sin entradas aún)"
+
+            best = self.tree.best()
+            best_info = f"{best.id}: total={best.metrics.get('total', '-')}" if best else "(sin mejor)"
+            # rejection memory: las propuestas previas (pg_graph) y su decisión
+            from agent.memory_db import MemoryDB
+            db = MemoryDB()
+            try:
+                prev_pgs = db.harness_edits(decision="rejected", component="pg_graph", limit=10)
+                if not prev_pgs:
+                    prev_pgs = db.harness_edits(component="pg_graph", limit=10)
+                rej_lines = [
+                    f"- **{e['id']}** file={e['file']} mode={e.get('mode')} "
+                    f"decision={e.get('decision')} rc={e.get('root_cause') or '-'} "
+                    f"| plan={str(e.get('plan') or '')[:160]}"
+                    for e in prev_pgs
+                ]
+            finally:
+                db.close()
+            rej_text = "\n".join(rej_lines) if rej_lines else "(sin propuestas previas de PG)"
+
+            task_desc = f"la tarea '{self.task}' (arquetipo {self.archetype_name})"
+            system = prompt_path.read_text().replace("{task_desc}", task_desc)
+
+            run_summary = (
+                f"--- CONTEXTO DE LA RUN RECIÉN TERMINADA ---\n"
+                f"run_id: {self.run_id}\n"
+                f"mejor_candidato: {best_info}\n"
+                f"camino_PG: {' → '.join(self.pg_path[-10:]) if self.pg_path else '(ninguno)'}\n"
+                f"transcript: runs/{self.run_id}/transcript.jsonl (puedes leerlo con read_file)\n"
+                f"--- GRAFO PROCEDIMENTAL ACTUAL (domain/generated/pg_graph.yaml) ---\n{pg_text}\n"
+                f"--- HISTORIAL DE PROPUESTAS PREVIAS (rejection memory) ---\n{rej_text}\n"
+            )
+
+            history: list[str] = []
+            reads = 0
+            # reserva siempre el último turno para la DECISIÓN: nunca se permite leer
+            # en el turno final. Evita que el proposer lea hasta agotar el presupuesto
+            # sin emitir propuesta/no_action (observado con el LLM real).
+            max_reads = max(PG_PROPOSER_MAX_TURNS - 1, 2)
+            for _turn in range(PG_PROPOSER_MAX_TURNS):
+                history_blk = "\n\n".join(history) if history else "(aún sin lecturas)"
+                decision_only = reads >= max_reads or _turn >= PG_PROPOSER_MAX_TURNS - 1
+                if decision_only:
+                    decision_hint = (
+                        "No quedan turnos para más lecturas. Emite AHORA y SOLO el "
+                        "JSON final: {\"action\":\"propose\", \"rationale\":\"...\", "
+                        "\"add_nodes\":[...], \"delete_nodes\":[...], "
+                        "\"add_edges\":[...], \"delete_edges\":[...]} "
+                        "o {\"action\":\"no_action\"}."
+                    )
+                else:
+                    decision_hint = (
+                        "Ahora responde: si necesitas leer otro archivo, emite SOLO "
+                        "una línea con 'READ_FILE:<ruta>'. Si ya tienes toda la evidencia, "
+                        "emite el JSON de la propuesta final (finish) o {\"action\": "
+                        "\"no_action\"}."
+                    )
+                prompt = (
+                    system
+                    + "\n\n"
+                    + run_summary
+                    + "\n\n--- HISTORIAL DE LECTURAS (read_file) ---\n"
+                    + history_blk
+                    + "\n\n"
+                    + decision_hint
+                )
+                resp = self.llm.generate(prompt, temperature=0.15)
+                raw = resp.text.strip()
+
+                # READ_FILE robusto: acepta la línea 'READ_FILE:<ruta>' en cualquier
+                # parte de la respuesta (el modelo a veces añade prólogo/cierre).
+                rf_line = next((ln.strip() for ln in raw.splitlines()
+                                if ln.strip().upper().startswith("READ_FILE:")), None)
+                if rf_line:
+                    if decision_only:
+                        # se resiste a decidir: registramos y salimos (no fabricamos)
+                        self._log("system", {
+                            "event": "pg_graph_proposal", "result": "reads_exhausted",
+                            "reads": reads, "raw_tail": raw[-300:],
+                        })
+                        return
+                    path = rf_line.split(":", 1)[1].strip()
+                    content = self._proposer_read(path)
+                    history.append(f"## read_file({path})\n{content}")
+                    reads += 1
+                    continue
+
+                import json as _json
+                parsed = None
+                # extracción JSON robusta: localizar el primer '{' y último '}'
+                start_c, end_c = raw.find("{"), raw.rfind("}")
+                if start_c >= 0 and end_c > start_c:
+                    try:
+                        parsed = _json.loads(raw[start_c:end_c + 1])
+                    except Exception:
+                        parsed = None
+                if parsed is None:
+                    try:
+                        import yaml as _yaml
+                        parsed = _yaml.safe_load(raw)
+                    except Exception:
+                        parsed = None
+                if not isinstance(parsed, dict):
+                    self._log("system", {
+                        "event": "pg_graph_proposal", "result": "parse_error",
+                        "raw_tail": raw[-400:],
+                    })
+                    return
+                action = (parsed.get("action") or "").strip()
+                if action in ("no_action", "NO_ACTION") or "NO_ACTION" in raw.upper():
+                    self._log("system", {"event": "pg_graph_proposal", "result": "no_action"})
+                    return
+                if action != "propose":
+                    self._log("system", {"event": "pg_graph_proposal", "result": "bad_action",
+                                         "action": action})
+                    return
+                if reads < 2:
+                    self._log("system", {"event": "pg_graph_proposal", "result": "too_few_reads",
+                                         "reads": reads})
+                    return
+                self._register_pg_proposal(parsed, reads)
+                return
+
+            self._log("system", {
+                "event": "pg_graph_proposal", "result": "max_turns_reached",
+                "reads": reads, "para": raw[-400:],
+            })
+        except Exception as e:
+            self._log("system", {"event": "pg_graph_proposal", "error": str(e)[:300]})
 
     def _export_final(self) -> str:
         """Copia el mejor candidato (snapshot) a runs/<run_id>/final/."""

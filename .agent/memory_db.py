@@ -44,6 +44,8 @@ CREATE TABLE IF NOT EXISTS experiments (
     result  TEXT,
     delta   TEXT,
     node_id TEXT,
+    pg_node TEXT,
+    pg_phase TEXT,
     ts      TEXT
 );
 CREATE TABLE IF NOT EXISTS tree_nodes (
@@ -125,6 +127,8 @@ class MemoryDB:
         self._migrate_lessons_safety()
         # migración graph engineering (P12): genealogía y causa raíz en edits
         self._migrate_harness_edits_graph()
+        # migración Procedural Graph: nodo/fase activo en experiments
+        self._migrate_experiments_pg()
         self.conn.commit()
 
     def _migrate_lessons_safety(self) -> None:
@@ -156,6 +160,17 @@ class MemoryDB:
             ("root_cause", "ALTER TABLE harness_edits ADD COLUMN root_cause TEXT"),
         ):
             if col not in hcols:
+                self.conn.execute(ddl)
+
+    def _migrate_experiments_pg(self) -> None:
+        """Procedural Graph: columnas pg_node/pg_phase en experiments
+        preexistentes (trazado del nodo activo). Idempotente."""
+        ecols = {r[1] for r in self.conn.execute("PRAGMA table_info(experiments)")}
+        for col, ddl in (
+            ("pg_node", "ALTER TABLE experiments ADD COLUMN pg_node TEXT"),
+            ("pg_phase", "ALTER TABLE experiments ADD COLUMN pg_phase TEXT"),
+        ):
+            if col not in ecols:
                 self.conn.execute(ddl)
 
     # --- runs ---
@@ -291,12 +306,13 @@ class MemoryDB:
     # --- experiments ---
     def add_experiment(self, run_id: str, turn: int, action: str, result: str,
                        delta: str, node_id: str | None = None,
+                       pg_node: str | None = None, pg_phase: str | None = None,
                        ts: str | None = None) -> int:
         cur = self.conn.execute(
             "INSERT OR IGNORE INTO experiments "
-            "(run_id, turn, action, result, delta, node_id, ts) "
-            "VALUES (?,?,?,?,?,?,?)",
-            (run_id, turn, action, result, delta, node_id, ts or _now()),
+            "(run_id, turn, action, result, delta, node_id, pg_node, pg_phase, ts) "
+            "VALUES (?,?,?,?,?,?,?,?,?)",
+            (run_id, turn, action, result, delta, node_id, pg_node, pg_phase, ts or _now()),
         )
         self.conn.commit()
         return cur.lastrowid
@@ -405,7 +421,7 @@ class MemoryDB:
         return {r["root_cause"] or "unclassified": int(r["n"]) for r in rows}
 
     def harness_edits(self, decision: str | None = None, run_id: str | None = None,
-                      limit: int = 100) -> list[dict]:
+                      component: str | None = None, limit: int = 100) -> list[dict]:
         sql = "SELECT * FROM harness_edits"
         where, args = [], []
         if decision:
@@ -414,6 +430,9 @@ class MemoryDB:
         if run_id:
             where.append("run_id=?")
             args.append(run_id)
+        if component:
+            where.append("component=?")
+            args.append(component)
         if where:
             sql += " WHERE " + " AND ".join(where)
         sql += f" ORDER BY ts ASC LIMIT {int(limit)}"
@@ -438,6 +457,50 @@ class MemoryDB:
                 "SELECT COUNT(*) FROM harness_edits WHERE decision=?", (decision,)
             ).fetchone()[0]
         return self.conn.execute("SELECT COUNT(*) FROM harness_edits").fetchone()[0]
+
+    def usage_counts_by_skill(self, min_count: int = 3) -> dict[str, int]:
+        """Fase 6 (SCL): uso convergente por skill = nº de ediciones ACEPTADAS en
+        harness_edits para skills/<name>/SKILL.md (la selección convergente del
+        gate). Devuelve {name: count} solo para skills con count >= min_count."""
+        rows = self.conn.execute(
+            "SELECT file, COUNT(*) AS n FROM harness_edits "
+            "WHERE decision='accepted' AND component='skills' "
+            "GROUP BY file"
+        ).fetchall()
+        out: dict[str, int] = {}
+        for r in rows:
+            file = r["file"] or ""
+            parts = file.replace("\\", "/").split("/")
+            if len(parts) >= 3 and parts[0] == "skills" and parts[2].endswith("SKILL.md"):
+                name = parts[1]
+                if int(r["n"]) >= int(min_count):
+                    out[name] = int(r["n"])
+        return out
+
+    def active_skills(self) -> list[dict]:
+        """Skill Layer WikiSkill: skills activos en domain/skills/. Un skill es
+        activo si la última propuesta `harness_edits` para `skills/<pin>/SKILL.md`
+        fue aceptada (accepted). Devuelve [{name, file, summary, content}]."""
+        rows = self.conn.execute(
+            "SELECT file, after, plan, decision FROM harness_edits "
+            "WHERE component='skills' ORDER BY ts DESC"
+        ).fetchall()
+        seen: dict[str, dict] = {}
+        for r in rows:
+            # parsear skills/<name>/SKILL.md
+            file = r["file"] or ""
+            parts = file.replace("\\", "/").split("/")
+            if len(parts) >= 3 and parts[0] == "skills" and parts[2].endswith("SKILL.md"):
+                name = parts[1]
+                if name not in seen:
+                    seen[name] = {
+                        "name": name,
+                        "file": file,
+                        "content": r["after"] or "",
+                        "plan": r["plan"] or "",
+                        "accepted": (r["decision"] == "accepted"),
+                    }
+        return [s for s in seen.values() if s["accepted"]]
 
     # --- task_evals (Task-CoEvolve, Punto 10) ---
     def add_task_eval(self, run_id: str | None, task_id: str | None,

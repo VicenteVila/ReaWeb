@@ -278,6 +278,179 @@ de 16.0% a 35.3%; y SAFEEVOLVE reduce la recuperación insegura y el daño en se
 fresca en 26.7 y 17.3 puntos porcentuales, respectivamente, cambiando la utilidad
 benigna media en solo 0.4 puntos.
 
+### 2.12 WikiSkill — Wiki global + Skill Proposer post-run (Google 2026)
+
+> **Referencia**: Wang, Y. et al. (2026). *WikiSkill: Compiling Agent Experience
+> into Persistent Knowledge for Skill Evolution*. Google DeepMind.
+> Paper: `WikiSkill, Compiling Agent Experience into Persistent Knowledge for Skill Evolution.pdf`
+
+WikiSkill estructura la memoria en tres capas:
+
+| Capa | Qué contiene | Quién la escribe | ¿Se revierte? |
+|------|-------------|-----------------|---------------|
+| **Raw Layer** | Traza inmutable (lessons, experiments, transcript) | Harness (automático) | No |
+| **Wiki Layer** | Patrones consolidados de evaluación (diagnóstico + secuencia) | Wiki Maintainer (post-run) | **No** (compounding) |
+| **Skill Layer** | Skills editados (archivos YAML en domain/) | Skill Proposer (post-run) | **Sí** (gate + rollback) |
+
+#### 2.12.1 Wiki Maintainer (post-run, Fase 1+2)
+
+- **Cuándo corre**: al final de cada run, **después** del loop de generación y del
+  merge de lessons (`agent.py` post-loop), y **antes** de la exportación final.
+- **Qué hace**: consolida las lessons y experiments de la run en el wiki global
+  (`memory/wiki/`), siguiendo las reglas del prompt `.agent/prompts/wiki_maintainer.txt`:
+  - Cada patrón tiene: **description**, **root cause**, **action sequence** (10-30 líneas).
+  - Granularidad: cada patrón captura UNA señal conductual (un fix por patrón).
+  - Compounding: los patrones se actualizan con evidencia adicional, nunca se borran.
+- **Output**: `memory/wiki/index.md` (tabla de contenidos), `patterns/*.md`,
+  `logs.md` (historial de consolidaciones).
+- **Config**: `WIKI_ENABLED` (env o flag `--no-wiki` en `run_agent.py`).
+
+#### 2.12.2 Skill Proposer (post-run, Fase 2)
+
+- **Cuándo corre**: inmediatamente después del Wiki Maintainer, en el mismo
+  post-loop de `Agent.run()`.
+- **Qué hace**: lee `wiki/index.md`, `skill-impact.md` y los patrones recientes,
+  y decide si hay un patrón recurrente (≥2 ocurrencias convergentes) que merezca
+  convertirse en una propuesta `edit_skill` pending.
+  - Si **no hay** evidencia suficiente → `no_action`.
+  - Si **sí hay** → genera un YAML válido (mismo formato que `edit_skill`) y lo
+    registra como propuesta `pending` en `harness_edits` + entrada en
+    `skill-impact.md`.
+- **Validación**: `_is_well_shaped` + consistencia componente/path + duplicados
+  rechazados (evita proponer lo que ya está pending o fue rechazado recientemente).
+- **No-bloqueante**: si el LLM falla, la run termina con normalidad.
+
+#### 2.12.3 skill-impact.md (audit trail de propuestas)
+
+- Registro de todas las propuestas del Skill Proposer, incluyendo las rechazadas
+  por el acceptance gate. Cada entrada lleva: propuesta, fecha, run_id, archivo,
+  componente, decisión, root_cause (si aplica).
+- Sirve de "memoria negativa" para el Skill Proposer: evita repetir propuestas
+  ya rechazadas por `no_improvement` o `dev_degradation`.
+
+#### 2.12.4 Separación Inference Agent / Skill Proposer (hallazgo del paper)
+
+El paper demuestra (Tabla 3) que dar acceso al wiki al Inference Agent durante
+rollouts **degrada** la calidad de la skill final (63.7% → 60.9%). Por eso en
+ReaWeb el wiki **solo se usa post-run**: el agente de generación NO ve el wiki,
+preservando trazas informativas y no contaminando las lessons con señales del
+wiki. El wiki alimenta exclusivamente la decisión de meta-evolución al cerrar la
+run (Wiki Maintainer + Skill Proposer).
+
+#### 2.12.5 Skill Layer modular (Fase 3)
+
+Los skills evolucionados se materializan en **`domain/skills/<snake_case>/`**, cada
+uno con dos archivos (§3.1 del paper):
+
+- **`SKILL.md`** — frontmatter YAML (`name`, `description` validadas por
+  `_is_well_shaped`) + `When to Apply` / `When NOT to Apply` / `Instructions`
+  (procedimentales, concisas).
+- **`PURPOSE.md`** — trazabilidad: `Origin` + `Patterns Addressed` (patrones wiki
+  que motivaron el skill) + `Evolution History`.
+
+Inyección: `_system_prompt()` antepone un bloque **# SKILLS ACTIVOS** con el
+contenido de los `SKILL.md` aceptados (full-injection §3.2.1). El agente nunca ve
+el wiki (§2.12.4), solo los skills activos.
+
+#### 2.12.6 Skill Proposer ReAct (Fase 3)
+
+`_propose_wiki_skill` es ahora un agente **multi-turno ReAct** (§E.3): usa
+`read_file` restringido (wiki/, skills/, runs/) para inspeccionar
+`index.md`, `skill-impact.md` (no repetir rechazados), patrones y traces antes de
+proponer. Formato de salida `finish()` (§E.3):
+
+- `create`: `name` + `skill_md` + `purpose_md`
+- `patch`: `name` + `edits[]` (`append`/`replace`/`insert_after`)
+- `no_action`
+
+Guardas: requiere ≥2 lecturas antes de proponer, valida frontmatter YAML, patch
+solo sobre skills existentes. Tope de turnos `WIKI_PROPOSER_MAX_TURNS` (default 4).
+
+#### 2.12.7 Bucle evolutivo iterativo — `scripts/wiki_evolve.py` (Fase 3)
+
+Implementa el **Algorithm 1** (§A.1): co-evoluciona `(S_k, W_k)` durante K
+iteraciones:
+
+```
+Rbest = R(Tval,0) (baseline dev con skills actuales)
+for k in 1..K:
+  1. rollout train con skills activos S_{k-1}  (post-loop: wiki + proposer)
+  2. propuesta pending del run (component=skills)
+  3. aplicar candidato a domain/skills/  (S'_k)
+  4. evaluar en dev (maintain off, skills inyectados)  -> R(Tval,k)
+  5. accept si R(Tval,k) > Rbest  (Rbest = R(Tval,k))
+     reject si no  (rollback a S_{k-1}; el wiki NUNCA se revierte)
+  6. skill-impact.md: diff + score + outcome
+```
+
+Uso:
+```bash
+python -m scripts.wiki_evolve \
+    --train "landing-page:Landing para SaaS de IA" \
+    --dev "saas-dashboard:Dashboard de métricas" \
+    --iterations 3
+```
+
+Config: `WIKI_EVOLVE_ITERATIONS`, `WIKI_PROPOSER_MAX_TURNS`, `--no-wiki`
+(desactiva en env `WIKI_ENABLED=0`), `WIKI_MAINTAIN_ENABLED=0` (eval dev sin
+consolidar/proponer).
+
+### 2.13 Procedural Graph — conocimiento procedural declarativo (Google 2026)
+
+> **Referencia**: Lu, Y., et al. (2026). *Procedural Graphs: Self-Evolving
+> Execution Structures for LLM Agents*. Google Research.
+> Paper: `Procedural Graphs, Self-Evolving Execution Structures for LLM Agen.pdf`
+
+Un *Procedural Graph* organiza conocimiento **procedural** en triplets dirigidos
+atribuidos `(u, r, v)` con campos de texto (`condition`, `guidance`, `pitfalls`)
+para responder *"¿qué hacer ahora?"* de forma situacional — análogo a cómo un
+Knowledge Graph organiza conocimiento factual para *"¿qué es?"*. El grafo vive en
+`domain/generated/pg_graph.yaml` (declarativo, 12 nodos de fase: mutation,
+validation, preparation, finalization, recovery, meta_evolution; relaciones
+tipadas `LEADS_TO`, `TRIGGERS`, `PROVIDES_INPUT_FOR`, `CONVERGES_TO`).
+
+#### 2.13.1 Localización de nodo activo (inferencia)
+
+- **Matching**: `u_t = Match(a_{t-1}, V)` mapea la última tool call al nodo PG
+  correspondiente (`tools/domain/pg_graph.py`, tracing en tiempo real). Varias
+  tools pueden **converger** a un mismo nodo (canonicalización).
+- **Subgrafo vecindario h-hop** (por defecto `PG_GRAPH_HOPS=2`): de la guidance
+  situacional se extrae solo el vecindario del nodo activo y se inyecta en el
+  estado del agente (`pg_node`, `pg_phase`, `camino_PG` en el log `kind="pg"`).
+
+#### 2.13.2 Evolución del grafo — PG Proposer post-run
+
+- El **PG Proposer** (`.agent/agent.py`, `_propose_pg_graph`, prompt
+  `.agent/prompts/pg_proposer.txt`) analiza las trazas de la run al cerrar y
+  propone cambios **estructurales** (añadir/eliminar nodos y aristas, editar
+  guidance/pitfalls), no solo cambios de texto. Protolado multi-turno ReAct con
+  `reads` mínimas y tope `PG_PROPOSER_MAX_TURNS`.
+- Las propuestas quedan `pending` en `harness_edits` con `component=pg_graph` y
+  pasan por el **acceptance gate** (como `edit_skill`); su histórico de diff,
+  score y decisión se registra en `pg-impact.md`.
+- **Bucle iterativo** `scripts/pg_evolve.py` (Algorithm 1, §3.3 del paper):
+  `rollout train → proposal → gate → accept/revert → impact`, K iteraciones en
+  train/dev separados.
+
+#### 2.13.3 Re-ranking semántico de la Skill Layer (LPRA)
+
+`tools/domain/pg_reranker.py` implementa el **LPRA** de PEARL (§3.4): un LLM
+ranquea los skills activos por relevancia semántica al objetivo de la run y al
+nodo/fase PG activo, y el motor recorta el pool a
+`top_k(skills | score >= min_score)` (`PG_RERANK_ENABLED`, `PG_RERANK_TOP_K`,
+`PG_RERANK_MIN_SCORE`). Es un **sesgo, no una restricción**: si el LLM no
+devuelve JSON parseable, se conserva el orden original (fallback seguro).
+
+#### 2.13.4 Config y nota de inyección
+
+- `PG_GRAPH_ENABLED` (env o `--no-pg`), `PG_GRAPH_HOPS`, `PG_PROPOSER_MAX_TURNS`,
+  `PG_EVOLVE_ITERATIONS`, `PG_RERANK_*`, `PG_CORE_CONVERGENT_COUNT` (umbral de
+  skill *core* en la distinción SCL de PEARL).
+- **Importante**: el flag se lee **en tiempo de run** (construcción de cada
+  agente), no de la constante congelada de `config` — véase el fallo A/B y su fix
+  en `Docs/PG_AB_VALIDATION.md` §5. Cada run registra `flags.pg_enabled` en
+  `run_config.json` para auditar qué condición se ejecutó de verdad.
+
 ## 3. De lección a regla: criterios
 
 El agente dispone de lecciones (`worked/didnt/try`) y de experimentos con delta.

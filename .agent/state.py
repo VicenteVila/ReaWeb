@@ -102,6 +102,8 @@ class Experiment:
     result: str
     delta: str
     node_id: str | None = None
+    pg_node: str | None = None
+    pg_phase: str | None = None
 
 
 class Memory:
@@ -171,6 +173,8 @@ class Memory:
                 result=exp.result,
                 delta=exp.delta,
                 node_id=exp.node_id,
+                pg_node=exp.pg_node,
+                pg_phase=exp.pg_phase,
             )
 
 

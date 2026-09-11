@@ -126,6 +126,11 @@ en el directorio domain/).
    indicando el objetivo de mejora (p. ej. "arregla alt y añade OG tags").
 6. Re-audita (H1, H2...) y compara contra el mejor hasta ahora.
 7. Al final: selecciona el candidato final con select_final y exporta.
+8. REGLA ESTRICTA (el harness la aplica de verdad): NO puedes cerrar la run ni llamar
+   a select_final mientras haya SUBTAREAS en [FAIL]. Si lo intentas, el harness lo
+   bloquea y te lo dice. Cuando todas las subtareas estén en [ok], la estética pasa a
+   primer plano: sube la ambición del diseño (composición, tipografía display,
+   micro-interacciones) hasta cerrar. Un cierre prematuro con [FAIL] es inválido.
 
 # HOJA DE RUTA PARA ESTA RUN
 Arquetipo: {archetype}

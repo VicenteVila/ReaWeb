@@ -8,8 +8,7 @@ Uso:
 from __future__ import annotations
 
 import argparse
-
-from scripts._common import run_single
+import os
 
 
 def main():
@@ -28,8 +27,15 @@ def main():
                         help="Ejecutar el acceptance gate tras la run sobre propuestas pending")
     parser.add_argument("--no-cache", action="store_true",
                         help="Deshabilitar la caché semántica de LLM para esta run")
+    parser.add_argument("--no-wiki", action="store_true",
+                        help="Deshabilitar Wiki Maintainer y Skill Proposer post-run")
     args = parser.parse_args()
 
+    # --no-wiki: desactivar WikiSkill antes de importar config (se lee en runtime)
+    if args.no_wiki:
+        os.environ["WIKI_ENABLED"] = "0"
+
+    from scripts._common import run_single
     agent = run_single(
         archetype=args.archetype,
         task=args.task,

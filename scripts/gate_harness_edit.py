@@ -115,7 +115,7 @@ def gate_proposal(edit: dict, train_archetype: str, train_task: str,
     if not dry_run:
         if not accept:
             _revert(edit)
-        _persist(edit["id"], decision, root_cause)
+        _persist(edit["id"], decision, root_cause, edit=edit)
 
     return {
         "proposal": edit["id"],
@@ -129,12 +129,30 @@ def gate_proposal(edit: dict, train_archetype: str, train_task: str,
     }
 
 
-def _persist(proposal_id: str, decision: str, root_cause: str | None = None) -> None:
+def _persist(proposal_id: str, decision: str, root_cause: str | None = None,
+             edit: dict | None = None) -> None:
     db = MemoryDB()
     try:
         db.set_harness_edit_decision(proposal_id, decision, root_cause=root_cause)
     finally:
         db.close()
+
+    # WikiSkill: registrar outcome en skill-impact.md (audit trail)
+    try:
+        si_path = PATHS["memory"] / "wiki" / "skill-impact.md"
+        if si_path.exists() and edit:
+            comp = edit.get("component", "?")
+            path = edit.get("file", "?")
+            run = edit.get("run_id", "?")
+            line = (
+                f"\n- **{proposal_id}** [{datetime.now().strftime('%Y-%m-%d %H:%M')}] "
+                f"run={run} | file={path} | comp={comp} | "
+                f"decision={decision} | root_cause={root_cause or '-'}\n"
+            )
+            with si_path.open("a") as f:
+                f.write(line)
+    except Exception:
+        pass
 
 
 def _adaptive_train_dev(db) -> list[dict]:

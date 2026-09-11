@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 from dataclasses import dataclass
 
 from google import genai
@@ -156,6 +157,7 @@ class LLM:
         tools: list[dict] | None = None,
         history: list | None = None,
         temperature: float = 0.7,
+        use_cache: bool = True,
     ) -> LLMResponse:
         tool_defs = self._tools(tools)
         config = types.GenerateContentConfig(
@@ -163,7 +165,7 @@ class LLM:
             tools=tool_defs,
         )
         contents = list(history or []) + [prompt] if history else prompt
-        return self._complete(contents, config)
+        return self._complete(contents, config, use_cache=use_cache)
 
     def generate_vision(
         self,
@@ -213,18 +215,26 @@ class LLM:
 
         last_err = None
         for model in self._chain:
-            try:
-                resp = self.client.models.generate_content(
-                    model=model,
-                    contents=contents,
-                    config=config,
-                )
-                if model != self._chain[0]:
-                    self.model = model  # quedarse con el modelo que funcionó
-                break
-            except Exception as e:
-                last_err = e
+            # Reintento con backoff para errores transitorios (503 UNAVAILABLE,
+            # "high demand"): las baterías A/B se rompen a mitad con uno solo.
+            for attempt in range(3):
+                try:
+                    resp = self.client.models.generate_content(
+                        model=model,
+                        contents=contents,
+                        config=config,
+                    )
+                    if model != self._chain[0]:
+                        self.model = model  # quedarse con el modelo que funcionó
+                    break
+                except Exception as e:
+                    last_err = e
+                    if attempt < 2:
+                        time.sleep(5 * (attempt + 1))
+                    continue
+            else:
                 continue
+            break
         else:
             raise RuntimeError(f"Todos los modelos fallaron: {last_err}")
 

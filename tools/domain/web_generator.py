@@ -461,7 +461,13 @@ class GenerateCandidate(Tool):
             graph_data=graph_data,
             current_code=current_code,
         )
-        out = self.llm.generate(prompt, temperature=0.7)
+        temperature = float(kwargs["temperature"]) if "temperature" in kwargs else 0.7
+        # Bypass de llm cache OBLIGATORIO: una mutación es una llamada ALEATORIA
+        # con objetivo propio. La caché semántica (umbral 0.80 sobre el prompt
+        # completo) colisiona objetivos distintos que comparten task/sections/ref
+        # y devuelve la MISMA página generada una y otra vez (diversity muerta).
+        # La evolución de diseño necesita salida fresca en cada generate_candidate.
+        out = self.llm.generate(prompt, temperature=temperature, use_cache=False)
         text = out.text
 
         files, vuln_files = self._parse_files(text)

@@ -119,6 +119,11 @@ crítica repetida sin mutación intermedia desperdicia turnos.
 {{ skill_deps }}
 {% endif %}
 
+{% if pg_state %}
+### 🧠 GRAFO PROCEDIMENTAL — Estado actual (guidance situacional)
+{{ pg_state }}
+{% endif %}
+
 ### Stagnation
 {% if stagnation %}
 ⚠️ {{ stagnation }}

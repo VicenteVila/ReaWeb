@@ -27,10 +27,12 @@ PATHS = {
     "prompts": ROOT / ".agent" / "prompts",
     "tools": ROOT / "tools",
     "domain": ROOT / "domain",
+    "skills": ROOT / "domain" / "skills",
     "memory": ROOT / "memory",
     "runs": ROOT / "runs",
     "workspace": ROOT / "workspace",
     "current": ROOT / "workspace" / "current",
+    "wiki": ROOT / "memory" / "wiki",
     "config": ROOT / "config",
     "scripts": ROOT / "scripts",
     "templates": ROOT / "templates",
@@ -69,6 +71,7 @@ LESSON_AUTO = {
 HARNESS_COMPONENTS = {
     "context_memory": ("generated",),       # skills, workflows, reglas globales
     "tools_specs": ("archetypes",),         # arquetipos: reglas, stack, workflows
+    "skills": ("skills",),                  # Skill Layer WikiSkill (domain/skills/)
 }
 
 # Umbral de ceiling para candidatos que incumplen un gate bloqueante (Eq. 8 del
@@ -86,6 +89,53 @@ LLM_CACHE_TTL_DAYS = int(os.environ.get("LLM_CACHE_TTL_DAYS", "7"))
 # Sandbox de ejecución de código (Punto 8): "restricted" aplica allowlist de
 # módulos Python + prlimit/ulimit en bash; "off" deshabilita la ejecución.
 CODE_EXEC_MODE = os.environ.get("CODE_EXEC_MODE", "restricted")
+
+# WikiSkill (Google 2026): Wiki Layer global que compone (nunca se revierte) y
+# alimenta el Skill Proposer post-run. Desactivable con WIKI_ENABLED=0 o --no-wiki.
+WIKI_ENABLED = os.environ.get("WIKI_ENABLED", "1") != "0"
+
+# WikiSkill Fase 3 — bucle evolutivo iterativo (Algorithm 1): número de
+# iteraciones del orquestador wiki_evolve.py y tope de turnos ReAct del Skill
+# Proposer (léctura de wiki/patrones/traces antes de proponer).
+WIKI_EVOLVE_ITERATIONS = int(os.environ.get("WIKI_EVOLVE_ITERATIONS", "3"))
+WIKI_PROPOSER_MAX_TURNS = int(os.environ.get("WIKI_PROPOSER_MAX_TURNS", "4"))
+
+# Procedural Graph (Lu et al., 2026): grafo procedural declarativo que organiza
+# el conocimiento de "qué hacer ahora" en transiciones tipadas (condition,
+# guidance, pitfalls). Localización del nodo activo + subgrafo h-hop + guidance
+# situacional en cada turno. Evoluciona vía el PG Proposer post-run
+# (component=pg_graph) con acceptance gate. Desactivable con PG_GRAPH_ENABLED=0.
+PG_GRAPH_ENABLED = os.environ.get("PG_GRAPH_ENABLED", "1") != "0"
+PG_GRAPH_HOPS = int(os.environ.get("PG_GRAPH_HOPS", "2"))   # profundidad del subgrafo
+PG_PROPOSER_MAX_TURNS = int(os.environ.get("PG_PROPOSER_MAX_TURNS", "8"))
+PG_EVOLVE_ITERATIONS = int(os.environ.get("PG_EVOLVE_ITERATIONS", "3"))
+
+# Re-ranking semántico de skills (patrón LPRA de PEARL, Yang et al., 2026):
+# un LLM rankea los skills activos por relevancia al objetivo de la run antes
+# de inyectarlos, reteniendo solo el top-K (reduce ruido y tokens).
+PG_RERANK_ENABLED = os.environ.get("PG_RERANK_ENABLED", "1") != "0"
+PG_RERANK_TOP_K = int(os.environ.get("PG_RERANK_TOP_K", "3"))
+PG_RERANK_MIN_SCORE = float(os.environ.get("PG_RERANK_MIN_SCORE", "0.30"))
+
+# SCL (PEARL): distinción core vs. contextuales para la estabilidad de skills.
+# Core = skills con >= PG_CORE_CONVERGENT_COUNT ocurrencias convergentes (se
+# tratan como núcleo estable); contextuales = el resto (en prueba, pueden fallar).
+PG_CORE_CONVERGENT_COUNT = int(os.environ.get("PG_CORE_CONVERGENT_COUNT", "3"))
+
+# Harness estricto: evita auto-cierre prematuro tras H0 cuando hay subtareas en
+# FAIL (gate estricto implementado en agente). MIN_HYPOTHESES = mínimo de
+# candidatos generados antes de poder auto-cerrarse sin checklist 100% ok.
+MIN_HYPOTHESES = int(os.environ.get("MIN_HYPOTHESES", "3"))
+
+# Escalera de temperatura del generador (B): 0.7 por defecto (fase reparación);
+# GENERATOR_CREATIVE_TEMP cuando el mejor candidato tiene el checklist 100% ok
+# (fase creativa, post-completitud).
+GENERATOR_CREATIVE_TEMP = float(os.environ.get("GENERATOR_CREATIVE_TEMP", "0.85"))
+
+# Ante-stall (harness estricto): si el agente emite N turnos seguidos de texto
+# meta/JSON inválido sin tool_calls (p.ej. repite create_patterns), el harness
+# toma el control y ejecuta una mutación útil (reparar subtareas o refinar).
+AUTO_UNBLOCK_AT_STALL = int(os.environ.get("AUTO_UNBLOCK_AT_STALL", "2"))
 
 # Gobernanza de skills (Punto 9 — "Practice Makes Unsafe", skill misevolution):
 # audita las lecciones antes de escribirlas (write gate), filtra por riesgo en

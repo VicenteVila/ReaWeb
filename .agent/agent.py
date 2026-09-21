@@ -86,19 +86,21 @@ class Agent:
         self.target_h = target_h
         self.hypothesis_count = 0
 
-        # Procedural Graph (PG): nodo activo estimado de la última tool call,
-        # camino recorrido en el grafo y json de la run config.
-        # Leído de env en tiempo de run (no de la constante congelada de config)
-        # para que el driver de baterías pueda alternar on/off por proceso.
+        # Procedural Graph (PG) y PEARL (Razonamiento inductivo)
         self.pg_enabled = os.environ.get("PG_GRAPH_ENABLED", "1") != "0"
+        self.pearl_enabled = os.environ.get("PEARL_ENABLED", "1") != "0"
         self.pg_node = None
         self.pg_phase = None
         self.pg_path: list[str] = []
         try:
             from tools.domain.pg_graph import load_graph
             self.pg_graph = load_graph() if self.pg_enabled else None
+            if self.pearl_enabled:
+                from tools.domain.pearl_reasoner import load_pearl_reasoner
+                self.pearl = load_pearl_reasoner(self.run_id)
         except Exception:
             self.pg_graph = None
+            self.pearl = None
 
         # registrar run en transcript
         (self.run_dir / "run_config.json").write_text(
@@ -408,6 +410,17 @@ class Agent:
                 pg_state = self.pg_graph.state_block(self.memory.recent_experiments)
             except Exception:
                 pg_state = ""
+        
+        # PEARL: sugerencia inductiva de camino
+        pearl_hint = ""
+        if self.pearl_enabled and self.pearl is not None:
+            try:
+                hint = self.pearl.suggest_path(self.pg_path)
+                if hint:
+                    pearl_hint = f"\n\n# PEARL (Razonamiento Inductivo)\nSugerencia basada en historial exitoso: {hint}"
+            except Exception:
+                pass
+                
         return tmpl.render(
             turn_number=self.turn,
             archetype_name=self.archetype_name,
@@ -423,6 +436,7 @@ class Agent:
             lessons=self.memory.read_global_lessons()[:3000],
             skill_deps=skill_deps,
             pg_state=pg_state,
+            pearl_hint=pearl_hint,
             stagnation=stagnation,
             last_action_summary=self._last_action_summary(),
             target_h=self.target_h,

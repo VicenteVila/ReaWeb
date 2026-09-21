@@ -124,6 +124,11 @@ crítica repetida sin mutación intermedia desperdicia turnos.
 {{ pg_state }}
 {% endif %}
 
+{% if pearl_hint %}
+### ⚛️ PEARL (Razonamiento Inductivo)
+{{ pearl_hint }}
+{% endif %}
+
 ### Stagnation
 {% if stagnation %}
 ⚠️ {{ stagnation }}

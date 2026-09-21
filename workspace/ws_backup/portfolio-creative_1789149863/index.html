@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UX.STUDIO | Creative UX Designer Portfolio</title>
+  <meta name="description" content="Portfolio creativo de una diseñadora UX senior. Especialista en diseño de producto y experiencias digitales.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Manrope:wght@400;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grain-overlay"></div>
+  <nav class="sticky-nav">
+    <div class="logo">UX.STUDIO</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#cta">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+    <section id="hero">
+      <h1 class="display-title">CRAFTING DIGITAL EXPERIENCES.</h1>
+      <p class="tagline">Diseñadora UX senior transformando problemas complejos en interfaces intuitivas y escalables.</p>
+      <a href="#cta" class="btn-outline">Start a project</a>
+      <div class="hero-accent">01</div>
+    </section>
+
+    <section id="about">
+      <h2>About Me</h2>
+      <p>Mi enfoque combina investigación empática, pensamiento sistémico y diseño visual de alto impacto para crear productos que los usuarios aman.</p>
+    </section>
+
+    <section id="work">
+      <h2>Selected Work</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>E-commerce Redesign</h3>
+          <p><strong>Problem:</strong> Alta tasa de abandono.<br><strong>Solution:</strong> Flujo simplificado.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="social_proof">
+      <h2>Trusted By</h2>
+      <div class="logos"><span>Google</span> <span>Airbnb</span> <span>Spotify</span></div>
+    </section>
+
+    <section id="testimonial">
+      <h2>Testimonials</h2>
+      <blockquote class="card">"Un trabajo excepcional, nuestra conversión aumentó un 40% gracias a su enfoque UX."</blockquote>
+    </section>
+
+    <section id="cta">
+      <h2>Let's work together</h2>
+      <form id="contact-form">
+        <input type="text" placeholder="Nombre" required aria-label="Nombre">
+        <input type="email" placeholder="Email" required aria-label="Email">
+        <select name="budget" required aria-label="Presupuesto aproximado">
+          <option value="" disabled selected>Presupuesto estimado</option>
+          <option value="1k-5k">1k - 5k</option>
+          <option value="10k+">10k+</option>
+        </select>
+        <textarea placeholder="Cuéntame sobre tu proyecto" required aria-label="Detalles"></textarea>
+        <button type="submit" class="btn-outline">Send Request</button>
+      </form>
+    </section>
+
+    <section id="contact">
+      <p>Respondo en 24h. <a href="mailto:hello@ux.studio">hello@ux.studio</a></p>
+    </section>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

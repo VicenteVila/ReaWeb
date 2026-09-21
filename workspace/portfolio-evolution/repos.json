@@ -1,0 +1,47 @@
+{
+  "owner": "VicenteVila",
+  "repos": [
+    {
+      "name": "Asubarnipal",
+      "description": "Agente de Investigacion con Telegram, Dashboard, GraphRAG y Turboquant",
+      "topics": ["Python", "AI", "GraphRAG"],
+      "type": "repo",
+      "connections": ["CogniTeam"]
+    },
+    {
+      "name": "CogniTeam",
+      "description": "Sistema multi-agente autónomo con scoping inteligente de tareas y memoria híbrida.",
+      "topics": ["Python", "Multi-Agent", "LLM"],
+      "type": "repo",
+      "connections": ["Asubarnipal", "PromptForge"]
+    },
+    {
+      "name": "TraceForge",
+      "description": "Langfuse para pipelines multi-agente sin SaaS.",
+      "topics": ["Python", "Observability"],
+      "type": "repo",
+      "connections": ["PromptForge"]
+    },
+    {
+      "name": "PromptForge",
+      "description": "CI/CD para prompts de LLMs: versionado, evals, optimización.",
+      "topics": ["Python", "CI/CD", "Prompt Engineering"],
+      "type": "repo",
+      "connections": ["CogniTeam", "TraceForge"]
+    },
+    {
+      "name": "ReaWeb",
+      "description": "Harness Evo para web development.",
+      "topics": ["Python", "Web Development", "LLM Agents"],
+      "type": "repo",
+      "connections": []
+    },
+    {
+      "name": "ReaGame",
+      "description": "Arnes de desarrollo de juegos en Godot.",
+      "topics": ["Python", "Godot", "Game Dev"],
+      "type": "repo",
+      "connections": []
+    }
+  ]
+}

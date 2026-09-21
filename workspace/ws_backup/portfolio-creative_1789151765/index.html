@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creative UX Portfolio | Design & Strategy</title>
+  <meta name="description" content="Portfolio creativo de una diseñadora UX enfocada en soluciones digitales centradas en el usuario.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="sticky-nav">
+    <div class="logo">UX.DESIGNER</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+    <section id="hero" class="hero-grid">
+      <div class="hero-content">
+        <h1 class="display-text">CRAFTING DIGITAL EXPERIENCES</h1>
+        <p class="tagline">UX Designer & Strategist | Available for new projects</p>
+        <a href="#contact" class="btn">Start a project</a>
+      </div>
+      <div class="hero-graphic"></div>
+    </section>
+
+    <section id="about">
+      <h2>About</h2>
+      <p>Diseñadora UX apasionada por la intersección entre la psicología humana y la tecnología. Mi proceso se basa en entender los problemas reales antes de diseñar las soluciones.</p>
+    </section>
+
+    <section id="work">
+      <h2>Selected Work</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>E-commerce Redesign</h3>
+          <p><strong>Problem:</strong> High bounce rate.<br><strong>Process:</strong> User testing & prototyping.<br><strong>Solution:</strong> Streamlined checkout flow.</p>
+          <a href="#" class="btn-outline">View Case Study</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="testimonial">
+      <h2>Testimonials</h2>
+      <div class="testimonial-card">
+        <p>"Transformó nuestra visión en un producto increíblemente intuitivo."</p>
+        <span>— Cliente Satisfecho</span>
+      </div>
+    </section>
+
+    <section id="social_proof">
+      <h2>Trusted By</h2>
+      <div id="graph-container">
+        <svg id="knowledge-svg" viewBox="0 0 800 400" width="100%" height="400"></svg>
+      </div>
+    </section>
+
+    <section id="cta">
+      <h2>Ready to start?</h2>
+      <a href="#contact" class="btn">Let's work together</a>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <form id="contact-form">
+        <input type="text" placeholder="Nombre" required aria-label="Nombre">
+        <input type="email" placeholder="Email" required aria-label="Email">
+        <textarea placeholder="Cuéntame sobre tu proyecto" aria-label="Proyecto"></textarea>
+        <button type="submit" class="btn">Enviar mensaje</button>
+      </form>
+    </section>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

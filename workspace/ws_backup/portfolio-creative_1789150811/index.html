@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Designer Portfolio | Creative Vision</title>
+    <meta name="description" content="Portfolio creativo de diseñadora UX. Especialista en experiencias digitales de alto impacto.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="pill-nav">
+        <a href="#work">Proyectos</a>
+        <a href="#about">Bio</a>
+        <a href="#contact" class="cta-pill">Contacto</a>
+    </nav>
+
+    <header id="hero">
+        <h1 class="hero-title">CREATIVE UX <span>DESIGNER</span></h1>
+        <p class="tagline">Transformando problemas complejos en experiencias humanas inolvidables.</p>
+    </header>
+
+    <section id="work" class="selected-work">
+        <div class="grid-asimetrico">
+            <div class="card card-large"><h3>Proyecto A</h3></div>
+            <div class="card card-small"><h3>Proyecto B</h3></div>
+            <div class="card card-medium"><h3>Proyecto C</h3></div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2>Filosofía</h2>
+        <p>El diseño no es cómo se ve, es cómo funciona. Mi proceso une la psicología del usuario con objetivos de negocio claros.</p>
+    </section>
+
+    <section id="social_proof">
+        <div class="logos"><span>Google</span><span>Airbnb</span><span>Uber</span></div>
+    </section>
+
+    <section id="testimonial">
+        <blockquote>"Su enfoque transformó nuestra conversión en un 40%." - CEO, TechCorp</blockquote>
+    </section>
+
+    <section id="contact">
+        <form id="contact-form">
+            <input type="text" placeholder="Nombre" required>
+            <input type="email" placeholder="Email" required>
+            <textarea placeholder="Cuéntame sobre tu proyecto"></textarea>
+            <button type="submit">Enviar Propuesta</button>
+        </form>
+    </section>
+
+    <script src="app.js" defer></script>
+</body>
+</html>

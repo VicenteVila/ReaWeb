@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio UX | Diseño Creativo & Estrategia Digital</title>
+  <meta name="description" content="Portfolio creativo de una diseñadora UX enfocada en soluciones digitales centradas en el usuario y resultados de negocio.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="sticky-nav">
+    <div class="logo">UX.STUDIO</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+    <section id="hero">
+      <div class="hero-bg-text">01</div>
+      <div class="hero-grid">
+        <h1 class="display-text">CRAFTING DIGITAL EXPERIENCES.</h1>
+        <div class="hero-cta">
+          <p class="tagline">Diseñadora UX especializada en transformar problemas complejos en soluciones intuitivas y de alto impacto.</p>
+          <a href="#contact" class="btn">Start a Project</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2>About Me</h2>
+      <p>Creo puentes entre las necesidades de los usuarios y los objetivos de negocio mediante procesos iterativos y una estética impecable.</p>
+    </section>
+
+    <section id="work">
+      <h2>Selected Work</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Proyecto A</h3>
+          <p>Problem → Process → Solution → Results</p>
+          <div class="tags"><span>UX Research</span><span>UI Design</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="social_proof">
+      <h2>Trusted By</h2>
+      <svg id="knowledge-svg" width="100%" height="400" viewBox="0 0 800 400"></svg>
+    </section>
+
+    <section id="testimonial">
+      <blockquote>"Su enfoque en UX cambió radicalmente nuestra conversión." - Cliente Satisfecho</blockquote>
+    </section>
+
+    <section id="cta" class="cta-section">
+      <div class="cta-content">
+        <h2>¿Listo para empezar?</h2>
+        <p>Transformemos tu idea en un producto digital excepcional.</p>
+        <a href="#contact" class="btn">Let's work together</a>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Let's work together</h2>
+      <form id="contact-form">
+        <input type="text" placeholder="Nombre" required aria-label="Nombre">
+        <input type="email" placeholder="Email" required aria-label="Email">
+        <textarea placeholder="Cuéntame sobre tu proyecto" aria-label="Proyecto"></textarea>
+        <button type="submit" class="btn">Enviar (Respuesta en 24h)</button>
+      </form>
+    </section>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

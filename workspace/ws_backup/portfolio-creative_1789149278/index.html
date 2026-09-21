@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio UX Designer | Creative Digital Experiences</title>
+  <meta name="description" content="Portfolio creativo de una diseñadora UX enfocada en experiencias digitales, investigación y diseño de producto.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="sticky-nav">
+    <div class="logo">UX.DESIGN</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+    <section id="hero">
+      <h1 class="display-text">CRAFTING DIGITAL <br> EXPERIENCES</h1>
+      <p class="tagline">UX Designer & Researcher. Disponible para nuevos retos.</p>
+      <a href="#contact" class="btn">Let's work together</a>
+    </section>
+
+    <section id="about">
+      <h2>About Me</h2>
+      <p>Transformo problemas complejos en soluciones digitales intuitivas a través de investigación profunda y diseño centrado en el usuario.</p>
+    </section>
+
+    <section id="work">
+      <h2>Selected Work</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>E-commerce Redesign</h3>
+          <p><strong>Problem:</strong> Baja tasa de conversión móvil.</p>
+          <p><strong>Process:</strong> User testing y prototipado rápido.</p>
+          <p><strong>Solution:</strong> Checkout simplificado.</p>
+          <p><strong>Results:</strong> +25% en ventas.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="services">
+      <h2>Services</h2>
+      <div class="grid">
+        <div class="card"><h3>UX Research</h3></div>
+        <div class="card"><h3>UI Design</h3></div>
+        <div class="card"><h3>Design Systems</h3></div>
+      </div>
+    </section>
+
+    <section id="testimonial">
+      <h2>Testimonials</h2>
+      <div class="card">"Una profesional excepcional que elevó nuestro producto a otro nivel."</div>
+    </section>
+
+    <section id="social_proof">
+      <h2>Knowledge Map</h2>
+      <svg id="knowledge-svg" width="100%" height="400" viewBox="0 0 800 400"></svg>
+    </section>
+
+    <section id="cta">
+      <div class="card" style="text-align: center; border: 1px solid var(--c-accent);">
+        <h2>¿Tienes un proyecto en mente?</h2>
+        <p>Hablemos sobre cómo puedo ayudarte a construir tu próxima gran idea.</p>
+        <a href="#contact" class="btn">Start a Project</a>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <form id="contact-form">
+        <input type="text" placeholder="Nombre" required aria-label="Nombre">
+        <input type="email" placeholder="Email" required aria-label="Email">
+        <textarea placeholder="Cuéntame sobre tu proyecto" rows="4" style="width:100%; background:#262626; color:white; border:none; margin-bottom:1rem; padding:1rem;"></textarea>
+        <button type="submit" class="btn">Enviar mensaje</button>
+      </form>
+    </section>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

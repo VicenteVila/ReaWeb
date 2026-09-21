@@ -38,6 +38,23 @@ Basado en:
   pasada, sino un subconjunto muestreado por poder discriminante con estimación
   sampling-aware del score full-suite (`tools/domain/task_coevolve.py`, ver
   [`Docs/TASK_CO_EVOLUTION.md`](Docs/TASK_CO_EVOLUTION.md)).
+- **WikiSkill** — Wang, Y. et al. (2026). *WikiSkill: Compiling Agent Experience
+  into Persistent Knowledge for Skill Evolution*. Google DeepMind — memoria
+  persistente en tres capas (Raw / Wiki / Skill): la capa Wiki la consolida un
+  Wiki Maintainer post-run y de la Skill se alimenta el re-ranking de PEARL
+  (ver sección *Conocimiento procedural y memoria* abajo).
+- **Procedural Graph** — Lu, Y., et al. (2026). *Procedural Graphs:
+  Self-Evolving Execution Structures for LLM Agents*. Google Research —
+  conocimiento procedural declarativo en triplets dirigidos `(u, r, v)` con
+  guidance/pitfalls: el PG Proposer propone cambios estructurales post-run y el
+  vecindario del nodo activo se inyecta en el estado del agente (ver sección
+  *Conocimiento procedural y memoria* abajo).
+- **PEARL** — *Path-Entity Aligned Relational Learning with Contextual Subgraphs
+  for Inductive Knowledge Graph Completion* (2026) — su **LPRA** (§3.4) se
+  implementa como re-ranking semántico de la Skill Layer
+  (`tools/domain/pg_reranker.py`), recortando el pool de skills al `top_k`
+  relevante al nodo/fase PG activo (ver sección *Conocimiento procedural y
+  memoria* abajo).
 - **Propuesta Arquitectura de Agente Web** — diseño de carpetas, stack y estrategia
   free-tier.
 - **Docs/** — reglas globales, skills, workflows y 6 arquetipos de web development.
@@ -61,6 +78,10 @@ Documentación del diseño (para humanos):
 - [`Docs/GRAPH_ENGINEERING.md`](Docs/GRAPH_ENGINEERING.md) — adaptación de
   Graph Engineering (genealogía de ediciones, causalidad de fallos, grafo de
   dependencias de tools) con citaciones y límites de la adaptación.
+- [`Docs/PG_AB_VALIDATION.md`](Docs/PG_AB_VALIDATION.md) — validación
+  experimental A/B del **Procedural Graph + PEARL** (PG declarativo, PG
+  Proposer, re-ranking LPRA y Skill Layer de WikiSkill) sobre el benchmark
+  portfolio: 8 runs, abltest con factor de Bayes.
 
 ## Demo visual (Show, don't tell)
 
@@ -518,6 +539,44 @@ ontología formal):
   `edit_genealogy()` traza la cadena raíz→hoja para podas informadas.
 
 Tests: `uv run pytest test/test_graph_engineering.py -q`.
+
+## Conocimiento procedural y memoria (WikiSkill + Procedural Graph + PEARL)
+
+Tres papers de 2026 se adaptan juntos para separar *conocimiento declarativo*
+(los skills) del *procedimental* (cuándo y cómo aplicar cada skill) y para que la
+memoria no se consuma al cerrar la run:
+
+- **WikiSkill** (Wang et al., Google DeepMind) — memoria en **tres capas**
+  (`memory/wiki/`): la **Raw Layer** guarda la traza inmutable (lessons,
+  experiments, transcript); la **Wiki Layer** la consolida un **Wiki Maintainer**
+  post-run en patrones reutilizables (diagnóstico + secuencia, no revertible por
+  compounding); la **Skill Layer** son los skills editados en `domain/`, que sí
+  pasan por el gate y rollback. Orquestadores: `scripts/wiki_consolidate.py`
+  (maintainer) y `scripts/wiki_evolve.py` (bucle evolutivo, Algorithm 1 §A.1).
+- **Procedural Graph** (Lu et al., Google Research) — el conocimiento procedural
+  vive en triplets dirigidos `(u, r, v)` con `condition`, `guidance` y
+  `pitfalls` (`domain/generated/pg_graph.yaml`, 12 nodos de fase y relaciones
+  `LEADS_TO`/`TRIGGERS`/`PROVIDES_INPUT_FOR`/`CONVERGES_TO`). En tiempo de run,
+  `tools/domain/pg_graph.py` mapea la última tool call al nodo activo y solo se
+  inyecta en el estado el vecindario h-hop (`PG_GRAPH_HOPS=2`). El **PG Proposer**
+  post-run propone cambios *estructurales* (nodos/aristas) que pasan por el
+  acceptance gate y registran su diff en `pg-impact.md`
+  (`scripts/pg_evolve.py`, Algorithm 1 §3.3).
+- **PEARL (LPRA, §3.4)** — `tools/domain/pg_reranker.py` usa un LLM para rankear
+  los skills activos por relevancia semántica al objetivo de la run y al nodo PG
+  activo, y recorta el pool a `top_k(skills | score >= min_score)` — un **sesgo,
+  no una restricción**: ante un JSON no parseable se conserva el orden original.
+
+Config: `WIKI_ENABLED`, `WIKI_EVOLVE_ITERATIONS`, `WIKI_PROPOSER_MAX_TURNS`,
+`PG_GRAPH_ENABLED`, `PG_GRAPH_HOPS`, `PG_PROPOSER_MAX_TURNS`,
+`PG_RERANK_ENABLED/TOP_K/MIN_SCORE`, `PG_CORE_CONVERGENT_COUNT`. Validación A/B
+experimental (`Docs/PG_AB_VALIDATION.md`):
+
+```bash
+REPS=5 python -m scripts.run_ab_pg_battery        # A/B PG+PEARL (on/off round-robin)
+REPS=3 ARCH=saas-dashboard python -m scripts.run_ab_pg_battery
+BATTERY_OUT=/tmp/opencode/battery_results python -m scripts.run_ab_pg_battery
+```
 
 ## Caché semántica de LLM (ahorro de costes)
 

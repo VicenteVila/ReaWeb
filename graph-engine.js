@@ -20,13 +20,6 @@ let graphData = {
 };
 
 // Cargar repositorios dinámicamente
-fetch('repos.json')
-    .then(r => r.json())
-    .then(data => {
-        graphData.repos = data.repos;
-        initGraph(); // Inicia el grafo solo cuando los datos están listos
-    })
-    .catch(err => console.error("Error cargando repos.json", err));
 
 // Manifesto de flujogramas por repo (archivos .mmd disponibles). PromptForge y
 // PopeBot-agente NO tienen flujogramas -> se muestra aviso.
@@ -526,11 +519,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // fetch('graph_data.json') -> eliminado, ya usamos repos.json
 
     themeToggle.addEventListener('click', toggleTheme);
-    document.getElementById('close-panel').addEventListener('click', () => closePanel('details-panel'));
-    document.getElementById('close-mermaid').addEventListener('click', () => closePanel('mermaid-panel'));
-    setupPanelOverlay();
-
-    // Lightbox: cerrar con el botón X o con click fuera de la imagen.
     const fullOverlay = document.getElementById('fullimg-overlay');
     const fullClose = document.getElementById('fullimg-close');
     if (fullOverlay) fullOverlay.addEventListener('click', (e) => {

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 3 · Operations</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 3 · Operations - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Cogniteam · Tools · Git · Operations</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Operations
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_26{"not command_list or&lt;br&gt;command_list(0).lower() != 'git'&lt;br&gt;&lt;i&gt;Condición en línea 26:&lt;br&gt;not command_list or command_list(0).lower() != 'git'&lt;/i&gt;"}
+    dec_34{"git_subcommand not in&lt;br&gt;allowed_without_repo and (not&lt;br&gt;&lt;i&gt;Condición en línea 34:&lt;br&gt;git_subcommand not in allowed_without_repo and (not is_repo)&lt;/i&gt;"}
+    dec_45{"any((cmd in full_cmd for cmd&lt;br&gt;in confirm_needed))&lt;br&gt;&lt;i&gt;Condición en línea 45:&lt;br&gt;any((cmd in full_cmd for cmd in confirm_needed))&lt;/i&gt;"}
+    dec_46{"not&lt;br&gt;ask_confirmation(f'¿Ejecutar en&lt;br&gt;&lt;i&gt;Condición en línea 46:&lt;br&gt;not ask_confirmation(f'¿Ejecutar `(full_cmd)` en '(settings.&lt;/i&gt;"}
+    dec_59{"proc.stdout.strip()&lt;br&gt;&lt;i&gt;Condición en línea 59:&lt;br&gt;proc.stdout.strip()&lt;/i&gt;"}
+    dec_61{"proc.stderr.strip()&lt;br&gt;&lt;i&gt;Condición en línea 61:&lt;br&gt;proc.stderr.strip()&lt;/i&gt;"}
+    fn__ensure_git_repo[["Ensure Git Repo"]]
+    fn__execute_git_command_robust[["Execute Git Command Robust"]]
+    fn_git_status[["Git Status"]]
+    fn_git_add[["Git Add"]]
+    fn_git_commit[["Git Commit"]]
+    fn_git_diff[["Git Diff"]]
+    fn_git_log[["Git Log"]]
+    fn_git_push[["Git Push"]]
+    fn_git_pull[["Git Pull"]]
+    n_start --&gt; fn__ensure_git_repo
+    n_start --&gt; fn__execute_git_command_robust
+    fn__execute_git_command_robust --&gt; dec_26
+    dec_26 --&gt; dec_34
+    dec_34 --&gt; dec_45
+    dec_45 --&gt; dec_46
+    dec_46 --&gt; dec_59
+    dec_59 --&gt; dec_61
+    n_start --&gt; fn_git_status
+    n_start --&gt; fn_git_add
+    n_start --&gt; fn_git_commit
+    n_start --&gt; fn_git_diff
+    n_start --&gt; fn_git_log
+    n_start --&gt; fn_git_push
+    n_start --&gt; fn_git_pull
+    class n_start node-start
+    class fn__ensure_git_repo,fn__execute_git_command_robust,fn_git_status,fn_git_add,fn_git_commit,fn_git_diff,fn_git_log,fn_git_push,fn_git_pull node-subprocess
+    class dec_26,dec_34,dec_45,dec_46,dec_59,dec_61 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

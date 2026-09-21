@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TraceForge · Nivel 3 · Show</title>
+<meta name="description" content="Flujograma TraceForge · Nivel 3 · Show - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/TraceForge/index.html">TraceForge</a> <span class="sep">›</span><a href="traceforge_L0_Overview.html">L0</a> <span class="sep">›</span><a href="traceforge_L2_Traceforge_Cli.html">L2</a> <span class="sep">›</span><span class="current">L3 · Traceforge · Cli · Show</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Cli · Show
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_23{"not spans&lt;br&gt;&lt;i&gt;Condición en línea 23:&lt;br&gt;not spans&lt;/i&gt;"}
+    loop_38["For each root in roots"]
+    dec_66{"span.model&lt;br&gt;&lt;i&gt;Condición en línea 66:&lt;br&gt;span.model&lt;/i&gt;"}
+    dec_69{"span.tokens_input or&lt;br&gt;span.tokens_output&lt;br&gt;&lt;i&gt;Condición en línea 69:&lt;br&gt;span.tokens_input or span.tokens_output&lt;/i&gt;"}
+    dec_71{"span.stream&lt;br&gt;&lt;i&gt;Condición en línea 71:&lt;br&gt;span.stream&lt;/i&gt;"}
+    dec_73{"span.ttft_ms is not None&lt;br&gt;&lt;i&gt;Condición en línea 73:&lt;br&gt;span.ttft_ms is not None&lt;/i&gt;"}
+    dec_75{"span.throughput_tps&lt;br&gt;&lt;i&gt;Condición en línea 75:&lt;br&gt;span.throughput_tps&lt;/i&gt;"}
+    dec_78{"span.cost_usd&lt;br&gt;&lt;i&gt;Condición en línea 78:&lt;br&gt;span.cost_usd&lt;/i&gt;"}
+    dec_80{"span.input_truncated or&lt;br&gt;span.output_truncated&lt;br&gt;&lt;i&gt;Condición en línea 80:&lt;br&gt;span.input_truncated or span.output_truncated&lt;/i&gt;"}
+    dec_82{"span.status == 'error'&lt;br&gt;&lt;i&gt;Condición en línea 82:&lt;br&gt;span.status == 'error'&lt;/i&gt;"}
+    dec_89{"span.input&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;span.input&lt;/i&gt;"}
+    dec_91{"len(inp) &gt; 80&lt;br&gt;&lt;i&gt;Condición en línea 91:&lt;br&gt;len(inp) &gt; 80&lt;/i&gt;"}
+    dec_95{"span.error&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;span.error&lt;/i&gt;"}
+    loop_98["For each child_id in children"]
+    dec_100{"child&lt;br&gt;&lt;i&gt;Condición en línea 100:&lt;br&gt;child&lt;/i&gt;"}
+    fn_show[["Show"]]
+    fn_show_trace[["Show Trace"]]
+    fn__span_dict[["Span Dict"]]
+    fn__percentile[["Percentile"]]
+    tool_get_trace_22["spans = Get Trace&lt;br&gt;&lt;i&gt;Recupera un trace completo por id&lt;/i&gt;"]
+    fn__build_span_tree[["span_tree = Build Span Tree"]]
+    tool_get_span_99["child = Get Span&lt;br&gt;&lt;i&gt;Recupera un span individual&lt;/i&gt;"]
+    n_start --&gt; fn_show
+    n_start --&gt; fn_show_trace
+    fn_show_trace --&gt; tool_get_trace_22
+    tool_get_trace_22 --&gt; dec_23
+    dec_23 --&gt; loop_38
+    loop_38 --&gt; fn__build_span_tree
+    fn__build_span_tree -- "loop" --&gt; loop_38
+    n_start --&gt; fn__span_dict
+    n_start --&gt; fn__build_span_tree
+    fn__build_span_tree --&gt; dec_66
+    dec_66 --&gt; dec_69
+    dec_69 --&gt; dec_71
+    dec_71 --&gt; dec_73
+    dec_73 --&gt; dec_75
+    dec_75 --&gt; dec_78
+    dec_78 --&gt; dec_80
+    dec_80 --&gt; dec_82
+    dec_82 --&gt; dec_89
+    dec_89 --&gt; dec_91
+    dec_91 --&gt; dec_95
+    dec_95 --&gt; loop_98
+    loop_98 --&gt; tool_get_span_99
+    tool_get_span_99 --&gt; dec_100
+    dec_100 --&gt; fn__build_span_tree
+    fn__build_span_tree -- "loop" --&gt; loop_98
+    n_start --&gt; fn__percentile
+    class n_start node-start
+    class fn_show,fn_show_trace,fn__build_span_tree,fn__span_dict,fn__percentile node-subprocess
+    class tool_get_trace_22,tool_get_span_99 node-tool
+    class dec_23,dec_66,dec_69,dec_71,dec_73,dec_75,dec_78,dec_80,dec_82,dec_89,dec_91,dec_95,dec_100 node-decision
+    class loop_38,loop_98 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

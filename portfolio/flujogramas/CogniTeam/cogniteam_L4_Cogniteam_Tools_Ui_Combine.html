@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 4 · Combine</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 4 · Combine - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L3_Cogniteam_Tools_Ui.html">L3</a> <span class="sep">›</span><span class="current">L4 · Cogniteam · Tools · Ui · Combine</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Combine
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_17{"len(style_blocks) &gt; 1&lt;br&gt;&lt;i&gt;Condición en línea 17:&lt;br&gt;len(style_blocks) &gt; 1&lt;/i&gt;"}
+    dec_88{"not html or not html.strip()&lt;br&gt;&lt;i&gt;Condición en línea 88:&lt;br&gt;not html or not html.strip()&lt;/i&gt;"}
+    dec_95{"has_html_tag and&lt;br&gt;has_head_tag and has_body_tag&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;has_html_tag and has_head_tag and has_body_tag&lt;/i&gt;"}
+    dec_96{"css&lt;br&gt;&lt;i&gt;Condición en línea 96:&lt;br&gt;css&lt;/i&gt;"}
+    loop_123["For each w in conflicts"]
+    dec_99{"head_end&lt;br&gt;&lt;i&gt;Condición en línea 99:&lt;br&gt;head_end&lt;/i&gt;"}
+    dec_125{"not combined_ok&lt;br&gt;&lt;i&gt;Condición en línea 125:&lt;br&gt;not combined_ok&lt;/i&gt;"}
+    dec_104{"js&lt;br&gt;&lt;i&gt;Condición en línea 104:&lt;br&gt;js&lt;/i&gt;"}
+    dec_130{"filepath&lt;br&gt;&lt;i&gt;Condición en línea 130:&lt;br&gt;filepath&lt;/i&gt;"}
+    dec_107{"body_end&lt;br&gt;&lt;i&gt;Condición en línea 107:&lt;br&gt;body_end&lt;/i&gt;"}
+    loop_19["For each block in style_blocks"]
+    loop_22["For each s in selectors"]
+    loop_23["For each part"]
+    loop_26["For each i"]
+    loop_27["For each j"]
+    dec_29{"overlap&lt;br&gt;&lt;i&gt;Condición en línea 29:&lt;br&gt;overlap&lt;/i&gt;"}
+    dec_37{"len(script_blocks) &gt; 1&lt;br&gt;&lt;i&gt;Condición en línea 37:&lt;br&gt;len(script_blocks) &gt; 1&lt;/i&gt;"}
+    loop_39["For each block in script_blocks"]
+    loop_45["For each i"]
+    loop_46["For each j"]
+    dec_48{"overlap&lt;br&gt;&lt;i&gt;Condición en línea 48:&lt;br&gt;overlap&lt;/i&gt;"}
+    dec_61{"blocks_with_game &gt; 1&lt;br&gt;&lt;i&gt;Condición en línea 61:&lt;br&gt;blocks_with_game &gt; 1&lt;/i&gt;"}
+    loop_70["For each id_ in ids"]
+    dec_71{"id_ in seen&lt;br&gt;&lt;i&gt;Condición en línea 71:&lt;br&gt;id_ in seen&lt;/i&gt;"}
+    fn_detect_html_conflicts[["Detect Html Conflicts"]]
+    fn_combine_ui_to_html[["Combine Ui To Html"]]
+    n_start --&gt; fn_detect_html_conflicts
+    fn_detect_html_conflicts --&gt; dec_17
+    dec_17 --&gt; loop_19
+    loop_19 --&gt; loop_22
+    loop_22 --&gt; loop_23
+    loop_23 -- "loop" --&gt; loop_22
+    loop_22 -- "loop" --&gt; loop_19
+    loop_19 --&gt; loop_26
+    loop_26 --&gt; loop_27
+    loop_27 --&gt; dec_29
+    dec_29 -- "loop" --&gt; loop_27
+    loop_27 -- "loop" --&gt; loop_26
+    loop_26 --&gt; dec_37
+    dec_37 --&gt; loop_39
+    loop_39 --&gt; loop_45
+    loop_45 --&gt; loop_46
+    loop_46 --&gt; dec_48
+    dec_48 -- "loop" --&gt; loop_46
+    loop_46 -- "loop" --&gt; loop_45
+    loop_45 --&gt; dec_61
+    dec_61 --&gt; loop_70
+    loop_70 --&gt; dec_71
+    dec_71 -- "loop" --&gt; loop_70
+    n_start --&gt; fn_combine_ui_to_html
+    fn_combine_ui_to_html --&gt; dec_88
+    dec_88 --&gt; dec_95
+    dec_95 --&gt; dec_96
+    dec_96 --&gt; dec_99
+    dec_99 --&gt; dec_104
+    dec_104 --&gt; dec_107
+    dec_95 --&gt; loop_123
+    loop_123 --&gt; dec_125
+    dec_125 --&gt; dec_130
+    class n_start node-start
+    class fn_detect_html_conflicts,fn_combine_ui_to_html node-subprocess
+    class dec_17,dec_29,dec_37,dec_48,dec_61,dec_71,dec_88,dec_95,dec_96,dec_99,dec_104,dec_107,dec_125,dec_130 node-decision
+    class loop_19,loop_22,loop_23,loop_26,loop_27,loop_39,loop_45,loop_46,loop_70,loop_123 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

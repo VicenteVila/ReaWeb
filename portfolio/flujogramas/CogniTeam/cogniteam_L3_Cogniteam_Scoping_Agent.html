@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 3 · Agent</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 3 · Agent - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L2_Cogniteam_Scoping.html">L2</a> <span class="sep">›</span><span class="current">L3 · Cogniteam · Scoping · Agent</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Agent
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_156{"settings.auto_confirm&lt;br&gt;&lt;i&gt;Condición en línea 156:&lt;br&gt;settings.auto_confirm&lt;/i&gt;"}
+    loop_436["For each bp in blueprints"]
+    dec_492{"primary_bp is None&lt;br&gt;&lt;i&gt;Condición en línea 492:&lt;br&gt;primary_bp is None&lt;/i&gt;"}
+    dec_563{"needs_confirmation&lt;br&gt;&lt;i&gt;Condición en línea 563:&lt;br&gt;needs_confirmation&lt;/i&gt;"}
+    dec_162{"options&lt;br&gt;&lt;i&gt;Condición en línea 162:&lt;br&gt;options&lt;/i&gt;"}
+    loop_510["For each bp"]
+    dec_564{"not&lt;br&gt;_confirm_classification()&lt;br&gt;&lt;i&gt;Condición en línea 564:&lt;br&gt;not _confirm_classification()&lt;/i&gt;"}
+    dec_166{"default&lt;br&gt;&lt;i&gt;Condición en línea 166:&lt;br&gt;default&lt;/i&gt;"}
+    dec_566{"adjusted&lt;br&gt;&lt;i&gt;Condición en línea 566:&lt;br&gt;adjusted&lt;/i&gt;"}
+    dec_173{"not response and default&lt;br&gt;&lt;i&gt;Condición en línea 173:&lt;br&gt;not response and default&lt;/i&gt;"}
+    dec_574{"not questions&lt;br&gt;&lt;i&gt;Condición en línea 574:&lt;br&gt;not questions&lt;/i&gt;"}
+    dec_175{"options&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;options&lt;/i&gt;"}
+    dec_176{"response.isdigit()&lt;br&gt;&lt;i&gt;Condición en línea 176:&lt;br&gt;response.isdigit()&lt;/i&gt;"}
+    dec_178{"0 &lt;= idx &lt; len(options)&lt;br&gt;&lt;i&gt;Condición en línea 178:&lt;br&gt;0 &lt;= idx &lt; len(options)&lt;/i&gt;"}
+    loop_22["For each bp in blueprints"]
+    dec_25{"not dk or not ak&lt;br&gt;&lt;i&gt;Condición en línea 25:&lt;br&gt;not dk or not ak&lt;/i&gt;"}
+    dec_28{"key in seen&lt;br&gt;&lt;i&gt;Condición en línea 28:&lt;br&gt;key in seen&lt;/i&gt;"}
+    dec_32{"cfg is None&lt;br&gt;&lt;i&gt;Condición en línea 32:&lt;br&gt;cfg is None&lt;/i&gt;"}
+    dec_35{"cfg.description&lt;br&gt;&lt;i&gt;Condición en línea 35:&lt;br&gt;cfg.description&lt;/i&gt;"}
+    dec_38{"structure&lt;br&gt;&lt;i&gt;Condición en línea 38:&lt;br&gt;structure&lt;/i&gt;"}
+    loop_40["For each s in structure"]
+    dec_44{"s.required_patterns&lt;br&gt;&lt;i&gt;Condición en línea 44:&lt;br&gt;s.required_patterns&lt;/i&gt;"}
+    dec_46{"s.required_sections&lt;br&gt;&lt;i&gt;Condición en línea 46:&lt;br&gt;s.required_sections&lt;/i&gt;"}
+    dec_49{"cfg.grounding_keywords&lt;br&gt;&lt;i&gt;Condición en línea 49:&lt;br&gt;cfg.grounding_keywords&lt;/i&gt;"}
+    loop_59["For each bp in blueprints"]
+    dec_61{"not dk or dk in seen_domains&lt;br&gt;or dk == 'generic'&lt;br&gt;&lt;i&gt;Condición en línea 61:&lt;br&gt;not dk or dk in seen_domains or dk == 'generic'&lt;/i&gt;"}
+    dec_65{"block&lt;br&gt;&lt;i&gt;Condición en línea 65:&lt;br&gt;block&lt;/i&gt;"}
+    loop_142["For each bp in blueprints"]
+    loop_143["For each p"]
+    dec_145{"pname in known&lt;br&gt;&lt;i&gt;Condición en línea 145:&lt;br&gt;pname in known&lt;/i&gt;"}
+    dec_148{"human.lower() in&lt;br&gt;prompt_lower&lt;br&gt;&lt;i&gt;Condición en línea 148:&lt;br&gt;human.lower() in prompt_lower&lt;/i&gt;"}
+    loop_180["For each o in options"]
+    dec_181{"response.lower() ==&lt;br&gt;o.lower()&lt;br&gt;&lt;i&gt;Condición en línea 181:&lt;br&gt;response.lower() == o.lower()&lt;/i&gt;"}
+    loop_191["For loop"]
+    dec_205{"i &lt; len(blueprints) - 1&lt;br&gt;&lt;i&gt;Condición en línea 205:&lt;br&gt;i &lt; len(blueprints) - 1&lt;/i&gt;"}
+    loop_224["Main Loop&lt;br&gt;(while True)"]
+    loop_226["For loop"]
+    dec_235{"action.lower() in&lt;br&gt;('continuar', '3', '')&lt;br&gt;&lt;i&gt;Condición en línea 235:&lt;br&gt;action.lower() in ('continuar', '3', '')&lt;/i&gt;"}
+    dec_237{"action.lower() in ('quitar',&lt;br&gt;'2')&lt;br&gt;&lt;i&gt;Condición en línea 237:&lt;br&gt;action.lower() in ('quitar', '2')&lt;/i&gt;"}
+    dec_238{"len(selected) &lt;= 1&lt;br&gt;&lt;i&gt;Condición en línea 238:&lt;br&gt;len(selected) &lt;= 1&lt;/i&gt;"}
+    dec_242{"idx_str.isdigit()&lt;br&gt;&lt;i&gt;Condición en línea 242:&lt;br&gt;idx_str.isdigit()&lt;/i&gt;"}
+    dec_244{"0 &lt;= idx &lt; len(selected)&lt;br&gt;&lt;i&gt;Condición en línea 244:&lt;br&gt;0 &lt;= idx &lt; len(selected)&lt;/i&gt;"}
+    dec_249{"action.lower() in ('añadir',&lt;br&gt;'add', '1')&lt;br&gt;&lt;i&gt;Condición en línea 249:&lt;br&gt;action.lower() in ('añadir', 'add', '1')&lt;/i&gt;"}
+    loop_251["For loop"]
+    dec_254{"d_resp.isdigit()&lt;br&gt;&lt;i&gt;Condición en línea 254:&lt;br&gt;d_resp.isdigit()&lt;/i&gt;"}
+    dec_256{"0 &lt;= d_idx &lt; len(domains)&lt;br&gt;&lt;i&gt;Condición en línea 256:&lt;br&gt;0 &lt;= d_idx &lt; len(domains)&lt;/i&gt;"}
+    dec_267{"len(matches) == 1&lt;br&gt;&lt;i&gt;Condición en línea 267:&lt;br&gt;len(matches) == 1&lt;/i&gt;"}
+    dec_274{"not arch_names&lt;br&gt;&lt;i&gt;Condición en línea 274:&lt;br&gt;not arch_names&lt;/i&gt;"}
+    dec_276{"bp&lt;br&gt;&lt;i&gt;Condición en línea 276:&lt;br&gt;bp&lt;/i&gt;"}
+    loop_290["For loop"]
+    dec_293{"a_resp.isdigit()&lt;br&gt;&lt;i&gt;Condición en línea 293:&lt;br&gt;a_resp.isdigit()&lt;/i&gt;"}
+    dec_301{"bp&lt;br&gt;&lt;i&gt;Condición en línea 301:&lt;br&gt;bp&lt;/i&gt;"}
+    loop_325["For each bp in blueprints"]
+    dec_328{"not dk or not ak&lt;br&gt;&lt;i&gt;Condición en línea 328:&lt;br&gt;not dk or not ak&lt;/i&gt;"}
+    dec_332{"not inputs_def&lt;br&gt;&lt;i&gt;Condición en línea 332:&lt;br&gt;not inputs_def&lt;/i&gt;"}
+    loop_334["For loop"]
+    dec_335{"input_name in known_params&lt;br&gt;or input_name in seen&lt;br&gt;&lt;i&gt;Condición en línea 335:&lt;br&gt;input_name in known_params or input_name in seen&lt;/i&gt;"}
+    dec_338{"not&lt;br&gt;input_def.extract_from_task and is&lt;br&gt;&lt;i&gt;Condición en línea 338:&lt;br&gt;not input_def.extract_from_task and input_def.default is Non&lt;/i&gt;"}
+    dec_342{"dict)&lt;br&gt;&lt;i&gt;Condición en línea 342:&lt;br&gt;isinstance(input_def.extract_from_task, dict)&lt;/i&gt;"}
+    loop_360["For each bp in blueprints"]
+    loop_361["For each p"]
+    dec_362{"p('name') not in&lt;br&gt;known_params and p not in required&lt;br&gt;&lt;i&gt;Condición en línea 362:&lt;br&gt;p('name') not in known_params and p not in required&lt;/i&gt;"}
+    dec_367{"not required and (not&lt;br&gt;yaml_inputs)&lt;br&gt;&lt;i&gt;Condición en línea 367:&lt;br&gt;not required and (not yaml_inputs)&lt;/i&gt;"}
+    loop_371["For each bp in blueprints"]
+    dec_393{"not raw&lt;br&gt;&lt;i&gt;Condición en línea 393:&lt;br&gt;not raw&lt;/i&gt;"}
+    dec_397{"not json_match&lt;br&gt;&lt;i&gt;Condición en línea 397:&lt;br&gt;not json_match&lt;/i&gt;"}
+    dec_402{"not isinstance(questions,&lt;br&gt;list)&lt;br&gt;&lt;i&gt;Condición en línea 402:&lt;br&gt;not isinstance(questions, list)&lt;/i&gt;"}
+    loop_405["For each yi in yaml_inputs"]
+    dec_406{"yi('parameter') not in&lt;br&gt;existing&lt;br&gt;&lt;i&gt;Condición en línea 406:&lt;br&gt;yi('parameter') not in existing&lt;/i&gt;"}
+    loop_418["For each bp in blueprints"]
+    loop_419["For each p"]
+    loop_422["For each p in required_params"]
+    loop_452["For each bp in blueprints"]
+    loop_453["For each r"]
+    dec_454{"r not in all_rules&lt;br&gt;&lt;i&gt;Condición en línea 454:&lt;br&gt;r not in all_rules&lt;/i&gt;"}
+    dec_471{"raw&lt;br&gt;&lt;i&gt;Condición en línea 471:&lt;br&gt;raw&lt;/i&gt;"}
+    loop_527["For each bp in blueprints"]
+    loop_528["For each r"]
+    dec_529{"r not in all_rules&lt;br&gt;&lt;i&gt;Condición en línea 529:&lt;br&gt;r not in all_rules&lt;/i&gt;"}
+    loop_586["For loop"]
+    dec_592{"param_name in all_params&lt;br&gt;&lt;i&gt;Condición en línea 592:&lt;br&gt;param_name in all_params&lt;/i&gt;"}
+    dec_596{"arch_tag&lt;br&gt;&lt;i&gt;Condición en línea 596:&lt;br&gt;arch_tag&lt;/i&gt;"}
+    fn__archetype_comprobable_rules[["Archetype Comprobable Rules"]]
+    fn__archetype_prose_rules[["Archetype Prose Rules"]]
+    fn__param_name_to_human[["Param Name To Human"]]
+    fn__collect_known_params[["Collect Known Params"]]
+    fn__ask_user[["Ask User"]]
+    fn__show_classification[["Show Classification"]]
+    fn__confirm_classification[["Confirm Classification"]]
+    fn__select_manual_classifications[["Select Manual Classifications"]]
+    fn__yaml_missing_inputs[["Yaml Missing Inputs"]]
+    fn__generate_questions[["Generate Questions"]]
+    fn__fallback_questions[["Fallback Questions"]]
+    fn__generate_clarified_task[["Generate Clarified Task"]]
+    fn__fallback_clarified[["Fallback Clarified"]]
+    fn__build_manifest[["Build Manifest"]]
+    fn_clarify_task[["Clarify Task"]]
+    tool_llm_complete_392["raw = LLM Complete&lt;br&gt;&lt;i&gt;Groq/Ollama: envía prompt + contexto&lt;br&gt;→ JSON/texto (routing por proveedor)&lt;/i&gt;"]
+    tool_llm_complete_470["raw = LLM Complete&lt;br&gt;&lt;i&gt;Groq/Ollama: envía prompt + contexto&lt;br&gt;→ JSON/texto (routing por proveedor)&lt;/i&gt;"]
+    n_start --&gt; fn__archetype_comprobable_rules
+    fn__archetype_comprobable_rules --&gt; loop_22
+    loop_22 --&gt; dec_25
+    dec_25 --&gt; dec_28
+    dec_28 --&gt; dec_32
+    dec_32 --&gt; dec_35
+    dec_35 --&gt; dec_38
+    dec_38 --&gt; loop_40
+    loop_40 --&gt; dec_44
+    dec_44 --&gt; dec_46
+    dec_46 -- "loop" --&gt; loop_40
+    loop_40 --&gt; dec_49
+    dec_49 -- "loop" --&gt; loop_22
+    n_start --&gt; fn__archetype_prose_rules
+    fn__archetype_prose_rules --&gt; loop_59
+    loop_59 --&gt; dec_61
+    dec_61 --&gt; dec_65
+    dec_65 -- "loop" --&gt; loop_59
+    n_start --&gt; fn__param_name_to_human
+    n_start --&gt; fn__collect_known_params
+    fn__collect_known_params --&gt; loop_142
+    loop_142 --&gt; loop_143
+    loop_143 --&gt; dec_145
+    dec_145 --&gt; dec_148
+    dec_148 -- "loop" --&gt; loop_143
+    loop_143 -- "loop" --&gt; loop_142
+    n_start --&gt; fn__ask_user
+    fn__ask_user --&gt; dec_156
+    dec_156 --&gt; dec_162
+    dec_162 --&gt; dec_166
+    dec_166 --&gt; dec_173
+    dec_173 --&gt; dec_175
+    dec_175 --&gt; dec_176
+    dec_176 --&gt; dec_178
+    dec_178 --&gt; loop_180
+    loop_180 --&gt; dec_181
+    dec_181 -- "loop" --&gt; loop_180
+    n_start --&gt; fn__show_classification
+    fn__show_classification --&gt; loop_191
+    loop_191 --&gt; dec_205
+    dec_205 -- "loop" --&gt; loop_191
+    n_start --&gt; fn__confirm_classification
+    n_start --&gt; fn__select_manual_classifications
+    fn__select_manual_classifications --&gt; loop_224
+    loop_224 --&gt; loop_226
+    loop_226 --&gt; dec_235
+    dec_235 --&gt; dec_237
+    dec_237 --&gt; dec_238
+    dec_238 --&gt; dec_242
+    dec_242 --&gt; dec_244
+    dec_237 --&gt; dec_249
+    dec_249 --&gt; loop_251
+    loop_251 --&gt; dec_254
+    dec_254 -- "YES" --&gt; dec_256
+    dec_254 -- "NO" --&gt; dec_267
+    dec_267 --&gt; dec_274
+    dec_274 --&gt; dec_276
+    dec_276 --&gt; loop_290
+    loop_290 --&gt; dec_293
+    dec_293 --&gt; dec_301
+    dec_301 -- "loop" --&gt; loop_224
+    n_start --&gt; fn__yaml_missing_inputs
+    fn__yaml_missing_inputs --&gt; loop_325
+    loop_325 --&gt; dec_328
+    dec_328 --&gt; dec_332
+    dec_332 --&gt; loop_334
+    loop_334 --&gt; dec_335
+    dec_335 --&gt; dec_338
+    dec_338 --&gt; dec_342
+    dec_342 -- "loop" --&gt; loop_334
+    loop_334 -- "loop" --&gt; loop_325
+    n_start --&gt; fn__generate_questions
+    fn__generate_questions --&gt; loop_360
+    loop_360 --&gt; loop_361
+    loop_361 --&gt; dec_362
+    dec_362 -- "loop" --&gt; loop_361
+    loop_361 -- "loop" --&gt; loop_360
+    loop_360 --&gt; dec_367
+    dec_367 --&gt; loop_371
+    loop_371 --&gt; tool_llm_complete_392
+    tool_llm_complete_392 --&gt; dec_393
+    dec_393 --&gt; dec_397
+    dec_397 --&gt; dec_402
+    dec_402 --&gt; loop_405
+    loop_405 --&gt; dec_406
+    dec_406 -- "loop" --&gt; loop_405
+    n_start --&gt; fn__fallback_questions
+    fn__fallback_questions --&gt; loop_418
+    loop_418 --&gt; loop_419
+    loop_419 -- "loop" --&gt; loop_418
+    loop_418 --&gt; loop_422
+    n_start --&gt; fn__generate_clarified_task
+    fn__generate_clarified_task --&gt; loop_436
+    loop_436 --&gt; loop_452
+    loop_452 --&gt; loop_453
+    loop_453 --&gt; dec_454
+    dec_454 -- "loop" --&gt; loop_453
+    loop_453 -- "loop" --&gt; loop_452
+    loop_452 --&gt; tool_llm_complete_470
+    tool_llm_complete_470 --&gt; dec_471
+    n_start --&gt; fn__fallback_clarified
+    n_start --&gt; fn__build_manifest
+    fn__build_manifest --&gt; dec_492
+    dec_492 --&gt; loop_510
+    loop_510 --&gt; loop_527
+    loop_527 --&gt; loop_528
+    loop_528 --&gt; dec_529
+    dec_529 -- "loop" --&gt; loop_528
+    loop_528 -- "loop" --&gt; loop_527
+    n_start --&gt; fn_clarify_task
+    fn_clarify_task --&gt; dec_563
+    dec_563 --&gt; dec_564
+    dec_564 --&gt; dec_566
+    dec_566 --&gt; dec_574
+    dec_574 --&gt; loop_586
+    loop_586 --&gt; dec_592
+    dec_592 --&gt; dec_596
+    dec_596 -- "loop" --&gt; loop_586
+    class n_start node-start
+    class fn__archetype_comprobable_rules,fn__archetype_prose_rules,fn__param_name_to_human,fn__collect_known_params,fn__ask_user,fn__show_classification,fn__confirm_classification,fn__select_manual_classifications,fn__yaml_missing_inputs,fn__generate_questions,fn__fallback_questions,fn__generate_clarified_task,fn__fallback_clarified,fn__build_manifest,fn_clarify_task node-subprocess
+    class loop_22,loop_40,loop_59,loop_142,loop_143,loop_180,loop_191,loop_224,loop_226,loop_251,loop_290,loop_325,loop_334,loop_360,loop_361,loop_371,loop_405,loop_418,loop_419,loop_422,loop_436,loop_452,loop_453,loop_510,loop_527,loop_528,loop_586 node-loop
+    class dec_25,dec_28,dec_32,dec_35,dec_38,dec_44,dec_46,dec_49,dec_61,dec_65,dec_145,dec_148,dec_156,dec_162,dec_166,dec_173,dec_175,dec_176,dec_178,dec_181,dec_205,dec_235,dec_237,dec_238,dec_242,dec_244,dec_249,dec_254,dec_256,dec_267,dec_274,dec_276,dec_293,dec_301,dec_328,dec_332,dec_335,dec_338,dec_342,dec_362,dec_367,dec_393,dec_397,dec_402,dec_406,dec_454,dec_471,dec_492,dec_529,dec_563,dec_564,dec_566,dec_574,dec_592,dec_596 node-decision
+    class tool_llm_complete_392,tool_llm_complete_470 node-tool
+    class n_end node-end
+    click fn__archetype_comprobable_rules href "cogniteam_L4_Cogniteam_Scoping_Agent_Rules.html" "Abrir detalle"
+    click fn__archetype_prose_rules href "cogniteam_L4_Cogniteam_Scoping_Agent_Rules.html" "Abrir detalle"
+    click fn__param_name_to_human href "cogniteam_L4_Cogniteam_Scoping_Agent_Rules.html" "Abrir detalle"
+    click fn__collect_known_params href "cogniteam_L4_Cogniteam_Scoping_Agent_Rules.html" "Abrir detalle"
+    click fn__ask_user href "cogniteam_L4_Cogniteam_Scoping_Agent_Ask.html" "Abrir detalle"
+    click fn__show_classification href "cogniteam_L4_Cogniteam_Scoping_Agent_Ask.html" "Abrir detalle"
+    click fn__confirm_classification href "cogniteam_L4_Cogniteam_Scoping_Agent_Ask.html" "Abrir detalle"
+    click fn__select_manual_classifications href "cogniteam_L4_Cogniteam_Scoping_Agent_Ask.html" "Abrir detalle"
+    click fn__generate_questions href "cogniteam_L4_Cogniteam_Scoping_Agent_Ask.html" "Abrir detalle"
+    click fn__fallback_questions href "cogniteam_L4_Cogniteam_Scoping_Agent_Ask.html" "Abrir detalle"
+    click fn__yaml_missing_inputs href "cogniteam_L4_Cogniteam_Scoping_Agent_Clarify.html" "Abrir detalle"
+    click fn__generate_clarified_task href "cogniteam_L4_Cogniteam_Scoping_Agent_Clarify.html" "Abrir detalle"
+    click fn__fallback_clarified href "cogniteam_L4_Cogniteam_Scoping_Agent_Clarify.html" "Abrir detalle"
+    click fn__build_manifest href "cogniteam_L4_Cogniteam_Scoping_Agent_Clarify.html" "Abrir detalle"
+    click fn_clarify_task href "cogniteam_L4_Cogniteam_Scoping_Agent_Clarify.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

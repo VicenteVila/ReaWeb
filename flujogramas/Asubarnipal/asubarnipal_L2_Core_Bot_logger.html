@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · logger</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · logger - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Core · Bot · logger</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Bot Logger
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_94{"self._show_indent and depth&lt;br&gt;&gt; 0&lt;br&gt;&lt;i&gt;Condición en línea 94:&lt;br&gt;self._show_indent and depth &gt; 0&lt;/i&gt;"}
+    dec_96{"depth &gt; 1&lt;br&gt;&lt;i&gt;Condición en línea 96:&lt;br&gt;depth &gt; 1&lt;/i&gt;"}
+    dec_104{"self._show_timestamps&lt;br&gt;&lt;i&gt;Condición en línea 104:&lt;br&gt;self._show_timestamps&lt;/i&gt;"}
+    dec_127{"tracker&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;tracker&lt;/i&gt;"}
+    dec_194{"result&lt;br&gt;&lt;i&gt;Condición en línea 194:&lt;br&gt;result&lt;/i&gt;"}
+    dec_208{"result&lt;br&gt;&lt;i&gt;Condición en línea 208:&lt;br&gt;result&lt;/i&gt;"}
+    dec_232{"exc&lt;br&gt;&lt;i&gt;Condición en línea 232:&lt;br&gt;exc&lt;/i&gt;"}
+    fn_botlogger___new__[["New"]]
+    fn_botlogger__get_tracker[["Get Tracker"]]
+    fn_botlogger__format[["Format"]]
+    fn_botlogger__log[["Log"]]
+    fn_botlogger__strip_ansi[["Strip Ansi"]]
+    fn_botlogger_incoming[["Incoming"]]
+    fn_botlogger_outgoing[["Outgoing"]]
+    fn_botlogger_llm[["Llm"]]
+    fn_botlogger_llm_start[["Llm Start"]]
+    fn_botlogger_llm_end[["Llm End"]]
+    fn_botlogger_rag[["Rag"]]
+    fn_botlogger_rag_search[["Rag Search"]]
+    fn_botlogger_tool[["Tool"]]
+    fn_botlogger_tool_start[["Tool Start"]]
+    fn_botlogger_tool_end[["Tool End"]]
+    fn_botlogger_thought[["Thought"]]
+    fn_botlogger_agent[["Agent"]]
+    fn_botlogger_agent_step[["Agent Step"]]
+    fn_botlogger_agent_end[["Agent End"]]
+    fn_botlogger_error[["Error"]]
+    fn_botlogger_warn[["Warn"]]
+    fn_botlogger_warning[["Warning"]]
+    fn_botlogger_debug[["Debug"]]
+    fn_botlogger_info[["Info"]]
+    fn_botlogger_success[["Success"]]
+    fn_botlogger_group[["Group"]]
+    fn_botlogger_step[["Step"]]
+    fn_botlogger_progress[["Progress"]]
+    fn_botlogger_set_color[["Set Color"]]
+    fn_botlogger_set_timestamps[["Set Timestamps"]]
+    fn_botlogger_set_indent[["Set Indent"]]
+    fn_botlogger_reset_depth[["Reset Depth"]]
+    n_start --&gt; fn_botlogger___new__
+    fn_botlogger___new__ --&gt; fn_botlogger__get_tracker
+    fn_botlogger__get_tracker --&gt; fn_botlogger__format
+    fn_botlogger__format --&gt; dec_94
+    dec_94 -- "YES" --&gt; dec_96
+    dec_94 --&gt; dec_104
+    fn_botlogger__format --&gt; fn_botlogger__log
+    fn_botlogger__log --&gt; dec_127
+    fn_botlogger__log --&gt; fn_botlogger__strip_ansi
+    fn_botlogger__strip_ansi --&gt; fn_botlogger_incoming
+    fn_botlogger_incoming --&gt; fn_botlogger_outgoing
+    fn_botlogger_outgoing --&gt; fn_botlogger_llm
+    fn_botlogger_llm --&gt; fn_botlogger_llm_start
+    fn_botlogger_llm_start --&gt; fn_botlogger_llm_end
+    fn_botlogger_llm_end --&gt; fn_botlogger_rag
+    fn_botlogger_rag --&gt; fn_botlogger_rag_search
+    fn_botlogger_rag_search --&gt; fn_botlogger_tool
+    fn_botlogger_tool --&gt; dec_194
+    fn_botlogger_tool --&gt; fn_botlogger_tool_start
+    fn_botlogger_tool_start --&gt; fn_botlogger_tool_end
+    fn_botlogger_tool_end --&gt; dec_208
+    fn_botlogger_tool_end --&gt; fn_botlogger_thought
+    fn_botlogger_thought --&gt; fn_botlogger_agent
+    fn_botlogger_agent --&gt; fn_botlogger_agent_step
+    fn_botlogger_agent_step --&gt; fn_botlogger_agent_end
+    fn_botlogger_agent_end --&gt; fn_botlogger_error
+    fn_botlogger_error --&gt; dec_232
+    fn_botlogger_error --&gt; fn_botlogger_warn
+    fn_botlogger_warn --&gt; fn_botlogger_warning
+    fn_botlogger_warning --&gt; fn_botlogger_debug
+    fn_botlogger_debug --&gt; fn_botlogger_info
+    fn_botlogger_info --&gt; fn_botlogger_success
+    fn_botlogger_success --&gt; fn_botlogger_group
+    fn_botlogger_group --&gt; fn_botlogger_step
+    fn_botlogger_step --&gt; fn_botlogger_progress
+    fn_botlogger_progress --&gt; fn_botlogger_set_color
+    fn_botlogger_set_color --&gt; fn_botlogger_set_timestamps
+    fn_botlogger_set_timestamps --&gt; fn_botlogger_set_indent
+    fn_botlogger_set_indent --&gt; fn_botlogger_reset_depth
+    class n_start node-start
+    class fn_botlogger___new__,fn_botlogger__get_tracker,fn_botlogger__format,fn_botlogger__log,fn_botlogger__strip_ansi,fn_botlogger_incoming,fn_botlogger_outgoing,fn_botlogger_llm,fn_botlogger_llm_start,fn_botlogger_llm_end,fn_botlogger_rag,fn_botlogger_rag_search,fn_botlogger_tool,fn_botlogger_tool_start,fn_botlogger_tool_end,fn_botlogger_thought,fn_botlogger_agent,fn_botlogger_agent_step,fn_botlogger_agent_end,fn_botlogger_error,fn_botlogger_warn,fn_botlogger_warning,fn_botlogger_debug,fn_botlogger_info,fn_botlogger_success,fn_botlogger_group,fn_botlogger_step,fn_botlogger_progress,fn_botlogger_set_color,fn_botlogger_set_timestamps,fn_botlogger_set_indent,fn_botlogger_reset_depth node-subprocess
+    class dec_94,dec_96,dec_104,dec_127,dec_194,dec_208,dec_232 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

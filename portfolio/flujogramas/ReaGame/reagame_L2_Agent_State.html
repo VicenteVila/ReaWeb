@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaGame · Nivel 2 · State</title>
+<meta name="description" content="Flujograma ReaGame · Nivel 2 · State - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaGame/index.html">ReaGame</a> <span class="sep">›</span><a href="reagame_L0_Overview.html">L0</a> <span class="sep">›</span><a href="reagame_L1_Agent.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agent · State</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% State
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    loop_182["For each m"]
+    dec_206{"not SKILL_SAFETY_ENABLED&lt;br&gt;&lt;i&gt;Condición en línea 206:&lt;br&gt;not SKILL_SAFETY_ENABLED&lt;/i&gt;"}
+    dec_118{"self.db is not None&lt;br&gt;&lt;i&gt;Condición en línea 118:&lt;br&gt;self.db is not None&lt;/i&gt;"}
+    dec_188{"not out&lt;br&gt;&lt;i&gt;Condición en línea 188:&lt;br&gt;not out&lt;/i&gt;"}
+    dec_212{"governed('admitted')&lt;br&gt;&lt;i&gt;Condición en línea 212:&lt;br&gt;governed('admitted')&lt;/i&gt;"}
+    dec_121{"Lessons&lt;br&gt;to merge?&lt;br&gt;&lt;i&gt;¿Hay lecciones incremental?&lt;br&gt;→ merge a global_lessons&lt;/i&gt;"}
+    dec_191{"plain&lt;br&gt;&lt;i&gt;Condición en línea 191:&lt;br&gt;plain&lt;/i&gt;"}
+    loop_85["For each nd"]
+    loop_76["For each nd"]
+    dec_78{"s &gt; best_score&lt;br&gt;&lt;i&gt;Condición en línea 78:&lt;br&gt;s &gt; best_score&lt;/i&gt;"}
+    loop_239["For each item"]
+    dec_240{"isinstance(item, str)&lt;br&gt;&lt;i&gt;Condición en línea 240:&lt;br&gt;isinstance(item, str)&lt;/i&gt;"}
+    dec_242{"isinstance(item, dict)&lt;br&gt;&lt;i&gt;Condición en línea 242:&lt;br&gt;isinstance(item, dict)&lt;/i&gt;"}
+    fn__parse_lesson_blocks[["Parse Lesson Blocks"]]
+    fn__govern_lesson_block[["Govern Lesson Block"]]
+    fn_searchtree_load[["Load"]]
+    fn_memory_read_global_lessons[["Read Global Lessons"]]
+    fn_contextmanager_compact[["Compact"]]
+    fn_searchtree_save[["Save"]]
+    fn_memory_append_global[["Append Global"]]
+    fn_contextmanager__summarize[["Summarize"]]
+    fn_searchtree_add[["Add"]]
+    fn_memory_append_incremental[["Append Incremental"]]
+    fn_contextmanager_should_compact[["Should Compact"]]
+    fn_searchtree_best[["Best"]]
+    fn_memory_add_experiment[["Add Experiment"]]
+    fn_searchtree_summary[["Summary"]]
+    n_start --&gt; fn__parse_lesson_blocks
+    fn__parse_lesson_blocks --&gt; loop_182
+    loop_182 --&gt; dec_188
+    dec_188 --&gt; dec_191
+    n_start --&gt; fn__govern_lesson_block
+    fn__govern_lesson_block --&gt; dec_206
+    dec_206 --&gt; dec_212
+    n_start --&gt; fn_searchtree_load
+    fn_searchtree_load --&gt; fn_searchtree_save
+    fn_searchtree_save --&gt; fn_searchtree_add
+    fn_searchtree_add --&gt; fn_searchtree_best
+    fn_searchtree_best --&gt; loop_76
+    loop_76 --&gt; dec_78
+    dec_78 -- "loop" --&gt; loop_76
+    fn_searchtree_best --&gt; fn_searchtree_summary
+    fn_searchtree_summary --&gt; loop_85
+    n_start --&gt; fn_memory_read_global_lessons
+    fn_memory_read_global_lessons --&gt; dec_118
+    dec_118 --&gt; dec_121
+    fn_memory_read_global_lessons --&gt; fn_memory_append_global
+    fn_memory_append_global --&gt; fn_memory_append_incremental
+    fn_memory_append_incremental --&gt; fn_memory_add_experiment
+    n_start --&gt; fn_contextmanager_compact
+    fn_contextmanager_compact --&gt; fn_contextmanager__summarize
+    fn_contextmanager__summarize --&gt; loop_239
+    loop_239 --&gt; dec_240
+    dec_240 --&gt; dec_242
+    dec_242 -- "loop" --&gt; loop_239
+    fn_contextmanager__summarize --&gt; fn_contextmanager_should_compact
+    class n_start node-start
+    class fn__parse_lesson_blocks,fn__govern_lesson_block,fn_searchtree_load,fn_searchtree_save,fn_searchtree_add,fn_searchtree_best,fn_searchtree_summary,fn_memory_read_global_lessons,fn_memory_append_global,fn_memory_append_incremental,fn_memory_add_experiment,fn_contextmanager_compact,fn_contextmanager__summarize,fn_contextmanager_should_compact node-subprocess
+    class loop_182,loop_76,loop_85,loop_239 node-loop
+    class dec_188,dec_191,dec_206,dec_212,dec_78,dec_118,dec_121,dec_240,dec_242 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

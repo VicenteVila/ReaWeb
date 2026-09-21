@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · engine</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · engine - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Core · Wiki · engine</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Wiki Engine
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_442{"not self.wiki_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 442:&lt;br&gt;not self.wiki_path.exists()&lt;/i&gt;"}
+    dec_93{"not self.wiki_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;not self.wiki_path.exists()&lt;/i&gt;"}
+    loop_96["For each file_path"]
+    dec_225{"relacionadas&lt;br&gt;&lt;i&gt;Condición en línea 225:&lt;br&gt;relacionadas&lt;/i&gt;"}
+    loop_227["For each nota in relacionadas"]
+    dec_352{"not notas&lt;br&gt;&lt;i&gt;Condición en línea 352:&lt;br&gt;not notas&lt;/i&gt;"}
+    loop_121["For each nota in notas"]
+    dec_123{"tema_lower in&lt;br&gt;nota('titulo').lower()&lt;br&gt;&lt;i&gt;Condición en línea 123:&lt;br&gt;tema_lower in nota('titulo').lower()&lt;/i&gt;"}
+    loop_125["For each tag"]
+    dec_126{"tema_lower in&lt;br&gt;str(tag).lower()&lt;br&gt;&lt;i&gt;Condición en línea 126:&lt;br&gt;tema_lower in str(tag).lower()&lt;/i&gt;"}
+    dec_128{"tema_lower in&lt;br&gt;nota('contenido').lower()&lt;br&gt;&lt;i&gt;Condición en línea 128:&lt;br&gt;tema_lower in nota('contenido').lower()&lt;/i&gt;"}
+    dec_131{"score &gt; 0&lt;br&gt;&lt;i&gt;Condición en línea 131:&lt;br&gt;score &gt; 0&lt;/i&gt;"}
+    loop_157["For each nota in notas"]
+    dec_159{"t not in por_tipo&lt;br&gt;&lt;i&gt;Condición en línea 159:&lt;br&gt;t not in por_tipo&lt;/i&gt;"}
+    loop_171["For loop"]
+    dec_172{"tipo in por_tipo&lt;br&gt;&lt;i&gt;Condición en línea 172:&lt;br&gt;tipo in por_tipo&lt;/i&gt;"}
+    loop_175["For each nota"]
+    loop_252["For each line"]
+    dec_253{"line.startswith('ENTIDADES:')&lt;br&gt;&lt;i&gt;Condición en línea 253:&lt;br&gt;line.startswith('ENTIDADES:')&lt;/i&gt;"}
+    dec_255{"line.startswith('CONCEPTOS:')&lt;br&gt;&lt;i&gt;Condición en línea 255:&lt;br&gt;line.startswith('CONCEPTOS:')&lt;/i&gt;"}
+    dec_257{"Condition?&lt;br&gt;&lt;i&gt;Condición en línea 257:&lt;br&gt;line.startswith('SINTESIS_TITULO:')&lt;/i&gt;"}
+    loop_262["For each entidad"]
+    loop_357["For each nota in notas"]
+    dec_359{"any((term in&lt;br&gt;nota('titulo').lower() for term in&lt;br&gt;&lt;i&gt;Condición en línea 359:&lt;br&gt;any((term in nota('titulo').lower() for term in pregunta_low&lt;/i&gt;"}
+    loop_361["For each tag"]
+    dec_362{"any((term in&lt;br&gt;str(tag).lower() for term in&lt;br&gt;&lt;i&gt;Condición en línea 362:&lt;br&gt;any((term in str(tag).lower() for term in pregunta_lower.spl&lt;/i&gt;"}
+    dec_364{"any((term in&lt;br&gt;nota('contenido').lower() for term&lt;br&gt;&lt;i&gt;Condición en línea 364:&lt;br&gt;any((term in nota('contenido').lower() for term in pregunta_&lt;/i&gt;"}
+    dec_366{"score &gt; 0&lt;br&gt;&lt;i&gt;Condición en línea 366:&lt;br&gt;score &gt; 0&lt;/i&gt;"}
+    dec_371{"not relevantes&lt;br&gt;&lt;i&gt;Condición en línea 371:&lt;br&gt;not relevantes&lt;/i&gt;"}
+    loop_376["For each nota in relevantes"]
+    loop_400["For each nota in notas"]
+    loop_401["For each rel"]
+    loop_404["For each nota in notas"]
+    dec_405{"nota('id') not in linked_ids&lt;br&gt;and (not nota.get('relacionados'))&lt;br&gt;&lt;i&gt;Condición en línea 405:&lt;br&gt;nota('id') not in linked_ids and (not nota.get('relacionados&lt;/i&gt;"}
+    loop_409["For each nota in notas"]
+    dec_413{"dias &gt; 30 and nota('tipo')&lt;br&gt;in ('entity', 'concept')&lt;br&gt;&lt;i&gt;Condición en línea 413:&lt;br&gt;dias &gt; 30 and nota('tipo') in ('entity', 'concept')&lt;/i&gt;"}
+    loop_418["For each nota in notas"]
+    dec_419{"not nota.get('tags')&lt;br&gt;&lt;i&gt;Condición en línea 419:&lt;br&gt;not nota.get('tags')&lt;/i&gt;"}
+    loop_446["For each file_path"]
+    dec_449{"content.startswith('—-')&lt;br&gt;&lt;i&gt;Condición en línea 449:&lt;br&gt;content.startswith('—-')&lt;/i&gt;"}
+    dec_451{"len(parts) &gt;= 3&lt;br&gt;&lt;i&gt;Condición en línea 451:&lt;br&gt;len(parts) &gt;= 3&lt;/i&gt;"}
+    fn_guardar_schema[["Guardar Schema"]]
+    fn_wikiengine__hash_fuente[["Hash Fuente"]]
+    fn_wikivectorindex__scan[["Scan"]]
+    fn_wikiengine__extraer_frontmatter[["Extraer Frontmatter"]]
+    fn_wikivectorindex_generar_embeddings[["Generar Embeddings"]]
+    fn_wikiengine__buscar_notas_existentes[["Buscar Notas Existentes"]]
+    fn_wikivectorindex_construir_grafo[["Construir Grafo"]]
+    fn_wikiengine__encontrar_relacionadas[["Encontrar Relacionadas"]]
+    fn_wikivectorindex_detectar_comunidades[["Detectar Comunidades"]]
+    fn_wikiengine__actualizar_index[["Actualizar Index"]]
+    fn_wikivectorindex_identificar_hubs[["Identificar Hubs"]]
+    fn_wikiengine_log_ingest[["Log Ingest"]]
+    fn_wikivectorindex_full_index[["Full Index"]]
+    fn_wikiengine_ingestar[["Ingestar"]]
+    fn_wikiengine_query_wiki[["Query Wiki"]]
+    fn_wikiengine_lint[["Lint"]]
+    tool_generate_243["analisis = Generate&lt;br&gt;&lt;i&gt;LLMRouter: invocación LLM&lt;br&gt;generativa (gemini/ollama)&lt;/i&gt;"]
+    tool_generate_288["nuevo_contenido = Generate&lt;br&gt;&lt;i&gt;LLMRouter: invocación LLM&lt;br&gt;generativa (gemini/ollama)&lt;/i&gt;"]
+    tool_generate_312["source_content = Generate&lt;br&gt;&lt;i&gt;LLMRouter: invocación LLM&lt;br&gt;generativa (gemini/ollama)&lt;/i&gt;"]
+    n_start --&gt; fn_guardar_schema
+    n_start --&gt; fn_wikiengine__hash_fuente
+    fn_wikiengine__hash_fuente --&gt; fn_wikiengine__extraer_frontmatter
+    fn_wikiengine__extraer_frontmatter --&gt; fn_wikiengine__buscar_notas_existentes
+    fn_wikiengine__buscar_notas_existentes --&gt; dec_93
+    dec_93 --&gt; loop_96
+    fn_wikiengine__buscar_notas_existentes --&gt; fn_wikiengine__encontrar_relacionadas
+    fn_wikiengine__encontrar_relacionadas --&gt; loop_121
+    loop_121 --&gt; dec_123
+    dec_123 --&gt; loop_125
+    loop_125 --&gt; dec_126
+    dec_126 -- "loop" --&gt; loop_125
+    loop_125 --&gt; dec_128
+    dec_128 --&gt; dec_131
+    dec_131 -- "loop" --&gt; loop_121
+    fn_wikiengine__encontrar_relacionadas --&gt; fn_wikiengine__actualizar_index
+    fn_wikiengine__actualizar_index --&gt; loop_157
+    loop_157 --&gt; dec_159
+    dec_159 -- "loop" --&gt; loop_157
+    loop_157 --&gt; loop_171
+    loop_171 --&gt; dec_172
+    dec_172 --&gt; loop_175
+    loop_175 -- "loop" --&gt; loop_171
+    fn_wikiengine__actualizar_index --&gt; fn_wikiengine_log_ingest
+    fn_wikiengine_log_ingest --&gt; fn_wikiengine_ingestar
+    fn_wikiengine_ingestar --&gt; dec_225
+    dec_225 --&gt; loop_227
+    loop_227 --&gt; tool_generate_243
+    tool_generate_243 --&gt; loop_252
+    loop_252 --&gt; dec_253
+    dec_253 --&gt; dec_255
+    dec_255 --&gt; dec_257
+    dec_257 -- "loop" --&gt; loop_252
+    loop_252 --&gt; loop_262
+    loop_262 --&gt; tool_generate_288
+    tool_generate_288 -- "loop" --&gt; loop_262
+    loop_262 --&gt; tool_generate_312
+    fn_wikiengine_ingestar --&gt; fn_wikiengine_query_wiki
+    fn_wikiengine_query_wiki --&gt; dec_352
+    dec_352 --&gt; loop_357
+    loop_357 --&gt; dec_359
+    dec_359 --&gt; loop_361
+    loop_361 --&gt; dec_362
+    dec_362 -- "loop" --&gt; loop_361
+    loop_361 --&gt; dec_364
+    dec_364 --&gt; dec_366
+    dec_366 -- "loop" --&gt; loop_357
+    loop_357 --&gt; dec_371
+    dec_371 --&gt; loop_376
+    fn_wikiengine_query_wiki --&gt; fn_wikiengine_lint
+    fn_wikiengine_lint --&gt; loop_400
+    loop_400 --&gt; loop_401
+    loop_401 -- "loop" --&gt; loop_400
+    loop_400 --&gt; loop_404
+    loop_404 --&gt; dec_405
+    dec_405 -- "loop" --&gt; loop_404
+    loop_404 --&gt; loop_409
+    loop_409 --&gt; dec_413
+    dec_413 -- "loop" --&gt; loop_409
+    loop_409 --&gt; loop_418
+    loop_418 --&gt; dec_419
+    dec_419 -- "loop" --&gt; loop_418
+    n_start --&gt; fn_wikivectorindex__scan
+    fn_wikivectorindex__scan --&gt; dec_442
+    dec_442 --&gt; loop_446
+    loop_446 --&gt; dec_449
+    dec_449 -- "YES" --&gt; dec_451
+    dec_449 -- "loop" --&gt; loop_446
+    fn_wikivectorindex__scan --&gt; fn_wikivectorindex_generar_embeddings
+    fn_wikivectorindex_generar_embeddings --&gt; fn_wikivectorindex_construir_grafo
+    fn_wikivectorindex_construir_grafo --&gt; fn_wikivectorindex_detectar_comunidades
+    fn_wikivectorindex_detectar_comunidades --&gt; fn_wikivectorindex_identificar_hubs
+    fn_wikivectorindex_identificar_hubs --&gt; fn_wikivectorindex_full_index
+    class n_start node-start
+    class fn_guardar_schema,fn_wikiengine__hash_fuente,fn_wikiengine__extraer_frontmatter,fn_wikiengine__buscar_notas_existentes,fn_wikiengine__encontrar_relacionadas,fn_wikiengine__actualizar_index,fn_wikiengine_log_ingest,fn_wikiengine_ingestar,fn_wikiengine_query_wiki,fn_wikiengine_lint,fn_wikivectorindex__scan,fn_wikivectorindex_generar_embeddings,fn_wikivectorindex_construir_grafo,fn_wikivectorindex_detectar_comunidades,fn_wikivectorindex_identificar_hubs,fn_wikivectorindex_full_index node-subprocess
+    class dec_93,dec_123,dec_126,dec_128,dec_131,dec_159,dec_172,dec_225,dec_253,dec_255,dec_257,dec_352,dec_359,dec_362,dec_364,dec_366,dec_371,dec_405,dec_413,dec_419,dec_442,dec_449,dec_451 node-decision
+    class loop_96,loop_121,loop_125,loop_157,loop_171,loop_175,loop_227,loop_252,loop_262,loop_357,loop_361,loop_376,loop_400,loop_401,loop_404,loop_409,loop_418,loop_446 node-loop
+    class tool_generate_243,tool_generate_288,tool_generate_312 node-tool
+    class n_end node-end
+    click fn_guardar_schema href "asubarnipal_L3_Core_Wiki_engine_Helpers.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

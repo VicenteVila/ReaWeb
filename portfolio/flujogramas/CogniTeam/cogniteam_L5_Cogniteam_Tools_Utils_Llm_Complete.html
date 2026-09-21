@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 5 · Complete</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 5 · Complete - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L4_Cogniteam_Tools_Utils_Llm.html">L4</a> <span class="sep">›</span><span class="current">L5 · Cogniteam · Tools · Utils · Llm · Complete</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Llm · Complete
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_161{"not (s.startswith(''') and&lt;br&gt;s.endswith('''))&lt;br&gt;&lt;i&gt;Condición en línea 161:&lt;br&gt;not (s.startswith(''') and s.endswith('''))&lt;/i&gt;"}
+    dec_172{"primary == 'nvidia' and&lt;br&gt;_nvidia_available()&lt;br&gt;&lt;i&gt;Condición en línea 172:&lt;br&gt;primary == 'nvidia' and _nvidia_available()&lt;/i&gt;"}
+    dec_71{"primary == 'nvidia' and&lt;br&gt;_nvidia_available()&lt;br&gt;&lt;i&gt;Condición en línea 71:&lt;br&gt;primary == 'nvidia' and _nvidia_available()&lt;/i&gt;"}
+    dec_174{"primary == 'google' and&lt;br&gt;_google_available()&lt;br&gt;&lt;i&gt;Condición en línea 174:&lt;br&gt;primary == 'google' and _google_available()&lt;/i&gt;"}
+    dec_73{"result&lt;br&gt;&lt;i&gt;Condición en línea 73:&lt;br&gt;result&lt;/i&gt;"}
+    dec_75{"primary == 'google' and&lt;br&gt;_google_available()&lt;br&gt;&lt;i&gt;Condición en línea 75:&lt;br&gt;primary == 'google' and _google_available()&lt;/i&gt;"}
+    dec_176{"primary == 'mistral' and&lt;br&gt;_mistral_available()&lt;br&gt;&lt;i&gt;Condición en línea 176:&lt;br&gt;primary == 'mistral' and _mistral_available()&lt;/i&gt;"}
+    dec_77{"result&lt;br&gt;&lt;i&gt;Condición en línea 77:&lt;br&gt;result&lt;/i&gt;"}
+    dec_79{"primary == 'mistral' and&lt;br&gt;_mistral_available()&lt;br&gt;&lt;i&gt;Condición en línea 79:&lt;br&gt;primary == 'mistral' and _mistral_available()&lt;/i&gt;"}
+    dec_178{"primary == 'cerebras' and&lt;br&gt;_cerebras_available()&lt;br&gt;&lt;i&gt;Condición en línea 178:&lt;br&gt;primary == 'cerebras' and _cerebras_available()&lt;/i&gt;"}
+    dec_81{"result&lt;br&gt;&lt;i&gt;Condición en línea 81:&lt;br&gt;result&lt;/i&gt;"}
+    dec_83{"primary == 'cerebras' and&lt;br&gt;_cerebras_available()&lt;br&gt;&lt;i&gt;Condición en línea 83:&lt;br&gt;primary == 'cerebras' and _cerebras_available()&lt;/i&gt;"}
+    dec_180{"_groq_available(task)&lt;br&gt;&lt;i&gt;Condición en línea 180:&lt;br&gt;_groq_available(task)&lt;/i&gt;"}
+    dec_85{"result&lt;br&gt;&lt;i&gt;Condición en línea 85:&lt;br&gt;result&lt;/i&gt;"}
+    dec_184{"settings.use_ollama and&lt;br&gt;settings.ollama_base_url&lt;br&gt;&lt;i&gt;Condición en línea 184:&lt;br&gt;settings.use_ollama and settings.ollama_base_url&lt;/i&gt;"}
+    dec_89{"_groq_available(task)&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;_groq_available(task)&lt;/i&gt;"}
+    dec_101{"result&lt;br&gt;&lt;i&gt;Condición en línea 101:&lt;br&gt;result&lt;/i&gt;"}
+    dec_111{"settings.use_ollama and&lt;br&gt;settings.ollama_base_url&lt;br&gt;&lt;i&gt;Condición en línea 111:&lt;br&gt;settings.use_ollama and settings.ollama_base_url&lt;/i&gt;"}
+    dec_122{"result&lt;br&gt;&lt;i&gt;Condición en línea 122:&lt;br&gt;result&lt;/i&gt;"}
+    dec_143{"response_format&lt;br&gt;&lt;i&gt;Condición en línea 143:&lt;br&gt;response_format&lt;/i&gt;"}
+    dec_148{"response and&lt;br&gt;response.choices and&lt;br&gt;&lt;i&gt;Condición en línea 148:&lt;br&gt;response and response.choices and response.choices(0).messag&lt;/i&gt;"}
+    fn_llm_complete[["Llm Complete"]]
+    fn__llm_complete_body[["Llm Complete Body"]]
+    fn__escape_control_chars_in_match[["Escape Control Chars In Match"]]
+    fn__resolve_model_name[["Resolve Model Name"]]
+    fn_sanitize_json_string_for_control_chars[["Sanitize Json String For Control Chars"]]
+    fn__try_provider_49[["Try Provider"]]
+    fn_replace_char_165[["Replace Char"]]
+    tool_get_model_for_task_130["model = Model for Task&lt;br&gt;&lt;i&gt;Selecciona modelo/temperatura&lt;br&gt;según la tarea resuelta&lt;/i&gt;"]
+    n_start --&gt; fn_llm_complete
+    n_start --&gt; fn__llm_complete_body
+    fn__llm_complete_body --&gt; fn__try_provider_49
+    fn__try_provider_49 --&gt; dec_71
+    dec_71 --&gt; dec_73
+    dec_71 --&gt; dec_75
+    dec_75 --&gt; dec_77
+    dec_75 --&gt; dec_79
+    dec_79 --&gt; dec_81
+    dec_79 --&gt; dec_83
+    dec_83 --&gt; dec_85
+    dec_85 --&gt; dec_89
+    dec_89 --&gt; dec_101
+    dec_101 --&gt; dec_111
+    dec_111 --&gt; dec_122
+    dec_122 --&gt; tool_get_model_for_task_130
+    tool_get_model_for_task_130 --&gt; dec_143
+    dec_143 --&gt; dec_148
+    n_start --&gt; fn__escape_control_chars_in_match
+    fn__escape_control_chars_in_match --&gt; dec_161
+    dec_161 --&gt; fn_replace_char_165
+    n_start --&gt; fn__resolve_model_name
+    fn__resolve_model_name --&gt; dec_172
+    dec_172 --&gt; dec_174
+    dec_174 --&gt; dec_176
+    dec_176 --&gt; dec_178
+    dec_178 --&gt; dec_180
+    dec_180 --&gt; dec_184
+    n_start --&gt; fn_sanitize_json_string_for_control_chars
+    class n_start node-start
+    class fn_llm_complete,fn__llm_complete_body,fn__try_provider_49,fn__escape_control_chars_in_match,fn_replace_char_165,fn__resolve_model_name,fn_sanitize_json_string_for_control_chars node-subprocess
+    class dec_71,dec_73,dec_75,dec_77,dec_79,dec_81,dec_83,dec_85,dec_89,dec_101,dec_111,dec_122,dec_143,dec_148,dec_161,dec_172,dec_174,dec_176,dec_178,dec_180,dec_184 node-decision
+    class tool_get_model_for_task_130 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

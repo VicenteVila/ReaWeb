@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · Nivel 4 · VisualChecks</title>
+<meta name="description" content="Flujograma ReaWeb · Nivel 4 · VisualChecks - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><a href="reaweb_L0_Overview.html">L0</a> <span class="sep">›</span><a href="reaweb_L3_Tools_Domain_Evaluator.html">L3</a> <span class="sep">›</span><span class="current">L4 · Tools · Domain · Evaluator · VisualChecks</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Evaluator · VisualChecks
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    dec_34{"'requestAnimationFrame' not&lt;br&gt;in c or 'getContext' not in c&lt;br&gt;&lt;i&gt;Condición en línea 34:&lt;br&gt;'requestAnimationFrame' not in c or 'getContext' not in c&lt;/i&gt;"}
+    dec_75{"re.search(':(active|focus)\\b', c)&lt;br&gt;&lt;i&gt;Condición en línea 75:&lt;br&gt;re.search(':(active|focus)\\b', c) and 'transition' in c&lt;/i&gt;"}
+    dec_85{"sections &gt;= 3&lt;br&gt;&lt;i&gt;Condición en línea 85:&lt;br&gt;sections &gt;= 3&lt;/i&gt;"}
+    dec_95{"not inputs&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;not inputs&lt;/i&gt;"}
+    dec_127{"not imgs&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;not imgs&lt;/i&gt;"}
+    dec_36{"not&lt;br&gt;c)&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;not re.search('(?:fillRect|strokeRect|clearRect|arc\\(|fill\&lt;/i&gt;"}
+    dec_77{"c)&lt;br&gt;&lt;i&gt;Condición en línea 77:&lt;br&gt;re.search('addEventListener\\s*\\(\\s*(\'\\')(mousemove|poin&lt;/i&gt;"}
+    loop_4["For each name in names"]
+    dec_5{"+ re.escape(name) + '\\b', c)&lt;br&gt;&lt;i&gt;Condición en línea 5:&lt;br&gt;re.search('(?:animation|animation-name)\\s*:(^;())*\\b' + re&lt;/i&gt;"}
+    loop_97["For each attrs in inputs"]
+    dec_98{"re.search('aria-label=('\\\')',&lt;br&gt;&lt;i&gt;Condición en línea 98:&lt;br&gt;re.search('aria-label=('\\\')', attrs)&lt;/i&gt;"}
+    dec_101{"'type='hidden'' in attrs&lt;br&gt;&lt;i&gt;Condición en línea 101:&lt;br&gt;'type='hidden'' in attrs&lt;/i&gt;"}
+    dec_105{"not m&lt;br&gt;&lt;i&gt;Condición en línea 105:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_108{"not&lt;br&gt;+ re.escape(fid) + '('\\\')', h)&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;not re.search('&lt;label\\b(^&gt;)*\\bfor=('\\\')' + re.escape(fid&lt;/i&gt;"}
+    loop_130["For each attrs in imgs"]
+    dec_131{"'width=' in attrs or&lt;br&gt;'max-width' in attrs or 'height='&lt;br&gt;&lt;i&gt;Condición en línea 131:&lt;br&gt;'width=' in attrs or 'max-width' in attrs or 'height=' in at&lt;/i&gt;"}
+    fn__has_real_css_animations[["Has Real Css Animations"]]
+    fn__has_real_transitions[["Has Real Transitions"]]
+    fn__has_real_gradients[["Has Real Gradients"]]
+    fn__has_animated_canvas[["Has Animated Canvas"]]
+    fn__no_dead_canvas[["No Dead Canvas"]]
+    fn__has_dark_mode[["Has Dark Mode"]]
+    fn__has_scroll_reveal[["Has Scroll Reveal"]]
+    fn__has_hover_effects[["Has Hover Effects"]]
+    fn__has_microinteractions[["Has Microinteractions"]]
+    fn__has_content_richness[["Has Content Richness"]]
+    fn__inputs_labeled[["Inputs Labeled"]]
+    fn__has_modern_images[["Has Modern Images"]]
+    fn__scripts_async[["Scripts Async"]]
+    fn__img_responsive[["Img Responsive"]]
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    n_start --&gt; fn__has_real_css_animations
+    fn__has_real_css_animations --&gt; loop_4
+    loop_4 --&gt; dec_5
+    dec_5 -- "loop" --&gt; loop_4
+    n_start --&gt; fn__has_real_transitions
+    n_start --&gt; fn__has_real_gradients
+    n_start --&gt; fn__has_animated_canvas
+    fn__has_animated_canvas --&gt; dec_34
+    dec_34 --&gt; dec_36
+    n_start --&gt; fn__no_dead_canvas
+    n_start --&gt; fn__has_dark_mode
+    n_start --&gt; fn__has_scroll_reveal
+    n_start --&gt; fn__has_hover_effects
+    n_start --&gt; fn__has_microinteractions
+    fn__has_microinteractions --&gt; dec_75
+    dec_75 --&gt; dec_77
+    n_start --&gt; fn__has_content_richness
+    fn__has_content_richness --&gt; dec_85
+    n_start --&gt; fn__inputs_labeled
+    fn__inputs_labeled --&gt; dec_95
+    dec_95 --&gt; loop_97
+    loop_97 --&gt; dec_98
+    dec_98 --&gt; dec_101
+    dec_101 --&gt; dec_105
+    dec_105 --&gt; dec_108
+    dec_108 -- "loop" --&gt; loop_97
+    n_start --&gt; fn__has_modern_images
+    n_start --&gt; fn__scripts_async
+    n_start --&gt; fn__img_responsive
+    fn__img_responsive --&gt; dec_127
+    dec_127 --&gt; loop_130
+    loop_130 --&gt; dec_131
+    dec_131 -- "loop" --&gt; loop_130
+    class n_start node-start
+    class fn__has_real_css_animations,fn__has_real_transitions,fn__has_real_gradients,fn__has_animated_canvas,fn__no_dead_canvas,fn__has_dark_mode,fn__has_scroll_reveal,fn__has_hover_effects,fn__has_microinteractions,fn__has_content_richness,fn__inputs_labeled,fn__has_modern_images,fn__scripts_async,fn__img_responsive node-subprocess
+    class loop_4,loop_97,loop_130 node-loop
+    class dec_5,dec_34,dec_36,dec_75,dec_77,dec_85,dec_95,dec_98,dec_101,dec_105,dec_108,dec_127,dec_131 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

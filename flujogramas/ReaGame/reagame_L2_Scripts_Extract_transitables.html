@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaGame · Nivel 2 · transitables</title>
+<meta name="description" content="Flujograma ReaGame · Nivel 2 · transitables - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaGame/index.html">ReaGame</a> <span class="sep">›</span><a href="reagame_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Scripts · Extract · transitables</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Extract Transitables
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_32{"bs.size != (tr.shape(1),&lt;br&gt;tr.shape(0))&lt;br&gt;&lt;i&gt;Condición en línea 32:&lt;br&gt;bs.size != (tr.shape(1), tr.shape(0))&lt;/i&gt;"}
+    dec_109{"suffix == 'Boss'&lt;br&gt;&lt;i&gt;Condición en línea 109:&lt;br&gt;suffix == 'Boss'&lt;/i&gt;"}
+    dec_36{"'Boss' in str(tr_path)&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;'Boss' in str(tr_path)&lt;/i&gt;"}
+    dec_111{"not tr.exists() and&lt;br&gt;ntr.exists()&lt;br&gt;&lt;i&gt;Condición en línea 111:&lt;br&gt;not tr.exists() and ntr.exists()&lt;/i&gt;"}
+    dec_114{"not src_tr.exists() or not&lt;br&gt;base.exists()&lt;br&gt;&lt;i&gt;Condición en línea 114:&lt;br&gt;not src_tr.exists() or not base.exists()&lt;/i&gt;"}
+    loop_48["For each gy"]
+    loop_49["For each gx"]
+    dec_51{"blk.size and blk.mean() &gt;&lt;br&gt;cov&lt;br&gt;&lt;i&gt;Condición en línea 51:&lt;br&gt;blk.size and blk.mean() &gt; cov&lt;/i&gt;"}
+    loop_56["For each y"]
+    loop_57["For each x"]
+    dec_58{"grid(y, x) == 0 or&lt;br&gt;visited(y, x)&lt;br&gt;&lt;i&gt;Condición en línea 58:&lt;br&gt;grid(y, x) == 0 or visited(y, x)&lt;/i&gt;"}
+    loop_61["Loop"]
+    loop_65["Loop"]
+    loop_66["For each cx"]
+    dec_67{"grid(y2 + 1, cx) == 0 or&lt;br&gt;visited(y2 + 1, cx)&lt;br&gt;&lt;i&gt;Condición en línea 67:&lt;br&gt;grid(y2 + 1, cx) == 0 or visited(y2 + 1, cx)&lt;/i&gt;"}
+    dec_70{"can&lt;br&gt;&lt;i&gt;Condición en línea 70:&lt;br&gt;can&lt;/i&gt;"}
+    loop_81["while changed"]
+    loop_84["while rects"]
+    loop_87["For loop"]
+    dec_90{"ox and oy&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;ox and oy&lt;/i&gt;"}
+    dec_98{"not merged&lt;br&gt;&lt;i&gt;Condición en línea 98:&lt;br&gt;not merged&lt;/i&gt;"}
+    loop_126["For loop"]
+    dec_127{"y + h &gt;= 700&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;y + h &gt;= 700&lt;/i&gt;"}
+    loop_129["For each cx"]
+    dec_132{"len(idx)&lt;br&gt;&lt;i&gt;Condición en línea 132:&lt;br&gt;len(idx)&lt;/i&gt;"}
+    dec_134{"tops&lt;br&gt;&lt;i&gt;Condición en línea 134:&lt;br&gt;tops&lt;/i&gt;"}
+    dec_151{"suffix == 'Boss'&lt;br&gt;&lt;i&gt;Condición en línea 151:&lt;br&gt;suffix == 'Boss'&lt;/i&gt;"}
+    dec_156{"low&lt;br&gt;&lt;i&gt;Condición en línea 156:&lt;br&gt;low&lt;/i&gt;"}
+    dec_161{"rects&lt;br&gt;&lt;i&gt;Condición en línea 161:&lt;br&gt;rects&lt;/i&gt;"}
+    dec_165{"suffix == 'Boss'&lt;br&gt;&lt;i&gt;Condición en línea 165:&lt;br&gt;suffix == 'Boss'&lt;/i&gt;"}
+    dec_171{"len(chosen) &lt; 2&lt;br&gt;&lt;i&gt;Condición en línea 171:&lt;br&gt;len(chosen) &lt; 2&lt;/i&gt;"}
+    loop_172["For each g"]
+    dec_173{"g not in chosen&lt;br&gt;&lt;i&gt;Condición en línea 173:&lt;br&gt;g not in chosen&lt;/i&gt;"}
+    dec_175{"len(chosen) == 2&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;len(chosen) == 2&lt;/i&gt;"}
+    dec_178{"len(chosen) == 2 and&lt;br&gt;chosen(0) == chosen(1)&lt;br&gt;&lt;i&gt;Condición en línea 178:&lt;br&gt;len(chosen) == 2 and chosen(0) == chosen(1)&lt;/i&gt;"}
+    loop_181["For loop"]
+    dec_186{"suffix == 'Boss' and&lt;br&gt;spawn_rect is not None&lt;br&gt;&lt;i&gt;Condición en línea 186:&lt;br&gt;suffix == 'Boss' and spawn_rect is not None&lt;/i&gt;"}
+    dec_189{"len(enemies) &gt;= 1&lt;br&gt;&lt;i&gt;Condición en línea 189:&lt;br&gt;len(enemies) &gt;= 1&lt;/i&gt;"}
+    loop_194["For each p"]
+    dec_195{"p == spawn_rect&lt;br&gt;&lt;i&gt;Condición en línea 195:&lt;br&gt;p == spawn_rect&lt;/i&gt;"}
+    dec_197{"p(2) &gt;= 64 and len(coins) &lt;&lt;br&gt;5&lt;br&gt;&lt;i&gt;Condición en línea 197:&lt;br&gt;p(2) &gt;= 64 and len(coins) &lt; 5&lt;/i&gt;"}
+    dec_199{"not any((abs(pos(0) - c(0))&lt;br&gt;&lt; 80 and abs(pos(1) - c(1)) &lt; 48 c&lt;br&gt;&lt;i&gt;Condición en línea 199:&lt;br&gt;not any((abs(pos(0) - c(0)) &lt; 80 and abs(pos(1) - c(1)) &lt; 48&lt;/i&gt;"}
+    loop_216["For each mstr"]
+    dec_218{"mstr.lower() == 'boss' or&lt;br&gt;mstr == '4'&lt;br&gt;&lt;i&gt;Condición en línea 218:&lt;br&gt;mstr.lower() == 'boss' or mstr == '4'&lt;/i&gt;"}
+    fn_marked_mask[["Marked Mask"]]
+    fn_grid_rects[["Grid Rects"]]
+    fn_merge_close[["Merge Close"]]
+    fn_extract[["Extract"]]
+    fn_main[["Main"]]
+    n_start --&gt; fn_marked_mask
+    fn_marked_mask --&gt; dec_32
+    dec_32 --&gt; dec_36
+    n_start --&gt; fn_grid_rects
+    fn_grid_rects --&gt; loop_48
+    loop_48 --&gt; loop_49
+    loop_49 --&gt; dec_51
+    dec_51 -- "loop" --&gt; loop_49
+    loop_49 -- "loop" --&gt; loop_48
+    loop_48 --&gt; loop_56
+    loop_56 --&gt; loop_57
+    loop_57 --&gt; dec_58
+    dec_58 --&gt; loop_61
+    loop_61 --&gt; loop_65
+    loop_65 --&gt; loop_66
+    loop_66 --&gt; dec_67
+    dec_67 -- "loop" --&gt; loop_66
+    loop_66 --&gt; dec_70
+    dec_70 -- "loop" --&gt; loop_65
+    loop_65 -- "loop" --&gt; loop_57
+    loop_57 -- "loop" --&gt; loop_56
+    n_start --&gt; fn_merge_close
+    fn_merge_close --&gt; loop_81
+    loop_81 --&gt; loop_84
+    loop_84 --&gt; loop_87
+    loop_87 --&gt; dec_90
+    dec_90 -- "loop" --&gt; loop_87
+    loop_87 --&gt; dec_98
+    dec_98 -- "loop" --&gt; loop_84
+    loop_84 -- "loop" --&gt; loop_81
+    n_start --&gt; fn_extract
+    fn_extract --&gt; dec_109
+    dec_109 --&gt; dec_111
+    dec_111 --&gt; dec_114
+    dec_114 --&gt; loop_126
+    loop_126 --&gt; dec_127
+    dec_127 --&gt; loop_129
+    loop_129 --&gt; dec_132
+    dec_132 -- "loop" --&gt; loop_129
+    loop_129 --&gt; dec_134
+    dec_127 -- "loop" --&gt; loop_126
+    loop_126 --&gt; dec_151
+    dec_151 --&gt; dec_156
+    dec_156 --&gt; dec_161
+    dec_161 --&gt; dec_165
+    dec_165 --&gt; dec_171
+    dec_171 --&gt; loop_172
+    loop_172 --&gt; dec_173
+    dec_173 --&gt; dec_175
+    dec_175 -- "loop" --&gt; loop_172
+    loop_172 --&gt; dec_178
+    dec_178 --&gt; loop_181
+    loop_181 --&gt; dec_186
+    dec_186 --&gt; dec_189
+    dec_189 --&gt; loop_194
+    loop_194 --&gt; dec_195
+    dec_195 --&gt; dec_197
+    dec_197 --&gt; dec_199
+    dec_199 -- "loop" --&gt; loop_194
+    n_start --&gt; fn_main
+    fn_main --&gt; loop_216
+    loop_216 --&gt; dec_218
+    dec_218 -- "loop" --&gt; loop_216
+    class n_start node-start
+    class fn_marked_mask,fn_grid_rects,fn_merge_close,fn_extract,fn_main node-subprocess
+    class dec_32,dec_36,dec_51,dec_58,dec_67,dec_70,dec_90,dec_98,dec_109,dec_111,dec_114,dec_127,dec_132,dec_134,dec_151,dec_156,dec_161,dec_165,dec_171,dec_173,dec_175,dec_178,dec_186,dec_189,dec_195,dec_197,dec_199,dec_218 node-decision
+    class loop_48,loop_49,loop_56,loop_57,loop_61,loop_65,loop_66,loop_81,loop_84,loop_87,loop_126,loop_129,loop_172,loop_181,loop_194,loop_216 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · Handlers</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · Handlers - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L1_Interface.html">L1</a> <span class="sep">›</span><span class="current">L2 · Interface · Handlers</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% asubarnipal · interface · handlers
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start"])
+    mod_agente["Agente&lt;br&gt;&lt;i&gt;32 nodos, 30 enlaces&lt;/i&gt;"]
+    mod_backup["Backup&lt;br&gt;&lt;i&gt;14 nodos, 12 enlaces&lt;/i&gt;"]
+    mod_busqueda["Busqueda&lt;br&gt;&lt;i&gt;58 nodos, 58 enlaces&lt;/i&gt;"]
+    mod_comandos["Comandos&lt;br&gt;&lt;i&gt;14 nodos, 12 enlaces&lt;/i&gt;"]
+    mod_error_handler["Error Handler&lt;br&gt;&lt;i&gt;4 nodos, 2 enlaces&lt;/i&gt;"]
+    mod_graphify_handler["Graphify Handler&lt;br&gt;&lt;i&gt;34 nodos, 32 enlaces&lt;/i&gt;"]
+    mod_harness_commands["Harness Commands&lt;br&gt;&lt;i&gt;12 nodos, 11 enlaces&lt;/i&gt;"]
+    mod_hmem_commands["Hmem Commands&lt;br&gt;&lt;i&gt;19 nodos, 17 enlaces&lt;/i&gt;"]
+    mod_scheduled_research["Scheduled Research&lt;br&gt;&lt;i&gt;17 nodos, 16 enlaces&lt;/i&gt;"]
+    mod_validation["Validation&lt;br&gt;&lt;i&gt;25 nodos, 24 enlaces&lt;/i&gt;"]
+    mod_validators["Validators&lt;br&gt;&lt;i&gt;20 nodos, 18 enlaces&lt;/i&gt;"]
+    mod_vault["Vault&lt;br&gt;&lt;i&gt;42 nodos, 41 enlaces&lt;/i&gt;"]
+    mod_vision["Vision&lt;br&gt;&lt;i&gt;8 nodos, 6 enlaces&lt;/i&gt;"]
+    mod_wiki["Wiki&lt;br&gt;&lt;i&gt;46 nodos, 45 enlaces&lt;/i&gt;"]
+    n_end(["End"])
+    mod_chat["Chat&lt;br&gt;&lt;i&gt;16 nodos, 14 enlaces&lt;/i&gt;"]
+    mod_keyboards[["Keyboards&lt;br&gt;&lt;i&gt;8 nodos, 6 enlaces&lt;/i&gt;"]]
+    n_start --&gt; mod_agente
+    mod_agente --&gt; mod_backup
+    mod_backup --&gt; mod_busqueda
+    mod_busqueda --&gt; mod_chat
+    mod_chat --&gt; mod_comandos
+    mod_comandos --&gt; mod_error_handler
+    mod_error_handler --&gt; mod_graphify_handler
+    mod_graphify_handler --&gt; mod_harness_commands
+    mod_harness_commands --&gt; mod_hmem_commands
+    mod_hmem_commands --&gt; mod_keyboards
+    mod_keyboards --&gt; mod_scheduled_research
+    mod_scheduled_research --&gt; mod_validation
+    mod_validation --&gt; mod_validators
+    mod_validators --&gt; mod_vault
+    mod_vault --&gt; mod_vision
+    mod_vision --&gt; mod_wiki
+    mod_wiki --&gt; n_end
+    class n_start node-start
+    class mod_agente,mod_backup,mod_busqueda,mod_graphify_handler,mod_harness_commands,mod_hmem_commands,mod_scheduled_research,mod_validation,mod_vault,mod_wiki node-loop
+    class mod_chat node-tool
+    class mod_comandos,mod_error_handler,mod_validators,mod_vision node-process
+    class mod_keyboards node-subprocess
+    class n_end node-end
+    click mod_agente href "asubarnipal_L3_Interface_Handlers_Agente.html" "Abrir detalle"
+    click mod_backup href "asubarnipal_L3_Interface_Handlers_Backup.html" "Abrir detalle"
+    click mod_busqueda href "asubarnipal_L3_Interface_Handlers_Busqueda.html" "Abrir detalle"
+    click mod_chat href "asubarnipal_L3_Interface_Handlers_Chat.html" "Abrir detalle"
+    click mod_comandos href "asubarnipal_L3_Interface_Handlers_Comandos.html" "Abrir detalle"
+    click mod_error_handler href "asubarnipal_L3_Interface_Handlers_Error_handler.html" "Abrir detalle"
+    click mod_graphify_handler href "asubarnipal_L3_Interface_Handlers_Graphify_handler.html" "Abrir detalle"
+    click mod_harness_commands href "asubarnipal_L3_Interface_Handlers_Harness_commands.html" "Abrir detalle"
+    click mod_hmem_commands href "asubarnipal_L3_Interface_Handlers_Hmem_commands.html" "Abrir detalle"
+    click mod_keyboards href "asubarnipal_L3_Interface_Handlers_Keyboards.html" "Abrir detalle"
+    click mod_scheduled_research href "asubarnipal_L3_Interface_Handlers_Scheduled_research.html" "Abrir detalle"
+    click mod_validation href "asubarnipal_L3_Interface_Handlers_Validation.html" "Abrir detalle"
+    click mod_validators href "asubarnipal_L3_Interface_Handlers_Validators.html" "Abrir detalle"
+    click mod_vault href "asubarnipal_L3_Interface_Handlers_Vault.html" "Abrir detalle"
+    click mod_vision href "asubarnipal_L3_Interface_Handlers_Vision.html" "Abrir detalle"
+    click mod_wiki href "asubarnipal_L3_Interface_Handlers_Wiki.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 3 · compressor</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 3 · compressor - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Core · Turboquant · Conversation · compressor</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Conversation Compressor
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_74{"len(messages) &lt;=&lt;br&gt;self.max_messages&lt;br&gt;&lt;i&gt;Condición en línea 74:&lt;br&gt;len(messages) &lt;= self.max_messages&lt;/i&gt;"}
+    dec_86{"summary_text&lt;br&gt;&lt;i&gt;Condición en línea 86:&lt;br&gt;summary_text&lt;/i&gt;"}
+    dec_114{"current_tokens &lt;= max_tokens&lt;br&gt;&lt;i&gt;Condición en línea 114:&lt;br&gt;current_tokens &lt;= max_tokens&lt;/i&gt;"}
+    loop_122["Loop"]
+    dec_131{"'tool_calls' in message or&lt;br&gt;'function_call' in message&lt;br&gt;&lt;i&gt;Condición en línea 131:&lt;br&gt;'tool_calls' in message or 'function_call' in message&lt;/i&gt;"}
+    dec_135{"role in ('tool', 'function')&lt;br&gt;&lt;i&gt;Condición en línea 135:&lt;br&gt;role in ('tool', 'function')&lt;/i&gt;"}
+    dec_149{"not messages&lt;br&gt;&lt;i&gt;Condición en línea 149:&lt;br&gt;not messages&lt;/i&gt;"}
+    dec_139{"any((kw in content.lower()&lt;br&gt;for kw in CRITICAL_KEYWORDS))&lt;br&gt;&lt;i&gt;Condición en línea 139:&lt;br&gt;any((kw in content.lower() for kw in CRITICAL_KEYWORDS))&lt;/i&gt;"}
+    dec_155{"self.mode == 'llm' and&lt;br&gt;self.llm_func is not None&lt;br&gt;&lt;i&gt;Condición en línea 155:&lt;br&gt;self.mode == 'llm' and self.llm_func is not None&lt;/i&gt;"}
+    dec_162{"not text.strip()&lt;br&gt;&lt;i&gt;Condición en línea 162:&lt;br&gt;not text.strip()&lt;/i&gt;"}
+    dec_183{"not sentences&lt;br&gt;&lt;i&gt;Condición en línea 183:&lt;br&gt;not sentences&lt;/i&gt;"}
+    dec_186{"len(sentences) &lt;=&lt;br&gt;max_sentences&lt;br&gt;&lt;i&gt;Condición en línea 186:&lt;br&gt;len(sentences) &lt;= max_sentences&lt;/i&gt;"}
+    dec_197{"tokenizer is not None&lt;br&gt;&lt;i&gt;Condición en línea 197:&lt;br&gt;tokenizer is not None&lt;/i&gt;"}
+    fn_compressionresult_to_dict[["To Dict"]]
+    fn_conversationcompressor_compress[["Compress"]]
+    fn_conversationcompressor_compress_to_token_budget[["Compress To Token Budget"]]
+    fn_conversationcompressor__is_critical[["Is Critical"]]
+    fn_conversationcompressor__summarize[["Summarize"]]
+    fn_conversationcompressor__llm_summarize[["Llm Summarize"]]
+    fn_conversationcompressor__extractive_summary[["Extractive Summary"]]
+    fn_conversationcompressor__count_tokens[["Count Tokens"]]
+    fn_conversationcompressor__tag_length[["Tag Length"]]
+    n_start --&gt; fn_compressionresult_to_dict
+    n_start --&gt; fn_conversationcompressor_compress
+    fn_conversationcompressor_compress --&gt; dec_74
+    dec_74 --&gt; dec_86
+    fn_conversationcompressor_compress --&gt; fn_conversationcompressor_compress_to_token_budget
+    fn_conversationcompressor_compress_to_token_budget --&gt; dec_114
+    dec_114 --&gt; loop_122
+    fn_conversationcompressor_compress_to_token_budget --&gt; fn_conversationcompressor__is_critical
+    fn_conversationcompressor__is_critical --&gt; dec_131
+    dec_131 --&gt; dec_135
+    dec_135 --&gt; dec_139
+    fn_conversationcompressor__is_critical --&gt; fn_conversationcompressor__summarize
+    fn_conversationcompressor__summarize --&gt; dec_149
+    dec_149 --&gt; dec_155
+    fn_conversationcompressor__summarize --&gt; fn_conversationcompressor__llm_summarize
+    fn_conversationcompressor__llm_summarize --&gt; dec_162
+    fn_conversationcompressor__llm_summarize --&gt; fn_conversationcompressor__extractive_summary
+    fn_conversationcompressor__extractive_summary --&gt; dec_183
+    dec_183 --&gt; dec_186
+    fn_conversationcompressor__extractive_summary --&gt; fn_conversationcompressor__count_tokens
+    fn_conversationcompressor__count_tokens --&gt; dec_197
+    fn_conversationcompressor__count_tokens --&gt; fn_conversationcompressor__tag_length
+    class n_start node-start
+    class fn_compressionresult_to_dict,fn_conversationcompressor_compress,fn_conversationcompressor_compress_to_token_budget,fn_conversationcompressor__is_critical,fn_conversationcompressor__summarize,fn_conversationcompressor__llm_summarize,fn_conversationcompressor__extractive_summary,fn_conversationcompressor__count_tokens,fn_conversationcompressor__tag_length node-subprocess
+    class dec_74,dec_86,dec_114,dec_131,dec_135,dec_139,dec_149,dec_155,dec_162,dec_183,dec_186,dec_197 node-decision
+    class loop_122 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

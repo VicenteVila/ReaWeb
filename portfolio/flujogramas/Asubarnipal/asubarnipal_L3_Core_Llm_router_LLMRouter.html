@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 3 · LLMRouter</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 3 · LLMRouter - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L2_Core_Llm_router.html">L2</a> <span class="sep">›</span><span class="current">L3 · Core · Llm · router · LLMRouter</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Llm Router · LLMRouter
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_37{"len(standard_messages) &gt; 40&lt;br&gt;&lt;i&gt;Condición en línea 37:&lt;br&gt;len(standard_messages) &gt; 40&lt;/i&gt;"}
+    dec_50{"len(compressed) &lt;&lt;br&gt;len(standard_messages)&lt;br&gt;&lt;i&gt;Condición en línea 50:&lt;br&gt;len(compressed) &lt; len(standard_messages)&lt;/i&gt;"}
+    dec_59{"self.ollama_client&lt;br&gt;&lt;i&gt;Condición en línea 59:&lt;br&gt;self.ollama_client&lt;/i&gt;"}
+    loop_158["For each pf_result in pf_results"]
+    dec_159{"pf_result.get('action') in&lt;br&gt;('retry', 'validate')&lt;br&gt;&lt;i&gt;Condición en línea 159:&lt;br&gt;pf_result.get('action') in ('retry', 'validate')&lt;/i&gt;"}
+    loop_168["For each tc in tool_calls"]
+    loop_182["For each attempt"]
+    dec_183{"self.use_ollama&lt;br&gt;&lt;i&gt;Condición en línea 183:&lt;br&gt;self.use_ollama&lt;/i&gt;"}
+    dec_196{"self.gemini_keys&lt;br&gt;&lt;i&gt;Condición en línea 196:&lt;br&gt;self.gemini_keys&lt;/i&gt;"}
+    loop_241["For each attempt"]
+    dec_270{"attempt &lt; max_retries - 1&lt;br&gt;&lt;i&gt;Condición en línea 270:&lt;br&gt;attempt &lt; max_retries - 1&lt;/i&gt;"}
+    fn__check_ollama[["Check Ollama"]]
+    fn__init_ollama[["Init Ollama"]]
+    fn__http_chat[["Http Chat"]]
+    fn_call_agent[["Call Agent"]]
+    fn_call_with_harness[["Call With Harness"]]
+    fn_generate[["Generate"]]
+    fn__gemini_chat[["Gemini Chat"]]
+    fn_call_with_turbo[["Call With Turbo"]]
+    fn_get_turbo_status[["Get Turbo Status"]]
+    fn_apply_turbo_mode[["Apply Turbo Mode"]]
+    fn_rotate_gemini[["Rotate Gemini"]]
+    fn_chat[["Chat"]]
+    fn__prepare_messages[["standard_messages = Prepare Messages"]]
+    n_start --&gt; fn__check_ollama
+    n_start --&gt; fn_rotate_gemini
+    n_start --&gt; fn__init_ollama
+    n_start --&gt; fn_chat
+    fn_chat --&gt; fn__prepare_messages
+    fn__prepare_messages --&gt; dec_37
+    dec_37 --&gt; dec_50
+    dec_50 --&gt; dec_59
+    n_start --&gt; fn__http_chat
+    n_start --&gt; fn__prepare_messages
+    n_start --&gt; fn_call_agent
+    n_start --&gt; fn_call_with_harness
+    fn_call_with_harness --&gt; loop_158
+    loop_158 --&gt; dec_159
+    dec_159 -- "loop" --&gt; loop_158
+    loop_158 --&gt; fn_chat
+    fn_chat --&gt; loop_168
+    n_start --&gt; fn_generate
+    fn_generate --&gt; loop_182
+    loop_182 --&gt; dec_183
+    dec_183 --&gt; dec_196
+    dec_196 --&gt; fn_rotate_gemini
+    fn_rotate_gemini -- "loop" --&gt; loop_182
+    n_start --&gt; fn__gemini_chat
+    n_start --&gt; fn_call_with_turbo
+    fn_call_with_turbo --&gt; loop_241
+    loop_241 --&gt; fn_chat
+    fn_chat --&gt; dec_270
+    dec_270 -- "loop" --&gt; loop_241
+    n_start --&gt; fn_get_turbo_status
+    n_start --&gt; fn_apply_turbo_mode
+    class n_start node-start
+    class fn__check_ollama,fn_rotate_gemini,fn__init_ollama,fn_chat,fn__prepare_messages,fn__http_chat,fn_call_agent,fn_call_with_harness,fn_generate,fn__gemini_chat,fn_call_with_turbo,fn_get_turbo_status,fn_apply_turbo_mode node-subprocess
+    class dec_37,dec_50,dec_59,dec_159,dec_183,dec_196,dec_270 node-decision
+    class loop_158,loop_168,loop_182,loop_241 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

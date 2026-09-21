@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 3 · loader</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 3 · loader - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Cogniteam · World · model · Yaml · loader</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Yaml Loader
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_426{"not content or not&lt;br&gt;content.strip()&lt;br&gt;&lt;i&gt;Condición en línea 426:&lt;br&gt;not content or not content.strip()&lt;/i&gt;"}
+    loop_447["For each m"]
+    loop_459["For each m"]
+    dec_482{"css and (classes or ids)&lt;br&gt;&lt;i&gt;Condición en línea 482:&lt;br&gt;css and (classes or ids)&lt;/i&gt;"}
+    dec_127{"not&lt;br&gt;self.config_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;not self.config_path.exists()&lt;/i&gt;"}
+    dec_430{"ext == '.css'&lt;br&gt;&lt;i&gt;Condición en línea 430:&lt;br&gt;ext == '.css'&lt;/i&gt;"}
+    loop_449["For each m"]
+    loop_463["For each m"]
+    dec_140{"not domain_cfg&lt;br&gt;&lt;i&gt;Condición en línea 140:&lt;br&gt;not domain_cfg&lt;/i&gt;"}
+    dec_433{"ext == '.js'&lt;br&gt;&lt;i&gt;Condición en línea 433:&lt;br&gt;ext == '.js'&lt;/i&gt;"}
+    loop_451["For each m"]
+    dec_592{"not conditional&lt;br&gt;&lt;i&gt;Condición en línea 592:&lt;br&gt;not conditional&lt;/i&gt;"}
+    dec_436{"ext == '.html'&lt;br&gt;&lt;i&gt;Condición en línea 436:&lt;br&gt;ext == '.html'&lt;/i&gt;"}
+    dec_595{"not m&lt;br&gt;&lt;i&gt;Condición en línea 595:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_612{"not structure&lt;br&gt;&lt;i&gt;Condición en línea 612:&lt;br&gt;not structure&lt;/i&gt;"}
+    dec_599{"isinstance(inputs, dict)&lt;br&gt;&lt;i&gt;Condición en línea 599:&lt;br&gt;isinstance(inputs, dict)&lt;/i&gt;"}
+    dec_657{"cfg is None or not&lt;br&gt;cfg.structure&lt;br&gt;&lt;i&gt;Condición en línea 657:&lt;br&gt;cfg is None or not cfg.structure&lt;/i&gt;"}
+    dec_164{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 164:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_601{"value is None&lt;br&gt;&lt;i&gt;Condición en línea 601:&lt;br&gt;value is None&lt;/i&gt;"}
+    dec_662{"not has_html_css_js&lt;br&gt;&lt;i&gt;Condición en línea 662:&lt;br&gt;not has_html_css_js&lt;/i&gt;"}
+    dec_696{"not structure&lt;br&gt;&lt;i&gt;Condición en línea 696:&lt;br&gt;not structure&lt;/i&gt;"}
+    dec_171{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 171:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_799{"not isinstance(plan, dict)&lt;br&gt;&lt;i&gt;Condición en línea 799:&lt;br&gt;not isinstance(plan, dict)&lt;/i&gt;"}
+    loop_221["Loop"]
+    dec_230{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 230:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_801{"not&lt;br&gt;isinstance(plan.get('steps'),&lt;br&gt;&lt;i&gt;Condición en línea 801:&lt;br&gt;not isinstance(plan.get('steps'), list)&lt;/i&gt;"}
+    dec_833{"step_cfg.action ==&lt;br&gt;'seo_meta'&lt;br&gt;&lt;i&gt;Condición en línea 833:&lt;br&gt;step_cfg.action == 'seo_meta'&lt;/i&gt;"}
+    dec_237{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 237:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_806{"not structure&lt;br&gt;&lt;i&gt;Condición en línea 806:&lt;br&gt;not structure&lt;/i&gt;"}
+    dec_836{"ext in ('.css', '.js',&lt;br&gt;'.py', '.ts', '.json', '.md',&lt;br&gt;&lt;i&gt;Condición en línea 836:&lt;br&gt;ext in ('.css', '.js', '.py', '.ts', '.json', '.md', '.txt')&lt;/i&gt;"}
+    dec_849{"step_cfg.required_sections&lt;br&gt;&lt;i&gt;Condición en línea 849:&lt;br&gt;step_cfg.required_sections&lt;/i&gt;"}
+    dec_244{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 244:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_838{"step_cfg.action ==&lt;br&gt;'landing_html' or ext == '.html'&lt;br&gt;&lt;i&gt;Condición en línea 838:&lt;br&gt;step_cfg.action == 'landing_html' or ext == '.html'&lt;/i&gt;"}
+    dec_851{"step_cfg.required_patterns&lt;br&gt;&lt;i&gt;Condición en línea 851:&lt;br&gt;step_cfg.required_patterns&lt;/i&gt;"}
+    dec_886{"sections&lt;br&gt;&lt;i&gt;Condición en línea 886:&lt;br&gt;sections&lt;/i&gt;"}
+    dec_251{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 251:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_853{"step_cfg.forbidden_patterns&lt;br&gt;&lt;i&gt;Condición en línea 853:&lt;br&gt;step_cfg.forbidden_patterns&lt;/i&gt;"}
+    dec_888{"patterns&lt;br&gt;&lt;i&gt;Condición en línea 888:&lt;br&gt;patterns&lt;/i&gt;"}
+    dec_258{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 258:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_932{"step_cfg.required_tags&lt;br&gt;&lt;i&gt;Condición en línea 932:&lt;br&gt;step_cfg.required_tags&lt;/i&gt;"}
+    dec_934{"step_cfg.required_patterns&lt;br&gt;&lt;i&gt;Condición en línea 934:&lt;br&gt;step_cfg.required_patterns&lt;/i&gt;"}
+    dec_365{"rules.required_files&lt;br&gt;&lt;i&gt;Condición en línea 365:&lt;br&gt;rules.required_files&lt;/i&gt;"}
+    loop_484["For each c in classes"]
+    dec_485{"re.search('(?&lt;!(\\w.-))\\.'&lt;br&gt;+ re.escape(c) + '\\b', css)&lt;br&gt;&lt;i&gt;Condición en línea 485:&lt;br&gt;re.search('(?&lt;!(\\w.-))\\.' + re.escape(c) + '\\b', css)&lt;/i&gt;"}
+    loop_487["For each i in ids"]
+    dec_488{"+ re.escape(i) + '\\b', css)&lt;br&gt;&lt;i&gt;Condición en línea 488:&lt;br&gt;re.search('#(?!(0-9a-fA-F)(3,8)\\b)' + re.escape(i) + '\\b',&lt;/i&gt;"}
+    dec_490{"not matched&lt;br&gt;&lt;i&gt;Condición en línea 490:&lt;br&gt;not matched&lt;/i&gt;"}
+    dec_496{"js&lt;br&gt;&lt;i&gt;Condición en línea 496:&lt;br&gt;js&lt;/i&gt;"}
+    loop_500["For each sel in selectors"]
+    loop_501["For each token"]
+    dec_503{"not token&lt;br&gt;&lt;i&gt;Condición en línea 503:&lt;br&gt;not token&lt;/i&gt;"}
+    dec_505{"token.startswith('.')&lt;br&gt;&lt;i&gt;Condición en línea 505:&lt;br&gt;token.startswith('.')&lt;/i&gt;"}
+    dec_507{"token(1:) not in classes&lt;br&gt;&lt;i&gt;Condición en línea 507:&lt;br&gt;token(1:) not in classes&lt;/i&gt;"}
+    dec_509{"token.startswith('#')&lt;br&gt;&lt;i&gt;Condición en línea 509:&lt;br&gt;token.startswith('#')&lt;/i&gt;"}
+    dec_511{"token(1:) not in ids&lt;br&gt;&lt;i&gt;Condición en línea 511:&lt;br&gt;token(1:) not in ids&lt;/i&gt;"}
+    dec_513{"re.fullmatch('(a-zA-Z)(\\w-)*',&lt;br&gt;&lt;i&gt;Condición en línea 513:&lt;br&gt;re.fullmatch('(a-zA-Z)(\\w-)*', token)&lt;/i&gt;"}
+    dec_514{"token.lower() not in tags&lt;br&gt;&lt;i&gt;Condición en línea 514:&lt;br&gt;token.lower() not in tags&lt;/i&gt;"}
+    dec_516{"checked and len(missing) ==&lt;br&gt;checked&lt;br&gt;&lt;i&gt;Condición en línea 516:&lt;br&gt;checked and len(missing) == checked&lt;/i&gt;"}
+    loop_522["For each tok"]
+    dec_524{"len(warnings) &gt;= 6&lt;br&gt;&lt;i&gt;Condición en línea 524:&lt;br&gt;len(warnings) &gt;= 6&lt;/i&gt;"}
+    loop_147["For loop"]
+    loop_148["For loop"]
+    loop_177["For loop"]
+    dec_179{"placeholder in prompt&lt;br&gt;&lt;i&gt;Condición en línea 179:&lt;br&gt;placeholder in prompt&lt;/i&gt;"}
+    loop_280["For loop"]
+    dec_284{"input_def.extract_from_task&lt;br&gt;&lt;i&gt;Condición en línea 284:&lt;br&gt;input_def.extract_from_task&lt;/i&gt;"}
+    dec_285{"dict)&lt;br&gt;&lt;i&gt;Condición en línea 285:&lt;br&gt;isinstance(input_def.extract_from_task, dict)&lt;/i&gt;"}
+    loop_287["For loop"]
+    dec_288{"any((kw.lower() in&lt;br&gt;task_lower for kw in keywords))&lt;br&gt;&lt;i&gt;Condición en línea 288:&lt;br&gt;any((kw.lower() in task_lower for kw in keywords))&lt;/i&gt;"}
+    dec_289{"input_def.type == 'list'&lt;br&gt;&lt;i&gt;Condición en línea 289:&lt;br&gt;input_def.type == 'list'&lt;/i&gt;"}
+    dec_290{"not isinstance(value, list)&lt;br&gt;&lt;i&gt;Condición en línea 290:&lt;br&gt;not isinstance(value, list)&lt;/i&gt;"}
+    dec_296{"list)&lt;br&gt;&lt;i&gt;Condición en línea 296:&lt;br&gt;isinstance(input_def.extract_from_task, list)&lt;/i&gt;"}
+    dec_298{"any((kw.lower() in&lt;br&gt;task_lower for kw in&lt;br&gt;&lt;i&gt;Condición en línea 298:&lt;br&gt;any((kw.lower() in task_lower for kw in input_def.extract_fr&lt;/i&gt;"}
+    dec_299{"input_def.type == 'bool'&lt;br&gt;&lt;i&gt;Condición en línea 299:&lt;br&gt;input_def.type == 'bool'&lt;/i&gt;"}
+    dec_301{"input_def.type == 'str'&lt;br&gt;&lt;i&gt;Condición en línea 301:&lt;br&gt;input_def.type == 'str'&lt;/i&gt;"}
+    dec_305{"input_def.extract_regex&lt;br&gt;&lt;i&gt;Condición en línea 305:&lt;br&gt;input_def.extract_regex&lt;/i&gt;"}
+    dec_307{"match&lt;br&gt;&lt;i&gt;Condición en línea 307:&lt;br&gt;match&lt;/i&gt;"}
+    dec_309{"input_def.type == 'int'&lt;br&gt;&lt;i&gt;Condición en línea 309:&lt;br&gt;input_def.type == 'int'&lt;/i&gt;"}
+    dec_311{"input_def.min is not None&lt;br&gt;&lt;i&gt;Condición en línea 311:&lt;br&gt;input_def.min is not None&lt;/i&gt;"}
+    dec_313{"input_def.max is not None&lt;br&gt;&lt;i&gt;Condición en línea 313:&lt;br&gt;input_def.max is not None&lt;/i&gt;"}
+    dec_315{"input_def.type == 'str'&lt;br&gt;&lt;i&gt;Condición en línea 315:&lt;br&gt;input_def.type == 'str'&lt;/i&gt;"}
+    loop_328["For loop"]
+    loop_329["For loop"]
+    loop_334["For each kw in keywords"]
+    dec_335{"kw.lower() in task_lower&lt;br&gt;&lt;i&gt;Condición en línea 335:&lt;br&gt;kw.lower() in task_lower&lt;/i&gt;"}
+    loop_339["For each input_def"]
+    dec_340{"input_def.extract_from_task&lt;br&gt;&lt;i&gt;Condición en línea 340:&lt;br&gt;input_def.extract_from_task&lt;/i&gt;"}
+    dec_341{"list)&lt;br&gt;&lt;i&gt;Condición en línea 341:&lt;br&gt;isinstance(input_def.extract_from_task, list)&lt;/i&gt;"}
+    dec_342{"any((kw.lower() in&lt;br&gt;task_lower for kw in&lt;br&gt;&lt;i&gt;Condición en línea 342:&lt;br&gt;any((kw.lower() in task_lower for kw in input_def.extract_fr&lt;/i&gt;"}
+    dec_344{"dict)&lt;br&gt;&lt;i&gt;Condición en línea 344:&lt;br&gt;isinstance(input_def.extract_from_task, dict)&lt;/i&gt;"}
+    loop_345["For each keywords_list"]
+    dec_346{"any((kw.lower() in&lt;br&gt;task_lower for kw in&lt;br&gt;&lt;i&gt;Condición en línea 346:&lt;br&gt;any((kw.lower() in task_lower for kw in keywords_list))&lt;/i&gt;"}
+    dec_352{"score &gt; best_score&lt;br&gt;&lt;i&gt;Condición en línea 352:&lt;br&gt;score &gt; best_score&lt;/i&gt;"}
+    loop_366["For each fname in required_files"]
+    dec_367{"f'=== (fname) ===' not in&lt;br&gt;code and fname not in code&lt;br&gt;&lt;i&gt;Condición en línea 367:&lt;br&gt;f'=== (fname) ===' not in code and fname not in code&lt;/i&gt;"}
+    dec_371{"rules.required_tags&lt;br&gt;&lt;i&gt;Condición en línea 371:&lt;br&gt;rules.required_tags&lt;/i&gt;"}
+    loop_372["For each tag in required_tags"]
+    dec_373{"tag.lower() not in&lt;br&gt;code.lower()&lt;br&gt;&lt;i&gt;Condición en línea 373:&lt;br&gt;tag.lower() not in code.lower()&lt;/i&gt;"}
+    dec_377{"rules.required_classes&lt;br&gt;&lt;i&gt;Condición en línea 377:&lt;br&gt;rules.required_classes&lt;/i&gt;"}
+    loop_378["For each cls in required_classes"]
+    dec_379{"f'class='(cls)'' not in code&lt;br&gt;and f'class='(cls)'' not in code&lt;br&gt;&lt;i&gt;Condición en línea 379:&lt;br&gt;f'class='(cls)'' not in code and f'class='(cls)'' not in cod&lt;/i&gt;"}
+    dec_383{"rules.required_patterns&lt;br&gt;&lt;i&gt;Condición en línea 383:&lt;br&gt;rules.required_patterns&lt;/i&gt;"}
+    loop_384["For each pattern in required_patterns"]
+    dec_385{"pattern.lower() not in&lt;br&gt;code.lower()&lt;br&gt;&lt;i&gt;Condición en línea 385:&lt;br&gt;pattern.lower() not in code.lower()&lt;/i&gt;"}
+    dec_389{"rules.forbidden_patterns&lt;br&gt;&lt;i&gt;Condición en línea 389:&lt;br&gt;rules.forbidden_patterns&lt;/i&gt;"}
+    loop_390["For each pattern in forbidden_patterns"]
+    dec_391{"pattern in code&lt;br&gt;&lt;i&gt;Condición en línea 391:&lt;br&gt;pattern in code&lt;/i&gt;"}
+    dec_395{"rules.min_length and&lt;br&gt;len(code) &lt; rules.min_length&lt;br&gt;&lt;i&gt;Condición en línea 395:&lt;br&gt;rules.min_length and len(code) &lt; rules.min_length&lt;/i&gt;"}
+    dec_397{"rules.max_length and&lt;br&gt;len(code) &gt; rules.max_length&lt;br&gt;&lt;i&gt;Condición en línea 397:&lt;br&gt;rules.max_length and len(code) &gt; rules.max_length&lt;/i&gt;"}
+    loop_571["For each step in plan_steps"]
+    dec_572{"not isinstance(step, dict)&lt;br&gt;&lt;i&gt;Condición en línea 572:&lt;br&gt;not isinstance(step, dict)&lt;/i&gt;"}
+    dec_576{"not isinstance(inputs, dict)&lt;br&gt;&lt;i&gt;Condición en línea 576:&lt;br&gt;not isinstance(inputs, dict)&lt;/i&gt;"}
+    loop_579["For each key"]
+    dec_581{"isinstance(val, str) and val&lt;br&gt;&lt;i&gt;Condición en línea 581:&lt;br&gt;isinstance(val, str) and val&lt;/i&gt;"}
+    dec_583{"is_write&lt;br&gt;&lt;i&gt;Condición en línea 583:&lt;br&gt;is_write&lt;/i&gt;"}
+    loop_624["For each s in structure"]
+    dec_625{"s.file and&lt;br&gt;self._structure_required(s,&lt;br&gt;&lt;i&gt;Condición en línea 625:&lt;br&gt;s.file and self._structure_required(s, domain, archetype, in&lt;/i&gt;"}
+    loop_628["For loop"]
+    dec_631{"matched&lt;br&gt;&lt;i&gt;Condición en línea 631:&lt;br&gt;matched&lt;/i&gt;"}
+    dec_634{"fname.lower() in plan_text&lt;br&gt;&lt;i&gt;Condición en línea 634:&lt;br&gt;fname.lower() in plan_text&lt;/i&gt;"}
+    loop_666["For each pf in plan_files"]
+    dec_668{"Condition?&lt;br&gt;&lt;i&gt;Condición en línea 668:&lt;br&gt;low.endswith(self._FRAMEWORK_EXTENSIONS)&lt;/i&gt;"}
+    dec_670{"any((marker in low for&lt;br&gt;marker in self._FRAMEWORK_DIRS))&lt;br&gt;&lt;i&gt;Condición en línea 670:&lt;br&gt;any((marker in low for marker in self._FRAMEWORK_DIRS))&lt;/i&gt;"}
+    dec_673{"not offending&lt;br&gt;&lt;i&gt;Condición en línea 673:&lt;br&gt;not offending&lt;/i&gt;"}
+    loop_703["For each s in structure"]
+    dec_704{"not s.file or not&lt;br&gt;self._structure_required(s,&lt;br&gt;&lt;i&gt;Condición en línea 704:&lt;br&gt;not s.file or not self._structure_required(s, domain, archet&lt;/i&gt;"}
+    dec_707{"not path&lt;br&gt;&lt;i&gt;Condición en línea 707:&lt;br&gt;not path&lt;/i&gt;"}
+    dec_715{"_looks_like_filler(content,&lt;br&gt;ext)&lt;br&gt;&lt;i&gt;Condición en línea 715:&lt;br&gt;_looks_like_filler(content, ext)&lt;/i&gt;"}
+    loop_718["For each pat"]
+    dec_719{"not&lt;br&gt;re.search(re.escape(pat), content,&lt;br&gt;&lt;i&gt;Condición en línea 719:&lt;br&gt;not re.search(re.escape(pat), content, re.IGNORECASE)&lt;/i&gt;"}
+    loop_721["For each pat"]
+    dec_722{"re.search(re.escape(pat),&lt;br&gt;content, re.IGNORECASE)&lt;br&gt;&lt;i&gt;Condición en línea 722:&lt;br&gt;re.search(re.escape(pat), content, re.IGNORECASE)&lt;/i&gt;"}
+    loop_724["For each tag"]
+    dec_725{"not&lt;br&gt;re.search(re.escape(tag), content,&lt;br&gt;&lt;i&gt;Condición en línea 725:&lt;br&gt;not re.search(re.escape(tag), content, re.IGNORECASE)&lt;/i&gt;"}
+    loop_727["For each sec"]
+    dec_728{"not re.search('(\\w-)*'?\\b'&lt;br&gt;+ re.escape(sec) + '\\b', content,&lt;br&gt;&lt;i&gt;Condición en línea 728:&lt;br&gt;not re.search('(\\w-)*'?\\b' + re.escape(sec) + '\\b', conte&lt;/i&gt;"}
+    dec_735{"main_file&lt;br&gt;&lt;i&gt;Condición en línea 735:&lt;br&gt;main_file&lt;/i&gt;"}
+    dec_737{"main_path&lt;br&gt;&lt;i&gt;Condición en línea 737:&lt;br&gt;main_path&lt;/i&gt;"}
+    loop_739["For each tag"]
+    dec_740{"not&lt;br&gt;re.search(re.escape(tag), content,&lt;br&gt;&lt;i&gt;Condición en línea 740:&lt;br&gt;not re.search(re.escape(tag), content, re.IGNORECASE)&lt;/i&gt;"}
+    loop_742["For each cls"]
+    dec_743{"not&lt;br&gt;re.search('class=(\\\'')' + +&lt;br&gt;&lt;i&gt;Condición en línea 743:&lt;br&gt;not re.search('class=(\\\'')' + re.escape(cls) + '(\\\'')',&lt;/i&gt;"}
+    loop_745["For each pat"]
+    dec_746{"re.search(re.escape(pat),&lt;br&gt;content, re.IGNORECASE)&lt;br&gt;&lt;i&gt;Condición en línea 746:&lt;br&gt;re.search(re.escape(pat), content, re.IGNORECASE)&lt;/i&gt;"}
+    dec_748{"ver.min_length and&lt;br&gt;len(content) &lt; ver.min_length&lt;br&gt;&lt;i&gt;Condición en línea 748:&lt;br&gt;ver.min_length and len(content) &lt; ver.min_length&lt;/i&gt;"}
+    dec_750{"ver.max_length and&lt;br&gt;len(content) &gt; ver.max_length&lt;br&gt;&lt;i&gt;Condición en línea 750:&lt;br&gt;ver.max_length and len(content) &gt; ver.max_length&lt;/i&gt;"}
+    dec_758{"html_candidates and&lt;br&gt;(css_candidates or js_candidates)&lt;br&gt;&lt;i&gt;Condición en línea 758:&lt;br&gt;html_candidates and (css_candidates or js_candidates)&lt;/i&gt;"}
+    dec_768{"html_content&lt;br&gt;&lt;i&gt;Condición en línea 768:&lt;br&gt;html_content&lt;/i&gt;"}
+    loop_786["For loop"]
+    dec_787{"name in files&lt;br&gt;&lt;i&gt;Condición en línea 787:&lt;br&gt;name in files&lt;/i&gt;"}
+    loop_812["For each s in structure"]
+    dec_813{"not s.file or not&lt;br&gt;self._structure_required(s,&lt;br&gt;&lt;i&gt;Condición en línea 813:&lt;br&gt;not s.file or not self._structure_required(s, domain, archet&lt;/i&gt;"}
+    dec_819{"matched&lt;br&gt;&lt;i&gt;Condición en línea 819:&lt;br&gt;matched&lt;/i&gt;"}
+    dec_825{"added&lt;br&gt;&lt;i&gt;Condición en línea 825:&lt;br&gt;added&lt;/i&gt;"}
+    loop_826["For loop"]
+    fn__looks_like_filler[["Looks Like Filler"]]
+    fn__extract_classes_ids_tags[["Extract Classes Ids Tags"]]
+    fn__js_selectors[["Js Selectors"]]
+    fn__check_css_js_coherence[["Check Css Js Coherence"]]
+    fn_create_cage_from_yaml[["Create Cage From Yaml"]]
+    fn_yamlarchetypeloader__load[["Load"]]
+    fn_yamlcage_loader[["Loader"]]
+    fn_yamlarchetypeloader_get_archetype[["Get Archetype"]]
+    fn_yamlcage__collect_plan_files[["Collect Plan Files"]]
+    fn_yamlarchetypeloader_get_all_archetypes[["Get All Archetypes"]]
+    fn_yamlcage__structure_required[["Structure Required"]]
+    fn_yamlarchetypeloader_get_domain[["Get Domain"]]
+    fn_yamlcage_validate_structure[["Validate Structure"]]
+    fn_yamlarchetypeloader_get_domain_fewshot[["Get Domain Fewshot"]]
+    fn_yamlcage__check_stack_architecture[["Check Stack Architecture"]]
+    fn_yamlarchetypeloader_get_domain_prose[["Get Domain Prose"]]
+    fn_yamlcage_validate_artifacts[["Validate Artifacts"]]
+    fn_yamlarchetypeloader_get_llm_prompt[["Get Llm Prompt"]]
+    fn_yamlcage__find_exact_file[["Find Exact File"]]
+    fn_yamlarchetypeloader__render_conditionals[["Render Conditionals"]]
+    fn_yamlcage_complete_plan[["Complete Plan"]]
+    fn_replace_conditional_192[["Replace Conditional"]]
+    fn_yamlarchetypeloader_get_verification_rules[["Get Verification Rules"]]
+    fn_yamlcage__build_completion_steps[["Build Completion Steps"]]
+    fn_yamlarchetypeloader_get_thresholds[["Get Thresholds"]]
+    fn_yamlcage__build_code_steps[["Build Code Steps"]]
+    fn_yamlarchetypeloader_get_grounding_keywords[["Get Grounding Keywords"]]
+    fn_yamlcage__build_textual_steps[["Build Textual Steps"]]
+    fn_yamlarchetypeloader_get_structure[["Get Structure"]]
+    fn_yamlcage__build_meta_step[["Build Meta Step"]]
+    fn_yamlarchetypeloader_get_input_definitions[["Get Input Definitions"]]
+    fn_yamlcage__build_html_steps[["Build Html Steps"]]
+    fn_yamlarchetypeloader_get_default_config[["Get Default Config"]]
+    fn_yamlcage_validate_output[["Validate Output"]]
+    fn_yamlarchetypeloader_get_calibration_config[["Get Calibration Config"]]
+    fn_yamlarchetypeloader_get_fallback[["Get Fallback"]]
+    fn_yamlarchetypeloader_extract_inputs_from_task[["Extract Inputs From Task"]]
+    fn_yamlarchetypeloader_find_archetype_by_keywords[["Find Archetype By Keywords"]]
+    fn_yamlarchetypeloader_validate_output[["Validate Output"]]
+    n_start --&gt; fn__looks_like_filler
+    fn__looks_like_filler --&gt; dec_426
+    dec_426 --&gt; dec_430
+    dec_430 --&gt; dec_433
+    dec_433 --&gt; dec_436
+    n_start --&gt; fn__extract_classes_ids_tags
+    fn__extract_classes_ids_tags --&gt; loop_447
+    loop_447 --&gt; loop_449
+    loop_449 --&gt; loop_451
+    n_start --&gt; fn__js_selectors
+    fn__js_selectors --&gt; loop_459
+    loop_459 --&gt; loop_463
+    n_start --&gt; fn__check_css_js_coherence
+    fn__check_css_js_coherence --&gt; dec_482
+    dec_482 --&gt; loop_484
+    loop_484 --&gt; dec_485
+    dec_485 -- "loop" --&gt; loop_484
+    loop_484 --&gt; loop_487
+    loop_487 --&gt; dec_488
+    dec_488 -- "loop" --&gt; loop_487
+    loop_487 --&gt; dec_490
+    dec_490 --&gt; dec_496
+    dec_496 --&gt; loop_500
+    loop_500 --&gt; loop_501
+    loop_501 --&gt; dec_503
+    dec_503 --&gt; dec_505
+    dec_505 --&gt; dec_507
+    dec_505 --&gt; dec_509
+    dec_509 --&gt; dec_511
+    dec_509 --&gt; dec_513
+    dec_513 --&gt; dec_514
+    dec_514 -- "loop" --&gt; loop_501
+    loop_501 -- "loop" --&gt; loop_500
+    loop_500 --&gt; dec_516
+    dec_516 -- "NO" --&gt; loop_522
+    loop_522 --&gt; dec_524
+    dec_524 -- "loop" --&gt; loop_522
+    n_start --&gt; fn_create_cage_from_yaml
+    n_start --&gt; fn_yamlarchetypeloader__load
+    fn_yamlarchetypeloader__load --&gt; dec_127
+    fn_yamlarchetypeloader__load --&gt; fn_yamlarchetypeloader_get_archetype
+    fn_yamlarchetypeloader_get_archetype --&gt; dec_140
+    fn_yamlarchetypeloader_get_archetype --&gt; fn_yamlarchetypeloader_get_all_archetypes
+    fn_yamlarchetypeloader_get_all_archetypes --&gt; loop_147
+    loop_147 --&gt; loop_148
+    loop_148 -- "loop" --&gt; loop_147
+    fn_yamlarchetypeloader_get_all_archetypes --&gt; fn_yamlarchetypeloader_get_domain
+    fn_yamlarchetypeloader_get_domain --&gt; fn_yamlarchetypeloader_get_domain_fewshot
+    fn_yamlarchetypeloader_get_domain_fewshot --&gt; fn_yamlarchetypeloader_get_domain_prose
+    fn_yamlarchetypeloader_get_domain_prose --&gt; dec_164
+    fn_yamlarchetypeloader_get_domain_prose --&gt; fn_yamlarchetypeloader_get_llm_prompt
+    fn_yamlarchetypeloader_get_llm_prompt --&gt; dec_171
+    dec_171 --&gt; loop_177
+    loop_177 --&gt; dec_179
+    dec_179 -- "loop" --&gt; loop_177
+    fn_yamlarchetypeloader_get_llm_prompt --&gt; fn_yamlarchetypeloader__render_conditionals
+    fn_yamlarchetypeloader__render_conditionals --&gt; fn_replace_conditional_192
+    fn_replace_conditional_192 --&gt; loop_221
+    fn_yamlarchetypeloader__render_conditionals --&gt; fn_yamlarchetypeloader_get_verification_rules
+    fn_yamlarchetypeloader_get_verification_rules --&gt; dec_230
+    fn_yamlarchetypeloader_get_verification_rules --&gt; fn_yamlarchetypeloader_get_thresholds
+    fn_yamlarchetypeloader_get_thresholds --&gt; dec_237
+    fn_yamlarchetypeloader_get_thresholds --&gt; fn_yamlarchetypeloader_get_grounding_keywords
+    fn_yamlarchetypeloader_get_grounding_keywords --&gt; dec_244
+    fn_yamlarchetypeloader_get_grounding_keywords --&gt; fn_yamlarchetypeloader_get_structure
+    fn_yamlarchetypeloader_get_structure --&gt; dec_251
+    fn_yamlarchetypeloader_get_structure --&gt; fn_yamlarchetypeloader_get_input_definitions
+    fn_yamlarchetypeloader_get_input_definitions --&gt; dec_258
+    fn_yamlarchetypeloader_get_input_definitions --&gt; fn_yamlarchetypeloader_get_default_config
+    fn_yamlarchetypeloader_get_default_config --&gt; fn_yamlarchetypeloader_get_calibration_config
+    fn_yamlarchetypeloader_get_calibration_config --&gt; fn_yamlarchetypeloader_get_fallback
+    fn_yamlarchetypeloader_get_fallback --&gt; fn_yamlarchetypeloader_extract_inputs_from_task
+    fn_yamlarchetypeloader_extract_inputs_from_task --&gt; loop_280
+    loop_280 --&gt; dec_284
+    dec_284 --&gt; dec_285
+    dec_285 --&gt; loop_287
+    loop_287 --&gt; dec_288
+    dec_288 --&gt; dec_289
+    dec_289 -- "YES" --&gt; dec_290
+    dec_289 -- "loop" --&gt; loop_287
+    dec_285 --&gt; dec_296
+    dec_296 --&gt; dec_298
+    dec_298 --&gt; dec_299
+    dec_299 --&gt; dec_301
+    dec_301 --&gt; dec_305
+    dec_305 --&gt; dec_307
+    dec_307 --&gt; dec_309
+    dec_309 --&gt; dec_311
+    dec_311 --&gt; dec_313
+    dec_309 --&gt; dec_315
+    dec_315 -- "loop" --&gt; loop_280
+    fn_yamlarchetypeloader_extract_inputs_from_task --&gt; fn_yamlarchetypeloader_find_archetype_by_keywords
+    fn_yamlarchetypeloader_find_archetype_by_keywords --&gt; loop_328
+    loop_328 --&gt; loop_329
+    loop_329 --&gt; loop_334
+    loop_334 --&gt; dec_335
+    dec_335 -- "loop" --&gt; loop_334
+    loop_334 --&gt; loop_339
+    loop_339 --&gt; dec_340
+    dec_340 --&gt; dec_341
+    dec_341 --&gt; dec_342
+    dec_341 --&gt; dec_344
+    dec_344 --&gt; loop_345
+    loop_345 --&gt; dec_346
+    dec_346 -- "loop" --&gt; loop_345
+    loop_345 -- "loop" --&gt; loop_339
+    loop_339 --&gt; dec_352
+    dec_352 -- "loop" --&gt; loop_329
+    loop_329 -- "loop" --&gt; loop_328
+    fn_yamlarchetypeloader_find_archetype_by_keywords --&gt; fn_yamlarchetypeloader_validate_output
+    fn_yamlarchetypeloader_validate_output --&gt; dec_365
+    dec_365 --&gt; loop_366
+    loop_366 --&gt; dec_367
+    dec_367 -- "loop" --&gt; loop_366
+    loop_366 --&gt; dec_371
+    dec_371 --&gt; loop_372
+    loop_372 --&gt; dec_373
+    dec_373 -- "loop" --&gt; loop_372
+    loop_372 --&gt; dec_377
+    dec_377 --&gt; loop_378
+    loop_378 --&gt; dec_379
+    dec_379 -- "loop" --&gt; loop_378
+    loop_378 --&gt; dec_383
+    dec_383 --&gt; loop_384
+    loop_384 --&gt; dec_385
+    dec_385 -- "loop" --&gt; loop_384
+    loop_384 --&gt; dec_389
+    dec_389 --&gt; loop_390
+    loop_390 --&gt; dec_391
+    dec_391 -- "loop" --&gt; loop_390
+    loop_390 --&gt; dec_395
+    dec_395 --&gt; dec_397
+    n_start --&gt; fn_yamlcage_loader
+    fn_yamlcage_loader --&gt; fn_yamlcage__collect_plan_files
+    fn_yamlcage__collect_plan_files --&gt; loop_571
+    loop_571 --&gt; dec_572
+    dec_572 --&gt; dec_576
+    dec_576 --&gt; loop_579
+    loop_579 --&gt; dec_581
+    dec_581 --&gt; dec_583
+    dec_583 -- "loop" --&gt; loop_579
+    loop_579 -- "loop" --&gt; loop_571
+    fn_yamlcage__collect_plan_files --&gt; fn_yamlcage__structure_required
+    fn_yamlcage__structure_required --&gt; dec_592
+    dec_592 --&gt; dec_595
+    dec_595 --&gt; dec_599
+    dec_599 --&gt; dec_601
+    fn_yamlcage__structure_required --&gt; fn_yamlcage_validate_structure
+    fn_yamlcage_validate_structure --&gt; dec_612
+    dec_612 --&gt; loop_624
+    loop_624 --&gt; dec_625
+    dec_625 -- "loop" --&gt; loop_624
+    loop_624 --&gt; loop_628
+    loop_628 --&gt; dec_631
+    dec_631 --&gt; dec_634
+    dec_634 -- "loop" --&gt; loop_628
+    fn_yamlcage_validate_structure --&gt; fn_yamlcage__check_stack_architecture
+    fn_yamlcage__check_stack_architecture --&gt; dec_657
+    dec_657 --&gt; dec_662
+    dec_662 --&gt; loop_666
+    loop_666 --&gt; dec_668
+    dec_668 --&gt; dec_670
+    dec_670 -- "loop" --&gt; loop_666
+    loop_666 --&gt; dec_673
+    fn_yamlcage__check_stack_architecture --&gt; fn_yamlcage_validate_artifacts
+    fn_yamlcage_validate_artifacts --&gt; dec_696
+    dec_696 --&gt; loop_703
+    loop_703 --&gt; dec_704
+    dec_704 --&gt; dec_707
+    dec_707 --&gt; dec_715
+    dec_715 --&gt; loop_718
+    loop_718 --&gt; dec_719
+    dec_719 -- "loop" --&gt; loop_718
+    loop_718 --&gt; loop_721
+    loop_721 --&gt; dec_722
+    dec_722 -- "loop" --&gt; loop_721
+    loop_721 --&gt; loop_724
+    loop_724 --&gt; dec_725
+    dec_725 -- "loop" --&gt; loop_724
+    loop_724 --&gt; loop_727
+    loop_727 --&gt; dec_728
+    dec_728 -- "loop" --&gt; loop_727
+    loop_727 -- "loop" --&gt; loop_703
+    loop_703 --&gt; dec_735
+    dec_735 --&gt; dec_737
+    dec_737 --&gt; loop_739
+    loop_739 --&gt; dec_740
+    dec_740 -- "loop" --&gt; loop_739
+    loop_739 --&gt; loop_742
+    loop_742 --&gt; dec_743
+    dec_743 -- "loop" --&gt; loop_742
+    loop_742 --&gt; loop_745
+    loop_745 --&gt; dec_746
+    dec_746 -- "loop" --&gt; loop_745
+    loop_745 --&gt; dec_748
+    dec_748 --&gt; dec_750
+    dec_750 --&gt; dec_758
+    dec_758 --&gt; dec_768
+    fn_yamlcage_validate_artifacts --&gt; fn_yamlcage__find_exact_file
+    fn_yamlcage__find_exact_file --&gt; loop_786
+    loop_786 --&gt; dec_787
+    dec_787 -- "loop" --&gt; loop_786
+    fn_yamlcage__find_exact_file --&gt; fn_yamlcage_complete_plan
+    fn_yamlcage_complete_plan --&gt; dec_799
+    dec_799 --&gt; dec_801
+    dec_801 --&gt; dec_806
+    dec_806 --&gt; loop_812
+    loop_812 --&gt; dec_813
+    dec_813 --&gt; dec_819
+    dec_819 -- "loop" --&gt; loop_812
+    loop_812 --&gt; dec_825
+    dec_825 --&gt; loop_826
+    fn_yamlcage_complete_plan --&gt; fn_yamlcage__build_completion_steps
+    fn_yamlcage__build_completion_steps --&gt; dec_833
+    dec_833 --&gt; dec_836
+    dec_836 --&gt; dec_838
+    fn_yamlcage__build_completion_steps --&gt; fn_yamlcage__build_code_steps
+    fn_yamlcage__build_code_steps --&gt; dec_849
+    dec_849 --&gt; dec_851
+    dec_851 --&gt; dec_853
+    fn_yamlcage__build_code_steps --&gt; fn_yamlcage__build_textual_steps
+    fn_yamlcage__build_textual_steps --&gt; dec_886
+    dec_886 --&gt; dec_888
+    fn_yamlcage__build_textual_steps --&gt; fn_yamlcage__build_meta_step
+    fn_yamlcage__build_meta_step --&gt; fn_yamlcage__build_html_steps
+    fn_yamlcage__build_html_steps --&gt; dec_932
+    dec_932 --&gt; dec_934
+    fn_yamlcage__build_html_steps --&gt; fn_yamlcage_validate_output
+    class n_start node-start
+    class fn__looks_like_filler,fn__extract_classes_ids_tags,fn__js_selectors,fn__check_css_js_coherence,fn_create_cage_from_yaml,fn_yamlarchetypeloader__load,fn_yamlarchetypeloader_get_archetype,fn_yamlarchetypeloader_get_all_archetypes,fn_yamlarchetypeloader_get_domain,fn_yamlarchetypeloader_get_domain_fewshot,fn_yamlarchetypeloader_get_domain_prose,fn_yamlarchetypeloader_get_llm_prompt,fn_yamlarchetypeloader__render_conditionals,fn_replace_conditional_192,fn_yamlarchetypeloader_get_verification_rules,fn_yamlarchetypeloader_get_thresholds,fn_yamlarchetypeloader_get_grounding_keywords,fn_yamlarchetypeloader_get_structure,fn_yamlarchetypeloader_get_input_definitions,fn_yamlarchetypeloader_get_default_config,fn_yamlarchetypeloader_get_calibration_config,fn_yamlarchetypeloader_get_fallback,fn_yamlarchetypeloader_extract_inputs_from_task,fn_yamlarchetypeloader_find_archetype_by_keywords,fn_yamlarchetypeloader_validate_output,fn_yamlcage_loader,fn_yamlcage__collect_plan_files,fn_yamlcage__structure_required,fn_yamlcage_validate_structure,fn_yamlcage__check_stack_architecture,fn_yamlcage_validate_artifacts,fn_yamlcage__find_exact_file,fn_yamlcage_complete_plan,fn_yamlcage__build_completion_steps,fn_yamlcage__build_code_steps,fn_yamlcage__build_textual_steps,fn_yamlcage__build_meta_step,fn_yamlcage__build_html_steps,fn_yamlcage_validate_output node-subprocess
+    class dec_426,dec_430,dec_433,dec_436,dec_482,dec_485,dec_488,dec_490,dec_496,dec_503,dec_505,dec_507,dec_509,dec_511,dec_513,dec_514,dec_516,dec_524,dec_127,dec_140,dec_164,dec_171,dec_179,dec_230,dec_237,dec_244,dec_251,dec_258,dec_284,dec_285,dec_288,dec_289,dec_290,dec_296,dec_298,dec_299,dec_301,dec_305,dec_307,dec_309,dec_311,dec_313,dec_315,dec_335,dec_340,dec_341,dec_342,dec_344,dec_346,dec_352,dec_365,dec_367,dec_371,dec_373,dec_377,dec_379,dec_383,dec_385,dec_389,dec_391,dec_395,dec_397,dec_572,dec_576,dec_581,dec_583,dec_592,dec_595,dec_599,dec_601,dec_612,dec_625,dec_631,dec_634,dec_657,dec_662,dec_668,dec_670,dec_673,dec_696,dec_704,dec_707,dec_715,dec_719,dec_722,dec_725,dec_728,dec_735,dec_737,dec_740,dec_743,dec_746,dec_748,dec_750,dec_758,dec_768,dec_787,dec_799,dec_801,dec_806,dec_813,dec_819,dec_825,dec_833,dec_836,dec_838,dec_849,dec_851,dec_853,dec_886,dec_888,dec_932,dec_934 node-decision
+    class loop_447,loop_449,loop_451,loop_459,loop_463,loop_484,loop_487,loop_500,loop_501,loop_522,loop_147,loop_148,loop_177,loop_221,loop_280,loop_287,loop_328,loop_329,loop_334,loop_339,loop_345,loop_366,loop_372,loop_378,loop_384,loop_390,loop_571,loop_579,loop_624,loop_628,loop_666,loop_703,loop_718,loop_721,loop_724,loop_727,loop_739,loop_742,loop_745,loop_786,loop_812,loop_826 node-loop
+    class n_end node-end
+    click fn_create_cage_from_yaml href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn__looks_like_filler href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Validation.html" "Abrir detalle"
+    click fn__extract_classes_ids_tags href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Validation.html" "Abrir detalle"
+    click fn__js_selectors href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Validation.html" "Abrir detalle"
+    click fn__check_css_js_coherence href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Validation.html" "Abrir detalle"
+    click fn_yamlarchetypeloader__load href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_archetype href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_all_archetypes href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_domain href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_domain_fewshot href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_domain_prose href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_llm_prompt href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader__render_conditionals href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_verification_rules href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_thresholds href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_grounding_keywords href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_structure href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_input_definitions href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_default_config href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_calibration_config href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_get_fallback href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_extract_inputs_from_task href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_find_archetype_by_keywords href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Loader.html" "Abrir detalle"
+    click fn_yamlarchetypeloader_validate_output href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Validation.html" "Abrir detalle"
+    click fn_yamlcage__collect_plan_files href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage__structure_required href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage_validate_structure href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage__check_stack_architecture href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage_validate_artifacts href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage__find_exact_file href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage_complete_plan href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage__build_completion_steps href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage__build_code_steps href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage__build_textual_steps href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage__build_meta_step href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage__build_html_steps href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Cage.html" "Abrir detalle"
+    click fn_yamlcage_validate_output href "cogniteam_L4_Cogniteam_World_model_Yaml_loader_Validation.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

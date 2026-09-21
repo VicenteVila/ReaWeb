@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TraceForge · Nivel 2 · Core</title>
+<meta name="description" content="Flujograma TraceForge · Nivel 2 · Core - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/TraceForge/index.html">TraceForge</a> <span class="sep">›</span><a href="traceforge_L0_Overview.html">L0</a> <span class="sep">›</span><a href="traceforge_L1_Traceforge.html">L1</a> <span class="sep">›</span><span class="current">L2 · Traceforge · Core</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Core
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_30{"max_input_len is not None&lt;br&gt;&lt;i&gt;Condición en línea 30:&lt;br&gt;max_input_len is not None&lt;/i&gt;"}
+    dec_158{"max_len &gt; 0 and&lt;br&gt;isinstance(obj, str) and (len(obj)&lt;br&gt;&lt;i&gt;Condición en línea 158:&lt;br&gt;max_len &gt; 0 and isinstance(obj, str) and (len(obj) &gt; max_len&lt;/i&gt;"}
+    dec_211{"truncated&lt;br&gt;&lt;i&gt;Condición en línea 211:&lt;br&gt;truncated&lt;/i&gt;"}
+    dec_225{"truncated&lt;br&gt;&lt;i&gt;Condición en línea 225:&lt;br&gt;truncated&lt;/i&gt;"}
+    dec_260{"local&lt;br&gt;&lt;i&gt;Condición en línea 260:&lt;br&gt;local&lt;/i&gt;"}
+    dec_31{"max_input_len &lt; 0&lt;br&gt;&lt;i&gt;Condición en línea 31:&lt;br&gt;max_input_len &lt; 0&lt;/i&gt;"}
+    dec_161{"isinstance(obj, (list,&lt;br&gt;tuple))&lt;br&gt;&lt;i&gt;Condición en línea 161:&lt;br&gt;isinstance(obj, (list, tuple))&lt;/i&gt;"}
+    dec_34{"max_output_len is not None&lt;br&gt;&lt;i&gt;Condición en línea 34:&lt;br&gt;max_output_len is not None&lt;/i&gt;"}
+    dec_162{"max_list_items &gt; 0 and&lt;br&gt;len(obj) &gt; max_list_items&lt;br&gt;&lt;i&gt;Condición en línea 162:&lt;br&gt;max_list_items &gt; 0 and len(obj) &gt; max_list_items&lt;/i&gt;"}
+    dec_35{"max_output_len &lt; 0&lt;br&gt;&lt;i&gt;Condición en línea 35:&lt;br&gt;max_output_len &lt; 0&lt;/i&gt;"}
+    loop_171["For each item in items"]
+    dec_38{"max_list_items is not None&lt;br&gt;&lt;i&gt;Condición en línea 38:&lt;br&gt;max_list_items is not None&lt;/i&gt;"}
+    dec_175{"note is not None&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;note is not None&lt;/i&gt;"}
+    dec_39{"max_list_items &lt; 0&lt;br&gt;&lt;i&gt;Condición en línea 39:&lt;br&gt;max_list_items &lt; 0&lt;/i&gt;"}
+    dec_177{"isinstance(obj, tuple)&lt;br&gt;&lt;i&gt;Condición en línea 177:&lt;br&gt;isinstance(obj, tuple)&lt;/i&gt;"}
+    dec_181{"isinstance(obj, dict)&lt;br&gt;&lt;i&gt;Condición en línea 181:&lt;br&gt;isinstance(obj, dict)&lt;/i&gt;"}
+    loop_184["For loop"]
+    fn_set_truncation_limits[["Set Truncation Limits"]]
+    fn__calculate_cost[["Calculate Cost"]]
+    fn__truncate[["Truncate"]]
+    fn__truncation_warning[["Truncation Warning"]]
+    fn__capture_input[["Capture Input"]]
+    fn__capture_output[["Capture Output"]]
+    fn_set_metadata_context[["Set Metadata Context"]]
+    fn_reset_metadata_context[["Reset Metadata Context"]]
+    fn__merged_span_metadata[["Merged Span Metadata"]]
+    fn__metadata_contains[["Metadata Contains"]]
+    fn__metadata_json_path[["Metadata Json Path"]]
+    fn_tracespan_close[["Close"]]
+    fn_tracecollector_save[["Save"]]
+    fn_tracespan_add_metadata[["Add Metadata"]]
+    fn_tracecollector_get_trace[["Get Trace"]]
+    fn_tracespan_set_output[["Set Output"]]
+    fn_tracecollector_get_span[["Get Span"]]
+    fn_tracespan_set_input[["Set Input"]]
+    fn_tracecollector_list_traces[["List Traces"]]
+    fn_tracespan_set_error[["Set Error"]]
+    fn_tracecollector_get_last_trace_id[["Get Last Trace Id"]]
+    fn_tracespan_set_tokens[["Set Tokens"]]
+    fn_tracecollector_query[["Query"]]
+    fn_tracespan_throughput_tps[["Throughput Tps"]]
+    n_start --&gt; fn_set_truncation_limits
+    fn_set_truncation_limits --&gt; dec_30
+    dec_30 --&gt; dec_31
+    dec_31 --&gt; dec_34
+    dec_34 --&gt; dec_35
+    dec_35 --&gt; dec_38
+    dec_38 --&gt; dec_39
+    n_start --&gt; fn__calculate_cost
+    n_start --&gt; fn__truncate
+    fn__truncate --&gt; dec_158
+    dec_158 --&gt; dec_161
+    dec_161 --&gt; dec_162
+    dec_162 --&gt; loop_171
+    loop_171 --&gt; dec_175
+    dec_175 --&gt; dec_177
+    dec_177 --&gt; dec_181
+    dec_181 --&gt; loop_184
+    n_start --&gt; fn__truncation_warning
+    n_start --&gt; fn__capture_input
+    fn__capture_input --&gt; dec_211
+    n_start --&gt; fn__capture_output
+    fn__capture_output --&gt; dec_225
+    n_start --&gt; fn_set_metadata_context
+    n_start --&gt; fn_reset_metadata_context
+    n_start --&gt; fn__merged_span_metadata
+    fn__merged_span_metadata --&gt; dec_260
+    n_start --&gt; fn__metadata_contains
+    n_start --&gt; fn__metadata_json_path
+    n_start --&gt; fn_tracespan_close
+    fn_tracespan_close --&gt; fn_tracespan_add_metadata
+    fn_tracespan_add_metadata --&gt; fn_tracespan_set_output
+    fn_tracespan_set_output --&gt; fn_tracespan_set_input
+    fn_tracespan_set_input --&gt; fn_tracespan_set_error
+    fn_tracespan_set_error --&gt; fn_tracespan_set_tokens
+    fn_tracespan_set_tokens --&gt; fn_tracespan_throughput_tps
+    n_start --&gt; fn_tracecollector_save
+    fn_tracecollector_save --&gt; fn_tracecollector_get_trace
+    fn_tracecollector_get_trace --&gt; fn_tracecollector_get_span
+    fn_tracecollector_get_span --&gt; fn_tracecollector_list_traces
+    fn_tracecollector_list_traces --&gt; fn_tracecollector_get_last_trace_id
+    fn_tracecollector_get_last_trace_id --&gt; fn_tracecollector_query
+    class n_start node-start
+    class fn_set_truncation_limits,fn__calculate_cost,fn__truncate,fn__truncation_warning,fn__capture_input,fn__capture_output,fn_set_metadata_context,fn_reset_metadata_context,fn__merged_span_metadata,fn__metadata_contains,fn__metadata_json_path,fn_tracespan_close,fn_tracespan_add_metadata,fn_tracespan_set_output,fn_tracespan_set_input,fn_tracespan_set_error,fn_tracespan_set_tokens,fn_tracespan_throughput_tps,fn_tracecollector_save,fn_tracecollector_get_trace,fn_tracecollector_get_span,fn_tracecollector_list_traces,fn_tracecollector_get_last_trace_id,fn_tracecollector_query node-subprocess
+    class dec_30,dec_31,dec_34,dec_35,dec_38,dec_39,dec_158,dec_161,dec_162,dec_175,dec_177,dec_181,dec_211,dec_225,dec_260 node-decision
+    class loop_171,loop_184 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

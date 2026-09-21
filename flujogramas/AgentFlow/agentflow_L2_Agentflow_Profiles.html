@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 2 · Profiles</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 2 · Profiles - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L1_Agentflow.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agentflow · Profiles</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Profiles
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_1799{"profile is None&lt;br&gt;&lt;i&gt;Condición en línea 1799:&lt;br&gt;profile is None&lt;/i&gt;"}
+    dec_1822{"spec is None or spec.loader&lt;br&gt;is None&lt;br&gt;&lt;i&gt;Condición en línea 1822:&lt;br&gt;spec is None or spec.loader is None&lt;/i&gt;"}
+    dec_1801{"isinstance(profile, Profile)&lt;br&gt;&lt;i&gt;Condición en línea 1801:&lt;br&gt;isinstance(profile, Profile)&lt;/i&gt;"}
+    dec_1828{"not isinstance(data, dict)&lt;br&gt;&lt;i&gt;Condición en línea 1828:&lt;br&gt;not isinstance(data, dict)&lt;/i&gt;"}
+    dec_1803{"profile in PROFILES&lt;br&gt;&lt;i&gt;Condición en línea 1803:&lt;br&gt;profile in PROFILES&lt;/i&gt;"}
+    dec_1834{"isinstance(tools, dict)&lt;br&gt;&lt;i&gt;Condición en línea 1834:&lt;br&gt;isinstance(tools, dict)&lt;/i&gt;"}
+    dec_1806{"path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 1806:&lt;br&gt;path.exists()&lt;/i&gt;"}
+    dec_1839{"isinstance(evo, dict)&lt;br&gt;&lt;i&gt;Condición en línea 1839:&lt;br&gt;isinstance(evo, dict)&lt;/i&gt;"}
+    dec_1850{"isinstance(sc, dict)&lt;br&gt;&lt;i&gt;Condición en línea 1850:&lt;br&gt;isinstance(sc, dict)&lt;/i&gt;"}
+    loop_1852["For loop"]
+    dec_1853{"not isinstance(v, (list,&lt;br&gt;tuple)) or len(v) != 3&lt;br&gt;&lt;i&gt;Condición en línea 1853:&lt;br&gt;not isinstance(v, (list, tuple)) or len(v) != 3&lt;/i&gt;"}
+    dec_1857{"isinstance(ntype, str)&lt;br&gt;&lt;i&gt;Condición en línea 1857:&lt;br&gt;isinstance(ntype, str)&lt;/i&gt;"}
+    fn_get_profile[["Get Profile"]]
+    fn_load_profile[["Load Profile"]]
+    n_start --&gt; fn_get_profile
+    fn_get_profile --&gt; dec_1799
+    dec_1799 --&gt; dec_1801
+    dec_1801 --&gt; dec_1803
+    dec_1803 --&gt; dec_1806
+    n_start --&gt; fn_load_profile
+    fn_load_profile --&gt; dec_1822
+    dec_1822 --&gt; dec_1828
+    dec_1828 --&gt; dec_1834
+    dec_1834 --&gt; dec_1839
+    dec_1839 --&gt; dec_1850
+    dec_1850 --&gt; loop_1852
+    loop_1852 --&gt; dec_1853
+    dec_1853 --&gt; dec_1857
+    dec_1857 -- "loop" --&gt; loop_1852
+    class n_start node-start
+    class fn_get_profile,fn_load_profile node-subprocess
+    class dec_1799,dec_1801,dec_1803,dec_1806,dec_1822,dec_1828,dec_1834,dec_1839,dec_1850,dec_1853,dec_1857 node-decision
+    class loop_1852 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

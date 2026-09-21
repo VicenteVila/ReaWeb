@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 3 · Block</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 3 · Block - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L2_Agentflow_Parser.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agentflow · Parser · Block</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Parser · Block
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_3{"depth &gt; 10&lt;br&gt;&lt;i&gt;Condición en línea 3:&lt;br&gt;depth &gt; 10&lt;/i&gt;"}
+    loop_7["For each stmt in stmts"]
+    dec_8{"isinstance(stmt, ast.While)&lt;br&gt;&lt;i&gt;Condición en línea 8:&lt;br&gt;isinstance(stmt, ast.While)&lt;/i&gt;"}
+    dec_10{"isinstance(stmt, ast.If)&lt;br&gt;&lt;i&gt;Condición en línea 10:&lt;br&gt;isinstance(stmt, ast.If)&lt;/i&gt;"}
+    dec_12{"isinstance(stmt, ast.For)&lt;br&gt;&lt;i&gt;Condición en línea 12:&lt;br&gt;isinstance(stmt, ast.For)&lt;/i&gt;"}
+    dec_14{"isinstance(stmt, ast.Expr)&lt;br&gt;&lt;i&gt;Condición en línea 14:&lt;br&gt;isinstance(stmt, ast.Expr)&lt;/i&gt;"}
+    dec_16{"isinstance(stmt, ast.Assign)&lt;br&gt;&lt;i&gt;Condición en línea 16:&lt;br&gt;isinstance(stmt, ast.Assign)&lt;/i&gt;"}
+    dec_18{"isinstance(stmt, ast.Try)&lt;br&gt;&lt;i&gt;Condición en línea 18:&lt;br&gt;isinstance(stmt, ast.Try)&lt;/i&gt;"}
+    dec_20{"hasattr(ast, 'Match') and&lt;br&gt;isinstance(stmt, ast.Match)&lt;br&gt;&lt;i&gt;Condición en línea 20:&lt;br&gt;hasattr(ast, 'Match') and isinstance(stmt, ast.Match)&lt;/i&gt;"}
+    dec_22{"isinstance(stmt,&lt;br&gt;_FUNC_TYPES)&lt;br&gt;&lt;i&gt;Condición en línea 22:&lt;br&gt;isinstance(stmt, _FUNC_TYPES)&lt;/i&gt;"}
+    dec_24{"isinstance(stmt,&lt;br&gt;ast.AsyncFor)&lt;br&gt;&lt;i&gt;Condición en línea 24:&lt;br&gt;isinstance(stmt, ast.AsyncFor)&lt;/i&gt;"}
+    dec_26{"isinstance(stmt,&lt;br&gt;ast.AsyncWith)&lt;br&gt;&lt;i&gt;Condición en línea 26:&lt;br&gt;isinstance(stmt, ast.AsyncWith)&lt;/i&gt;"}
+    fn__parse_block_35["last_in_body = Parse Block&lt;br&gt;&lt;i&gt;Recorre el cuerpo de una función&lt;br&gt;registrando nodos/aristas&lt;/i&gt;"]
+    dec_36{"last_in_body != loop_id&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;last_in_body != loop_id&lt;/i&gt;"}
+    fn__detect_tool_dispatch_42["tool_from_dispatch = Detect Tool Dispatch&lt;br&gt;&lt;i&gt;Reconoce despachos de herramientas&lt;br&gt;(tool.dispatch / dispatch_attr)&lt;/i&gt;"]
+    dec_51{"tool_from_dispatch&lt;br&gt;&lt;i&gt;Condición en línea 51:&lt;br&gt;tool_from_dispatch&lt;/i&gt;"}
+    fn__parse_block_63["last_yes = Parse Block&lt;br&gt;&lt;i&gt;Recorre el cuerpo de una función&lt;br&gt;registrando nodos/aristas&lt;/i&gt;"]
+    dec_65{"stmt.orelse&lt;br&gt;&lt;i&gt;Condición en línea 65:&lt;br&gt;stmt.orelse&lt;/i&gt;"}
+    dec_66{"len(stmt.orelse) == 1 and&lt;br&gt;isinstance(stmt.orelse(0), ast.If)&lt;br&gt;&lt;i&gt;Condición en línea 66:&lt;br&gt;len(stmt.orelse) == 1 and isinstance(stmt.orelse(0), ast.If)&lt;/i&gt;"}
+    fn__parse_block_69["last_no = Parse Block&lt;br&gt;&lt;i&gt;Recorre el cuerpo de una función&lt;br&gt;registrando nodos/aristas&lt;/i&gt;"]
+    loop_70["For each e in edges"]
+    dec_71{"e.source == dec_id and&lt;br&gt;e.target == last_yes and (not&lt;br&gt;&lt;i&gt;Condición en línea 71:&lt;br&gt;e.source == dec_id and e.target == last_yes and (not e.label&lt;/i&gt;"}
+    dec_73{"e.source == dec_id and&lt;br&gt;e.target == last_no and (not&lt;br&gt;&lt;i&gt;Condición en línea 73:&lt;br&gt;e.source == dec_id and e.target == last_no and (not e.label)&lt;/i&gt;"}
+    dec_82{"isinstance(target, ast.Name)&lt;br&gt;&lt;i&gt;Condición en línea 82:&lt;br&gt;isinstance(target, ast.Name)&lt;/i&gt;"}
+    dec_84{"isinstance(stmt.iter,&lt;br&gt;ast.Name)&lt;br&gt;&lt;i&gt;Condición en línea 84:&lt;br&gt;isinstance(stmt.iter, ast.Name)&lt;/i&gt;"}
+    dec_86{"isinstance(stmt.iter,&lt;br&gt;ast.Attribute)&lt;br&gt;&lt;i&gt;Condición en línea 86:&lt;br&gt;isinstance(stmt.iter, ast.Attribute)&lt;/i&gt;"}
+    dec_89{"iter_name&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;iter_name&lt;/i&gt;"}
+    fn__parse_block_96["last_in_body = Parse Block&lt;br&gt;&lt;i&gt;Recorre el cuerpo de una función&lt;br&gt;registrando nodos/aristas&lt;/i&gt;"]
+    dec_97{"last_in_body != loop_id&lt;br&gt;&lt;i&gt;Condición en línea 97:&lt;br&gt;last_in_body != loop_id&lt;/i&gt;"}
+    fn__parse_block_103["last = Parse Block&lt;br&gt;&lt;i&gt;Recorre el cuerpo de una función&lt;br&gt;registrando nodos/aristas&lt;/i&gt;"]
+    loop_104["For each handler in handlers"]
+    fn__parse_block_105["last = Parse Block&lt;br&gt;&lt;i&gt;Recorre el cuerpo de una función&lt;br&gt;registrando nodos/aristas&lt;/i&gt;"]
+    dec_106{"stmt.finalbody&lt;br&gt;&lt;i&gt;Condición en línea 106:&lt;br&gt;stmt.finalbody&lt;/i&gt;"}
+    fn__parse_block_107["last = Parse Block&lt;br&gt;&lt;i&gt;Recorre el cuerpo de una función&lt;br&gt;registrando nodos/aristas&lt;/i&gt;"]
+    loop_122["For each case in cases"]
+    fn__parse_block_133["case_last = Parse Block&lt;br&gt;&lt;i&gt;Recorre el cuerpo de una función&lt;br&gt;registrando nodos/aristas&lt;/i&gt;"]
+    dec_134{"case_last != case_id&lt;br&gt;&lt;i&gt;Condición en línea 134:&lt;br&gt;case_last != case_id&lt;/i&gt;"}
+    dec_174{"method.body and&lt;br&gt;isinstance(method.body(0), and and&lt;br&gt;&lt;i&gt;Condición en línea 174:&lt;br&gt;method.body and isinstance(method.body(0), ast.Expr) and isi&lt;/i&gt;"}
+    fn__parse_block[["Parse Block"]]
+    fn__parse_function[["Parse Function"]]
+    fn__parse_while[["current = Parse While"]]
+    fn__parse_if[["current = Parse If"]]
+    fn__parse_for[["current = Parse For"]]
+    fn__parse_expr_stmt[["current = Parse Expr Stmt"]]
+    fn__parse_assign[["current = Parse Assign"]]
+    fn__parse_try[["current = Parse Try"]]
+    fn__parse_match[["current = Parse Match"]]
+    fn__parse_local_function[["current = Parse Local Function"]]
+    n_start --&gt; fn__parse_block
+    fn__parse_block --&gt; dec_3
+    dec_3 --&gt; loop_7
+    loop_7 --&gt; dec_8
+    dec_8 --&gt; fn__parse_while
+    dec_8 --&gt; dec_10
+    dec_10 --&gt; fn__parse_if
+    dec_10 --&gt; dec_12
+    dec_12 --&gt; fn__parse_for
+    dec_12 --&gt; dec_14
+    dec_14 --&gt; fn__parse_expr_stmt
+    dec_14 --&gt; dec_16
+    dec_16 --&gt; fn__parse_assign
+    dec_16 --&gt; dec_18
+    dec_18 --&gt; fn__parse_try
+    dec_18 --&gt; dec_20
+    dec_20 --&gt; fn__parse_match
+    dec_20 --&gt; dec_22
+    dec_22 --&gt; fn__parse_local_function
+    dec_22 --&gt; dec_24
+    dec_24 --&gt; fn__parse_for
+    dec_24 --&gt; dec_26
+    dec_26 -- "loop" --&gt; loop_7
+    n_start --&gt; fn__parse_while
+    fn__parse_while --&gt; fn__parse_block_35
+    fn__parse_block_35 --&gt; dec_36
+    n_start --&gt; fn__parse_if
+    fn__parse_if --&gt; fn__detect_tool_dispatch_42
+    fn__detect_tool_dispatch_42 --&gt; dec_51
+    dec_51 --&gt; fn__parse_block_63
+    fn__parse_block_63 --&gt; dec_65
+    dec_65 --&gt; dec_66
+    dec_66 -- "YES" --&gt; fn__parse_if
+    dec_66 --&gt; fn__parse_block_69
+    fn__parse_block_69 --&gt; loop_70
+    loop_70 --&gt; dec_71
+    dec_71 --&gt; dec_73
+    dec_73 -- "loop" --&gt; loop_70
+    n_start --&gt; fn__parse_for
+    fn__parse_for --&gt; dec_82
+    dec_82 --&gt; dec_84
+    dec_84 --&gt; dec_86
+    dec_86 --&gt; dec_89
+    dec_82 --&gt; fn__parse_block_96
+    fn__parse_block_96 --&gt; dec_97
+    n_start --&gt; fn__parse_try
+    fn__parse_try --&gt; fn__parse_block_103
+    fn__parse_block_103 --&gt; loop_104
+    loop_104 --&gt; fn__parse_block_105
+    fn__parse_block_105 -- "loop" --&gt; loop_104
+    loop_104 --&gt; dec_106
+    dec_106 --&gt; fn__parse_block_107
+    n_start --&gt; fn__parse_match
+    fn__parse_match --&gt; loop_122
+    loop_122 --&gt; fn__parse_block_133
+    fn__parse_block_133 --&gt; dec_134
+    dec_134 -- "loop" --&gt; loop_122
+    n_start --&gt; fn__parse_assign
+    n_start --&gt; fn__parse_expr_stmt
+    n_start --&gt; fn__parse_local_function
+    fn__parse_local_function --&gt; dec_174
+    n_start --&gt; fn__parse_function
+    class n_start node-start
+    class fn__parse_block,fn__parse_while,fn__parse_if,fn__parse_for,fn__parse_expr_stmt,fn__parse_assign,fn__parse_try,fn__parse_match,fn__parse_local_function,fn__parse_function node-subprocess
+    class dec_3,dec_8,dec_10,dec_12,dec_14,dec_16,dec_18,dec_20,dec_22,dec_24,dec_26,dec_36,dec_51,dec_65,dec_66,dec_71,dec_73,dec_82,dec_84,dec_86,dec_89,dec_97,dec_106,dec_134,dec_174 node-decision
+    class loop_7,loop_70,loop_104,loop_122 node-loop
+    class fn__parse_block_35,fn__detect_tool_dispatch_42,fn__parse_block_63,fn__parse_block_69,fn__parse_block_96,fn__parse_block_103,fn__parse_block_105,fn__parse_block_107,fn__parse_block_133 node-process
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

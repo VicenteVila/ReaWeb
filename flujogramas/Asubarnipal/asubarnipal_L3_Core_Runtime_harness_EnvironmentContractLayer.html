@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 3 · EnvironmentContractLayer</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 3 · EnvironmentContractLayer - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L2_Core_Runtime_harness.html">L2</a> <span class="sep">›</span><span class="current">L3 · Core · Runtime · harness · EnvironmentContractLayer</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Runtime Harness · EnvironmentContractLayer
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    loop_4["For each tool in tools"]
+    dec_5{"tool.get('type') !=&lt;br&gt;'function'&lt;br&gt;&lt;i&gt;Condición en línea 5:&lt;br&gt;tool.get('type') != 'function'&lt;/i&gt;"}
+    dec_13{"cache_key in&lt;br&gt;self._contract_cache&lt;br&gt;&lt;i&gt;Condición en línea 13:&lt;br&gt;cache_key in self._contract_cache&lt;/i&gt;"}
+    loop_39["For loop"]
+    dec_40{"prop.get('required', False)&lt;br&gt;and name not in required&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;prop.get('required', False) and name not in required&lt;/i&gt;"}
+    fn_calibrate_tools[["Calibrate Tools"]]
+    fn_get_stats[["Get Stats"]]
+    fn__calibrate_tool[["calibrated_tool = Calibrate Tool"]]
+    fn__ensure_required[["Ensure Required"]]
+    fn__add_type_hints[["Add Type Hints"]]
+    fn__remove_ambiguous_enums[["Remove Ambiguous Enums"]]
+    fn__limit_description_length[["Limit Description Length"]]
+    n_start --&gt; fn_calibrate_tools
+    fn_calibrate_tools --&gt; loop_4
+    loop_4 --&gt; dec_5
+    dec_5 --&gt; dec_13
+    dec_13 --&gt; fn__calibrate_tool
+    fn__calibrate_tool -- "loop" --&gt; loop_4
+    n_start --&gt; fn__calibrate_tool
+    fn__calibrate_tool --&gt; fn__ensure_required
+    fn__ensure_required --&gt; fn__add_type_hints
+    fn__add_type_hints --&gt; fn__remove_ambiguous_enums
+    fn__remove_ambiguous_enums --&gt; fn__limit_description_length
+    n_start --&gt; fn__ensure_required
+    fn__ensure_required --&gt; loop_39
+    loop_39 --&gt; dec_40
+    dec_40 -- "loop" --&gt; loop_39
+    n_start --&gt; fn__add_type_hints
+    n_start --&gt; fn__remove_ambiguous_enums
+    n_start --&gt; fn__limit_description_length
+    n_start --&gt; fn_get_stats
+    class n_start node-start
+    class fn_calibrate_tools,fn__calibrate_tool,fn__ensure_required,fn__add_type_hints,fn__remove_ambiguous_enums,fn__limit_description_length,fn_get_stats node-subprocess
+    class loop_4,loop_39 node-loop
+    class dec_5,dec_13,dec_40 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TraceForge · Nivel 3 · Otel</title>
+<meta name="description" content="Flujograma TraceForge · Nivel 3 · Otel - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/TraceForge/index.html">TraceForge</a> <span class="sep">›</span><a href="traceforge_L0_Overview.html">L0</a> <span class="sep">›</span><a href="traceforge_L2_Traceforge_Collector.html">L2</a> <span class="sep">›</span><span class="current">L3 · Traceforge · Collector · Otel</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Otel
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_85{"span.trace_id not in&lt;br&gt;self._traces&lt;br&gt;&lt;i&gt;Condición en línea 85:&lt;br&gt;span.trace_id not in self._traces&lt;/i&gt;"}
+    dec_90{"span.parent_id and&lt;br&gt;span.parent_id in self._spans&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;span.parent_id and span.parent_id in self._spans&lt;/i&gt;"}
+    dec_92{"span.span_id not in&lt;br&gt;parent.children&lt;br&gt;&lt;i&gt;Condición en línea 92:&lt;br&gt;span.span_id not in parent.children&lt;/i&gt;"}
+    dec_168{"end &lt;= 0&lt;br&gt;&lt;i&gt;Condición en línea 168:&lt;br&gt;end &lt;= 0&lt;/i&gt;"}
+    dec_190{"trace_id&lt;br&gt;&lt;i&gt;Condición en línea 190:&lt;br&gt;trace_id&lt;/i&gt;"}
+    loop_218["For each s in spans"]
+    loop_195["For each s in span_pool"]
+    dec_196{"agent and s.agent != agent&lt;br&gt;&lt;i&gt;Condición en línea 196:&lt;br&gt;agent and s.agent != agent&lt;/i&gt;"}
+    dec_198{"status and s.status !=&lt;br&gt;status&lt;br&gt;&lt;i&gt;Condición en línea 198:&lt;br&gt;status and s.status != status&lt;/i&gt;"}
+    dec_200{"min_duration_ms is not None&lt;br&gt;and s.duration_ms &lt;&lt;br&gt;&lt;i&gt;Condición en línea 200:&lt;br&gt;min_duration_ms is not None and s.duration_ms &lt; min_duration&lt;/i&gt;"}
+    dec_202{"since and s.started_at and&lt;br&gt;(s.started_at &lt; since)&lt;br&gt;&lt;i&gt;Condición en línea 202:&lt;br&gt;since and s.started_at and (s.started_at &lt; since)&lt;/i&gt;"}
+    dec_204{"metadata and (not&lt;br&gt;_metadata_contains(s.metadata or&lt;br&gt;&lt;i&gt;Condición en línea 204:&lt;br&gt;metadata and (not _metadata_contains(s.metadata or (), metad&lt;/i&gt;"}
+    fn__to_ns[["To Ns"]]
+    fn__otel_trace_id[["Otel Trace Id"]]
+    fn__otel_span_id[["Otel Span Id"]]
+    fn__deterministicidgenerator_generate_trace_id[["Generate Trace Id"]]
+    fn_otelcollector__ensure_tracer[["Ensure Tracer"]]
+    fn__deterministicidgenerator_generate_span_id[["Generate Span Id"]]
+    fn_otelcollector_save[["Save"]]
+    fn_otelcollector__export_to_otel[["Export To Otel"]]
+    fn_otelcollector_get_trace[["Get Trace"]]
+    fn_otelcollector_get_span[["Get Span"]]
+    fn_otelcollector_list_traces[["List Traces"]]
+    fn_otelcollector_get_last_trace_id[["Get Last Trace Id"]]
+    fn_otelcollector_query[["Query"]]
+    fn_otelcollector_clear[["Clear"]]
+    tool_get_trace_191["span_pool = Get Trace&lt;br&gt;&lt;i&gt;Recupera un trace completo por id&lt;/i&gt;"]
+    fn_otelcollector_export_traces[["Export Traces"]]
+    tool_query_216["spans = Query&lt;br&gt;&lt;i&gt;Consulta estructurada/filtrada de spans&lt;/i&gt;"]
+    n_start --&gt; fn__to_ns
+    n_start --&gt; fn__otel_trace_id
+    n_start --&gt; fn__otel_span_id
+    n_start --&gt; fn__deterministicidgenerator_generate_trace_id
+    fn__deterministicidgenerator_generate_trace_id --&gt; fn__deterministicidgenerator_generate_span_id
+    n_start --&gt; fn_otelcollector__ensure_tracer
+    fn_otelcollector__ensure_tracer --&gt; fn_otelcollector_save
+    fn_otelcollector_save --&gt; dec_85
+    dec_85 --&gt; dec_90
+    dec_90 --&gt; dec_92
+    fn_otelcollector_save --&gt; fn_otelcollector__export_to_otel
+    fn_otelcollector__export_to_otel --&gt; fn_otelcollector_get_trace
+    fn_otelcollector_get_trace --&gt; fn_otelcollector_get_span
+    fn_otelcollector_get_span --&gt; fn_otelcollector_list_traces
+    fn_otelcollector_list_traces --&gt; dec_168
+    fn_otelcollector_list_traces --&gt; fn_otelcollector_get_last_trace_id
+    fn_otelcollector_get_last_trace_id --&gt; fn_otelcollector_query
+    fn_otelcollector_query --&gt; dec_190
+    dec_190 -- "YES" --&gt; tool_get_trace_191
+    dec_190 --&gt; loop_195
+    loop_195 --&gt; dec_196
+    dec_196 --&gt; dec_198
+    dec_198 --&gt; dec_200
+    dec_200 --&gt; dec_202
+    dec_202 --&gt; dec_204
+    dec_204 -- "loop" --&gt; loop_195
+    fn_otelcollector_query --&gt; fn_otelcollector_clear
+    fn_otelcollector_clear --&gt; fn_otelcollector_export_traces
+    fn_otelcollector_export_traces --&gt; tool_query_216
+    tool_query_216 --&gt; loop_218
+    class n_start node-start
+    class fn__to_ns,fn__otel_trace_id,fn__otel_span_id,fn__deterministicidgenerator_generate_trace_id,fn__deterministicidgenerator_generate_span_id,fn_otelcollector__ensure_tracer,fn_otelcollector_save,fn_otelcollector__export_to_otel,fn_otelcollector_get_trace,fn_otelcollector_get_span,fn_otelcollector_list_traces,fn_otelcollector_get_last_trace_id,fn_otelcollector_query,fn_otelcollector_clear,fn_otelcollector_export_traces node-subprocess
+    class dec_85,dec_90,dec_92,dec_168,dec_190,dec_196,dec_198,dec_200,dec_202,dec_204 node-decision
+    class tool_get_trace_191,tool_query_216 node-tool
+    class loop_195,loop_218 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

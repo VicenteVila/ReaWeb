@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 4 · Cage</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 4 · Cage - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L3_Cogniteam_World_model_Yaml_loader.html">L3</a> <span class="sep">›</span><span class="current">L4 · Cogniteam · World · model · Yaml · loader · Cage</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Yaml Loader · Cage
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_33{"not conditional&lt;br&gt;&lt;i&gt;Condición en línea 33:&lt;br&gt;not conditional&lt;/i&gt;"}
+    dec_53{"not structure&lt;br&gt;&lt;i&gt;Condición en línea 53:&lt;br&gt;not structure&lt;/i&gt;"}
+    dec_134{"not structure&lt;br&gt;&lt;i&gt;Condición en línea 134:&lt;br&gt;not structure&lt;/i&gt;"}
+    dec_236{"not isinstance(plan, dict)&lt;br&gt;&lt;i&gt;Condición en línea 236:&lt;br&gt;not isinstance(plan, dict)&lt;/i&gt;"}
+    dec_286{"step_cfg.required_sections&lt;br&gt;&lt;i&gt;Condición en línea 286:&lt;br&gt;step_cfg.required_sections&lt;/i&gt;"}
+    dec_323{"sections&lt;br&gt;&lt;i&gt;Condición en línea 323:&lt;br&gt;sections&lt;/i&gt;"}
+    dec_369{"step_cfg.required_tags&lt;br&gt;&lt;i&gt;Condición en línea 369:&lt;br&gt;step_cfg.required_tags&lt;/i&gt;"}
+    dec_36{"not m&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_238{"not&lt;br&gt;isinstance(plan.get('steps'),&lt;br&gt;&lt;i&gt;Condición en línea 238:&lt;br&gt;not isinstance(plan.get('steps'), list)&lt;/i&gt;"}
+    dec_288{"step_cfg.required_patterns&lt;br&gt;&lt;i&gt;Condición en línea 288:&lt;br&gt;step_cfg.required_patterns&lt;/i&gt;"}
+    dec_325{"patterns&lt;br&gt;&lt;i&gt;Condición en línea 325:&lt;br&gt;patterns&lt;/i&gt;"}
+    dec_371{"step_cfg.required_patterns&lt;br&gt;&lt;i&gt;Condición en línea 371:&lt;br&gt;step_cfg.required_patterns&lt;/i&gt;"}
+    dec_40{"isinstance(inputs, dict)&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;isinstance(inputs, dict)&lt;/i&gt;"}
+    dec_243{"not structure&lt;br&gt;&lt;i&gt;Condición en línea 243:&lt;br&gt;not structure&lt;/i&gt;"}
+    dec_290{"step_cfg.forbidden_patterns&lt;br&gt;&lt;i&gt;Condición en línea 290:&lt;br&gt;step_cfg.forbidden_patterns&lt;/i&gt;"}
+    dec_42{"value is None&lt;br&gt;&lt;i&gt;Condición en línea 42:&lt;br&gt;value is None&lt;/i&gt;"}
+    dec_95{"cfg is None or not&lt;br&gt;cfg.structure&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;cfg is None or not cfg.structure&lt;/i&gt;"}
+    dec_100{"not has_html_css_js&lt;br&gt;&lt;i&gt;Condición en línea 100:&lt;br&gt;not has_html_css_js&lt;/i&gt;"}
+    loop_12["For each step in plan_steps"]
+    dec_13{"not isinstance(step, dict)&lt;br&gt;&lt;i&gt;Condición en línea 13:&lt;br&gt;not isinstance(step, dict)&lt;/i&gt;"}
+    dec_17{"not isinstance(inputs, dict)&lt;br&gt;&lt;i&gt;Condición en línea 17:&lt;br&gt;not isinstance(inputs, dict)&lt;/i&gt;"}
+    loop_20["For each key"]
+    dec_22{"isinstance(val, str) and val&lt;br&gt;&lt;i&gt;Condición en línea 22:&lt;br&gt;isinstance(val, str) and val&lt;/i&gt;"}
+    dec_24{"is_write&lt;br&gt;&lt;i&gt;Condición en línea 24:&lt;br&gt;is_write&lt;/i&gt;"}
+    loop_65["For each s in structure"]
+    dec_66{"s.file and&lt;br&gt;self._structure_required(s,&lt;br&gt;&lt;i&gt;Condición en línea 66:&lt;br&gt;s.file and self._structure_required(s, domain, archetype, in&lt;/i&gt;"}
+    loop_69["For loop"]
+    dec_72{"matched&lt;br&gt;&lt;i&gt;Condición en línea 72:&lt;br&gt;matched&lt;/i&gt;"}
+    dec_75{"fname.lower() in plan_text&lt;br&gt;&lt;i&gt;Condición en línea 75:&lt;br&gt;fname.lower() in plan_text&lt;/i&gt;"}
+    loop_104["For each pf in plan_files"]
+    dec_106{"Condition?&lt;br&gt;&lt;i&gt;Condición en línea 106:&lt;br&gt;low.endswith(self._FRAMEWORK_EXTENSIONS)&lt;/i&gt;"}
+    dec_108{"any((marker in low for&lt;br&gt;marker in self._FRAMEWORK_DIRS))&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;any((marker in low for marker in self._FRAMEWORK_DIRS))&lt;/i&gt;"}
+    dec_111{"not offending&lt;br&gt;&lt;i&gt;Condición en línea 111:&lt;br&gt;not offending&lt;/i&gt;"}
+    loop_141["For each s in structure"]
+    dec_142{"not s.file or not&lt;br&gt;self._structure_required(s,&lt;br&gt;&lt;i&gt;Condición en línea 142:&lt;br&gt;not s.file or not self._structure_required(s, domain, archet&lt;/i&gt;"}
+    dec_145{"not path&lt;br&gt;&lt;i&gt;Condición en línea 145:&lt;br&gt;not path&lt;/i&gt;"}
+    dec_153{"_looks_like_filler(content,&lt;br&gt;ext)&lt;br&gt;&lt;i&gt;Condición en línea 153:&lt;br&gt;_looks_like_filler(content, ext)&lt;/i&gt;"}
+    loop_156["For each pat"]
+    dec_157{"not&lt;br&gt;re.search(re.escape(pat), content,&lt;br&gt;&lt;i&gt;Condición en línea 157:&lt;br&gt;not re.search(re.escape(pat), content, re.IGNORECASE)&lt;/i&gt;"}
+    loop_159["For each pat"]
+    dec_160{"re.search(re.escape(pat),&lt;br&gt;content, re.IGNORECASE)&lt;br&gt;&lt;i&gt;Condición en línea 160:&lt;br&gt;re.search(re.escape(pat), content, re.IGNORECASE)&lt;/i&gt;"}
+    loop_162["For each tag"]
+    dec_163{"not&lt;br&gt;re.search(re.escape(tag), content,&lt;br&gt;&lt;i&gt;Condición en línea 163:&lt;br&gt;not re.search(re.escape(tag), content, re.IGNORECASE)&lt;/i&gt;"}
+    loop_165["For each sec"]
+    dec_166{"not re.search('(\\w-)*'?\\b'&lt;br&gt;+ re.escape(sec) + '\\b', content,&lt;br&gt;&lt;i&gt;Condición en línea 166:&lt;br&gt;not re.search('(\\w-)*'?\\b' + re.escape(sec) + '\\b', conte&lt;/i&gt;"}
+    dec_173{"main_file&lt;br&gt;&lt;i&gt;Condición en línea 173:&lt;br&gt;main_file&lt;/i&gt;"}
+    dec_175{"main_path&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;main_path&lt;/i&gt;"}
+    loop_177["For each tag"]
+    dec_178{"not&lt;br&gt;re.search(re.escape(tag), content,&lt;br&gt;&lt;i&gt;Condición en línea 178:&lt;br&gt;not re.search(re.escape(tag), content, re.IGNORECASE)&lt;/i&gt;"}
+    loop_180["For each cls"]
+    dec_181{"not&lt;br&gt;re.search('class=(\\\'')' + +&lt;br&gt;&lt;i&gt;Condición en línea 181:&lt;br&gt;not re.search('class=(\\\'')' + re.escape(cls) + '(\\\'')',&lt;/i&gt;"}
+    loop_183["For each pat"]
+    dec_184{"re.search(re.escape(pat),&lt;br&gt;content, re.IGNORECASE)&lt;br&gt;&lt;i&gt;Condición en línea 184:&lt;br&gt;re.search(re.escape(pat), content, re.IGNORECASE)&lt;/i&gt;"}
+    dec_186{"ver.min_length and&lt;br&gt;len(content) &lt; ver.min_length&lt;br&gt;&lt;i&gt;Condición en línea 186:&lt;br&gt;ver.min_length and len(content) &lt; ver.min_length&lt;/i&gt;"}
+    dec_188{"ver.max_length and&lt;br&gt;len(content) &gt; ver.max_length&lt;br&gt;&lt;i&gt;Condición en línea 188:&lt;br&gt;ver.max_length and len(content) &gt; ver.max_length&lt;/i&gt;"}
+    dec_196{"html_candidates and&lt;br&gt;(css_candidates or js_candidates)&lt;br&gt;&lt;i&gt;Condición en línea 196:&lt;br&gt;html_candidates and (css_candidates or js_candidates)&lt;/i&gt;"}
+    dec_206{"html_content&lt;br&gt;&lt;i&gt;Condición en línea 206:&lt;br&gt;html_content&lt;/i&gt;"}
+    loop_223["For loop"]
+    dec_224{"name in files&lt;br&gt;&lt;i&gt;Condición en línea 224:&lt;br&gt;name in files&lt;/i&gt;"}
+    loop_249["For each s in structure"]
+    dec_250{"not s.file or not&lt;br&gt;self._structure_required(s,&lt;br&gt;&lt;i&gt;Condición en línea 250:&lt;br&gt;not s.file or not self._structure_required(s, domain, archet&lt;/i&gt;"}
+    dec_256{"matched&lt;br&gt;&lt;i&gt;Condición en línea 256:&lt;br&gt;matched&lt;/i&gt;"}
+    dec_262{"added&lt;br&gt;&lt;i&gt;Condición en línea 262:&lt;br&gt;added&lt;/i&gt;"}
+    loop_263["For loop"]
+    dec_270{"step_cfg.action ==&lt;br&gt;'seo_meta'&lt;br&gt;&lt;i&gt;Condición en línea 270:&lt;br&gt;step_cfg.action == 'seo_meta'&lt;/i&gt;"}
+    dec_273{"ext in ('.css', '.js',&lt;br&gt;'.py', '.ts', '.json', '.md',&lt;br&gt;&lt;i&gt;Condición en línea 273:&lt;br&gt;ext in ('.css', '.js', '.py', '.ts', '.json', '.md', '.txt')&lt;/i&gt;"}
+    dec_275{"step_cfg.action ==&lt;br&gt;'landing_html' or ext == '.html'&lt;br&gt;&lt;i&gt;Condición en línea 275:&lt;br&gt;step_cfg.action == 'landing_html' or ext == '.html'&lt;/i&gt;"}
+    fn__structure_required[["Structure Required"]]
+    fn_validate_structure[["Validate Structure"]]
+    fn_validate_artifacts[["Validate Artifacts"]]
+    fn_complete_plan[["Complete Plan"]]
+    fn__build_code_steps[["Build Code Steps"]]
+    fn__build_textual_steps[["Build Textual Steps"]]
+    fn__build_meta_step[["Build Meta Step"]]
+    fn__build_html_steps[["Build Html Steps"]]
+    fn_create_cage_from_yaml[["Create Cage From Yaml"]]
+    fn__collect_plan_files[["Collect Plan Files"]]
+    fn__check_stack_architecture[["arch_errors = Check Stack Architecture"]]
+    fn__find_exact_file[["path = Find Exact File"]]
+    fn__build_completion_steps[["new_steps = Build Completion Steps"]]
+    n_start --&gt; fn__collect_plan_files
+    fn__collect_plan_files --&gt; loop_12
+    loop_12 --&gt; dec_13
+    dec_13 --&gt; dec_17
+    dec_17 --&gt; loop_20
+    loop_20 --&gt; dec_22
+    dec_22 --&gt; dec_24
+    dec_24 -- "loop" --&gt; loop_20
+    loop_20 -- "loop" --&gt; loop_12
+    n_start --&gt; fn__structure_required
+    fn__structure_required --&gt; dec_33
+    dec_33 --&gt; dec_36
+    dec_36 --&gt; dec_40
+    dec_40 --&gt; dec_42
+    n_start --&gt; fn_validate_structure
+    fn_validate_structure --&gt; dec_53
+    dec_53 --&gt; fn__collect_plan_files
+    fn__collect_plan_files --&gt; fn__check_stack_architecture
+    fn__check_stack_architecture --&gt; loop_65
+    loop_65 --&gt; dec_66
+    dec_66 -- "loop" --&gt; loop_65
+    loop_65 --&gt; loop_69
+    loop_69 --&gt; dec_72
+    dec_72 --&gt; dec_75
+    dec_75 -- "loop" --&gt; loop_69
+    n_start --&gt; fn__check_stack_architecture
+    fn__check_stack_architecture --&gt; dec_95
+    dec_95 --&gt; dec_100
+    dec_100 --&gt; loop_104
+    loop_104 --&gt; dec_106
+    dec_106 --&gt; dec_108
+    dec_108 -- "loop" --&gt; loop_104
+    loop_104 --&gt; dec_111
+    n_start --&gt; fn_validate_artifacts
+    fn_validate_artifacts --&gt; dec_134
+    dec_134 --&gt; loop_141
+    loop_141 --&gt; dec_142
+    dec_142 --&gt; fn__find_exact_file
+    fn__find_exact_file --&gt; dec_145
+    dec_145 --&gt; dec_153
+    dec_153 --&gt; loop_156
+    loop_156 --&gt; dec_157
+    dec_157 -- "loop" --&gt; loop_156
+    loop_156 --&gt; loop_159
+    loop_159 --&gt; dec_160
+    dec_160 -- "loop" --&gt; loop_159
+    loop_159 --&gt; loop_162
+    loop_162 --&gt; dec_163
+    dec_163 -- "loop" --&gt; loop_162
+    loop_162 --&gt; loop_165
+    loop_165 --&gt; dec_166
+    dec_166 -- "loop" --&gt; loop_165
+    loop_165 -- "loop" --&gt; loop_141
+    loop_141 --&gt; dec_173
+    dec_173 --&gt; fn__find_exact_file
+    fn__find_exact_file --&gt; dec_175
+    dec_175 --&gt; loop_177
+    loop_177 --&gt; dec_178
+    dec_178 -- "loop" --&gt; loop_177
+    loop_177 --&gt; loop_180
+    loop_180 --&gt; dec_181
+    dec_181 -- "loop" --&gt; loop_180
+    loop_180 --&gt; loop_183
+    loop_183 --&gt; dec_184
+    dec_184 -- "loop" --&gt; loop_183
+    loop_183 --&gt; dec_186
+    dec_186 --&gt; dec_188
+    dec_188 --&gt; dec_196
+    dec_196 --&gt; dec_206
+    n_start --&gt; fn__find_exact_file
+    fn__find_exact_file --&gt; loop_223
+    loop_223 --&gt; dec_224
+    dec_224 -- "loop" --&gt; loop_223
+    n_start --&gt; fn_complete_plan
+    fn_complete_plan --&gt; dec_236
+    dec_236 --&gt; dec_238
+    dec_238 --&gt; dec_243
+    dec_243 --&gt; fn__collect_plan_files
+    fn__collect_plan_files --&gt; loop_249
+    loop_249 --&gt; dec_250
+    dec_250 --&gt; dec_256
+    dec_256 --&gt; fn__build_completion_steps
+    fn__build_completion_steps -- "loop" --&gt; loop_249
+    loop_249 --&gt; dec_262
+    dec_262 --&gt; loop_263
+    n_start --&gt; fn__build_completion_steps
+    fn__build_completion_steps --&gt; dec_270
+    dec_270 --&gt; dec_273
+    dec_273 --&gt; dec_275
+    n_start --&gt; fn__build_code_steps
+    fn__build_code_steps --&gt; dec_286
+    dec_286 --&gt; dec_288
+    dec_288 --&gt; dec_290
+    n_start --&gt; fn__build_textual_steps
+    fn__build_textual_steps --&gt; dec_323
+    dec_323 --&gt; dec_325
+    n_start --&gt; fn__build_meta_step
+    n_start --&gt; fn__build_html_steps
+    fn__build_html_steps --&gt; dec_369
+    dec_369 --&gt; dec_371
+    n_start --&gt; fn_create_cage_from_yaml
+    class n_start node-start
+    class fn__collect_plan_files,fn__structure_required,fn_validate_structure,fn__check_stack_architecture,fn_validate_artifacts,fn__find_exact_file,fn_complete_plan,fn__build_completion_steps,fn__build_code_steps,fn__build_textual_steps,fn__build_meta_step,fn__build_html_steps,fn_create_cage_from_yaml node-subprocess
+    class loop_12,loop_20,loop_65,loop_69,loop_104,loop_141,loop_156,loop_159,loop_162,loop_165,loop_177,loop_180,loop_183,loop_223,loop_249,loop_263 node-loop
+    class dec_13,dec_17,dec_22,dec_24,dec_33,dec_36,dec_40,dec_42,dec_53,dec_66,dec_72,dec_75,dec_95,dec_100,dec_106,dec_108,dec_111,dec_134,dec_142,dec_145,dec_153,dec_157,dec_160,dec_163,dec_166,dec_173,dec_175,dec_178,dec_181,dec_184,dec_186,dec_188,dec_196,dec_206,dec_224,dec_236,dec_238,dec_243,dec_250,dec_256,dec_262,dec_270,dec_273,dec_275,dec_286,dec_288,dec_290,dec_323,dec_325,dec_369,dec_371 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 2 · Diff</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 2 · Diff - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L1_Agentflow.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agentflow · Diff</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Diff
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    loop_35["For each nid in all_ids"]
+    dec_36{"nid in old_by_id and nid not&lt;br&gt;in new_by_id&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;nid in old_by_id and nid not in new_by_id&lt;/i&gt;"}
+    dec_43{"nid in new_by_id and nid not&lt;br&gt;in old_by_id&lt;br&gt;&lt;i&gt;Condición en línea 43:&lt;br&gt;nid in new_by_id and nid not in old_by_id&lt;/i&gt;"}
+    loop_68["For each key"]
+    dec_69{"key in old_edges and key not&lt;br&gt;in new_edges&lt;br&gt;&lt;i&gt;Condición en línea 69:&lt;br&gt;key in old_edges and key not in new_edges&lt;/i&gt;"}
+    dec_73{"key in new_edges and key not&lt;br&gt;in old_edges&lt;br&gt;&lt;i&gt;Condición en línea 73:&lt;br&gt;key in new_edges and key not in old_edges&lt;/i&gt;"}
+    fn__node_changed[["Node Changed"]]
+    fn_diff_graphs[["Diff Graphs"]]
+    fn_diff_files[["Diff Files"]]
+    tool_parse_file_91["old = Parse File&lt;br&gt;&lt;i&gt;Parsear fichero completo&lt;br&gt;(agent flow)&lt;/i&gt;"]
+    tool_parse_file_92["new = Parse File&lt;br&gt;&lt;i&gt;Parsear fichero completo&lt;br&gt;(agent flow)&lt;/i&gt;"]
+    fn_edge_key_61[["Edge Key"]]
+    n_start --&gt; fn__node_changed
+    n_start --&gt; fn_diff_graphs
+    fn_diff_graphs --&gt; loop_35
+    loop_35 --&gt; dec_36
+    dec_36 --&gt; dec_43
+    dec_43 -- "loop" --&gt; loop_35
+    loop_35 --&gt; fn_edge_key_61
+    fn_edge_key_61 --&gt; loop_68
+    loop_68 --&gt; dec_69
+    dec_69 --&gt; dec_73
+    dec_73 -- "loop" --&gt; loop_68
+    n_start --&gt; fn_diff_files
+    fn_diff_files --&gt; tool_parse_file_91
+    tool_parse_file_91 --&gt; tool_parse_file_92
+    class n_start node-start
+    class fn__node_changed,fn_diff_graphs,fn_edge_key_61,fn_diff_files node-subprocess
+    class loop_35,loop_68 node-loop
+    class dec_36,dec_43,dec_69,dec_73 node-decision
+    class tool_parse_file_91,tool_parse_file_92 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

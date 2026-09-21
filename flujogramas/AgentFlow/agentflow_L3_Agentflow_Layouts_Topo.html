@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 3 · Topo</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 3 · Topo - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L2_Agentflow_Layouts.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agentflow · Layouts · Topo</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Layouts · Topo
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_33{"any((n.phase for n in&lt;br&gt;graph.nodes))&lt;br&gt;&lt;i&gt;Condición en línea 33:&lt;br&gt;any((n.phase for n in graph.nodes))&lt;/i&gt;"}
+    dec_105{"node.node_type ==&lt;br&gt;NodeType.START&lt;br&gt;&lt;i&gt;Condición en línea 105:&lt;br&gt;node.node_type == NodeType.START&lt;/i&gt;"}
+    loop_34["For each node in nodes"]
+    dec_45{"not cyc&lt;br&gt;&lt;i&gt;Condición en línea 45:&lt;br&gt;not cyc&lt;/i&gt;"}
+    dec_107{"node.node_type ==&lt;br&gt;NodeType.END&lt;br&gt;&lt;i&gt;Condición en línea 107:&lt;br&gt;node.node_type == NodeType.END&lt;/i&gt;"}
+    loop_47["For each node in nodes"]
+    loop_10["For each node_id in order"]
+    dec_12{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 12:&lt;br&gt;node is None&lt;/i&gt;"}
+    dec_15{"node.node_type in&lt;br&gt;(NodeType.TOOL,&lt;br&gt;&lt;i&gt;Condición en línea 15:&lt;br&gt;node.node_type in (NodeType.TOOL, NodeType.SUBPROCESS)&lt;/i&gt;"}
+    dec_17{"node.node_type ==&lt;br&gt;NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 17:&lt;br&gt;node.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    loop_53["For each node in nodes"]
+    dec_54{"node.id in cyc&lt;br&gt;&lt;i&gt;Condición en línea 54:&lt;br&gt;node.id in cyc&lt;/i&gt;"}
+    dec_56{"node.id in ancestors&lt;br&gt;&lt;i&gt;Condición en línea 56:&lt;br&gt;node.id in ancestors&lt;/i&gt;"}
+    loop_66["For each e in edges"]
+    dec_67{"e.source in adj and e.target&lt;br&gt;in adj&lt;br&gt;&lt;i&gt;Condición en línea 67:&lt;br&gt;e.source in adj and e.target in adj&lt;/i&gt;"}
+    loop_71["For loop"]
+    loop_75["Loop"]
+    dec_77{"cur == start&lt;br&gt;&lt;i&gt;Condición en línea 77:&lt;br&gt;cur == start&lt;/i&gt;"}
+    dec_80{"cur in seen&lt;br&gt;&lt;i&gt;Condición en línea 80:&lt;br&gt;cur in seen&lt;/i&gt;"}
+    loop_89["For each e in edges"]
+    dec_90{"e.source in radj and&lt;br&gt;e.target in radj&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;e.source in radj and e.target in radj&lt;/i&gt;"}
+    loop_95["while stack"]
+    loop_97["For each prev"]
+    dec_98{"prev not in found and prev&lt;br&gt;not in targets&lt;br&gt;&lt;i&gt;Condición en línea 98:&lt;br&gt;prev not in found and prev not in targets&lt;/i&gt;"}
+    loop_119["For each nid in node_ids"]
+    dec_121{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 121:&lt;br&gt;node is None&lt;/i&gt;"}
+    dec_123{"node.node_type in&lt;br&gt;(NodeType.TOOL,&lt;br&gt;&lt;i&gt;Condición en línea 123:&lt;br&gt;node.node_type in (NodeType.TOOL, NodeType.SUBPROCESS)&lt;/i&gt;"}
+    dec_125{"node.node_type ==&lt;br&gt;NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 125:&lt;br&gt;node.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    loop_143["For each e in edges"]
+    dec_144{"e.target in in_degree&lt;br&gt;&lt;i&gt;Condición en línea 144:&lt;br&gt;e.target in in_degree&lt;/i&gt;"}
+    dec_146{"e.source in adj&lt;br&gt;&lt;i&gt;Condición en línea 146:&lt;br&gt;e.source in adj&lt;/i&gt;"}
+    loop_152["while queue"]
+    loop_155["For each neighbor"]
+    dec_157{"in_degree(neighbor) == 0&lt;br&gt;&lt;i&gt;Condición en línea 157:&lt;br&gt;in_degree(neighbor) == 0&lt;/i&gt;"}
+    loop_160["For each n in nodes"]
+    dec_161{"n.id not in order&lt;br&gt;&lt;i&gt;Condición en línea 161:&lt;br&gt;n.id not in order&lt;/i&gt;"}
+    fn__assign_rows[["Assign Rows"]]
+    fn__phase_groups[["Phase Groups"]]
+    fn__structural_phase_groups[["Structural Phase Groups"]]
+    fn__ancestors_of[["Ancestors Of"]]
+    fn__default_phase[["Default Phase"]]
+    fn__classify_phase_nodes[["Classify Phase Nodes"]]
+    fn__topo_order_filtered[["Topo Order Filtered"]]
+    fn__nodes_in_cycles[["cyc = Nodes In Cycles"]]
+    fn__topological_sort[["order = Topological Sort"]]
+    n_start --&gt; fn__assign_rows
+    fn__assign_rows --&gt; fn__topological_sort
+    fn__topological_sort --&gt; loop_10
+    loop_10 --&gt; dec_12
+    dec_12 --&gt; dec_15
+    dec_15 --&gt; dec_17
+    dec_17 -- "loop" --&gt; loop_10
+    n_start --&gt; fn__phase_groups
+    fn__phase_groups --&gt; dec_33
+    dec_33 --&gt; loop_34
+    n_start --&gt; fn__structural_phase_groups
+    fn__structural_phase_groups --&gt; fn__nodes_in_cycles
+    fn__nodes_in_cycles --&gt; dec_45
+    dec_45 --&gt; loop_47
+    loop_47 --&gt; loop_53
+    loop_53 --&gt; dec_54
+    dec_54 --&gt; dec_56
+    dec_56 -- "loop" --&gt; loop_53
+    n_start --&gt; fn__nodes_in_cycles
+    fn__nodes_in_cycles --&gt; loop_66
+    loop_66 --&gt; dec_67
+    dec_67 -- "loop" --&gt; loop_66
+    loop_66 --&gt; loop_71
+    loop_71 --&gt; loop_75
+    loop_75 --&gt; dec_77
+    dec_77 --&gt; dec_80
+    dec_80 -- "loop" --&gt; loop_75
+    loop_75 -- "loop" --&gt; loop_71
+    n_start --&gt; fn__ancestors_of
+    fn__ancestors_of --&gt; loop_89
+    loop_89 --&gt; dec_90
+    dec_90 -- "loop" --&gt; loop_89
+    loop_89 --&gt; loop_95
+    loop_95 --&gt; loop_97
+    loop_97 --&gt; dec_98
+    dec_98 -- "loop" --&gt; loop_97
+    loop_97 -- "loop" --&gt; loop_95
+    n_start --&gt; fn__default_phase
+    fn__default_phase --&gt; dec_105
+    dec_105 --&gt; dec_107
+    n_start --&gt; fn__classify_phase_nodes
+    fn__classify_phase_nodes --&gt; loop_119
+    loop_119 --&gt; dec_121
+    dec_121 --&gt; dec_123
+    dec_123 --&gt; dec_125
+    dec_125 -- "loop" --&gt; loop_119
+    n_start --&gt; fn__topo_order_filtered
+    fn__topo_order_filtered --&gt; fn__topological_sort
+    n_start --&gt; fn__topological_sort
+    fn__topological_sort --&gt; loop_143
+    loop_143 --&gt; dec_144
+    dec_144 --&gt; dec_146
+    dec_146 -- "loop" --&gt; loop_143
+    loop_143 --&gt; loop_152
+    loop_152 --&gt; loop_155
+    loop_155 --&gt; dec_157
+    dec_157 -- "loop" --&gt; loop_155
+    loop_155 -- "loop" --&gt; loop_152
+    loop_152 --&gt; loop_160
+    loop_160 --&gt; dec_161
+    dec_161 -- "loop" --&gt; loop_160
+    class n_start node-start
+    class fn__assign_rows,fn__topological_sort,fn__phase_groups,fn__structural_phase_groups,fn__nodes_in_cycles,fn__ancestors_of,fn__default_phase,fn__classify_phase_nodes,fn__topo_order_filtered node-subprocess
+    class loop_10,loop_34,loop_47,loop_53,loop_66,loop_71,loop_75,loop_89,loop_95,loop_97,loop_119,loop_143,loop_152,loop_155,loop_160 node-loop
+    class dec_12,dec_15,dec_17,dec_33,dec_45,dec_54,dec_56,dec_67,dec_77,dec_80,dec_90,dec_98,dec_105,dec_107,dec_121,dec_123,dec_125,dec_144,dec_146,dec_157,dec_161 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

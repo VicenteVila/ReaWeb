@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 3 · Emit</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 3 · Emit - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L2_Agentflow_Drilldown.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agentflow · Drilldown · Emit</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Drilldown · Emit
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    loop_165["For loop"]
+    loop_195["For each e in index"]
+    dec_232{"not repo_root.is_dir()&lt;br&gt;&lt;i&gt;Condición en línea 232:&lt;br&gt;not repo_root.is_dir()&lt;/i&gt;"}
+    dec_235{"out_dir is None&lt;br&gt;&lt;i&gt;Condición en línea 235:&lt;br&gt;out_dir is None&lt;/i&gt;"}
+    dec_241{"assets_src.is_dir() and (not&lt;br&gt;(out_dir / 'assets').is_dir())&lt;br&gt;&lt;i&gt;Condición en línea 241:&lt;br&gt;assets_src.is_dir() and (not (out_dir / 'assets').is_dir())&lt;/i&gt;"}
+    dec_7{"level &gt; _MAX_DEPTH&lt;br&gt;&lt;i&gt;Condición en línea 7:&lt;br&gt;level &gt; _MAX_DEPTH&lt;/i&gt;"}
+    loop_17["For each d"]
+    dec_18{"not _flow_files_in(ctx, d,&lt;br&gt;recursive=True)&lt;br&gt;&lt;i&gt;Condición en línea 18:&lt;br&gt;not _flow_files_in(ctx, d, recursive=True)&lt;/i&gt;"}
+    dec_20{"_warrants_overview(ctx, d)&lt;br&gt;&lt;i&gt;Condición en línea 20:&lt;br&gt;_warrants_overview(ctx, d)&lt;/i&gt;"}
+    loop_23["For each f"]
+    dec_25{"r in seen_files&lt;br&gt;&lt;i&gt;Condición en línea 25:&lt;br&gt;r in seen_files&lt;/i&gt;"}
+    loop_30["For each f"]
+    dec_32{"r in seen_files&lt;br&gt;&lt;i&gt;Condición en línea 32:&lt;br&gt;r in seen_files&lt;/i&gt;"}
+    loop_41["For loop"]
+    loop_48["For loop"]
+    dec_53{"not segments&lt;br&gt;&lt;i&gt;Condición en línea 53:&lt;br&gt;not segments&lt;/i&gt;"}
+    dec_56{"module in&lt;br&gt;profile.function_splits or module&lt;br&gt;&lt;i&gt;Condición en línea 56:&lt;br&gt;module in profile.function_splits or module in profile.class&lt;/i&gt;"}
+    loop_59["For loop"]
+    loop_69["For each cls"]
+    dec_82{"module in&lt;br&gt;profile.function_splits or module&lt;br&gt;&lt;i&gt;Condición en línea 82:&lt;br&gt;module in profile.function_splits or module in profile.class&lt;/i&gt;"}
+    dec_85{"father is not None&lt;br&gt;&lt;i&gt;Condición en línea 85:&lt;br&gt;father is not None&lt;/i&gt;"}
+    loop_88["For each n in nodes"]
+    dec_89{"not n.id.startswith('fn_')&lt;br&gt;or n.id in matched&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;not n.id.startswith('fn_') or n.id in matched&lt;/i&gt;"}
+    loop_92["For loop"]
+    dec_93{"any((f'fn_(func)' == n.id or&lt;br&gt;n.id.endswith(f'_(func)') for func&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;any((f'fn_(func)' == n.id or n.id.endswith(f'_(func)') for f&lt;/i&gt;"}
+    dec_109{"links&lt;br&gt;&lt;i&gt;Condición en línea 109:&lt;br&gt;links&lt;/i&gt;"}
+    dec_122{"g is None&lt;br&gt;&lt;i&gt;Condición en línea 122:&lt;br&gt;g is None&lt;/i&gt;"}
+    fn__build_overview_129["overview = Build Overview&lt;br&gt;&lt;i&gt;Arma el overview con nodos por&lt;br&gt;actor (módulo/directorio)&lt;/i&gt;"]
+    dec_130{"overview is None&lt;br&gt;&lt;i&gt;Condición en línea 130:&lt;br&gt;overview is None&lt;/i&gt;"}
+    dec_135{"segments&lt;br&gt;&lt;i&gt;Condición en línea 135:&lt;br&gt;segments&lt;/i&gt;"}
+    loop_169["For loop"]
+    dec_171{"g is None&lt;br&gt;&lt;i&gt;Condición en línea 171:&lt;br&gt;g is None&lt;/i&gt;"}
+    dec_176{"not actors&lt;br&gt;&lt;i&gt;Condición en línea 176:&lt;br&gt;not actors&lt;/i&gt;"}
+    loop_181["For loop"]
+    loop_199["For each level"]
+    loop_203["For each e"]
+    fn__write_index_258["Write Index&lt;br&gt;&lt;i&gt;Genera index.html con la lista&lt;br&gt;jerárquica de todas las vistas&lt;/i&gt;"]
+    fn__handle_dir_shallow[["Handle Dir Shallow"]]
+    fn__build_overview[["Build Overview"]]
+    fn__safe_mod[["Safe Mod"]]
+    fn__write_index[["Write Index"]]
+    fn_run_drilldown[["Run Drilldown"]]
+    fn__handle_dir[["Handle Dir"]]
+    tool_get_profile_10["profile = Load Profile&lt;br&gt;&lt;i&gt;Carga perfil de dominio&lt;br&gt;(herramientas/etiquetas)&lt;/i&gt;"]
+    tool_parse_functions_61["sub = Parse Functions&lt;br&gt;&lt;i&gt;Sub-flujo de un subconjunto&lt;br&gt;de funciones escogidas&lt;/i&gt;"]
+    tool_parse_class_methods_71["sub = Parse Class Methods&lt;br&gt;&lt;i&gt;Sub-flujo de los métodos&lt;br&gt;de una clase&lt;/i&gt;"]
+    n_start --&gt; fn__handle_dir
+    fn__handle_dir --&gt; dec_7
+    dec_7 --&gt; tool_get_profile_10
+    tool_get_profile_10 --&gt; loop_17
+    loop_17 --&gt; dec_18
+    dec_18 --&gt; dec_20
+    dec_20 -- "NO" --&gt; loop_23
+    loop_23 --&gt; dec_25
+    dec_25 -- "loop" --&gt; loop_23
+    loop_23 -- "loop" --&gt; loop_17
+    loop_17 --&gt; loop_30
+    loop_30 --&gt; dec_32
+    dec_32 -- "loop" --&gt; loop_30
+    loop_30 --&gt; loop_41
+    loop_41 --&gt; fn__handle_dir
+    fn__handle_dir -- "loop" --&gt; loop_41
+    loop_41 --&gt; loop_48
+    loop_48 --&gt; dec_53
+    dec_53 --&gt; dec_56
+    dec_56 --&gt; loop_59
+    loop_59 --&gt; tool_parse_functions_61
+    tool_parse_functions_61 -- "loop" --&gt; loop_59
+    loop_59 --&gt; loop_69
+    loop_69 --&gt; tool_parse_class_methods_71
+    tool_parse_class_methods_71 -- "loop" --&gt; loop_69
+    loop_69 --&gt; dec_82
+    dec_82 --&gt; dec_85
+    dec_85 --&gt; loop_88
+    loop_88 --&gt; dec_89
+    dec_89 --&gt; loop_92
+    loop_92 --&gt; dec_93
+    dec_93 -- "loop" --&gt; loop_92
+    loop_92 -- "loop" --&gt; loop_88
+    loop_88 --&gt; dec_109
+    dec_82 -- "NO" --&gt; dec_122
+    dec_122 -- "loop" --&gt; loop_48
+    loop_48 --&gt; fn__build_overview_129
+    fn__build_overview_129 --&gt; dec_130
+    dec_130 --&gt; dec_135
+    n_start --&gt; fn__handle_dir_shallow
+    n_start --&gt; fn__build_overview
+    fn__build_overview --&gt; loop_165
+    loop_165 --&gt; loop_169
+    loop_169 --&gt; dec_171
+    dec_171 -- "loop" --&gt; loop_169
+    loop_169 --&gt; dec_176
+    dec_176 --&gt; loop_181
+    n_start --&gt; fn__safe_mod
+    n_start --&gt; fn__write_index
+    fn__write_index --&gt; loop_195
+    loop_195 --&gt; loop_199
+    loop_199 --&gt; loop_203
+    loop_203 -- "loop" --&gt; loop_199
+    n_start --&gt; fn_run_drilldown
+    fn_run_drilldown --&gt; dec_232
+    dec_232 --&gt; dec_235
+    dec_235 --&gt; dec_241
+    dec_241 --&gt; fn__handle_dir
+    fn__handle_dir --&gt; fn__write_index_258
+    class n_start node-start
+    class fn__handle_dir,fn__handle_dir_shallow,fn__build_overview,fn__safe_mod,fn__write_index,fn_run_drilldown node-subprocess
+    class dec_7,dec_18,dec_20,dec_25,dec_32,dec_53,dec_56,dec_82,dec_85,dec_89,dec_93,dec_109,dec_122,dec_130,dec_135,dec_171,dec_176,dec_232,dec_235,dec_241 node-decision
+    class tool_get_profile_10,tool_parse_functions_61,tool_parse_class_methods_71 node-tool
+    class loop_17,loop_23,loop_30,loop_41,loop_48,loop_59,loop_69,loop_88,loop_92,loop_165,loop_169,loop_181,loop_195,loop_199,loop_203 node-loop
+    class fn__build_overview_129,fn__write_index_258 node-process
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

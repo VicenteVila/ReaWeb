@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 4 · Plan</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 4 · Plan - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L3_Cogniteam_Agents_Planner_agent.html">L3</a> <span class="sep">›</span><span class="current">L4 · Cogniteam · Agents · Planner · agent · Plan</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Planner Agent · Plan
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_80{"reuse_world_model and&lt;br&gt;previous_world_model&lt;br&gt;&lt;i&gt;Condición en línea 80:&lt;br&gt;reuse_world_model and previous_world_model&lt;/i&gt;"}
+    dec_44{"not raw_output&lt;br&gt;&lt;i&gt;Condición en línea 44:&lt;br&gt;not raw_output&lt;/i&gt;"}
+    dec_84{"domain and archetype&lt;br&gt;&lt;i&gt;Condición en línea 84:&lt;br&gt;domain and archetype&lt;/i&gt;"}
+    dec_48{"plan and&lt;br&gt;isinstance(plan.get('steps'), and&lt;br&gt;&lt;i&gt;Condición en línea 48:&lt;br&gt;plan and isinstance(plan.get('steps'), list) and plan('steps&lt;/i&gt;"}
+    dec_90{"wm&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;wm&lt;/i&gt;"}
+    dec_49{"'plan_id' not in plan&lt;br&gt;&lt;i&gt;Condición en línea 49:&lt;br&gt;'plan_id' not in plan&lt;/i&gt;"}
+    dec_93{"confidence_ratio &lt; threshold&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;confidence_ratio &lt; threshold&lt;/i&gt;"}
+    loop_8["For loop"]
+    dec_9{"not isinstance(s, dict)&lt;br&gt;&lt;i&gt;Condición en línea 9:&lt;br&gt;not isinstance(s, dict)&lt;/i&gt;"}
+    fn_normalize_step_ids[["Normalize Step Ids"]]
+    fn_generate_plan[["Generate Plan"]]
+    fn_generate_plan_with_world_model[["Generate Plan With World Model"]]
+    tool_llm_complete_36["raw_output = LLM Complete&lt;br&gt;&lt;i&gt;Groq/Ollama: envía prompt + contexto&lt;br&gt;→ JSON/texto (routing por proveedor)&lt;/i&gt;"]
+    tool_generate_world_model_85["wm = Generate World Model&lt;br&gt;&lt;i&gt;WorldModelGenerator: archetype&lt;br&gt;YAML desde el prompt del usuario&lt;/i&gt;"]
+    tool_generate_plan_116["plan = Generate Plan&lt;br&gt;&lt;i&gt;PlannerAgent: genera plan&lt;br&gt;estructurado con World Model&lt;/i&gt;"]
+    tool_normalize_step_ids_51["Normalize Steps&lt;br&gt;&lt;i&gt;Renombra step_ids del plan&lt;br&gt;(secuencia estable)&lt;/i&gt;"]
+    n_start --&gt; fn_normalize_step_ids
+    fn_normalize_step_ids --&gt; loop_8
+    loop_8 --&gt; dec_9
+    dec_9 -- "loop" --&gt; loop_8
+    n_start --&gt; fn_generate_plan
+    fn_generate_plan --&gt; tool_llm_complete_36
+    tool_llm_complete_36 --&gt; dec_44
+    dec_44 --&gt; dec_48
+    dec_48 --&gt; dec_49
+    dec_49 --&gt; tool_normalize_step_ids_51
+    n_start --&gt; fn_generate_plan_with_world_model
+    fn_generate_plan_with_world_model --&gt; dec_80
+    dec_80 --&gt; dec_84
+    dec_84 -- "YES" --&gt; tool_generate_world_model_85
+    dec_84 --&gt; dec_90
+    dec_90 -- "YES" --&gt; dec_93
+    dec_90 --&gt; tool_generate_plan_116
+    class n_start node-start
+    class fn_normalize_step_ids,fn_generate_plan,fn_generate_plan_with_world_model node-subprocess
+    class loop_8 node-loop
+    class dec_9,dec_44,dec_48,dec_49,dec_80,dec_84,dec_90,dec_93 node-decision
+    class tool_llm_complete_36,tool_normalize_step_ids_51,tool_generate_world_model_85,tool_generate_plan_116 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

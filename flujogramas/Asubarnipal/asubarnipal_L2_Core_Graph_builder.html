@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · builder</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · builder - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Core · Graph · builder</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Graph Builder
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_29{"not self.db_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 29:&lt;br&gt;not self.db_path.exists()&lt;/i&gt;"}
+    dec_40{"self.conn is None&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;self.conn is None&lt;/i&gt;"}
+    dec_159{"self.conn is None&lt;br&gt;&lt;i&gt;Condición en línea 159:&lt;br&gt;self.conn is None&lt;/i&gt;"}
+    loop_50["For each entity in entities"]
+    dec_57{"len(entity) &gt; 3 and&lt;br&gt;entity(3)&lt;br&gt;&lt;i&gt;Condición en línea 57:&lt;br&gt;len(entity) &gt; 3 and entity(3)&lt;/i&gt;"}
+    dec_66{"len(entity) &gt; 4 and&lt;br&gt;entity(4)&lt;br&gt;&lt;i&gt;Condición en línea 66:&lt;br&gt;len(entity) &gt; 4 and entity(4)&lt;/i&gt;"}
+    loop_69["For each related in relacionados"]
+    dec_70{"isinstance(related, dict)&lt;br&gt;and 'id' in related&lt;br&gt;&lt;i&gt;Condición en línea 70:&lt;br&gt;isinstance(related, dict) and 'id' in related&lt;/i&gt;"}
+    loop_85["For each rel in relations"]
+    dec_86{"rel(0) and rel(1)&lt;br&gt;&lt;i&gt;Condición en línea 86:&lt;br&gt;rel(0) and rel(1)&lt;/i&gt;"}
+    loop_124["For each edge in edges"]
+    dec_128{"source&lt;br&gt;&lt;i&gt;Condición en línea 128:&lt;br&gt;source&lt;/i&gt;"}
+    dec_130{"target&lt;br&gt;&lt;i&gt;Condición en línea 130:&lt;br&gt;target&lt;/i&gt;"}
+    loop_134["For each node in nodes"]
+    dec_136{"node_id in connection_count&lt;br&gt;&lt;i&gt;Condición en línea 136:&lt;br&gt;node_id in connection_count&lt;/i&gt;"}
+    loop_174["For each rel in relations"]
+    dec_175{"rel(0) and rel(0) != node_id&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;rel(0) and rel(0) != node_id&lt;/i&gt;"}
+    dec_177{"rel(1) and rel(1) != node_id&lt;br&gt;&lt;i&gt;Condición en línea 177:&lt;br&gt;rel(1) and rel(1) != node_id&lt;/i&gt;"}
+    dec_180{"neighbor_ids&lt;br&gt;&lt;i&gt;Condición en línea 180:&lt;br&gt;neighbor_ids&lt;/i&gt;"}
+    fn_graphbuilder__init_connection[["Init Connection"]]
+    fn_graphbuilder_build_graph[["Build Graph"]]
+    fn_graphbuilder__calculate_hubs[["Calculate Hubs"]]
+    fn_graphbuilder__save_graph[["Save Graph"]]
+    fn_graphbuilder_get_neighbors[["Get Neighbors"]]
+    fn_graphbuilder_close[["Close"]]
+    n_start --&gt; fn_graphbuilder__init_connection
+    fn_graphbuilder__init_connection --&gt; dec_29
+    fn_graphbuilder__init_connection --&gt; fn_graphbuilder_build_graph
+    fn_graphbuilder_build_graph --&gt; dec_40
+    dec_40 --&gt; loop_50
+    loop_50 --&gt; dec_57
+    dec_57 --&gt; dec_66
+    dec_66 --&gt; loop_69
+    loop_69 --&gt; dec_70
+    dec_70 -- "loop" --&gt; loop_69
+    loop_69 -- "loop" --&gt; loop_50
+    loop_50 --&gt; loop_85
+    loop_85 --&gt; dec_86
+    dec_86 -- "loop" --&gt; loop_85
+    fn_graphbuilder_build_graph --&gt; fn_graphbuilder__calculate_hubs
+    fn_graphbuilder__calculate_hubs --&gt; loop_124
+    loop_124 --&gt; dec_128
+    dec_128 --&gt; dec_130
+    dec_130 -- "loop" --&gt; loop_124
+    loop_124 --&gt; loop_134
+    loop_134 --&gt; dec_136
+    dec_136 -- "loop" --&gt; loop_134
+    fn_graphbuilder__calculate_hubs --&gt; fn_graphbuilder__save_graph
+    fn_graphbuilder__save_graph --&gt; fn_graphbuilder_get_neighbors
+    fn_graphbuilder_get_neighbors --&gt; dec_159
+    dec_159 --&gt; loop_174
+    loop_174 --&gt; dec_175
+    dec_175 --&gt; dec_177
+    dec_177 -- "loop" --&gt; loop_174
+    loop_174 --&gt; dec_180
+    fn_graphbuilder_get_neighbors --&gt; fn_graphbuilder_close
+    class n_start node-start
+    class fn_graphbuilder__init_connection,fn_graphbuilder_build_graph,fn_graphbuilder__calculate_hubs,fn_graphbuilder__save_graph,fn_graphbuilder_get_neighbors,fn_graphbuilder_close node-subprocess
+    class dec_29,dec_40,dec_57,dec_66,dec_70,dec_86,dec_128,dec_130,dec_136,dec_159,dec_175,dec_177,dec_180 node-decision
+    class loop_50,loop_69,loop_85,loop_124,loop_134,loop_174 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

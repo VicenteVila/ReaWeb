@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 4 · Loop</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 4 · Loop - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L3_Cogniteam_Agents_Repair_v2.html">L3</a> <span class="sep">›</span><span class="current">L4 · Cogniteam · Agents · Repair · v2 · Loop</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Repair V2 · Loop
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_32{"not tool_names&lt;br&gt;&lt;i&gt;Condición en línea 32:&lt;br&gt;not tool_names&lt;/i&gt;"}
+    dec_40{"attempts_in_loop &gt;=&lt;br&gt;max_attempts&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;attempts_in_loop &gt;= max_attempts&lt;/i&gt;"}
+    loop_49["For each i"]
+    dec_53{"last_evidence&lt;br&gt;&lt;i&gt;Condición en línea 53:&lt;br&gt;last_evidence&lt;/i&gt;"}
+    dec_84{"atype == 'ESCALATE'&lt;br&gt;&lt;i&gt;Condición en línea 84:&lt;br&gt;atype == 'ESCALATE'&lt;/i&gt;"}
+    dec_87{"atype == 'INSERT_BEFORE'&lt;br&gt;&lt;i&gt;Condición en línea 87:&lt;br&gt;atype == 'INSERT_BEFORE'&lt;/i&gt;"}
+    dec_89{"isinstance(prep_step, dict)&lt;br&gt;and prep_step.get('tool_to_use')&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;isinstance(prep_step, dict) and prep_step.get('tool_to_use')&lt;/i&gt;"}
+    dec_90{"prep_step('tool_to_use') in&lt;br&gt;tool_map&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;prep_step('tool_to_use') in tool_map&lt;/i&gt;"}
+    dec_106{"atype == 'PATCH_INPUTS'&lt;br&gt;&lt;i&gt;Condición en línea 106:&lt;br&gt;atype == 'PATCH_INPUTS'&lt;/i&gt;"}
+    dec_108{"isinstance(new_inputs, dict)&lt;br&gt;and dict)&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;isinstance(new_inputs, dict) and isinstance(step_info.get('i&lt;/i&gt;"}
+    dec_112{"atype == 'PATCH_TOOL'&lt;br&gt;&lt;i&gt;Condición en línea 112:&lt;br&gt;atype == 'PATCH_TOOL'&lt;/i&gt;"}
+    dec_114{"new_tool in tool_map and&lt;br&gt;new_tool != tool_name&lt;br&gt;&lt;i&gt;Condición en línea 114:&lt;br&gt;new_tool in tool_map and new_tool != tool_name&lt;/i&gt;"}
+    dec_128{"isinstance(result, dict) and&lt;br&gt;result.get('success') is False&lt;br&gt;&lt;i&gt;Condición en línea 128:&lt;br&gt;isinstance(result, dict) and result.get('success') is False&lt;/i&gt;"}
+    dec_138{"passed&lt;br&gt;&lt;i&gt;Condición en línea 138:&lt;br&gt;passed&lt;/i&gt;"}
+    fn_repair_with_loop[["Repair With Loop"]]
+    tool_repair_step_v2_57["action = Repair Step v2&lt;br&gt;&lt;i&gt;Reparación mejorada (evidencia&lt;br&gt;recopilada del entorno)&lt;/i&gt;"]
+    n_start --&gt; fn_repair_with_loop
+    fn_repair_with_loop --&gt; dec_32
+    dec_32 --&gt; dec_40
+    dec_40 --&gt; loop_49
+    loop_49 --&gt; dec_53
+    dec_53 --&gt; tool_repair_step_v2_57
+    tool_repair_step_v2_57 --&gt; dec_84
+    dec_84 --&gt; dec_87
+    dec_87 --&gt; dec_89
+    dec_89 --&gt; dec_90
+    dec_90 --&gt; dec_106
+    dec_106 --&gt; dec_108
+    dec_106 --&gt; dec_112
+    dec_112 --&gt; dec_114
+    dec_114 --&gt; dec_128
+    dec_128 --&gt; dec_138
+    dec_138 -- "loop" --&gt; loop_49
+    class n_start node-start
+    class fn_repair_with_loop node-subprocess
+    class dec_32,dec_40,dec_53,dec_84,dec_87,dec_89,dec_90,dec_106,dec_108,dec_112,dec_114,dec_128,dec_138 node-decision
+    class loop_49 node-loop
+    class tool_repair_step_v2_57 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

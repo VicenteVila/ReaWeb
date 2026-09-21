@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · Memory</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · Memory - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L1_Core.html">L1</a> <span class="sep">›</span><span class="current">L2 · Core · Memory</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Memory
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    loop_267["For each m in memories"]
+    dec_271{"self.memories&lt;br&gt;&lt;i&gt;Condición en línea 271:&lt;br&gt;self.memories&lt;/i&gt;"}
+    dec_162{"len(self.proposals) &lt;&lt;br&gt;original_len&lt;br&gt;&lt;i&gt;Condición en línea 162:&lt;br&gt;len(self.proposals) &lt; original_len&lt;/i&gt;"}
+    loop_199["For each p in proposals"]
+    dec_200{"query_lower in&lt;br&gt;p.get('pregunta_original', or in&lt;br&gt;&lt;i&gt;Condición en línea 200:&lt;br&gt;query_lower in p.get('pregunta_original', '').lower() or que&lt;/i&gt;"}
+    loop_284["For each m in memories"]
+    dec_285{"q in m.get('content',&lt;br&gt;'').lower()&lt;br&gt;&lt;i&gt;Condición en línea 285:&lt;br&gt;q in m.get('content', '').lower()&lt;/i&gt;"}
+    dec_287{"len(results) &gt;= limit&lt;br&gt;&lt;i&gt;Condición en línea 287:&lt;br&gt;len(results) &gt;= limit&lt;/i&gt;"}
+    fn_get_proposal_memory[["Get Proposal Memory"]]
+    fn_proposalmemory__load_proposals[["Load Proposals"]]
+    fn_enhancedmemory__load[["Load"]]
+    fn_proposalmemory__save_proposals[["Save Proposals"]]
+    fn_enhancedmemory__save[["Save"]]
+    fn_proposalmemory__load_preferences[["Load Preferences"]]
+    fn_enhancedmemory_add[["Add"]]
+    fn_proposalmemory__save_preferences[["Save Preferences"]]
+    fn_enhancedmemory_get_stats[["Get Stats"]]
+    fn_proposalmemory_save[["Save"]]
+    fn_enhancedmemory_search[["Search"]]
+    fn_proposalmemory_save_to_standby[["Save To Standby"]]
+    fn_enhancedmemory_get_recent[["Get Recent"]]
+    fn_proposalmemory_list[["List"]]
+    fn_enhancedmemory_clear[["Clear"]]
+    fn_proposalmemory_get[["Get"]]
+    fn_enhancedmemory_consolidate[["Consolidate"]]
+    fn_proposalmemory_archive[["Archive"]]
+    fn_proposalmemory_restore[["Restore"]]
+    fn_proposalmemory_delete[["Delete"]]
+    fn_proposalmemory_get_preference[["Get Preference"]]
+    fn_proposalmemory_set_preference[["Set Preference"]]
+    fn_proposalmemory_stats[["Stats"]]
+    fn_proposalmemory_search_proposals[["Search Proposals"]]
+    n_start --&gt; fn_get_proposal_memory
+    n_start --&gt; fn_proposalmemory__load_proposals
+    fn_proposalmemory__load_proposals --&gt; fn_proposalmemory__save_proposals
+    fn_proposalmemory__save_proposals --&gt; fn_proposalmemory__load_preferences
+    fn_proposalmemory__load_preferences --&gt; fn_proposalmemory__save_preferences
+    fn_proposalmemory__save_preferences --&gt; fn_proposalmemory_save
+    fn_proposalmemory_save --&gt; fn_proposalmemory_save_to_standby
+    fn_proposalmemory_save_to_standby --&gt; fn_proposalmemory_list
+    fn_proposalmemory_list --&gt; fn_proposalmemory_get
+    fn_proposalmemory_get --&gt; fn_proposalmemory_archive
+    fn_proposalmemory_archive --&gt; fn_proposalmemory_restore
+    fn_proposalmemory_restore --&gt; fn_proposalmemory_delete
+    fn_proposalmemory_delete --&gt; dec_162
+    fn_proposalmemory_delete --&gt; fn_proposalmemory_get_preference
+    fn_proposalmemory_get_preference --&gt; fn_proposalmemory_set_preference
+    fn_proposalmemory_set_preference --&gt; fn_proposalmemory_stats
+    fn_proposalmemory_stats --&gt; fn_proposalmemory_search_proposals
+    fn_proposalmemory_search_proposals --&gt; loop_199
+    loop_199 --&gt; dec_200
+    dec_200 -- "loop" --&gt; loop_199
+    n_start --&gt; fn_enhancedmemory__load
+    fn_enhancedmemory__load --&gt; fn_enhancedmemory__save
+    fn_enhancedmemory__save --&gt; fn_enhancedmemory_add
+    fn_enhancedmemory_add --&gt; fn_enhancedmemory_get_stats
+    fn_enhancedmemory_get_stats --&gt; loop_267
+    loop_267 --&gt; dec_271
+    fn_enhancedmemory_get_stats --&gt; fn_enhancedmemory_search
+    fn_enhancedmemory_search --&gt; loop_284
+    loop_284 --&gt; dec_285
+    dec_285 --&gt; dec_287
+    dec_287 -- "loop" --&gt; loop_284
+    fn_enhancedmemory_search --&gt; fn_enhancedmemory_get_recent
+    fn_enhancedmemory_get_recent --&gt; fn_enhancedmemory_clear
+    fn_enhancedmemory_clear --&gt; fn_enhancedmemory_consolidate
+    class n_start node-start
+    class fn_get_proposal_memory,fn_proposalmemory__load_proposals,fn_proposalmemory__save_proposals,fn_proposalmemory__load_preferences,fn_proposalmemory__save_preferences,fn_proposalmemory_save,fn_proposalmemory_save_to_standby,fn_proposalmemory_list,fn_proposalmemory_get,fn_proposalmemory_archive,fn_proposalmemory_restore,fn_proposalmemory_delete,fn_proposalmemory_get_preference,fn_proposalmemory_set_preference,fn_proposalmemory_stats,fn_proposalmemory_search_proposals,fn_enhancedmemory__load,fn_enhancedmemory__save,fn_enhancedmemory_add,fn_enhancedmemory_get_stats,fn_enhancedmemory_search,fn_enhancedmemory_get_recent,fn_enhancedmemory_clear,fn_enhancedmemory_consolidate node-subprocess
+    class dec_162,dec_200,dec_271,dec_285,dec_287 node-decision
+    class loop_199,loop_267,loop_284 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

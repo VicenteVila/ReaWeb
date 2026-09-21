@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 4 · Ratelimit</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 4 · Ratelimit - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L3_Cogniteam_Tools_Utils.html">L3</a> <span class="sep">›</span><span class="current">L4 · Cogniteam · Tools · Utils · Ratelimit</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Ratelimit
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_19{"state('failures') &gt;=&lt;br&gt;_CIRCUIT_FAILURE_THRESHOLD&lt;br&gt;&lt;i&gt;Condición en línea 19:&lt;br&gt;state('failures') &gt;= _CIRCUIT_FAILURE_THRESHOLD&lt;/i&gt;"}
+    dec_28{"state.get('failures', 0) &gt; 0&lt;br&gt;&lt;i&gt;Condición en línea 28:&lt;br&gt;state.get('failures', 0) &gt; 0&lt;/i&gt;"}
+    dec_36{"state.get('failures', 0) &lt;&lt;br&gt;_CIRCUIT_FAILURE_THRESHOLD&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;state.get('failures', 0) &lt; _CIRCUIT_FAILURE_THRESHOLD&lt;/i&gt;"}
+    dec_80{"state.get('date') != today&lt;br&gt;&lt;i&gt;Condición en línea 80:&lt;br&gt;state.get('date') != today&lt;/i&gt;"}
+    dec_101{"state.get('date') != today&lt;br&gt;&lt;i&gt;Condición en línea 101:&lt;br&gt;state.get('date') != today&lt;/i&gt;"}
+    dec_116{"state.get('date') != today&lt;br&gt;&lt;i&gt;Condición en línea 116:&lt;br&gt;state.get('date') != today&lt;/i&gt;"}
+    dec_38{"time.time() &lt;&lt;br&gt;state.get('open_until', 0)&lt;br&gt;&lt;i&gt;Condición en línea 38:&lt;br&gt;time.time() &lt; state.get('open_until', 0)&lt;/i&gt;"}
+    dec_89{"state('requests_today') &gt;=&lt;br&gt;max_per_day&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;state('requests_today') &gt;= max_per_day&lt;/i&gt;"}
+    dec_91{"len(state('minute_log')) &gt;=&lt;br&gt;max_per_minute&lt;br&gt;&lt;i&gt;Condición en línea 91:&lt;br&gt;len(state('minute_log')) &gt;= max_per_minute&lt;/i&gt;"}
+    fn_record_failure[["Record Failure"]]
+    fn_record_success[["Record Success"]]
+    fn_is_circuit_open[["Is Circuit Open"]]
+    fn__ensure_state_dir[["Ensure State Dir"]]
+    fn__state_path[["State Path"]]
+    fn__load_state[["Load State"]]
+    fn__save_state[["Save State"]]
+    fn__today[["Today"]]
+    fn_check_rate_limit[["Check Rate Limit"]]
+    fn_record_request[["Record Request"]]
+    fn_get_rate_status[["Get Rate Status"]]
+    n_start --&gt; fn_record_failure
+    fn_record_failure --&gt; dec_19
+    n_start --&gt; fn_record_success
+    fn_record_success --&gt; dec_28
+    n_start --&gt; fn_is_circuit_open
+    fn_is_circuit_open --&gt; dec_36
+    dec_36 --&gt; dec_38
+    n_start --&gt; fn__ensure_state_dir
+    n_start --&gt; fn__state_path
+    n_start --&gt; fn__load_state
+    n_start --&gt; fn__save_state
+    n_start --&gt; fn__today
+    n_start --&gt; fn_check_rate_limit
+    fn_check_rate_limit --&gt; dec_80
+    dec_80 --&gt; dec_89
+    dec_89 --&gt; dec_91
+    n_start --&gt; fn_record_request
+    fn_record_request --&gt; dec_101
+    n_start --&gt; fn_get_rate_status
+    fn_get_rate_status --&gt; dec_116
+    class n_start node-start
+    class fn_record_failure,fn_record_success,fn_is_circuit_open,fn__ensure_state_dir,fn__state_path,fn__load_state,fn__save_state,fn__today,fn_check_rate_limit,fn_record_request,fn_get_rate_status node-subprocess
+    class dec_19,dec_28,dec_36,dec_38,dec_80,dec_89,dec_91,dec_101,dec_116 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

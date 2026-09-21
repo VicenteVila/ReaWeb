@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 3 · Radial</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 3 · Radial - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L2_Agentflow_Layouts.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agentflow · Layouts · Radial</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Layouts · Radial
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_40{"NOT nodes?&lt;br&gt;&lt;i&gt;Niega nodes&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    loop_17["For each e in edges"]
+    loop_48["For loop"]
+    loop_50["For loop"]
+    loop_3["For each node in nodes"]
+    dec_4{"node.node_type ==&lt;br&gt;NodeType.START&lt;br&gt;&lt;i&gt;Condición en línea 4:&lt;br&gt;node.node_type == NodeType.START&lt;/i&gt;"}
+    loop_7["For each e in edges"]
+    dec_10{"graph.nodes&lt;br&gt;&lt;i&gt;Condición en línea 10:&lt;br&gt;graph.nodes&lt;/i&gt;"}
+    loop_24["while queue"]
+    loop_26["For each nb"]
+    dec_27{"nb not in levels&lt;br&gt;&lt;i&gt;Condición en línea 27:&lt;br&gt;nb not in levels&lt;/i&gt;"}
+    loop_30["For each node in nodes"]
+    dec_31{"node.id not in levels&lt;br&gt;&lt;i&gt;Condición en línea 31:&lt;br&gt;node.id not in levels&lt;/i&gt;"}
+    loop_60["For each level"]
+    dec_62{"not nids&lt;br&gt;&lt;i&gt;Condición en línea 62:&lt;br&gt;not nids&lt;/i&gt;"}
+    loop_66["For loop"]
+    dec_68{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 68:&lt;br&gt;node is None&lt;/i&gt;"}
+    loop_86["For each p in positioned"]
+    fn_radial_layout[["Radial Layout"]]
+    fn__radial_center[["Radial Center"]]
+    fn__radial_levels[["Radial Levels"]]
+    n_start --&gt; fn__radial_center
+    fn__radial_center --&gt; loop_3
+    loop_3 --&gt; dec_4
+    dec_4 -- "loop" --&gt; loop_3
+    loop_3 --&gt; loop_7
+    loop_7 --&gt; dec_10
+    n_start --&gt; fn__radial_levels
+    fn__radial_levels --&gt; loop_17
+    loop_17 --&gt; loop_24
+    loop_24 --&gt; loop_26
+    loop_26 --&gt; dec_27
+    dec_27 -- "loop" --&gt; loop_26
+    loop_26 -- "loop" --&gt; loop_24
+    loop_24 --&gt; loop_30
+    loop_30 --&gt; dec_31
+    dec_31 -- "loop" --&gt; loop_30
+    n_start --&gt; fn_radial_layout
+    fn_radial_layout --&gt; dec_40
+    dec_40 --&gt; fn__radial_center
+    fn__radial_center --&gt; fn__radial_levels
+    fn__radial_levels --&gt; loop_48
+    loop_48 --&gt; loop_50
+    loop_50 --&gt; loop_60
+    loop_60 --&gt; dec_62
+    dec_62 --&gt; loop_66
+    loop_66 --&gt; dec_68
+    dec_68 -- "loop" --&gt; loop_66
+    loop_66 -- "loop" --&gt; loop_60
+    loop_60 --&gt; loop_86
+    class n_start node-start
+    class fn__radial_center,fn__radial_levels,fn_radial_layout node-subprocess
+    class loop_3,loop_7,loop_17,loop_24,loop_26,loop_30,loop_48,loop_50,loop_60,loop_66,loop_86 node-loop
+    class dec_4,dec_10,dec_27,dec_31,dec_40,dec_62,dec_68 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

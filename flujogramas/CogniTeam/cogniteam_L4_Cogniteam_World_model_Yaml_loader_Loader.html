@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 4 · Loader</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 4 · Loader - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L3_Cogniteam_World_model_Yaml_loader.html">L3</a> <span class="sep">›</span><span class="current">L4 · Cogniteam · World · model · Yaml · loader · Loader</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Yaml Loader · Loader
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_3{"not&lt;br&gt;self.config_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 3:&lt;br&gt;not self.config_path.exists()&lt;/i&gt;"}
+    dec_40{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_16{"not domain_cfg&lt;br&gt;&lt;i&gt;Condición en línea 16:&lt;br&gt;not domain_cfg&lt;/i&gt;"}
+    dec_47{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 47:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_106{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 106:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_113{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 113:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_120{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 120:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_127{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;not cfg&lt;/i&gt;"}
+    dec_134{"not cfg&lt;br&gt;&lt;i&gt;Condición en línea 134:&lt;br&gt;not cfg&lt;/i&gt;"}
+    loop_23["For loop"]
+    loop_24["For loop"]
+    loop_53["For loop"]
+    dec_55{"placeholder in prompt&lt;br&gt;&lt;i&gt;Condición en línea 55:&lt;br&gt;placeholder in prompt&lt;/i&gt;"}
+    loop_97["Loop"]
+    loop_156["For loop"]
+    dec_160{"input_def.extract_from_task&lt;br&gt;&lt;i&gt;Condición en línea 160:&lt;br&gt;input_def.extract_from_task&lt;/i&gt;"}
+    dec_161{"dict)&lt;br&gt;&lt;i&gt;Condición en línea 161:&lt;br&gt;isinstance(input_def.extract_from_task, dict)&lt;/i&gt;"}
+    loop_163["For loop"]
+    dec_164{"any((kw.lower() in&lt;br&gt;task_lower for kw in keywords))&lt;br&gt;&lt;i&gt;Condición en línea 164:&lt;br&gt;any((kw.lower() in task_lower for kw in keywords))&lt;/i&gt;"}
+    dec_165{"input_def.type == 'list'&lt;br&gt;&lt;i&gt;Condición en línea 165:&lt;br&gt;input_def.type == 'list'&lt;/i&gt;"}
+    dec_166{"not isinstance(value, list)&lt;br&gt;&lt;i&gt;Condición en línea 166:&lt;br&gt;not isinstance(value, list)&lt;/i&gt;"}
+    dec_172{"list)&lt;br&gt;&lt;i&gt;Condición en línea 172:&lt;br&gt;isinstance(input_def.extract_from_task, list)&lt;/i&gt;"}
+    dec_174{"any((kw.lower() in&lt;br&gt;task_lower for kw in&lt;br&gt;&lt;i&gt;Condición en línea 174:&lt;br&gt;any((kw.lower() in task_lower for kw in input_def.extract_fr&lt;/i&gt;"}
+    dec_175{"input_def.type == 'bool'&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;input_def.type == 'bool'&lt;/i&gt;"}
+    dec_177{"input_def.type == 'str'&lt;br&gt;&lt;i&gt;Condición en línea 177:&lt;br&gt;input_def.type == 'str'&lt;/i&gt;"}
+    dec_181{"input_def.extract_regex&lt;br&gt;&lt;i&gt;Condición en línea 181:&lt;br&gt;input_def.extract_regex&lt;/i&gt;"}
+    dec_183{"match&lt;br&gt;&lt;i&gt;Condición en línea 183:&lt;br&gt;match&lt;/i&gt;"}
+    dec_185{"input_def.type == 'int'&lt;br&gt;&lt;i&gt;Condición en línea 185:&lt;br&gt;input_def.type == 'int'&lt;/i&gt;"}
+    dec_187{"input_def.min is not None&lt;br&gt;&lt;i&gt;Condición en línea 187:&lt;br&gt;input_def.min is not None&lt;/i&gt;"}
+    dec_189{"input_def.max is not None&lt;br&gt;&lt;i&gt;Condición en línea 189:&lt;br&gt;input_def.max is not None&lt;/i&gt;"}
+    dec_191{"input_def.type == 'str'&lt;br&gt;&lt;i&gt;Condición en línea 191:&lt;br&gt;input_def.type == 'str'&lt;/i&gt;"}
+    loop_204["For loop"]
+    loop_205["For loop"]
+    loop_210["For each kw in keywords"]
+    dec_211{"kw.lower() in task_lower&lt;br&gt;&lt;i&gt;Condición en línea 211:&lt;br&gt;kw.lower() in task_lower&lt;/i&gt;"}
+    loop_215["For each input_def"]
+    dec_216{"input_def.extract_from_task&lt;br&gt;&lt;i&gt;Condición en línea 216:&lt;br&gt;input_def.extract_from_task&lt;/i&gt;"}
+    dec_217{"list)&lt;br&gt;&lt;i&gt;Condición en línea 217:&lt;br&gt;isinstance(input_def.extract_from_task, list)&lt;/i&gt;"}
+    dec_218{"any((kw.lower() in&lt;br&gt;task_lower for kw in&lt;br&gt;&lt;i&gt;Condición en línea 218:&lt;br&gt;any((kw.lower() in task_lower for kw in input_def.extract_fr&lt;/i&gt;"}
+    dec_220{"dict)&lt;br&gt;&lt;i&gt;Condición en línea 220:&lt;br&gt;isinstance(input_def.extract_from_task, dict)&lt;/i&gt;"}
+    loop_221["For each keywords_list"]
+    dec_222{"any((kw.lower() in&lt;br&gt;task_lower for kw in&lt;br&gt;&lt;i&gt;Condición en línea 222:&lt;br&gt;any((kw.lower() in task_lower for kw in keywords_list))&lt;/i&gt;"}
+    dec_228{"score &gt; best_score&lt;br&gt;&lt;i&gt;Condición en línea 228:&lt;br&gt;score &gt; best_score&lt;/i&gt;"}
+    fn__load[["Load"]]
+    fn_get_all_archetypes[["Get All Archetypes"]]
+    fn_get_domain[["Get Domain"]]
+    fn_get_domain_fewshot[["Get Domain Fewshot"]]
+    fn_get_domain_prose[["Get Domain Prose"]]
+    fn_get_llm_prompt[["Get Llm Prompt"]]
+    fn_get_verification_rules[["Get Verification Rules"]]
+    fn_get_thresholds[["Get Thresholds"]]
+    fn_get_grounding_keywords[["Get Grounding Keywords"]]
+    fn_get_structure[["Get Structure"]]
+    fn_get_default_config[["Get Default Config"]]
+    fn_get_calibration_config[["Get Calibration Config"]]
+    fn_get_fallback[["Get Fallback"]]
+    fn_extract_inputs_from_task[["Extract Inputs From Task"]]
+    fn_find_archetype_by_keywords[["Find Archetype By Keywords"]]
+    fn_get_input_definitions[["Get Input Definitions"]]
+    fn_get_archetype[["Get Archetype"]]
+    fn__render_conditionals[["prompt = Render Conditionals"]]
+    fn_replace_conditional_68[["Replace Conditional"]]
+    n_start --&gt; fn__load
+    fn__load --&gt; dec_3
+    n_start --&gt; fn_get_archetype
+    fn_get_archetype --&gt; dec_16
+    n_start --&gt; fn_get_all_archetypes
+    fn_get_all_archetypes --&gt; loop_23
+    loop_23 --&gt; loop_24
+    loop_24 -- "loop" --&gt; loop_23
+    n_start --&gt; fn_get_domain
+    n_start --&gt; fn_get_domain_fewshot
+    n_start --&gt; fn_get_domain_prose
+    fn_get_domain_prose --&gt; dec_40
+    n_start --&gt; fn_get_llm_prompt
+    fn_get_llm_prompt --&gt; fn_get_archetype
+    fn_get_archetype --&gt; dec_47
+    dec_47 --&gt; loop_53
+    loop_53 --&gt; dec_55
+    dec_55 -- "loop" --&gt; loop_53
+    loop_53 --&gt; fn__render_conditionals
+    n_start --&gt; fn__render_conditionals
+    fn__render_conditionals --&gt; fn_replace_conditional_68
+    fn_replace_conditional_68 --&gt; loop_97
+    n_start --&gt; fn_get_verification_rules
+    fn_get_verification_rules --&gt; fn_get_archetype
+    fn_get_archetype --&gt; dec_106
+    n_start --&gt; fn_get_thresholds
+    fn_get_thresholds --&gt; fn_get_archetype
+    fn_get_archetype --&gt; dec_113
+    n_start --&gt; fn_get_grounding_keywords
+    fn_get_grounding_keywords --&gt; fn_get_archetype
+    fn_get_archetype --&gt; dec_120
+    n_start --&gt; fn_get_structure
+    fn_get_structure --&gt; fn_get_archetype
+    fn_get_archetype --&gt; dec_127
+    n_start --&gt; fn_get_input_definitions
+    fn_get_input_definitions --&gt; fn_get_archetype
+    fn_get_archetype --&gt; dec_134
+    n_start --&gt; fn_get_default_config
+    n_start --&gt; fn_get_calibration_config
+    n_start --&gt; fn_get_fallback
+    n_start --&gt; fn_extract_inputs_from_task
+    fn_extract_inputs_from_task --&gt; fn_get_input_definitions
+    fn_get_input_definitions --&gt; loop_156
+    loop_156 --&gt; dec_160
+    dec_160 --&gt; dec_161
+    dec_161 --&gt; loop_163
+    loop_163 --&gt; dec_164
+    dec_164 --&gt; dec_165
+    dec_165 -- "YES" --&gt; dec_166
+    dec_165 -- "loop" --&gt; loop_163
+    dec_161 --&gt; dec_172
+    dec_172 --&gt; dec_174
+    dec_174 --&gt; dec_175
+    dec_175 --&gt; dec_177
+    dec_177 --&gt; dec_181
+    dec_181 --&gt; dec_183
+    dec_183 --&gt; dec_185
+    dec_185 --&gt; dec_187
+    dec_187 --&gt; dec_189
+    dec_185 --&gt; dec_191
+    dec_191 -- "loop" --&gt; loop_156
+    n_start --&gt; fn_find_archetype_by_keywords
+    fn_find_archetype_by_keywords --&gt; loop_204
+    loop_204 --&gt; loop_205
+    loop_205 --&gt; loop_210
+    loop_210 --&gt; dec_211
+    dec_211 -- "loop" --&gt; loop_210
+    loop_210 --&gt; loop_215
+    loop_215 --&gt; dec_216
+    dec_216 --&gt; dec_217
+    dec_217 --&gt; dec_218
+    dec_217 --&gt; dec_220
+    dec_220 --&gt; loop_221
+    loop_221 --&gt; dec_222
+    dec_222 -- "loop" --&gt; loop_221
+    loop_221 -- "loop" --&gt; loop_215
+    loop_215 --&gt; dec_228
+    dec_228 -- "loop" --&gt; loop_205
+    loop_205 -- "loop" --&gt; loop_204
+    class n_start node-start
+    class fn__load,fn_get_archetype,fn_get_all_archetypes,fn_get_domain,fn_get_domain_fewshot,fn_get_domain_prose,fn_get_llm_prompt,fn__render_conditionals,fn_replace_conditional_68,fn_get_verification_rules,fn_get_thresholds,fn_get_grounding_keywords,fn_get_structure,fn_get_input_definitions,fn_get_default_config,fn_get_calibration_config,fn_get_fallback,fn_extract_inputs_from_task,fn_find_archetype_by_keywords node-subprocess
+    class dec_3,dec_16,dec_40,dec_47,dec_55,dec_106,dec_113,dec_120,dec_127,dec_134,dec_160,dec_161,dec_164,dec_165,dec_166,dec_172,dec_174,dec_175,dec_177,dec_181,dec_183,dec_185,dec_187,dec_189,dec_191,dec_211,dec_216,dec_217,dec_218,dec_220,dec_222,dec_228 node-decision
+    class loop_23,loop_24,loop_53,loop_97,loop_156,loop_163,loop_204,loop_205,loop_210,loop_215,loop_221 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

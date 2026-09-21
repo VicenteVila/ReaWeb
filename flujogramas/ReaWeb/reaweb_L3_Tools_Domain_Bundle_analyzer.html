@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · Nivel 3 · analyzer</title>
+<meta name="description" content="Flujograma ReaWeb · Nivel 3 · analyzer - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><a href="reaweb_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Tools · Domain · Bundle · analyzer</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Bundle Analyzer
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    main_loop["Main Loop&lt;br&gt;&lt;i&gt;while True:&lt;br&gt;  turn += 1&lt;br&gt;  register_evaluation()&lt;br&gt;  budget.done()?&lt;/i&gt;"]
+    dec_27{"not base.exists()&lt;br&gt;&lt;i&gt;Condición en línea 27:&lt;br&gt;not base.exists()&lt;/i&gt;"}
+    dec_31{"not files&lt;br&gt;&lt;i&gt;Condición en línea 31:&lt;br&gt;not files&lt;/i&gt;"}
+    loop_36["For each f in files"]
+    dec_49{"img&lt;br&gt;&lt;i&gt;Condición en línea 49:&lt;br&gt;img&lt;/i&gt;"}
+    dec_51{"by_type.get('.html', 0) &gt;&lt;br&gt;by_type.get('.css', 0) * 3 and 0)&lt;br&gt;&lt;i&gt;Condición en línea 51:&lt;br&gt;by_type.get('.html', 0) &gt; by_type.get('.css', 0) * 3 and by_&lt;/i&gt;"}
+    dec_53{"by_type.get('.js', 0) &gt;&lt;br&gt;300000&lt;br&gt;&lt;i&gt;Condición en línea 53:&lt;br&gt;by_type.get('.js', 0) &gt; 300000&lt;/i&gt;"}
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    n_start --&gt; main_loop
+    main_loop --&gt; dec_27
+    dec_27 --&gt; dec_31
+    dec_31 --&gt; loop_36
+    loop_36 --&gt; dec_49
+    dec_49 --&gt; dec_51
+    dec_51 --&gt; dec_53
+    class n_start node-start
+    class main_loop,loop_36 node-loop
+    class dec_27,dec_31,dec_49,dec_51,dec_53 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

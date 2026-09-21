@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaGame · Nivel 4 · Gating</title>
+<meta name="description" content="Flujograma ReaGame · Nivel 4 · Gating - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaGame/index.html">ReaGame</a> <span class="sep">›</span><a href="reagame_L0_Overview.html">L0</a> <span class="sep">›</span><a href="reagame_L3_Tools_Domain_Game_evaluator.html">L3</a> <span class="sep">›</span><span class="current">L4 · Tools · Domain · Game · evaluator · Gating</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Game Evaluator · Gating
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    loop_14["For loop"]
+    dec_96{"start == -1&lt;br&gt;&lt;i&gt;Condición en línea 96:&lt;br&gt;start == -1&lt;/i&gt;"}
+    dec_112{"total is None&lt;br&gt;&lt;i&gt;Condición en línea 112:&lt;br&gt;total is None&lt;/i&gt;"}
+    dec_22{"feat('total') and&lt;br&gt;feat('fails')&lt;br&gt;&lt;i&gt;Condición en línea 22:&lt;br&gt;feat('total') and feat('fails')&lt;/i&gt;"}
+    dec_100{"end == -1&lt;br&gt;&lt;i&gt;Condición en línea 100:&lt;br&gt;end == -1&lt;/i&gt;"}
+    dec_116{"not has_vlm and (not&lt;br&gt;has_creativity)&lt;br&gt;&lt;i&gt;Condición en línea 116:&lt;br&gt;not has_vlm and (not has_creativity)&lt;/i&gt;"}
+    dec_27{"func_tests&lt;br&gt;&lt;i&gt;Condición en línea 27:&lt;br&gt;func_tests&lt;/i&gt;"}
+    dec_120{"has_vlm&lt;br&gt;&lt;i&gt;Condición en línea 120:&lt;br&gt;has_vlm&lt;/i&gt;"}
+    dec_32{"not loaded and available&lt;br&gt;&lt;i&gt;Condición en línea 32:&lt;br&gt;not loaded and available&lt;/i&gt;"}
+    dec_43{"loaded&lt;br&gt;&lt;i&gt;Condición en línea 43:&lt;br&gt;loaded&lt;/i&gt;"}
+    dec_122{"has_creativity&lt;br&gt;&lt;i&gt;Condición en línea 122:&lt;br&gt;has_creativity&lt;/i&gt;"}
+    dec_34{"not loaded&lt;br&gt;&lt;i&gt;Condición en línea 34:&lt;br&gt;not loaded&lt;/i&gt;"}
+    dec_46{"not conn('input_real')&lt;br&gt;&lt;i&gt;Condición en línea 46:&lt;br&gt;not conn('input_real')&lt;/i&gt;"}
+    dec_66{"blocking&lt;br&gt;&lt;i&gt;Condición en línea 66:&lt;br&gt;blocking&lt;/i&gt;"}
+    dec_48{"not&lt;br&gt;conn('señales_conectadas')&lt;br&gt;&lt;i&gt;Condición en línea 48:&lt;br&gt;not conn('señales_conectadas')&lt;/i&gt;"}
+    dec_50{"no_jugable&lt;br&gt;&lt;i&gt;Condición en línea 50:&lt;br&gt;no_jugable&lt;/i&gt;"}
+    dec_78{"not gates&lt;br&gt;&lt;i&gt;Condición en línea 78:&lt;br&gt;not gates&lt;/i&gt;"}
+    loop_126["For each key"]
+    dec_127{"metrics.get(key) is not None&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;metrics.get(key) is not None&lt;/i&gt;"}
+    dec_134{"gates&lt;br&gt;&lt;i&gt;Condición en línea 134:&lt;br&gt;gates&lt;/i&gt;"}
+    fn_evaluate[["Evaluate"]]
+    fn_metrics_block[["Metrics Block"]]
+    fn_parse_metrics_block[["Parse Metrics Block"]]
+    fn_blend_visual_total[["Blend Visual Total"]]
+    fn__apply_blocking_gates[["total = Apply Blocking Gates"]]
+    n_start --&gt; fn_evaluate
+    fn_evaluate --&gt; loop_14
+    loop_14 --&gt; dec_22
+    dec_22 --&gt; dec_27
+    dec_27 --&gt; dec_32
+    dec_32 --&gt; dec_34
+    dec_27 --&gt; dec_43
+    dec_43 --&gt; dec_46
+    dec_46 --&gt; dec_48
+    dec_48 --&gt; dec_50
+    dec_43 --&gt; dec_66
+    dec_66 --&gt; fn__apply_blocking_gates
+    n_start --&gt; fn__apply_blocking_gates
+    fn__apply_blocking_gates --&gt; dec_78
+    n_start --&gt; fn_metrics_block
+    n_start --&gt; fn_parse_metrics_block
+    fn_parse_metrics_block --&gt; dec_96
+    dec_96 --&gt; dec_100
+    n_start --&gt; fn_blend_visual_total
+    fn_blend_visual_total --&gt; dec_112
+    dec_112 --&gt; dec_116
+    dec_116 --&gt; dec_120
+    dec_120 --&gt; dec_122
+    dec_122 --&gt; loop_126
+    loop_126 --&gt; dec_127
+    dec_127 -- "loop" --&gt; loop_126
+    loop_126 --&gt; dec_134
+    dec_134 --&gt; fn__apply_blocking_gates
+    class n_start node-start
+    class fn_evaluate,fn__apply_blocking_gates,fn_metrics_block,fn_parse_metrics_block,fn_blend_visual_total node-subprocess
+    class loop_14,loop_126 node-loop
+    class dec_22,dec_27,dec_32,dec_34,dec_43,dec_46,dec_48,dec_50,dec_66,dec_78,dec_96,dec_100,dec_112,dec_116,dec_120,dec_122,dec_127,dec_134 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

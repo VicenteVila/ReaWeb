@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 4 · Validation</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 4 · Validation - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L3_Cogniteam_World_model_Yaml_loader.html">L3</a> <span class="sep">›</span><span class="current">L4 · Cogniteam · World · model · Yaml · loader · Validation</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Yaml Loader · Validation
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_8{"rules.required_files&lt;br&gt;&lt;i&gt;Condición en línea 8:&lt;br&gt;rules.required_files&lt;/i&gt;"}
+    dec_55{"not content or not&lt;br&gt;content.strip()&lt;br&gt;&lt;i&gt;Condición en línea 55:&lt;br&gt;not content or not content.strip()&lt;/i&gt;"}
+    dec_59{"ext == '.css'&lt;br&gt;&lt;i&gt;Condición en línea 59:&lt;br&gt;ext == '.css'&lt;/i&gt;"}
+    loop_75["For each m"]
+    dec_108{"css and (classes or ids)&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;css and (classes or ids)&lt;/i&gt;"}
+    dec_62{"ext == '.js'&lt;br&gt;&lt;i&gt;Condición en línea 62:&lt;br&gt;ext == '.js'&lt;/i&gt;"}
+    loop_77["For each m"]
+    dec_65{"ext == '.html'&lt;br&gt;&lt;i&gt;Condición en línea 65:&lt;br&gt;ext == '.html'&lt;/i&gt;"}
+    loop_79["For each m"]
+    loop_9["For each fname in required_files"]
+    dec_10{"f'=== (fname) ===' not in&lt;br&gt;code and fname not in code&lt;br&gt;&lt;i&gt;Condición en línea 10:&lt;br&gt;f'=== (fname) ===' not in code and fname not in code&lt;/i&gt;"}
+    dec_14{"rules.required_tags&lt;br&gt;&lt;i&gt;Condición en línea 14:&lt;br&gt;rules.required_tags&lt;/i&gt;"}
+    loop_15["For each tag in required_tags"]
+    dec_16{"tag.lower() not in&lt;br&gt;code.lower()&lt;br&gt;&lt;i&gt;Condición en línea 16:&lt;br&gt;tag.lower() not in code.lower()&lt;/i&gt;"}
+    dec_20{"rules.required_classes&lt;br&gt;&lt;i&gt;Condición en línea 20:&lt;br&gt;rules.required_classes&lt;/i&gt;"}
+    loop_21["For each cls in required_classes"]
+    dec_22{"f'class='(cls)'' not in code&lt;br&gt;and f'class='(cls)'' not in code&lt;br&gt;&lt;i&gt;Condición en línea 22:&lt;br&gt;f'class='(cls)'' not in code and f'class='(cls)'' not in cod&lt;/i&gt;"}
+    dec_26{"rules.required_patterns&lt;br&gt;&lt;i&gt;Condición en línea 26:&lt;br&gt;rules.required_patterns&lt;/i&gt;"}
+    loop_27["For each pattern in required_patterns"]
+    dec_28{"pattern.lower() not in&lt;br&gt;code.lower()&lt;br&gt;&lt;i&gt;Condición en línea 28:&lt;br&gt;pattern.lower() not in code.lower()&lt;/i&gt;"}
+    dec_32{"rules.forbidden_patterns&lt;br&gt;&lt;i&gt;Condición en línea 32:&lt;br&gt;rules.forbidden_patterns&lt;/i&gt;"}
+    loop_33["For each pattern in forbidden_patterns"]
+    dec_34{"pattern in code&lt;br&gt;&lt;i&gt;Condición en línea 34:&lt;br&gt;pattern in code&lt;/i&gt;"}
+    dec_38{"rules.min_length and&lt;br&gt;len(code) &lt; rules.min_length&lt;br&gt;&lt;i&gt;Condición en línea 38:&lt;br&gt;rules.min_length and len(code) &lt; rules.min_length&lt;/i&gt;"}
+    dec_40{"rules.max_length and&lt;br&gt;len(code) &gt; rules.max_length&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;rules.max_length and len(code) &gt; rules.max_length&lt;/i&gt;"}
+    loop_86["For each m"]
+    loop_90["For each m"]
+    loop_110["For each c in classes"]
+    dec_111{"re.search('(?&lt;!(\\w.-))\\.'&lt;br&gt;+ re.escape(c) + '\\b', css)&lt;br&gt;&lt;i&gt;Condición en línea 111:&lt;br&gt;re.search('(?&lt;!(\\w.-))\\.' + re.escape(c) + '\\b', css)&lt;/i&gt;"}
+    loop_113["For each i in ids"]
+    dec_114{"+ re.escape(i) + '\\b', css)&lt;br&gt;&lt;i&gt;Condición en línea 114:&lt;br&gt;re.search('#(?!(0-9a-fA-F)(3,8)\\b)' + re.escape(i) + '\\b',&lt;/i&gt;"}
+    dec_116{"not matched&lt;br&gt;&lt;i&gt;Condición en línea 116:&lt;br&gt;not matched&lt;/i&gt;"}
+    dec_122{"js&lt;br&gt;&lt;i&gt;Condición en línea 122:&lt;br&gt;js&lt;/i&gt;"}
+    loop_126["For each sel in selectors"]
+    loop_127["For each token"]
+    dec_129{"not token&lt;br&gt;&lt;i&gt;Condición en línea 129:&lt;br&gt;not token&lt;/i&gt;"}
+    dec_131{"token.startswith('.')&lt;br&gt;&lt;i&gt;Condición en línea 131:&lt;br&gt;token.startswith('.')&lt;/i&gt;"}
+    dec_133{"token(1:) not in classes&lt;br&gt;&lt;i&gt;Condición en línea 133:&lt;br&gt;token(1:) not in classes&lt;/i&gt;"}
+    dec_135{"token.startswith('#')&lt;br&gt;&lt;i&gt;Condición en línea 135:&lt;br&gt;token.startswith('#')&lt;/i&gt;"}
+    dec_137{"token(1:) not in ids&lt;br&gt;&lt;i&gt;Condición en línea 137:&lt;br&gt;token(1:) not in ids&lt;/i&gt;"}
+    dec_139{"re.fullmatch('(a-zA-Z)(\\w-)*',&lt;br&gt;&lt;i&gt;Condición en línea 139:&lt;br&gt;re.fullmatch('(a-zA-Z)(\\w-)*', token)&lt;/i&gt;"}
+    dec_140{"token.lower() not in tags&lt;br&gt;&lt;i&gt;Condición en línea 140:&lt;br&gt;token.lower() not in tags&lt;/i&gt;"}
+    dec_142{"checked and len(missing) ==&lt;br&gt;checked&lt;br&gt;&lt;i&gt;Condición en línea 142:&lt;br&gt;checked and len(missing) == checked&lt;/i&gt;"}
+    loop_148["For each tok"]
+    dec_150{"len(warnings) &gt;= 6&lt;br&gt;&lt;i&gt;Condición en línea 150:&lt;br&gt;len(warnings) &gt;= 6&lt;/i&gt;"}
+    fn_validate_output[["Validate Output"]]
+    fn__looks_like_filler[["Looks Like Filler"]]
+    fn__check_css_js_coherence[["Check Css Js Coherence"]]
+    fn__extract_classes_ids_tags[["Extract Classes Ids Tags"]]
+    fn__js_selectors[["Js Selectors"]]
+    n_start --&gt; fn_validate_output
+    fn_validate_output --&gt; dec_8
+    dec_8 --&gt; loop_9
+    loop_9 --&gt; dec_10
+    dec_10 -- "loop" --&gt; loop_9
+    loop_9 --&gt; dec_14
+    dec_14 --&gt; loop_15
+    loop_15 --&gt; dec_16
+    dec_16 -- "loop" --&gt; loop_15
+    loop_15 --&gt; dec_20
+    dec_20 --&gt; loop_21
+    loop_21 --&gt; dec_22
+    dec_22 -- "loop" --&gt; loop_21
+    loop_21 --&gt; dec_26
+    dec_26 --&gt; loop_27
+    loop_27 --&gt; dec_28
+    dec_28 -- "loop" --&gt; loop_27
+    loop_27 --&gt; dec_32
+    dec_32 --&gt; loop_33
+    loop_33 --&gt; dec_34
+    dec_34 -- "loop" --&gt; loop_33
+    loop_33 --&gt; dec_38
+    dec_38 --&gt; dec_40
+    n_start --&gt; fn__looks_like_filler
+    fn__looks_like_filler --&gt; dec_55
+    dec_55 --&gt; dec_59
+    dec_59 --&gt; dec_62
+    dec_62 --&gt; dec_65
+    n_start --&gt; fn__extract_classes_ids_tags
+    fn__extract_classes_ids_tags --&gt; loop_75
+    loop_75 --&gt; loop_77
+    loop_77 --&gt; loop_79
+    n_start --&gt; fn__js_selectors
+    fn__js_selectors --&gt; loop_86
+    loop_86 --&gt; loop_90
+    n_start --&gt; fn__check_css_js_coherence
+    fn__check_css_js_coherence --&gt; fn__extract_classes_ids_tags
+    fn__extract_classes_ids_tags --&gt; dec_108
+    dec_108 --&gt; loop_110
+    loop_110 --&gt; dec_111
+    dec_111 -- "loop" --&gt; loop_110
+    loop_110 --&gt; loop_113
+    loop_113 --&gt; dec_114
+    dec_114 -- "loop" --&gt; loop_113
+    loop_113 --&gt; dec_116
+    dec_116 --&gt; dec_122
+    dec_122 --&gt; fn__js_selectors
+    fn__js_selectors --&gt; loop_126
+    loop_126 --&gt; loop_127
+    loop_127 --&gt; dec_129
+    dec_129 --&gt; dec_131
+    dec_131 --&gt; dec_133
+    dec_131 --&gt; dec_135
+    dec_135 --&gt; dec_137
+    dec_135 --&gt; dec_139
+    dec_139 --&gt; dec_140
+    dec_140 -- "loop" --&gt; loop_127
+    loop_127 -- "loop" --&gt; loop_126
+    loop_126 --&gt; dec_142
+    dec_142 -- "NO" --&gt; loop_148
+    loop_148 --&gt; dec_150
+    dec_150 -- "loop" --&gt; loop_148
+    class n_start node-start
+    class fn_validate_output,fn__looks_like_filler,fn__extract_classes_ids_tags,fn__js_selectors,fn__check_css_js_coherence node-subprocess
+    class dec_8,dec_10,dec_14,dec_16,dec_20,dec_22,dec_26,dec_28,dec_32,dec_34,dec_38,dec_40,dec_55,dec_59,dec_62,dec_65,dec_108,dec_111,dec_114,dec_116,dec_122,dec_129,dec_131,dec_133,dec_135,dec_137,dec_139,dec_140,dec_142,dec_150 node-decision
+    class loop_9,loop_15,loop_21,loop_27,loop_33,loop_75,loop_77,loop_79,loop_86,loop_90,loop_110,loop_113,loop_126,loop_127,loop_148 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

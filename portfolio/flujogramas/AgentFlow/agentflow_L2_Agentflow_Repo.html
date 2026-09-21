@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 2 · Repo</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 2 · Repo - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L1_Agentflow.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agentflow · Repo</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Repo
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_79{"parts(-1) == '__init__'&lt;br&gt;&lt;i&gt;Condición en línea 79:&lt;br&gt;parts(-1) == '__init__'&lt;/i&gt;"}
+    dec_103{"NodeType.LOOP in types&lt;br&gt;&lt;i&gt;Condición en línea 103:&lt;br&gt;NodeType.LOOP in types&lt;/i&gt;"}
+    dec_131{"not root.is_dir()&lt;br&gt;&lt;i&gt;Condición en línea 131:&lt;br&gt;not root.is_dir()&lt;/i&gt;"}
+    dec_105{"NodeType.TOOL in types&lt;br&gt;&lt;i&gt;Condición en línea 105:&lt;br&gt;NodeType.TOOL in types&lt;/i&gt;"}
+    dec_107{"NodeType.DECISION in types&lt;br&gt;&lt;i&gt;Condición en línea 107:&lt;br&gt;NodeType.DECISION in types&lt;/i&gt;"}
+    dec_111{"sub &gt;= 5&lt;br&gt;&lt;i&gt;Condición en línea 111:&lt;br&gt;sub &gt;= 5&lt;/i&gt;"}
+    loop_37["For loop"]
+    loop_40["For each d in dirnames"]
+    dec_43{"any((part in excl for part&lt;br&gt;in rel_parts))&lt;br&gt;&lt;i&gt;Condición en línea 43:&lt;br&gt;any((part in excl for part in rel_parts))&lt;/i&gt;"}
+    dec_45{"not include_hidden and&lt;br&gt;any((part.startswith('.') for part&lt;br&gt;&lt;i&gt;Condición en línea 45:&lt;br&gt;not include_hidden and any((part.startswith('.') for part in&lt;/i&gt;"}
+    loop_48["For each d in dirnames"]
+    dec_49{"d not in kept&lt;br&gt;&lt;i&gt;Condición en línea 49:&lt;br&gt;d not in kept&lt;/i&gt;"}
+    loop_51["For each fn"]
+    dec_52{"not fn.endswith('.py')&lt;br&gt;&lt;i&gt;Condición en línea 52:&lt;br&gt;not fn.endswith('.py')&lt;/i&gt;"}
+    dec_55{"any((part in excl or (not&lt;br&gt;include_hidden and for part in&lt;br&gt;&lt;i&gt;Condición en línea 55:&lt;br&gt;any((part in excl or (not include_hidden and part.startswith&lt;/i&gt;"}
+    dec_60{"str(full).endswith('.pyc')&lt;br&gt;&lt;i&gt;Condición en línea 60:&lt;br&gt;str(full).endswith('.pyc')&lt;/i&gt;"}
+    dec_63{"full.stat().st_size &lt; 20&lt;br&gt;&lt;i&gt;Condición en línea 63:&lt;br&gt;full.stat().st_size &lt; 20&lt;/i&gt;"}
+    dec_68{"resolved in seen&lt;br&gt;&lt;i&gt;Condición en línea 68:&lt;br&gt;resolved in seen&lt;/i&gt;"}
+    loop_91["For each node"]
+    dec_92{"isinstance(node, ast.Import)&lt;br&gt;&lt;i&gt;Condición en línea 92:&lt;br&gt;isinstance(node, ast.Import)&lt;/i&gt;"}
+    loop_93["For each alias in names"]
+    dec_95{"isinstance(node,&lt;br&gt;ast.ImportFrom) and node.module&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;isinstance(node, ast.ImportFrom) and node.module&lt;/i&gt;"}
+    loop_137["For each f in files"]
+    dec_143{"g.node_count &lt;= 2&lt;br&gt;&lt;i&gt;Condición en línea 143:&lt;br&gt;g.node_count &lt;= 2&lt;/i&gt;"}
+    dec_150{"not has_flow and&lt;br&gt;g.node_count &lt; 5&lt;br&gt;&lt;i&gt;Condición en línea 150:&lt;br&gt;not has_flow and g.node_count &lt; 5&lt;/i&gt;"}
+    dec_154{"not file_graphs&lt;br&gt;&lt;i&gt;Condición en línea 154:&lt;br&gt;not file_graphs&lt;/i&gt;"}
+    loop_166["For loop"]
+    dec_181{"ordered_ids&lt;br&gt;&lt;i&gt;Condición en línea 181:&lt;br&gt;ordered_ids&lt;/i&gt;"}
+    loop_183["For loop"]
+    dec_188{"include_imports&lt;br&gt;&lt;i&gt;Condición en línea 188:&lt;br&gt;include_imports&lt;/i&gt;"}
+    loop_189["For loop"]
+    dec_192{"not src_id&lt;br&gt;&lt;i&gt;Condición en línea 192:&lt;br&gt;not src_id&lt;/i&gt;"}
+    loop_194["For each imp"]
+    loop_196["For loop"]
+    dec_197{"imp == target_mod or&lt;br&gt;imp.startswith(target_mod + '.') +&lt;br&gt;&lt;i&gt;Condición en línea 197:&lt;br&gt;imp == target_mod or imp.startswith(target_mod + '.') or tar&lt;/i&gt;"}
+    dec_198{"target_id != src_id&lt;br&gt;&lt;i&gt;Condición en línea 198:&lt;br&gt;target_id != src_id&lt;/i&gt;"}
+    fn_collect_python_files[["Collect Python Files"]]
+    fn__module_name[["Module Name"]]
+    fn__parse_imports[["Parse Imports"]]
+    fn__classify_file_graph[["Classify File Graph"]]
+    fn_build_repo_overview[["Build Repo Overview"]]
+    tool_collect_python_files_134["files = Collect Python Files&lt;br&gt;&lt;i&gt;Rastrea ficheros .py&lt;br&gt;excluyendo venvs/cachés&lt;/i&gt;"]
+    tool_parse_file_139["g = Parse File&lt;br&gt;&lt;i&gt;Parsear fichero completo&lt;br&gt;(agent flow)&lt;/i&gt;"]
+    n_start --&gt; fn_collect_python_files
+    fn_collect_python_files --&gt; loop_37
+    loop_37 --&gt; loop_40
+    loop_40 --&gt; dec_43
+    dec_43 --&gt; dec_45
+    dec_45 -- "loop" --&gt; loop_40
+    loop_40 --&gt; loop_48
+    loop_48 --&gt; dec_49
+    dec_49 -- "loop" --&gt; loop_48
+    loop_48 --&gt; loop_51
+    loop_51 --&gt; dec_52
+    dec_52 --&gt; dec_55
+    dec_55 --&gt; dec_60
+    dec_60 --&gt; dec_63
+    dec_63 --&gt; dec_68
+    dec_68 -- "loop" --&gt; loop_51
+    loop_51 -- "loop" --&gt; loop_37
+    n_start --&gt; fn__module_name
+    fn__module_name --&gt; dec_79
+    n_start --&gt; fn__parse_imports
+    fn__parse_imports --&gt; loop_91
+    loop_91 --&gt; dec_92
+    dec_92 --&gt; loop_93
+    dec_92 --&gt; dec_95
+    dec_95 -- "loop" --&gt; loop_91
+    n_start --&gt; fn__classify_file_graph
+    fn__classify_file_graph --&gt; dec_103
+    dec_103 --&gt; dec_105
+    dec_105 --&gt; dec_107
+    dec_107 --&gt; dec_111
+    n_start --&gt; fn_build_repo_overview
+    fn_build_repo_overview --&gt; dec_131
+    dec_131 --&gt; tool_collect_python_files_134
+    tool_collect_python_files_134 --&gt; loop_137
+    loop_137 --&gt; tool_parse_file_139
+    tool_parse_file_139 --&gt; dec_143
+    dec_143 --&gt; dec_150
+    dec_150 -- "loop" --&gt; loop_137
+    loop_137 --&gt; dec_154
+    dec_154 --&gt; loop_166
+    loop_166 --&gt; dec_181
+    dec_181 --&gt; loop_183
+    loop_183 --&gt; dec_188
+    dec_188 --&gt; loop_189
+    loop_189 --&gt; dec_192
+    dec_192 --&gt; loop_194
+    loop_194 --&gt; loop_196
+    loop_196 --&gt; dec_197
+    dec_197 --&gt; dec_198
+    dec_198 -- "loop" --&gt; loop_196
+    loop_196 -- "loop" --&gt; loop_194
+    loop_194 -- "loop" --&gt; loop_189
+    class n_start node-start
+    class fn_collect_python_files,fn__module_name,fn__parse_imports,fn__classify_file_graph,fn_build_repo_overview node-subprocess
+    class loop_37,loop_40,loop_48,loop_51,loop_91,loop_93,loop_137,loop_166,loop_183,loop_189,loop_194,loop_196 node-loop
+    class dec_43,dec_45,dec_49,dec_52,dec_55,dec_60,dec_63,dec_68,dec_79,dec_92,dec_95,dec_103,dec_105,dec_107,dec_111,dec_131,dec_143,dec_150,dec_154,dec_181,dec_188,dec_192,dec_197,dec_198 node-decision
+    class tool_collect_python_files_134,tool_parse_file_139 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaGame · Nivel 2 · assets</title>
+<meta name="description" content="Flujograma ReaGame · Nivel 2 · assets - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaGame/index.html">ReaGame</a> <span class="sep">›</span><a href="reagame_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Scripts · Build · assets</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Build Assets
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_83{"w &gt; size(0) or h &gt; size(1)&lt;br&gt;&lt;i&gt;Condición en línea 83:&lt;br&gt;w &gt; size(0) or h &gt; size(1)&lt;/i&gt;"}
+    dec_183{"monedas and terreno&lt;br&gt;&lt;i&gt;Condición en línea 183:&lt;br&gt;monedas and terreno&lt;/i&gt;"}
+    dec_232{"ASSETS.exists()&lt;br&gt;&lt;i&gt;Condición en línea 232:&lt;br&gt;ASSETS.exists()&lt;/i&gt;"}
+    loop_184["For loop"]
+    loop_187["For loop"]
+    loop_45["For each y"]
+    dec_47{"on and s is None&lt;br&gt;&lt;i&gt;Condición en línea 47:&lt;br&gt;on and s is None&lt;/i&gt;"}
+    dec_49{"not on and s is not None&lt;br&gt;&lt;i&gt;Condición en línea 49:&lt;br&gt;not on and s is not None&lt;/i&gt;"}
+    dec_52{"s is not None&lt;br&gt;&lt;i&gt;Condición en línea 52:&lt;br&gt;s is not None&lt;/i&gt;"}
+    loop_60["For each x"]
+    dec_61{"cols(x) and s is None&lt;br&gt;&lt;i&gt;Condición en línea 61:&lt;br&gt;cols(x) and s is None&lt;/i&gt;"}
+    dec_63{"not cols(x) and s is not&lt;br&gt;None&lt;br&gt;&lt;i&gt;Condición en línea 63:&lt;br&gt;not cols(x) and s is not None&lt;/i&gt;"}
+    dec_64{"x - s &gt;= minw&lt;br&gt;&lt;i&gt;Condición en línea 64:&lt;br&gt;x - s &gt;= minw&lt;/i&gt;"}
+    dec_67{"s is not None and&lt;br&gt;mask.shape(1) - s &gt;= minw&lt;br&gt;&lt;i&gt;Condición en línea 67:&lt;br&gt;s is not None and mask.shape(1) - s &gt;= minw&lt;/i&gt;"}
+    loop_100["For loop"]
+    dec_102{"h &lt; med_h * 0.5&lt;br&gt;&lt;i&gt;Condición en línea 102:&lt;br&gt;h &lt; med_h * 0.5&lt;/i&gt;"}
+    loop_106["For loop"]
+    dec_109{"len(ys) == 0&lt;br&gt;&lt;i&gt;Condición en línea 109:&lt;br&gt;len(ys) == 0&lt;/i&gt;"}
+    dec_115{"0.3 &lt; scale &lt; 3&lt;br&gt;&lt;i&gt;Condición en línea 115:&lt;br&gt;0.3 &lt; scale &lt; 3&lt;/i&gt;"}
+    loop_132["For loop"]
+    dec_137{"14 &lt;= h &lt;= 70 and 12 &lt;= w &lt;=&lt;br&gt;70 and (area &gt;= 120)&lt;br&gt;&lt;i&gt;Condición en línea 137:&lt;br&gt;14 &lt;= h &lt;= 70 and 12 &lt;= w &lt;= 70 and (area &gt;= 120)&lt;/i&gt;"}
+    loop_141["while changed"]
+    loop_144["while boxes"]
+    loop_146["For each o in out"]
+    dec_147{"b(0) &lt;= o(1) + 1 and o(0) &lt;=&lt;br&gt;b(1) + 1 and (b(2) &lt;= o(3) + 1) &lt;=&lt;br&gt;&lt;i&gt;Condición en línea 147:&lt;br&gt;b(0) &lt;= o(1) + 1 and o(0) &lt;= b(1) + 1 and (b(2) &lt;= o(3) + 1)&lt;/i&gt;"}
+    loop_159["For each b in boxes"]
+    dec_161{"lines and abs(cy -&lt;br&gt;(lines(-1)(0)(0) + / 2) &lt; 20&lt;br&gt;&lt;i&gt;Condición en línea 161:&lt;br&gt;lines and abs(cy - (lines(-1)(0)(0) + lines(-1)(0)(1)) / 2)&lt;/i&gt;"}
+    loop_166["For loop"]
+    loop_168["For loop"]
+    loop_196["For loop"]
+    dec_197{"y1 - y0 + 1 &lt; 10&lt;br&gt;&lt;i&gt;Condición en línea 197:&lt;br&gt;y1 - y0 + 1 &lt; 10&lt;/i&gt;"}
+    loop_200["For loop"]
+    loop_206["For each r"]
+    loop_207["For each c"]
+    dec_211{"cell.mean() &lt; 0.08&lt;br&gt;&lt;i&gt;Condición en línea 211:&lt;br&gt;cell.mean() &lt; 0.08&lt;/i&gt;"}
+    loop_238["For loop"]
+    loop_241["For each f in frames"]
+    loop_255["For each p"]
+    loop_258["For loop"]
+    loop_260["For each p in files"]
+    fn_bg_color[["Bg Color"]]
+    fn_mask_of[["Mask Of"]]
+    fn_bands_of[["Bands Of"]]
+    fn_col_runs[["Col Runs"]]
+    fn_transparentize[["Transparentize"]]
+    fn_pad_centered[["Pad Centered"]]
+    fn_slice_big_cells[["Slice Big Cells"]]
+    fn_slice_cc[["Slice Cc"]]
+    fn_slice_grid16[["Slice Grid16"]]
+    fn_main[["Main"]]
+    n_start --&gt; fn_bg_color
+    n_start --&gt; fn_mask_of
+    n_start --&gt; fn_bands_of
+    fn_bands_of --&gt; loop_45
+    loop_45 --&gt; dec_47
+    dec_47 --&gt; dec_49
+    dec_49 -- "loop" --&gt; loop_45
+    loop_45 --&gt; dec_52
+    n_start --&gt; fn_col_runs
+    fn_col_runs --&gt; loop_60
+    loop_60 --&gt; dec_61
+    dec_61 --&gt; dec_63
+    dec_63 --&gt; dec_64
+    dec_64 -- "loop" --&gt; loop_60
+    loop_60 --&gt; dec_67
+    n_start --&gt; fn_transparentize
+    n_start --&gt; fn_pad_centered
+    fn_pad_centered --&gt; dec_83
+    n_start --&gt; fn_slice_big_cells
+    fn_slice_big_cells --&gt; loop_100
+    loop_100 --&gt; dec_102
+    dec_102 --&gt; loop_106
+    loop_106 --&gt; dec_109
+    dec_109 --&gt; dec_115
+    dec_115 -- "loop" --&gt; loop_106
+    loop_106 -- "loop" --&gt; loop_100
+    n_start --&gt; fn_slice_cc
+    fn_slice_cc --&gt; loop_132
+    loop_132 --&gt; dec_137
+    dec_137 -- "loop" --&gt; loop_132
+    loop_132 --&gt; loop_141
+    loop_141 --&gt; loop_144
+    loop_144 --&gt; loop_146
+    loop_146 --&gt; dec_147
+    dec_147 -- "loop" --&gt; loop_146
+    loop_146 -- "loop" --&gt; loop_144
+    loop_144 -- "loop" --&gt; loop_141
+    loop_141 --&gt; loop_159
+    loop_159 --&gt; dec_161
+    dec_161 -- "loop" --&gt; loop_159
+    loop_159 --&gt; loop_166
+    loop_166 --&gt; loop_168
+    loop_168 -- "loop" --&gt; loop_166
+    n_start --&gt; fn_slice_grid16
+    fn_slice_grid16 --&gt; dec_183
+    dec_183 --&gt; loop_184
+    loop_184 --&gt; loop_187
+    loop_187 --&gt; loop_196
+    loop_196 --&gt; dec_197
+    dec_197 --&gt; loop_200
+    loop_200 --&gt; loop_206
+    loop_206 --&gt; loop_207
+    loop_207 --&gt; dec_211
+    dec_211 -- "loop" --&gt; loop_207
+    loop_207 -- "loop" --&gt; loop_206
+    loop_206 -- "loop" --&gt; loop_200
+    loop_200 -- "loop" --&gt; loop_196
+    n_start --&gt; fn_main
+    fn_main --&gt; dec_232
+    dec_232 --&gt; loop_238
+    loop_238 --&gt; loop_241
+    loop_241 -- "loop" --&gt; loop_238
+    loop_238 --&gt; loop_255
+    loop_255 --&gt; loop_258
+    loop_258 --&gt; loop_260
+    loop_260 -- "loop" --&gt; loop_258
+    class n_start node-start
+    class fn_bg_color,fn_mask_of,fn_bands_of,fn_col_runs,fn_transparentize,fn_pad_centered,fn_slice_big_cells,fn_slice_cc,fn_slice_grid16,fn_main node-subprocess
+    class loop_45,loop_60,loop_100,loop_106,loop_132,loop_141,loop_144,loop_146,loop_159,loop_166,loop_168,loop_184,loop_187,loop_196,loop_200,loop_206,loop_207,loop_238,loop_241,loop_255,loop_258,loop_260 node-loop
+    class dec_47,dec_49,dec_52,dec_61,dec_63,dec_64,dec_67,dec_83,dec_102,dec_109,dec_115,dec_137,dec_147,dec_161,dec_183,dec_197,dec_211,dec_232 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · Nivel 2 · db</title>
+<meta name="description" content="Flujograma ReaWeb · Nivel 2 · db - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><a href="reaweb_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Agent · Memory · db</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Memory Db
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    dec_235{"count &gt;= retire_at&lt;br&gt;&lt;i&gt;Condición en línea 235:&lt;br&gt;count &gt;= retire_at&lt;/i&gt;"}
+    dec_260{"run_id&lt;br&gt;&lt;i&gt;Condición en línea 260:&lt;br&gt;run_id&lt;/i&gt;"}
+    dec_263{"category&lt;br&gt;&lt;i&gt;Condición en línea 263:&lt;br&gt;category&lt;/i&gt;"}
+    dec_278{"not items&lt;br&gt;&lt;i&gt;Condición en línea 278:&lt;br&gt;not items&lt;/i&gt;"}
+    dec_266{"safe_only&lt;br&gt;&lt;i&gt;Condición en línea 266:&lt;br&gt;safe_only&lt;/i&gt;"}
+    dec_268{"where&lt;br&gt;&lt;i&gt;Condición en línea 268:&lt;br&gt;where&lt;/i&gt;"}
+    dec_311{"run_id&lt;br&gt;&lt;i&gt;Condición en línea 311:&lt;br&gt;run_id&lt;/i&gt;"}
+    loop_340["For each r in rows"]
+    dec_411{"decision&lt;br&gt;&lt;i&gt;Condición en línea 411:&lt;br&gt;decision&lt;/i&gt;"}
+    dec_414{"run_id&lt;br&gt;&lt;i&gt;Condición en línea 414:&lt;br&gt;run_id&lt;/i&gt;"}
+    dec_417{"where&lt;br&gt;&lt;i&gt;Condición en línea 417:&lt;br&gt;where&lt;/i&gt;"}
+    dec_463{"task_hash&lt;br&gt;&lt;i&gt;Condición en línea 463:&lt;br&gt;task_hash&lt;/i&gt;"}
+    loop_204["For loop"]
+    dec_209{"value is not None&lt;br&gt;&lt;i&gt;Condición en línea 209:&lt;br&gt;value is not None&lt;/i&gt;"}
+    dec_212{"not sets&lt;br&gt;&lt;i&gt;Condición en línea 212:&lt;br&gt;not sets&lt;/i&gt;"}
+    loop_281["For each it"]
+    dec_283{"it('category')&lt;br&gt;&lt;i&gt;Condición en línea 283:&lt;br&gt;it('category')&lt;/i&gt;"}
+    fn__now[["Now"]]
+    fn_memorydb__migrate_lessons_safety[["Migrate Lessons Safety"]]
+    fn_memorydb__migrate_harness_edits_graph[["Migrate Harness Edits Graph"]]
+    fn_memorydb_upsert_run[["Upsert Run"]]
+    fn_memorydb_get_run[["Get Run"]]
+    fn_memorydb_all_runs[["All Runs"]]
+    fn_memorydb_add_lesson[["Add Lesson"]]
+    fn_memorydb_update_lesson_safety[["Update Lesson Safety"]]
+    fn_memorydb_record_reuse[["Record Reuse"]]
+    fn_memorydb_lessons[["Lessons"]]
+    fn_memorydb_lesson_text[["Lesson Text"]]
+    fn_memorydb_count_lessons[["Count Lessons"]]
+    fn_memorydb_add_experiment[["Add Experiment"]]
+    fn_memorydb_delete_experiments[["Delete Experiments"]]
+    fn_memorydb_experiments[["Experiments"]]
+    fn_memorydb_count_experiments[["Count Experiments"]]
+    fn_memorydb_upsert_node[["Upsert Node"]]
+    fn_memorydb_nodes[["Nodes"]]
+    fn_memorydb_count_nodes[["Count Nodes"]]
+    fn_memorydb_add_harness_edit[["Add Harness Edit"]]
+    fn_memorydb_latest_accepted_edit_for_file[["Latest Accepted Edit For File"]]
+    fn_memorydb_edit_genealogy[["Edit Genealogy"]]
+    fn_memorydb_harness_edits[["Harness Edits"]]
+    fn_memorydb_get_harness_edit[["Get Harness Edit"]]
+    fn_memorydb_set_harness_edit_decision[["Set Harness Edit Decision"]]
+    fn_memorydb_count_harness_edits[["Count Harness Edits"]]
+    fn_memorydb_add_task_eval[["Add Task Eval"]]
+    fn_memorydb_task_evals[["Task Evals"]]
+    fn_memorydb_count_task_evals[["Count Task Evals"]]
+    fn_memorydb_close[["Close"]]
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_253{"harmful&lt;br&gt;&lt;i&gt;Condición en línea 253:&lt;br&gt;harmful&lt;/i&gt;"}
+    fn_memorydb_increment_harmful_reuses[["Increment Harmful Reuses"]]
+    fn_memorydb_rejected_causes_summary[["Rejected Causes Summary"]]
+    n_start --&gt; fn__now
+    n_start --&gt; fn_memorydb__migrate_lessons_safety
+    fn_memorydb__migrate_lessons_safety --&gt; fn_memorydb__migrate_harness_edits_graph
+    fn_memorydb__migrate_harness_edits_graph --&gt; fn_memorydb_upsert_run
+    fn_memorydb_upsert_run --&gt; fn_memorydb_get_run
+    fn_memorydb_get_run --&gt; fn_memorydb_all_runs
+    fn_memorydb_all_runs --&gt; fn_memorydb_add_lesson
+    fn_memorydb_add_lesson --&gt; fn_memorydb_update_lesson_safety
+    fn_memorydb_update_lesson_safety --&gt; loop_204
+    loop_204 --&gt; dec_209
+    dec_209 -- "loop" --&gt; loop_204
+    loop_204 --&gt; dec_212
+    fn_memorydb_update_lesson_safety --&gt; fn_memorydb_increment_harmful_reuses
+    fn_memorydb_increment_harmful_reuses --&gt; dec_235
+    fn_memorydb_increment_harmful_reuses --&gt; fn_memorydb_record_reuse
+    fn_memorydb_record_reuse --&gt; dec_253
+    fn_memorydb_record_reuse --&gt; fn_memorydb_lessons
+    fn_memorydb_lessons --&gt; dec_260
+    dec_260 --&gt; dec_263
+    dec_263 --&gt; dec_266
+    dec_266 --&gt; dec_268
+    fn_memorydb_lessons --&gt; fn_memorydb_lesson_text
+    fn_memorydb_lesson_text --&gt; dec_278
+    dec_278 --&gt; loop_281
+    loop_281 --&gt; dec_283
+    dec_283 -- "loop" --&gt; loop_281
+    fn_memorydb_lesson_text --&gt; fn_memorydb_count_lessons
+    fn_memorydb_count_lessons --&gt; fn_memorydb_add_experiment
+    fn_memorydb_add_experiment --&gt; fn_memorydb_delete_experiments
+    fn_memorydb_delete_experiments --&gt; fn_memorydb_experiments
+    fn_memorydb_experiments --&gt; dec_311
+    fn_memorydb_experiments --&gt; fn_memorydb_count_experiments
+    fn_memorydb_count_experiments --&gt; fn_memorydb_upsert_node
+    fn_memorydb_upsert_node --&gt; fn_memorydb_nodes
+    fn_memorydb_nodes --&gt; loop_340
+    fn_memorydb_nodes --&gt; fn_memorydb_count_nodes
+    fn_memorydb_count_nodes --&gt; fn_memorydb_add_harness_edit
+    fn_memorydb_add_harness_edit --&gt; fn_memorydb_latest_accepted_edit_for_file
+    fn_memorydb_latest_accepted_edit_for_file --&gt; fn_memorydb_edit_genealogy
+    fn_memorydb_edit_genealogy --&gt; fn_memorydb_rejected_causes_summary
+    fn_memorydb_rejected_causes_summary --&gt; fn_memorydb_harness_edits
+    fn_memorydb_harness_edits --&gt; dec_411
+    dec_411 --&gt; dec_414
+    dec_414 --&gt; dec_417
+    fn_memorydb_harness_edits --&gt; fn_memorydb_get_harness_edit
+    fn_memorydb_get_harness_edit --&gt; fn_memorydb_set_harness_edit_decision
+    fn_memorydb_set_harness_edit_decision --&gt; fn_memorydb_count_harness_edits
+    fn_memorydb_count_harness_edits --&gt; fn_memorydb_add_task_eval
+    fn_memorydb_add_task_eval --&gt; fn_memorydb_task_evals
+    fn_memorydb_task_evals --&gt; dec_463
+    fn_memorydb_task_evals --&gt; fn_memorydb_count_task_evals
+    fn_memorydb_count_task_evals --&gt; fn_memorydb_close
+    class n_start node-start
+    class fn__now,fn_memorydb__migrate_lessons_safety,fn_memorydb__migrate_harness_edits_graph,fn_memorydb_upsert_run,fn_memorydb_get_run,fn_memorydb_all_runs,fn_memorydb_add_lesson,fn_memorydb_update_lesson_safety,fn_memorydb_increment_harmful_reuses,fn_memorydb_record_reuse,fn_memorydb_lessons,fn_memorydb_lesson_text,fn_memorydb_count_lessons,fn_memorydb_add_experiment,fn_memorydb_delete_experiments,fn_memorydb_experiments,fn_memorydb_count_experiments,fn_memorydb_upsert_node,fn_memorydb_nodes,fn_memorydb_count_nodes,fn_memorydb_add_harness_edit,fn_memorydb_latest_accepted_edit_for_file,fn_memorydb_edit_genealogy,fn_memorydb_rejected_causes_summary,fn_memorydb_harness_edits,fn_memorydb_get_harness_edit,fn_memorydb_set_harness_edit_decision,fn_memorydb_count_harness_edits,fn_memorydb_add_task_eval,fn_memorydb_task_evals,fn_memorydb_count_task_evals,fn_memorydb_close node-subprocess
+    class loop_204,loop_281,loop_340 node-loop
+    class dec_209,dec_212,dec_235,dec_253,dec_260,dec_263,dec_266,dec_268,dec_278,dec_283,dec_311,dec_411,dec_414,dec_417,dec_463 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

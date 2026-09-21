@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · retriever</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · retriever - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Core · Hybrid · retriever</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Hybrid Retriever
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_143{"result.startswith('```')&lt;br&gt;&lt;i&gt;Condición en línea 143:&lt;br&gt;result.startswith('```')&lt;/i&gt;"}
+    dec_146{"result.endswith('```')&lt;br&gt;&lt;i&gt;Condición en línea 146:&lt;br&gt;result.endswith('```')&lt;/i&gt;"}
+    loop_223["For each r in results"]
+    dec_151{"'sub_queries' not in plan&lt;br&gt;&lt;i&gt;Condición en línea 151:&lt;br&gt;'sub_queries' not in plan&lt;/i&gt;"}
+    dec_338{"auto_extract_entities and&lt;br&gt;len(content) &gt; 100&lt;br&gt;&lt;i&gt;Condición en línea 338:&lt;br&gt;auto_extract_entities and len(content) &gt; 100&lt;/i&gt;"}
+    loop_80["For each sq"]
+    dec_88{"seed_ents&lt;br&gt;&lt;i&gt;Condición en línea 88:&lt;br&gt;seed_ents&lt;/i&gt;"}
+    dec_92{"graph_entities&lt;br&gt;&lt;i&gt;Condición en línea 92:&lt;br&gt;graph_entities&lt;/i&gt;"}
+    loop_93["For each ent_data in graph_entities"]
+    loop_236["For each r in results"]
+    dec_238{"node_id and node_id not in&lt;br&gt;seen&lt;br&gt;&lt;i&gt;Condición en línea 238:&lt;br&gt;node_id and node_id not in seen&lt;/i&gt;"}
+    loop_266["For each ev"]
+    dec_269{"content and content not in&lt;br&gt;evidence_texts&lt;br&gt;&lt;i&gt;Condición en línea 269:&lt;br&gt;content and content not in evidence_texts&lt;/i&gt;"}
+    dec_277{"context&lt;br&gt;&lt;i&gt;Condición en línea 277:&lt;br&gt;context&lt;/i&gt;"}
+    loop_282["For each ent"]
+    dec_285{"ent_profile&lt;br&gt;&lt;i&gt;Condición en línea 285:&lt;br&gt;ent_profile&lt;/i&gt;"}
+    loop_361["For each ev"]
+    dec_364{"content&lt;br&gt;&lt;i&gt;Condición en línea 364:&lt;br&gt;content&lt;/i&gt;"}
+    loop_368["For each ent"]
+    dec_371{"profile&lt;br&gt;&lt;i&gt;Condición en línea 371:&lt;br&gt;profile&lt;/i&gt;"}
+    fn_get_hmem_manager[["Get Hmem Manager"]]
+    fn_get_hybrid_retriever[["Get Hybrid Retriever"]]
+    fn_hybridretriever__get_tree[["Get Tree"]]
+    fn_hmemmanager___new__[["New"]]
+    fn_hybridretriever__get_graph[["Get Graph"]]
+    fn_hmemmanager_remember[["Remember"]]
+    fn_hybridretriever__get_llm[["Get Llm"]]
+    fn_hmemmanager_recall[["Recall"]]
+    fn_hybridretriever_retrieve[["Retrieve"]]
+    fn_hmemmanager_think[["Think"]]
+    fn_hybridretriever__plan_retrieval[["Plan Retrieval"]]
+    fn_hmemmanager_get_context[["Get Context"]]
+    tool_generate_140["result = Generate&lt;br&gt;&lt;i&gt;LLMRouter: invocación LLM&lt;br&gt;generativa (gemini/ollama)&lt;/i&gt;"]
+    fn_hybridretriever__retrieve_tree[["Retrieve Tree"]]
+    fn_hmemmanager_stats[["Stats"]]
+    fn_hybridretriever__rank_evidence[["Rank Evidence"]]
+    fn_hmemmanager_get_recent_memories[["Get Recent Memories"]]
+    fn_hybridretriever_answer[["Answer"]]
+    fn_hmemmanager_close[["Close"]]
+    tool_retrieve_261["retrieval = Retrieve&lt;br&gt;&lt;i&gt;HybridRetriever: planifica y recupera de&lt;br&gt;tree + graph + embbeding&lt;/i&gt;"]
+    fn_hybridretriever_ingest_memory[["Ingest Memory"]]
+    fn_hybridretriever_get_memory_context[["Get Memory Context"]]
+    tool_retrieve_357["retrieval = Retrieve&lt;br&gt;&lt;i&gt;HybridRetriever: planifica y recupera de&lt;br&gt;tree + graph + embbeding&lt;/i&gt;"]
+    fn_hybridretriever_get_stats[["Get Stats"]]
+    fn_hybridretriever_close[["Close"]]
+    tool_generate_301["answer = Generate&lt;br&gt;&lt;i&gt;LLMRouter: invocación LLM&lt;br&gt;generativa (gemini/ollama)&lt;/i&gt;"]
+    n_start --&gt; fn_get_hmem_manager
+    n_start --&gt; fn_get_hybrid_retriever
+    n_start --&gt; fn_hybridretriever__get_tree
+    fn_hybridretriever__get_tree --&gt; fn_hybridretriever__get_graph
+    fn_hybridretriever__get_graph --&gt; fn_hybridretriever__get_llm
+    fn_hybridretriever__get_llm --&gt; fn_hybridretriever_retrieve
+    fn_hybridretriever_retrieve --&gt; loop_80
+    loop_80 --&gt; dec_88
+    dec_88 -- "loop" --&gt; loop_80
+    loop_80 --&gt; dec_92
+    dec_92 --&gt; loop_93
+    fn_hybridretriever_retrieve --&gt; fn_hybridretriever__plan_retrieval
+    fn_hybridretriever__plan_retrieval --&gt; tool_generate_140
+    tool_generate_140 --&gt; dec_143
+    dec_143 --&gt; dec_146
+    dec_146 --&gt; dec_151
+    fn_hybridretriever__plan_retrieval --&gt; fn_hybridretriever__retrieve_tree
+    fn_hybridretriever__retrieve_tree --&gt; fn_hybridretriever__rank_evidence
+    fn_hybridretriever__rank_evidence --&gt; loop_223
+    loop_223 --&gt; loop_236
+    loop_236 --&gt; dec_238
+    dec_238 -- "loop" --&gt; loop_236
+    fn_hybridretriever__rank_evidence --&gt; fn_hybridretriever_answer
+    fn_hybridretriever_answer --&gt; tool_retrieve_261
+    tool_retrieve_261 --&gt; loop_266
+    loop_266 --&gt; dec_269
+    dec_269 -- "loop" --&gt; loop_266
+    loop_266 --&gt; dec_277
+    dec_277 --&gt; loop_282
+    loop_282 --&gt; dec_285
+    dec_285 -- "loop" --&gt; loop_282
+    loop_282 --&gt; tool_generate_301
+    fn_hybridretriever_answer --&gt; fn_hybridretriever_ingest_memory
+    fn_hybridretriever_ingest_memory --&gt; dec_338
+    fn_hybridretriever_ingest_memory --&gt; fn_hybridretriever_get_memory_context
+    fn_hybridretriever_get_memory_context --&gt; tool_retrieve_357
+    tool_retrieve_357 --&gt; loop_361
+    loop_361 --&gt; dec_364
+    dec_364 -- "loop" --&gt; loop_361
+    loop_361 --&gt; loop_368
+    loop_368 --&gt; dec_371
+    dec_371 -- "loop" --&gt; loop_368
+    fn_hybridretriever_get_memory_context --&gt; fn_hybridretriever_get_stats
+    fn_hybridretriever_get_stats --&gt; fn_hybridretriever_close
+    n_start --&gt; fn_hmemmanager___new__
+    fn_hmemmanager___new__ --&gt; fn_hmemmanager_remember
+    fn_hmemmanager_remember --&gt; fn_hmemmanager_recall
+    fn_hmemmanager_recall --&gt; fn_hmemmanager_think
+    fn_hmemmanager_think --&gt; fn_hmemmanager_get_context
+    fn_hmemmanager_get_context --&gt; fn_hmemmanager_stats
+    fn_hmemmanager_stats --&gt; fn_hmemmanager_get_recent_memories
+    fn_hmemmanager_get_recent_memories --&gt; fn_hmemmanager_close
+    class n_start node-start
+    class fn_get_hmem_manager,fn_get_hybrid_retriever,fn_hybridretriever__get_tree,fn_hybridretriever__get_graph,fn_hybridretriever__get_llm,fn_hybridretriever_retrieve,fn_hybridretriever__plan_retrieval,fn_hybridretriever__retrieve_tree,fn_hybridretriever__rank_evidence,fn_hybridretriever_answer,fn_hybridretriever_ingest_memory,fn_hybridretriever_get_memory_context,fn_hybridretriever_get_stats,fn_hybridretriever_close,fn_hmemmanager___new__,fn_hmemmanager_remember,fn_hmemmanager_recall,fn_hmemmanager_think,fn_hmemmanager_get_context,fn_hmemmanager_stats,fn_hmemmanager_get_recent_memories,fn_hmemmanager_close node-subprocess
+    class loop_80,loop_93,loop_223,loop_236,loop_266,loop_282,loop_361,loop_368 node-loop
+    class dec_88,dec_92,dec_143,dec_146,dec_151,dec_238,dec_269,dec_277,dec_285,dec_338,dec_364,dec_371 node-decision
+    class tool_generate_140,tool_retrieve_261,tool_generate_301,tool_retrieve_357 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

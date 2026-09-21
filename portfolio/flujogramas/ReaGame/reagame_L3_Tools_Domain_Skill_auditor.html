@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaGame · Nivel 3 · auditor</title>
+<meta name="description" content="Flujograma ReaGame · Nivel 3 · auditor - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaGame/index.html">ReaGame</a> <span class="sep">›</span><a href="reagame_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Tools · Domain · Skill · auditor</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Skill Auditor
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_93{"not raw&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;not raw&lt;/i&gt;"}
+    dec_138{"not SKILL_SAFETY_ENABLED&lt;br&gt;&lt;i&gt;Condición en línea 138:&lt;br&gt;not SKILL_SAFETY_ENABLED&lt;/i&gt;"}
+    dec_168{"not risk_spans&lt;br&gt;&lt;i&gt;Condición en línea 168:&lt;br&gt;not risk_spans&lt;/i&gt;"}
+    dec_194{"critic('verdict') ==&lt;br&gt;'reject'&lt;br&gt;&lt;i&gt;Condición en línea 194:&lt;br&gt;critic('verdict') == 'reject'&lt;/i&gt;"}
+    dec_97{"not m&lt;br&gt;&lt;i&gt;Condición en línea 97:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_141{"llm is not None&lt;br&gt;&lt;i&gt;Condición en línea 141:&lt;br&gt;llm is not None&lt;/i&gt;"}
+    loop_171["For each span"]
+    dec_196{"should_repair(critic) and&lt;br&gt;critic('verdict') in ('delete',&lt;br&gt;&lt;i&gt;Condición en línea 196:&lt;br&gt;should_repair(critic) and critic('verdict') in ('delete', 'p&lt;/i&gt;"}
+    dec_103{"not isinstance(data, dict)&lt;br&gt;&lt;i&gt;Condición en línea 103:&lt;br&gt;not isinstance(data, dict)&lt;/i&gt;"}
+    dec_144{"not isinstance(llm, LLM)&lt;br&gt;&lt;i&gt;Condición en línea 144:&lt;br&gt;not isinstance(llm, LLM)&lt;/i&gt;"}
+    dec_174{"not repaired or&lt;br&gt;len(repaired.strip()) &lt; 10&lt;br&gt;&lt;i&gt;Condición en línea 174:&lt;br&gt;not repaired or len(repaired.strip()) &lt; 10&lt;/i&gt;"}
+    dec_198{"repaired_content is not None&lt;br&gt;&lt;i&gt;Condición en línea 198:&lt;br&gt;repaired_content is not None&lt;/i&gt;"}
+    dec_149{"parsed is not None&lt;br&gt;&lt;i&gt;Condición en línea 149:&lt;br&gt;parsed is not None&lt;/i&gt;"}
+    dec_177{"len(repaired) &gt; len(lesson)&lt;br&gt;&lt;i&gt;Condición en línea 177:&lt;br&gt;len(repaired) &gt; len(lesson)&lt;/i&gt;"}
+    dec_203{"leftover&lt;br&gt;&lt;i&gt;Condición en línea 203:&lt;br&gt;leftover&lt;/i&gt;"}
+    loop_125["For loop"]
+    loop_126["For each m"]
+    dec_128{"span and span not in spans&lt;br&gt;&lt;i&gt;Condición en línea 128:&lt;br&gt;span and span not in spans&lt;/i&gt;"}
+    dec_130{"len(spans) &gt;= 5&lt;br&gt;&lt;i&gt;Condición en línea 130:&lt;br&gt;len(spans) &gt;= 5&lt;/i&gt;"}
+    fn__parse_critic[["Parse Critic"]]
+    fn_risk_span_scan[["Risk Span Scan"]]
+    fn_audit_skill_score[["Audit Skill Score"]]
+    fn_deleter[["Deleter"]]
+    fn_should_repair[["Should Repair"]]
+    fn_govern_lesson[["Govern Lesson"]]
+    fn__int_105[["Int"]]
+    n_start --&gt; fn__parse_critic
+    fn__parse_critic --&gt; dec_93
+    dec_93 --&gt; dec_97
+    dec_97 --&gt; dec_103
+    dec_103 --&gt; fn__int_105
+    n_start --&gt; fn_risk_span_scan
+    fn_risk_span_scan --&gt; loop_125
+    loop_125 --&gt; loop_126
+    loop_126 --&gt; dec_128
+    dec_128 --&gt; dec_130
+    dec_130 -- "loop" --&gt; loop_126
+    loop_126 -- "loop" --&gt; loop_125
+    n_start --&gt; fn_audit_skill_score
+    fn_audit_skill_score --&gt; dec_138
+    dec_138 --&gt; dec_141
+    dec_141 --&gt; dec_144
+    dec_144 --&gt; dec_149
+    n_start --&gt; fn_deleter
+    fn_deleter --&gt; dec_168
+    dec_168 --&gt; loop_171
+    loop_171 --&gt; dec_174
+    dec_174 --&gt; dec_177
+    n_start --&gt; fn_should_repair
+    n_start --&gt; fn_govern_lesson
+    fn_govern_lesson --&gt; dec_194
+    dec_194 --&gt; dec_196
+    dec_196 --&gt; dec_198
+    dec_198 -- "YES" --&gt; dec_203
+    class n_start node-start
+    class fn__parse_critic,fn__int_105,fn_risk_span_scan,fn_audit_skill_score,fn_deleter,fn_should_repair,fn_govern_lesson node-subprocess
+    class dec_93,dec_97,dec_103,dec_128,dec_130,dec_138,dec_141,dec_144,dec_149,dec_168,dec_174,dec_177,dec_194,dec_196,dec_198,dec_203 node-decision
+    class loop_125,loop_126,loop_171 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · tracker</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · tracker - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Core · Feed · tracker</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Feed Tracker
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_188{"updates&lt;br&gt;&lt;i&gt;Condición en línea 188:&lt;br&gt;updates&lt;/i&gt;"}
+    dec_29{"self.subscriptions_file.exists()&lt;br&gt;&lt;i&gt;Condición en línea 29:&lt;br&gt;self.subscriptions_file.exists()&lt;/i&gt;"}
+    dec_132{"self.alerts_file.exists()&lt;br&gt;&lt;i&gt;Condición en línea 132:&lt;br&gt;self.alerts_file.exists()&lt;/i&gt;"}
+    loop_88["For each sub in subscriptions"]
+    dec_93{"feed.status == 304&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;feed.status == 304&lt;/i&gt;"}
+    dec_96{"feed.etag&lt;br&gt;&lt;i&gt;Condición en línea 96:&lt;br&gt;feed.etag&lt;/i&gt;"}
+    dec_98{"feed.modified&lt;br&gt;&lt;i&gt;Condición en línea 98:&lt;br&gt;feed.modified&lt;/i&gt;"}
+    loop_103["For each entry"]
+    dec_105{"entry_id != last_id&lt;br&gt;&lt;i&gt;Condición en línea 105:&lt;br&gt;entry_id != last_id&lt;/i&gt;"}
+    dec_115{"feed.entries&lt;br&gt;&lt;i&gt;Condición en línea 115:&lt;br&gt;feed.entries&lt;/i&gt;"}
+    dec_122{"updates&lt;br&gt;&lt;i&gt;Condición en línea 122:&lt;br&gt;updates&lt;/i&gt;"}
+    fn_check_all_feeds[["Check All Feeds"]]
+    fn_feedtracker__load[["Load"]]
+    fn_feedtracker__save[["Save"]]
+    fn_feedtracker_subscribe[["Subscribe"]]
+    fn_feedtracker_unsubscribe[["Unsubscribe"]]
+    fn_feedtracker__get_entry_id[["Get Entry Id"]]
+    fn_feedtracker_check_updates[["Check Updates"]]
+    fn_feedtracker__save_alerts[["Save Alerts"]]
+    fn_feedtracker_get_subscriptions[["Get Subscriptions"]]
+    fn_feedtracker_get_alerts[["Get Alerts"]]
+    fn_feedtracker_mark_alert_read[["Mark Alert Read"]]
+    fn_feedtracker_get_unread_count[["Get Unread Count"]]
+    n_start --&gt; fn_check_all_feeds
+    fn_check_all_feeds --&gt; dec_188
+    n_start --&gt; fn_feedtracker__load
+    fn_feedtracker__load --&gt; dec_29
+    fn_feedtracker__load --&gt; fn_feedtracker__save
+    fn_feedtracker__save --&gt; fn_feedtracker_subscribe
+    fn_feedtracker_subscribe --&gt; fn_feedtracker_unsubscribe
+    fn_feedtracker_unsubscribe --&gt; fn_feedtracker__get_entry_id
+    fn_feedtracker__get_entry_id --&gt; fn_feedtracker_check_updates
+    fn_feedtracker_check_updates --&gt; loop_88
+    loop_88 --&gt; dec_93
+    dec_93 --&gt; dec_96
+    dec_96 --&gt; dec_98
+    dec_98 --&gt; loop_103
+    loop_103 --&gt; dec_105
+    dec_105 -- "loop" --&gt; loop_103
+    loop_103 --&gt; dec_115
+    dec_115 -- "loop" --&gt; loop_88
+    loop_88 --&gt; dec_122
+    fn_feedtracker_check_updates --&gt; fn_feedtracker__save_alerts
+    fn_feedtracker__save_alerts --&gt; dec_132
+    fn_feedtracker__save_alerts --&gt; fn_feedtracker_get_subscriptions
+    fn_feedtracker_get_subscriptions --&gt; fn_feedtracker_get_alerts
+    fn_feedtracker_get_alerts --&gt; fn_feedtracker_mark_alert_read
+    fn_feedtracker_mark_alert_read --&gt; fn_feedtracker_get_unread_count
+    class n_start node-start
+    class fn_check_all_feeds,fn_feedtracker__load,fn_feedtracker__save,fn_feedtracker_subscribe,fn_feedtracker_unsubscribe,fn_feedtracker__get_entry_id,fn_feedtracker_check_updates,fn_feedtracker__save_alerts,fn_feedtracker_get_subscriptions,fn_feedtracker_get_alerts,fn_feedtracker_mark_alert_read,fn_feedtracker_get_unread_count node-subprocess
+    class dec_188,dec_29,dec_93,dec_96,dec_98,dec_105,dec_115,dec_122,dec_132 node-decision
+    class loop_88,loop_103 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

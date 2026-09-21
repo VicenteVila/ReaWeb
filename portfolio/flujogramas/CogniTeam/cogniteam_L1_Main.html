@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 1 · Main</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 1 · Main - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L1 · Main</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Main
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    fn__warmup_litellm_251["Warmup LiteLLM&lt;br&gt;&lt;i&gt;Precalienta routing/fallback&lt;br&gt;de proveedores LLM&lt;/i&gt;"]
+    loop_159["For loop"]
+    dec_161{"or rel.startswith('.venv') or or&lt;br&gt;&lt;i&gt;Condición en línea 161:&lt;br&gt;rel.startswith('proyectos_finalizados') or rel.startswith('.&lt;/i&gt;"}
+    loop_164["For each f in files"]
+    dec_166{"_is_junk_path(fp)&lt;br&gt;&lt;i&gt;Condición en línea 166:&lt;br&gt;_is_junk_path(fp)&lt;/i&gt;"}
+    dec_168{"fp not in snapshot_before&lt;br&gt;&lt;i&gt;Condición en línea 168:&lt;br&gt;fp not in snapshot_before&lt;/i&gt;"}
+    dec_171{"new_files&lt;br&gt;&lt;i&gt;Condición en línea 171:&lt;br&gt;new_files&lt;/i&gt;"}
+    loop_174["For each fp in new_files"]
+    dec_179{"fp.startswith('main.py') or&lt;br&gt;fp.startswith('cogniteam/') or&lt;br&gt;&lt;i&gt;Condición en línea 179:&lt;br&gt;fp.startswith('main.py') or fp.startswith('cogniteam/') or f&lt;/i&gt;"}
+    dec_208{"manifest&lt;br&gt;&lt;i&gt;Condición en línea 208:&lt;br&gt;manifest&lt;/i&gt;"}
+    dec_213{"Condition?&lt;br&gt;&lt;i&gt;Condición en línea 213:&lt;br&gt;manifest.secondary_classifications&lt;/i&gt;"}
+    loop_214["For each sc in secondary_classifications"]
+    dec_221{"plan_summary&lt;br&gt;&lt;i&gt;Condición en línea 221:&lt;br&gt;plan_summary&lt;/i&gt;"}
+    loop_224["For each s in steps"]
+    dec_230{"new_files&lt;br&gt;&lt;i&gt;Condición en línea 230:&lt;br&gt;new_files&lt;/i&gt;"}
+    loop_232["For each fp"]
+    dec_236{"outputs&lt;br&gt;&lt;i&gt;Condición en línea 236:&lt;br&gt;outputs&lt;/i&gt;"}
+    loop_238["For loop"]
+    dec_241{"len(outputs) &gt; 10&lt;br&gt;&lt;i&gt;Condición en línea 241:&lt;br&gt;len(outputs) &gt; 10&lt;/i&gt;"}
+    loop_345["For each name"]
+    dec_346{"name in HIDDEN_TOOLS&lt;br&gt;&lt;i&gt;Condición en línea 346:&lt;br&gt;name in HIDDEN_TOOLS&lt;/i&gt;"}
+    loop_351["For loop"]
+    dec_357{"desc&lt;br&gt;&lt;i&gt;Condición en línea 357:&lt;br&gt;desc&lt;/i&gt;"}
+    loop_375["Main Loop&lt;br&gt;(while True)"]
+    dec_381{"line.strip().upper() ==&lt;br&gt;'FIN_TAREA'&lt;br&gt;&lt;i&gt;Condición en línea 381:&lt;br&gt;line.strip().upper() == 'FIN_TAREA'&lt;/i&gt;"}
+    dec_386{"not requirements&lt;br&gt;&lt;i&gt;Condición en línea 386:&lt;br&gt;not requirements&lt;/i&gt;"}
+    fn__build_tool_map[["Build Tool Map"]]
+    fn__categorize_tools[["Categorize Tools"]]
+    fn__warmup_litellm[["Warmup Litellm"]]
+    fn__save_result[["Save Result"]]
+    fn_main[["Main"]]
+    tool_create_planner_agent_305["planner_agent = Create Planner&lt;br&gt;&lt;i&gt;Factory del agente planner&lt;/i&gt;"]
+    n_start --&gt; fn__build_tool_map
+    n_start --&gt; fn__categorize_tools
+    n_start --&gt; fn__warmup_litellm
+    n_start --&gt; fn__save_result
+    fn__save_result --&gt; loop_159
+    loop_159 --&gt; dec_161
+    dec_161 --&gt; loop_164
+    loop_164 --&gt; dec_166
+    dec_166 --&gt; dec_168
+    dec_168 -- "loop" --&gt; loop_164
+    loop_164 -- "loop" --&gt; loop_159
+    loop_159 --&gt; dec_171
+    dec_171 --&gt; loop_174
+    loop_174 --&gt; dec_179
+    dec_179 -- "loop" --&gt; loop_174
+    loop_174 --&gt; dec_208
+    dec_208 --&gt; dec_213
+    dec_213 --&gt; loop_214
+    loop_214 --&gt; dec_221
+    dec_221 -- "NO" --&gt; loop_224
+    loop_224 --&gt; dec_230
+    dec_230 --&gt; loop_232
+    loop_232 --&gt; dec_236
+    dec_236 --&gt; loop_238
+    loop_238 --&gt; dec_241
+    n_start --&gt; fn_main
+    fn_main --&gt; fn__warmup_litellm_251
+    fn__warmup_litellm_251 --&gt; tool_create_planner_agent_305
+    tool_create_planner_agent_305 --&gt; loop_345
+    loop_345 --&gt; dec_346
+    dec_346 --&gt; loop_351
+    loop_351 --&gt; dec_357
+    dec_357 -- "loop" --&gt; loop_345
+    loop_345 --&gt; loop_375
+    loop_375 --&gt; dec_381
+    dec_381 -- "loop" --&gt; loop_375
+    loop_375 --&gt; dec_386
+    class n_start node-start
+    class fn__build_tool_map,fn__categorize_tools,fn__warmup_litellm,fn__save_result,fn_main node-subprocess
+    class loop_159,loop_164,loop_174,loop_214,loop_224,loop_232,loop_238,loop_345,loop_351,loop_375 node-loop
+    class dec_161,dec_166,dec_168,dec_171,dec_179,dec_208,dec_213,dec_221,dec_230,dec_236,dec_241,dec_346,dec_357,dec_381,dec_386 node-decision
+    class fn__warmup_litellm_251 node-process
+    class tool_create_planner_agent_305 node-tool
+    class n_end node-end
+    click fn__build_tool_map href "cogniteam_L2_Main_Setup.html" "Abrir detalle"
+    click fn__categorize_tools href "cogniteam_L2_Main_Setup.html" "Abrir detalle"
+    click fn__warmup_litellm href "cogniteam_L2_Main_Setup.html" "Abrir detalle"
+    click fn_main href "cogniteam_L2_Main_Entry.html" "Abrir detalle"
+    click fn__save_result href "cogniteam_L2_Main_Output.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

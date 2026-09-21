@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 3 · Vault</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 3 · Vault - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L2_Interface_Handlers.html">L2</a> <span class="sep">›</span><span class="current">L3 · Interface · Handlers · Vault</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Vault
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_22{"not result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 22:&lt;br&gt;not result.get('success')&lt;/i&gt;"}
+    dec_51{"not args&lt;br&gt;&lt;i&gt;Condición en línea 51:&lt;br&gt;not args&lt;/i&gt;"}
+    dec_94{"not args&lt;br&gt;&lt;i&gt;Condición en línea 94:&lt;br&gt;not args&lt;/i&gt;"}
+    dec_127{"not vault&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;not vault&lt;/i&gt;"}
+    dec_168{"not args&lt;br&gt;&lt;i&gt;Condición en línea 168:&lt;br&gt;not args&lt;/i&gt;"}
+    dec_217{"not args&lt;br&gt;&lt;i&gt;Condición en línea 217:&lt;br&gt;not args&lt;/i&gt;"}
+    dec_249{"len(args) &lt; 2&lt;br&gt;&lt;i&gt;Condición en línea 249:&lt;br&gt;len(args) &lt; 2&lt;/i&gt;"}
+    dec_334{"not args&lt;br&gt;&lt;i&gt;Condición en línea 334:&lt;br&gt;not args&lt;/i&gt;"}
+    dec_378{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 378:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_64{"name.lower().replace(' ',&lt;br&gt;'_') in vm._config.get('vaults',&lt;br&gt;&lt;i&gt;Condición en línea 64:&lt;br&gt;name.lower().replace(' ', '_') in vm._config.get('vaults', (&lt;/i&gt;"}
+    dec_108{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_138{"db_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 138:&lt;br&gt;db_path.exists()&lt;/i&gt;"}
+    dec_180{"name == 'principal'&lt;br&gt;&lt;i&gt;Condición en línea 180:&lt;br&gt;name == 'principal'&lt;/i&gt;"}
+    dec_224{"not name&lt;br&gt;&lt;i&gt;Condición en línea 224:&lt;br&gt;not name&lt;/i&gt;"}
+    dec_264{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 264:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_282{"not action_data&lt;br&gt;&lt;i&gt;Condición en línea 282:&lt;br&gt;not action_data&lt;/i&gt;"}
+    dec_352{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 352:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_382{"result.get('was_active')&lt;br&gt;&lt;i&gt;Condición en línea 382:&lt;br&gt;result.get('was_active')&lt;/i&gt;"}
+    dec_186{"name not in&lt;br&gt;vm._config.get('vaults', ())&lt;br&gt;&lt;i&gt;Condición en línea 186:&lt;br&gt;name not in vm._config.get('vaults', ())&lt;/i&gt;"}
+    dec_233{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 233:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_289{"query.data == 'vault_cancel'&lt;br&gt;&lt;i&gt;Condición en línea 289:&lt;br&gt;query.data == 'vault_cancel'&lt;/i&gt;"}
+    dec_354{"result.get('name')&lt;br&gt;&lt;i&gt;Condición en línea 354:&lt;br&gt;result.get('name')&lt;/i&gt;"}
+    dec_294{"query.data ==&lt;br&gt;'vault_confirm'&lt;br&gt;&lt;i&gt;Condición en línea 294:&lt;br&gt;query.data == 'vault_confirm'&lt;/i&gt;"}
+    dec_297{"action ==&lt;br&gt;'vault_create_confirm'&lt;br&gt;&lt;i&gt;Condición en línea 297:&lt;br&gt;action == 'vault_create_confirm'&lt;/i&gt;"}
+    dec_302{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 302:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_314{"action ==&lt;br&gt;'vault_delete_confirm'&lt;br&gt;&lt;i&gt;Condición en línea 314:&lt;br&gt;action == 'vault_delete_confirm'&lt;/i&gt;"}
+    dec_319{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 319:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    loop_32["For each v in vaults"]
+    dec_38{"v.get('description')&lt;br&gt;&lt;i&gt;Condición en línea 38:&lt;br&gt;v.get('description')&lt;/i&gt;"}
+    fn_vaults_cmd[["Vaults Cmd"]]
+    fn_vault_create_cmd[["Vault Create Cmd"]]
+    fn_vault_use_cmd[["Vault Use Cmd"]]
+    fn_vault_info_cmd[["Vault Info Cmd"]]
+    fn_vault_delete_cmd[["Vault Delete Cmd"]]
+    fn_vault_export_cmd[["Vault Export Cmd"]]
+    fn_vault_import_cmd[["Vault Import Cmd"]]
+    fn_vault_callback[["Vault Callback"]]
+    fn_vault_connect_cmd[["Vault Connect Cmd"]]
+    fn_vault_disconnect_cmd[["Vault Disconnect Cmd"]]
+    tool_answer_277["Answer&lt;br&gt;&lt;i&gt;Respuesta con contexto recuperado&lt;/i&gt;"]
+    n_start --&gt; fn_vaults_cmd
+    fn_vaults_cmd --&gt; dec_22
+    dec_22 --&gt; loop_32
+    loop_32 --&gt; dec_38
+    dec_38 -- "loop" --&gt; loop_32
+    n_start --&gt; fn_vault_create_cmd
+    fn_vault_create_cmd --&gt; dec_51
+    dec_51 --&gt; dec_64
+    n_start --&gt; fn_vault_use_cmd
+    fn_vault_use_cmd --&gt; dec_94
+    dec_94 --&gt; dec_108
+    n_start --&gt; fn_vault_info_cmd
+    fn_vault_info_cmd --&gt; dec_127
+    dec_127 --&gt; dec_138
+    n_start --&gt; fn_vault_delete_cmd
+    fn_vault_delete_cmd --&gt; dec_168
+    dec_168 --&gt; dec_180
+    dec_180 --&gt; dec_186
+    n_start --&gt; fn_vault_export_cmd
+    fn_vault_export_cmd --&gt; dec_217
+    dec_217 --&gt; dec_224
+    dec_224 --&gt; dec_233
+    n_start --&gt; fn_vault_import_cmd
+    fn_vault_import_cmd --&gt; dec_249
+    dec_249 --&gt; dec_264
+    n_start --&gt; fn_vault_callback
+    fn_vault_callback --&gt; tool_answer_277
+    tool_answer_277 --&gt; dec_282
+    dec_282 --&gt; dec_289
+    dec_289 --&gt; dec_294
+    dec_294 --&gt; dec_297
+    dec_297 --&gt; dec_302
+    dec_297 --&gt; dec_314
+    dec_314 -- "YES" --&gt; dec_319
+    n_start --&gt; fn_vault_connect_cmd
+    fn_vault_connect_cmd --&gt; dec_334
+    dec_334 --&gt; dec_352
+    dec_352 -- "YES" --&gt; dec_354
+    n_start --&gt; fn_vault_disconnect_cmd
+    fn_vault_disconnect_cmd --&gt; dec_378
+    dec_378 -- "YES" --&gt; dec_382
+    class n_start node-start
+    class fn_vaults_cmd,fn_vault_create_cmd,fn_vault_use_cmd,fn_vault_info_cmd,fn_vault_delete_cmd,fn_vault_export_cmd,fn_vault_import_cmd,fn_vault_callback,fn_vault_connect_cmd,fn_vault_disconnect_cmd node-subprocess
+    class dec_22,dec_38,dec_51,dec_64,dec_94,dec_108,dec_127,dec_138,dec_168,dec_180,dec_186,dec_217,dec_224,dec_233,dec_249,dec_264,dec_282,dec_289,dec_294,dec_297,dec_302,dec_314,dec_319,dec_334,dec_352,dec_354,dec_378,dec_382 node-decision
+    class loop_32 node-loop
+    class tool_answer_277 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

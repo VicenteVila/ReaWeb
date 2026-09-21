@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 3 · Validators</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 3 · Validators - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L2_Core_Wiki.html">L2</a> <span class="sep">›</span><span class="current">L3 · Core · Wiki · Validators</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Validators
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_113{"required and (value is None&lt;br&gt;or value == '')&lt;br&gt;&lt;i&gt;Condición en línea 113:&lt;br&gt;required and (value is None or value == '')&lt;/i&gt;"}
+    dec_122{"value is None&lt;br&gt;&lt;i&gt;Condición en línea 122:&lt;br&gt;value is None&lt;/i&gt;"}
+    dec_156{"validation_type == 'format'&lt;br&gt;&lt;i&gt;Condición en línea 156:&lt;br&gt;validation_type == 'format'&lt;/i&gt;"}
+    dec_158{"format_type == 'url'&lt;br&gt;&lt;i&gt;Condición en línea 158:&lt;br&gt;format_type == 'url'&lt;/i&gt;"}
+    dec_169{"validation_type ==&lt;br&gt;'min_length'&lt;br&gt;&lt;i&gt;Condición en línea 169:&lt;br&gt;validation_type == 'min_length'&lt;/i&gt;"}
+    dec_159{"not&lt;br&gt;self._is_valid_url(value)&lt;br&gt;&lt;i&gt;Condición en línea 159:&lt;br&gt;not self._is_valid_url(value)&lt;/i&gt;"}
+    dec_161{"format_type == 'date'&lt;br&gt;&lt;i&gt;Condición en línea 161:&lt;br&gt;format_type == 'date'&lt;/i&gt;"}
+    dec_171{"len(str(value)) &lt; min_len&lt;br&gt;&lt;i&gt;Condición en línea 171:&lt;br&gt;len(str(value)) &lt; min_len&lt;/i&gt;"}
+    dec_174{"validation_type ==&lt;br&gt;'max_length'&lt;br&gt;&lt;i&gt;Condición en línea 174:&lt;br&gt;validation_type == 'max_length'&lt;/i&gt;"}
+    dec_277{"not condition&lt;br&gt;&lt;i&gt;Condición en línea 277:&lt;br&gt;not condition&lt;/i&gt;"}
+    dec_162{"not&lt;br&gt;self._is_valid_date(value)&lt;br&gt;&lt;i&gt;Condición en línea 162:&lt;br&gt;not self._is_valid_date(value)&lt;/i&gt;"}
+    dec_164{"format_type == 'datetime'&lt;br&gt;&lt;i&gt;Condición en línea 164:&lt;br&gt;format_type == 'datetime'&lt;/i&gt;"}
+    dec_176{"len(str(value)) &gt; max_len&lt;br&gt;&lt;i&gt;Condición en línea 176:&lt;br&gt;len(str(value)) &gt; max_len&lt;/i&gt;"}
+    dec_180{"validation_type ==&lt;br&gt;'min_value'&lt;br&gt;&lt;i&gt;Condición en línea 180:&lt;br&gt;validation_type == 'min_value'&lt;/i&gt;"}
+    dec_284{"' AND ' in condition&lt;br&gt;&lt;i&gt;Condición en línea 284:&lt;br&gt;' AND ' in condition&lt;/i&gt;"}
+    dec_165{"not&lt;br&gt;self._is_valid_datetime(value)&lt;br&gt;&lt;i&gt;Condición en línea 165:&lt;br&gt;not self._is_valid_datetime(value)&lt;/i&gt;"}
+    dec_182{"value &lt; min_val&lt;br&gt;&lt;i&gt;Condición en línea 182:&lt;br&gt;value &lt; min_val&lt;/i&gt;"}
+    dec_185{"validation_type ==&lt;br&gt;'max_value'&lt;br&gt;&lt;i&gt;Condición en línea 185:&lt;br&gt;validation_type == 'max_value'&lt;/i&gt;"}
+    dec_287{"' OR ' in condition&lt;br&gt;&lt;i&gt;Condición en línea 287:&lt;br&gt;' OR ' in condition&lt;/i&gt;"}
+    dec_187{"value &gt; max_val&lt;br&gt;&lt;i&gt;Condición en línea 187:&lt;br&gt;value &gt; max_val&lt;/i&gt;"}
+    dec_191{"validation_type == 'pattern'&lt;br&gt;&lt;i&gt;Condición en línea 191:&lt;br&gt;validation_type == 'pattern'&lt;/i&gt;"}
+    dec_193{"not re.match(pattern,&lt;br&gt;str(value))&lt;br&gt;&lt;i&gt;Condición en línea 193:&lt;br&gt;not re.match(pattern, str(value))&lt;/i&gt;"}
+    dec_197{"validation_type == 'enum'&lt;br&gt;&lt;i&gt;Condición en línea 197:&lt;br&gt;validation_type == 'enum'&lt;/i&gt;"}
+    dec_199{"value not in allowed_values&lt;br&gt;&lt;i&gt;Condición en línea 199:&lt;br&gt;value not in allowed_values&lt;/i&gt;"}
+    dec_203{"validation_type ==&lt;br&gt;'file_exists'&lt;br&gt;&lt;i&gt;Condición en línea 203:&lt;br&gt;validation_type == 'file_exists'&lt;/i&gt;"}
+    dec_204{"not Path(value).exists()&lt;br&gt;&lt;i&gt;Condición en línea 204:&lt;br&gt;not Path(value).exists()&lt;/i&gt;"}
+    dec_208{"validation_type ==&lt;br&gt;'file_extension'&lt;br&gt;&lt;i&gt;Condición en línea 208:&lt;br&gt;validation_type == 'file_extension'&lt;/i&gt;"}
+    dec_210{"not&lt;br&gt;str(value).endswith(expected_ext)&lt;br&gt;&lt;i&gt;Condición en línea 210:&lt;br&gt;not str(value).endswith(expected_ext)&lt;/i&gt;"}
+    dec_214{"validation_type ==&lt;br&gt;'max_date'&lt;br&gt;&lt;i&gt;Condición en línea 214:&lt;br&gt;validation_type == 'max_date'&lt;/i&gt;"}
+    dec_386{"NOT quality_config?&lt;br&gt;&lt;i&gt;Niega quality_config&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_216{"max_date_value == 'today'&lt;br&gt;&lt;i&gt;Condición en línea 216:&lt;br&gt;max_date_value == 'today'&lt;/i&gt;"}
+    dec_228{"validation_type ==&lt;br&gt;'min_items'&lt;br&gt;&lt;i&gt;Condición en línea 228:&lt;br&gt;validation_type == 'min_items'&lt;/i&gt;"}
+    loop_393["For each factor in factors"]
+    dec_218{"isinstance(max_date_value,&lt;br&gt;str)&lt;br&gt;&lt;i&gt;Condición en línea 218:&lt;br&gt;isinstance(max_date_value, str)&lt;/i&gt;"}
+    dec_233{"validation_type ==&lt;br&gt;'max_items'&lt;br&gt;&lt;i&gt;Condición en línea 233:&lt;br&gt;validation_type == 'max_items'&lt;/i&gt;"}
+    dec_401{"total_weight == 0&lt;br&gt;&lt;i&gt;Condición en línea 401:&lt;br&gt;total_weight == 0&lt;/i&gt;"}
+    dec_221{"isinstance(value, str)&lt;br&gt;&lt;i&gt;Condición en línea 221:&lt;br&gt;isinstance(value, str)&lt;/i&gt;"}
+    dec_224{"value &gt; max_date_value&lt;br&gt;&lt;i&gt;Condición en línea 224:&lt;br&gt;value &gt; max_date_value&lt;/i&gt;"}
+    loop_73["For loop"]
+    dec_77{"field_errors&lt;br&gt;&lt;i&gt;Condición en línea 77:&lt;br&gt;field_errors&lt;/i&gt;"}
+    dec_78{"strict&lt;br&gt;&lt;i&gt;Condición en línea 78:&lt;br&gt;strict&lt;/i&gt;"}
+    dec_83{"not errors or not strict&lt;br&gt;&lt;i&gt;Condición en línea 83:&lt;br&gt;not errors or not strict&lt;/i&gt;"}
+    dec_85{"cross_errors&lt;br&gt;&lt;i&gt;Condición en línea 85:&lt;br&gt;cross_errors&lt;/i&gt;"}
+    dec_86{"strict&lt;br&gt;&lt;i&gt;Condición en línea 86:&lt;br&gt;strict&lt;/i&gt;"}
+    loop_127["For each validation in validations"]
+    dec_129{"error&lt;br&gt;&lt;i&gt;Condición en línea 129:&lt;br&gt;error&lt;/i&gt;"}
+    loop_252["For each cross_val in cross_validations"]
+    dec_259{"data)&lt;br&gt;&lt;i&gt;Condición en línea 259:&lt;br&gt;self._evaluate_condition(condition, data)&lt;/i&gt;"}
+    dec_261{"not&lt;br&gt;self._evaluate_rule(rule, data)&lt;br&gt;&lt;i&gt;Condición en línea 261:&lt;br&gt;not self._evaluate_rule(rule, data)&lt;/i&gt;"}
+    fn_validate_ingest_data[["Validate Ingest Data"]]
+    fn_schemavalidator__load_schema[["Load Schema"]]
+    fn_schemavalidator_validate[["Validate"]]
+    fn_schemavalidator__validate_field[["Validate Field"]]
+    fn_schemavalidator__apply_validation[["Apply Validation"]]
+    fn_schemavalidator__validate_cross[["Validate Cross"]]
+    fn_schemavalidator__evaluate_condition[["Evaluate Condition"]]
+    fn_schemavalidator__field_is_truthy[["Field Is Truthy"]]
+    fn_schemavalidator__evaluate_rule[["Evaluate Rule"]]
+    fn_schemavalidator__get_field_value[["Get Field Value"]]
+    fn_schemavalidator__is_valid_url[["Is Valid Url"]]
+    fn_schemavalidator__is_valid_date[["Is Valid Date"]]
+    fn_schemavalidator__is_valid_datetime[["Is Valid Datetime"]]
+    fn_schemavalidator_calculate_quality_score[["Calculate Quality Score"]]
+    fn_schemavalidator__calculate_factor_score[["Calculate Factor Score"]]
+    n_start --&gt; fn_validate_ingest_data
+    n_start --&gt; fn_schemavalidator__load_schema
+    fn_schemavalidator__load_schema --&gt; fn_schemavalidator_validate
+    fn_schemavalidator_validate --&gt; loop_73
+    loop_73 --&gt; dec_77
+    dec_77 --&gt; dec_78
+    dec_78 -- "loop" --&gt; loop_73
+    loop_73 --&gt; dec_83
+    dec_83 --&gt; dec_85
+    dec_85 --&gt; dec_86
+    fn_schemavalidator_validate --&gt; fn_schemavalidator__validate_field
+    fn_schemavalidator__validate_field --&gt; dec_113
+    dec_113 --&gt; dec_122
+    dec_122 --&gt; loop_127
+    loop_127 --&gt; dec_129
+    dec_129 -- "loop" --&gt; loop_127
+    fn_schemavalidator__validate_field --&gt; fn_schemavalidator__apply_validation
+    fn_schemavalidator__apply_validation --&gt; dec_156
+    dec_156 --&gt; dec_158
+    dec_158 --&gt; dec_159
+    dec_158 --&gt; dec_161
+    dec_161 --&gt; dec_162
+    dec_161 --&gt; dec_164
+    dec_164 --&gt; dec_165
+    dec_156 --&gt; dec_169
+    dec_169 --&gt; dec_171
+    dec_169 --&gt; dec_174
+    dec_174 --&gt; dec_176
+    dec_174 --&gt; dec_180
+    dec_180 --&gt; dec_182
+    dec_180 --&gt; dec_185
+    dec_185 --&gt; dec_187
+    dec_185 --&gt; dec_191
+    dec_191 --&gt; dec_193
+    dec_191 --&gt; dec_197
+    dec_197 --&gt; dec_199
+    dec_197 --&gt; dec_203
+    dec_203 --&gt; dec_204
+    dec_203 --&gt; dec_208
+    dec_208 --&gt; dec_210
+    dec_208 --&gt; dec_214
+    dec_214 --&gt; dec_216
+    dec_216 --&gt; dec_218
+    dec_218 --&gt; dec_221
+    dec_221 --&gt; dec_224
+    dec_214 --&gt; dec_228
+    dec_228 --&gt; dec_233
+    fn_schemavalidator__apply_validation --&gt; fn_schemavalidator__validate_cross
+    fn_schemavalidator__validate_cross --&gt; loop_252
+    loop_252 --&gt; dec_259
+    dec_259 --&gt; dec_261
+    dec_261 -- "loop" --&gt; loop_252
+    fn_schemavalidator__validate_cross --&gt; fn_schemavalidator__evaluate_condition
+    fn_schemavalidator__evaluate_condition --&gt; dec_277
+    dec_277 --&gt; dec_284
+    dec_284 --&gt; dec_287
+    fn_schemavalidator__evaluate_condition --&gt; fn_schemavalidator__field_is_truthy
+    fn_schemavalidator__field_is_truthy --&gt; fn_schemavalidator__evaluate_rule
+    fn_schemavalidator__evaluate_rule --&gt; fn_schemavalidator__get_field_value
+    fn_schemavalidator__get_field_value --&gt; fn_schemavalidator__is_valid_url
+    fn_schemavalidator__is_valid_url --&gt; fn_schemavalidator__is_valid_date
+    fn_schemavalidator__is_valid_date --&gt; fn_schemavalidator__is_valid_datetime
+    fn_schemavalidator__is_valid_datetime --&gt; fn_schemavalidator_calculate_quality_score
+    fn_schemavalidator_calculate_quality_score --&gt; dec_386
+    dec_386 --&gt; loop_393
+    loop_393 --&gt; dec_401
+    fn_schemavalidator_calculate_quality_score --&gt; fn_schemavalidator__calculate_factor_score
+    class n_start node-start
+    class fn_validate_ingest_data,fn_schemavalidator__load_schema,fn_schemavalidator_validate,fn_schemavalidator__validate_field,fn_schemavalidator__apply_validation,fn_schemavalidator__validate_cross,fn_schemavalidator__evaluate_condition,fn_schemavalidator__field_is_truthy,fn_schemavalidator__evaluate_rule,fn_schemavalidator__get_field_value,fn_schemavalidator__is_valid_url,fn_schemavalidator__is_valid_date,fn_schemavalidator__is_valid_datetime,fn_schemavalidator_calculate_quality_score,fn_schemavalidator__calculate_factor_score node-subprocess
+    class loop_73,loop_127,loop_252,loop_393 node-loop
+    class dec_77,dec_78,dec_83,dec_85,dec_86,dec_113,dec_122,dec_129,dec_156,dec_158,dec_159,dec_161,dec_162,dec_164,dec_165,dec_169,dec_171,dec_174,dec_176,dec_180,dec_182,dec_185,dec_187,dec_191,dec_193,dec_197,dec_199,dec_203,dec_204,dec_208,dec_210,dec_214,dec_216,dec_218,dec_221,dec_224,dec_228,dec_233,dec_259,dec_261,dec_277,dec_284,dec_287,dec_386,dec_401 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

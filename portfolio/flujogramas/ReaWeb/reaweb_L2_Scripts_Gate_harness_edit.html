@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · Nivel 2 · edit</title>
+<meta name="description" content="Flujograma ReaWeb · Nivel 2 · edit - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><a href="reaweb_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Scripts · Gate · harness · edit</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Gate Harness Edit
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    dec_147{"not TASK_COEVOLVE_ENABLED&lt;br&gt;&lt;i&gt;Condición en línea 147:&lt;br&gt;not TASK_COEVOLVE_ENABLED&lt;/i&gt;"}
+    dec_179{"args.proposal&lt;br&gt;&lt;i&gt;Condición en línea 179:&lt;br&gt;args.proposal&lt;/i&gt;"}
+    dec_89{"not dry_run&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;not dry_run&lt;/i&gt;"}
+    dec_185{"NOT fixed_tasks?&lt;br&gt;&lt;i&gt;Niega fixed_tasks&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_94{"before('train') is None or&lt;br&gt;after('train') is None&lt;br&gt;&lt;i&gt;Condición en línea 94:&lt;br&gt;before('train') is None or after('train') is None&lt;/i&gt;"}
+    dec_187{"len(picked) &gt;= 2&lt;br&gt;&lt;i&gt;Condición en línea 187:&lt;br&gt;len(picked) &gt;= 2&lt;/i&gt;"}
+    dec_96{"after('train') &lt;=&lt;br&gt;before('train')&lt;br&gt;&lt;i&gt;Condición en línea 96:&lt;br&gt;after('train') &lt;= before('train')&lt;/i&gt;"}
+    dec_198{"not edits&lt;br&gt;&lt;i&gt;Condición en línea 198:&lt;br&gt;not edits&lt;/i&gt;"}
+    dec_98{"before('dev') is not None&lt;br&gt;and after('dev') is not None and &lt;&lt;br&gt;&lt;i&gt;Condición en línea 98:&lt;br&gt;before('dev') is not None and after('dev') is not None and (&lt;/i&gt;"}
+    loop_203["For each edit in edits"]
+    dec_108{"not accept&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;not accept&lt;/i&gt;"}
+    loop_231["For each r in results"]
+    dec_109{"before('train') is None or&lt;br&gt;after('train') is None&lt;br&gt;&lt;i&gt;Condición en línea 109:&lt;br&gt;before('train') is None or after('train') is None&lt;/i&gt;"}
+    dec_111{"after('dev') is not None and&lt;br&gt;before('dev') is not None and &lt; &gt;&lt;br&gt;&lt;i&gt;Condición en línea 111:&lt;br&gt;after('dev') is not None and before('dev') is not None and (&lt;/i&gt;"}
+    dec_115{"not dry_run&lt;br&gt;&lt;i&gt;Condición en línea 115:&lt;br&gt;not dry_run&lt;/i&gt;"}
+    dec_116{"not accept&lt;br&gt;&lt;i&gt;Condición en línea 116:&lt;br&gt;not accept&lt;/i&gt;"}
+    fn__short_run_score[["Short Run Score"]]
+    fn__apply_after[["Apply After"]]
+    fn__revert[["Revert"]]
+    fn_gate_proposal[["Gate Proposal"]]
+    fn__persist[["Persist"]]
+    fn__adaptive_train_dev[["Adaptive Train Dev"]]
+    fn__cleanup_staging[["Cleanup Staging"]]
+    fn_main[["Main"]]
+    fn_J_84[["J"]]
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    n_start --&gt; fn__short_run_score
+    n_start --&gt; fn__apply_after
+    n_start --&gt; fn__revert
+    n_start --&gt; fn_gate_proposal
+    fn_gate_proposal --&gt; fn_J_84
+    fn_J_84 --&gt; dec_89
+    dec_89 --&gt; dec_94
+    dec_94 --&gt; dec_96
+    dec_96 --&gt; dec_98
+    dec_98 --&gt; dec_108
+    dec_108 --&gt; dec_109
+    dec_109 --&gt; dec_111
+    dec_111 --&gt; dec_115
+    dec_115 --&gt; dec_116
+    n_start --&gt; fn__persist
+    n_start --&gt; fn__adaptive_train_dev
+    fn__adaptive_train_dev --&gt; dec_147
+    n_start --&gt; fn__cleanup_staging
+    n_start --&gt; fn_main
+    fn_main --&gt; dec_179
+    dec_179 --&gt; dec_185
+    dec_185 --&gt; dec_187
+    dec_187 --&gt; dec_198
+    dec_198 --&gt; loop_203
+    loop_203 --&gt; loop_231
+    class n_start node-start
+    class fn__short_run_score,fn__apply_after,fn__revert,fn_gate_proposal,fn_J_84,fn__persist,fn__adaptive_train_dev,fn__cleanup_staging,fn_main node-subprocess
+    class dec_89,dec_94,dec_96,dec_98,dec_108,dec_109,dec_111,dec_115,dec_116,dec_147,dec_179,dec_185,dec_187,dec_198 node-decision
+    class loop_203,loop_231 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

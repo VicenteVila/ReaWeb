@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 3 · integration</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 3 · integration - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Cogniteam · World · model · Cogniteam · integration</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Cogniteam Integration
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_41{"self.groq and&lt;br&gt;self.groq_calls_today &lt;&lt;br&gt;&lt;i&gt;Condición en línea 41:&lt;br&gt;self.groq and self.groq_calls_today &lt; self.groq_limit&lt;/i&gt;"}
+    dec_123{"result.reclarification_needed&lt;br&gt;&lt;i&gt;Condición en línea 123:&lt;br&gt;result.reclarification_needed&lt;/i&gt;"}
+    dec_225{"not result.success or not&lt;br&gt;result.output&lt;br&gt;&lt;i&gt;Condición en línea 225:&lt;br&gt;not result.success or not result.output&lt;/i&gt;"}
+    dec_50{"self.ollama and&lt;br&gt;self.fallback&lt;br&gt;&lt;i&gt;Condición en línea 50:&lt;br&gt;self.ollama and self.fallback&lt;/i&gt;"}
+    dec_126{"result.success&lt;br&gt;&lt;i&gt;Condición en línea 126:&lt;br&gt;result.success&lt;/i&gt;"}
+    loop_137["For each q in reclarification_questions"]
+    dec_239{"self.matm&lt;br&gt;&lt;i&gt;Condición en línea 239:&lt;br&gt;self.matm&lt;/i&gt;"}
+    dec_243{"self.graph_rag&lt;br&gt;&lt;i&gt;Condición en línea 243:&lt;br&gt;self.graph_rag&lt;/i&gt;"}
+    dec_175{"self.original&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;self.original&lt;/i&gt;"}
+    dec_250{"self.fast_slow&lt;br&gt;&lt;i&gt;Condición en línea 250:&lt;br&gt;self.fast_slow&lt;/i&gt;"}
+    loop_301["Main Loop&lt;br&gt;(while True)"]
+    loop_304["Main Loop&lt;br&gt;(while True)"]
+    dec_306{"line.strip() == 'FIN_TAREA'&lt;br&gt;&lt;i&gt;Condición en línea 306:&lt;br&gt;line.strip() == 'FIN_TAREA'&lt;/i&gt;"}
+    dec_311{"not task.strip()&lt;br&gt;&lt;i&gt;Condición en línea 311:&lt;br&gt;not task.strip()&lt;/i&gt;"}
+    dec_320{"result('status') ==&lt;br&gt;'RECLARIFY'&lt;br&gt;&lt;i&gt;Condición en línea 320:&lt;br&gt;result('status') == 'RECLARIFY'&lt;/i&gt;"}
+    loop_322["For each q"]
+    dec_325{"result('status') ==&lt;br&gt;'SUCCESS'&lt;br&gt;&lt;i&gt;Condición en línea 325:&lt;br&gt;result('status') == 'SUCCESS'&lt;/i&gt;"}
+    dec_330{"result('status') == 'FAILED'&lt;br&gt;&lt;i&gt;Condición en línea 330:&lt;br&gt;result('status') == 'FAILED'&lt;/i&gt;"}
+    fn_main_cogniteam_cage[["Main Cogniteam Cage"]]
+    fn_cogniteamllmadapter_generate[["Generate"]]
+    fn_cageorchestrator_process_task[["Process Task"]]
+    fn_cagememorybridge_store_task_memory[["Store Task Memory"]]
+    fn_cogniteamllmadapter__call_groq[["Call Groq"]]
+    fn_cageorchestrator__handle_reclarification[["Handle Reclarification"]]
+    fn_cagememorybridge_get_similar_tasks[["Get Similar Tasks"]]
+    fn_cogniteamllmadapter__call_ollama[["Call Ollama"]]
+    fn_cageorchestrator__handle_success[["Handle Success"]]
+    fn_cageorchestrator__handle_failure[["Handle Failure"]]
+    fn_cageorchestrator__update_stats[["Update Stats"]]
+    fn_cageorchestrator_get_stats[["Get Stats"]]
+    tool_process_task_315["result = Process Task&lt;br&gt;&lt;i&gt;CageOrchestrator: procesa la tarea&lt;br&gt;(end-to-end con cage)&lt;/i&gt;"]
+    n_start --&gt; fn_main_cogniteam_cage
+    fn_main_cogniteam_cage --&gt; loop_301
+    loop_301 --&gt; loop_304
+    loop_304 --&gt; dec_306
+    dec_306 -- "loop" --&gt; loop_304
+    loop_304 --&gt; dec_311
+    dec_311 --&gt; tool_process_task_315
+    tool_process_task_315 --&gt; dec_320
+    dec_320 --&gt; loop_322
+    dec_320 --&gt; dec_325
+    dec_325 --&gt; dec_330
+    dec_330 -- "loop" --&gt; loop_301
+    n_start --&gt; fn_cogniteamllmadapter_generate
+    fn_cogniteamllmadapter_generate --&gt; dec_41
+    dec_41 --&gt; dec_50
+    fn_cogniteamllmadapter_generate --&gt; fn_cogniteamllmadapter__call_groq
+    fn_cogniteamllmadapter__call_groq --&gt; fn_cogniteamllmadapter__call_ollama
+    n_start --&gt; fn_cageorchestrator_process_task
+    fn_cageorchestrator_process_task --&gt; dec_123
+    dec_123 --&gt; dec_126
+    fn_cageorchestrator_process_task --&gt; fn_cageorchestrator__handle_reclarification
+    fn_cageorchestrator__handle_reclarification --&gt; loop_137
+    fn_cageorchestrator__handle_reclarification --&gt; fn_cageorchestrator__handle_success
+    fn_cageorchestrator__handle_success --&gt; fn_cageorchestrator__handle_failure
+    fn_cageorchestrator__handle_failure --&gt; dec_175
+    fn_cageorchestrator__handle_failure --&gt; fn_cageorchestrator__update_stats
+    fn_cageorchestrator__update_stats --&gt; fn_cageorchestrator_get_stats
+    n_start --&gt; fn_cagememorybridge_store_task_memory
+    fn_cagememorybridge_store_task_memory --&gt; dec_225
+    dec_225 --&gt; dec_239
+    dec_239 --&gt; dec_243
+    dec_243 --&gt; dec_250
+    fn_cagememorybridge_store_task_memory --&gt; fn_cagememorybridge_get_similar_tasks
+    class n_start node-start
+    class fn_main_cogniteam_cage,fn_cogniteamllmadapter_generate,fn_cogniteamllmadapter__call_groq,fn_cogniteamllmadapter__call_ollama,fn_cageorchestrator_process_task,fn_cageorchestrator__handle_reclarification,fn_cageorchestrator__handle_success,fn_cageorchestrator__handle_failure,fn_cageorchestrator__update_stats,fn_cageorchestrator_get_stats,fn_cagememorybridge_store_task_memory,fn_cagememorybridge_get_similar_tasks node-subprocess
+    class loop_301,loop_304,loop_322,loop_137 node-loop
+    class dec_306,dec_311,dec_320,dec_325,dec_330,dec_41,dec_50,dec_123,dec_126,dec_175,dec_225,dec_239,dec_243,dec_250 node-decision
+    class tool_process_task_315 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

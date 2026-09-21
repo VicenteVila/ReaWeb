@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · Wiki</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · Wiki - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L1_Core.html">L1</a> <span class="sep">›</span><span class="current">L2 · Core · Wiki</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% asubarnipal · core · wiki
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start"])
+    mod_base["Base&lt;br&gt;&lt;i&gt;67 nodos, 75 enlaces&lt;/i&gt;"]
+    mod_citation_extractor["Citation Extractor&lt;br&gt;&lt;i&gt;53 nodos, 55 enlaces&lt;/i&gt;"]
+    mod_citation_verifier["Citation Verifier&lt;br&gt;&lt;i&gt;61 nodos, 62 enlaces&lt;/i&gt;"]
+    mod_ingest["Ingest&lt;br&gt;&lt;i&gt;111 nodos, 123 enlaces&lt;/i&gt;"]
+    mod_ingest_validator["Ingest Validator&lt;br&gt;&lt;i&gt;8 nodos, 6 enlaces&lt;/i&gt;"]
+    mod_obsidian["Obsidian&lt;br&gt;&lt;i&gt;13 nodos, 13 enlaces&lt;/i&gt;"]
+    mod_quality_scorer["Quality Scorer&lt;br&gt;&lt;i&gt;48 nodos, 47 enlaces&lt;/i&gt;"]
+    mod_reader["Reader&lt;br&gt;&lt;i&gt;5 nodos, 3 enlaces&lt;/i&gt;"]
+    mod_search["Search&lt;br&gt;&lt;i&gt;27 nodos, 32 enlaces&lt;/i&gt;"]
+    mod_validators["Validators&lt;br&gt;&lt;i&gt;66 nodos, 67 enlaces&lt;/i&gt;"]
+    n_end(["End"])
+    n_start --&gt; mod_base
+    mod_base --&gt; mod_citation_extractor
+    mod_citation_extractor --&gt; mod_citation_verifier
+    mod_citation_verifier --&gt; mod_ingest
+    mod_ingest --&gt; mod_ingest_validator
+    mod_ingest_validator --&gt; mod_obsidian
+    mod_obsidian --&gt; mod_quality_scorer
+    mod_quality_scorer --&gt; mod_reader
+    mod_reader --&gt; mod_search
+    mod_search --&gt; mod_validators
+    mod_validators --&gt; n_end
+    class n_start node-start
+    class mod_base,mod_citation_extractor,mod_citation_verifier,mod_ingest,mod_obsidian,mod_quality_scorer,mod_search,mod_validators node-loop
+    class mod_ingest_validator,mod_reader node-process
+    class n_end node-end
+    click mod_base href "asubarnipal_L3_Core_Wiki_Base.html" "Abrir detalle"
+    click mod_citation_extractor href "asubarnipal_L3_Core_Wiki_Citation_extractor.html" "Abrir detalle"
+    click mod_citation_verifier href "asubarnipal_L3_Core_Wiki_Citation_verifier.html" "Abrir detalle"
+    click mod_ingest href "asubarnipal_L3_Core_Wiki_Ingest.html" "Abrir detalle"
+    click mod_ingest_validator href "asubarnipal_L3_Core_Wiki_Ingest_validator.html" "Abrir detalle"
+    click mod_obsidian href "asubarnipal_L3_Core_Wiki_Obsidian.html" "Abrir detalle"
+    click mod_quality_scorer href "asubarnipal_L3_Core_Wiki_Quality_scorer.html" "Abrir detalle"
+    click mod_reader href "asubarnipal_L3_Core_Wiki_Reader.html" "Abrir detalle"
+    click mod_search href "asubarnipal_L3_Core_Wiki_Search.html" "Abrir detalle"
+    click mod_validators href "asubarnipal_L3_Core_Wiki_Validators.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

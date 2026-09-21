@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 3 · v2</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 3 · v2 - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Cogniteam · Agents · Repair · v2</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Repair V2
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_44{"os.path.isdir(artifacts_dir)&lt;br&gt;&lt;i&gt;Condición en línea 44:&lt;br&gt;os.path.isdir(artifacts_dir)&lt;/i&gt;"}
+    dec_63{"not os.path.isdir(staging)&lt;br&gt;&lt;i&gt;Condición en línea 63:&lt;br&gt;not os.path.isdir(staging)&lt;/i&gt;"}
+    dec_85{"tool in _SANDBOX_FILE_TOOLS&lt;br&gt;&lt;i&gt;Condición en línea 85:&lt;br&gt;tool in _SANDBOX_FILE_TOOLS&lt;/i&gt;"}
+    dec_126{"asyncio.iscoroutinefunction(fn)&lt;br&gt;&lt;i&gt;Condición en línea 126:&lt;br&gt;asyncio.iscoroutinefunction(fn)&lt;/i&gt;"}
+    dec_135{"not isinstance(inputs, dict)&lt;br&gt;&lt;i&gt;Condición en línea 135:&lt;br&gt;not isinstance(inputs, dict)&lt;/i&gt;"}
+    loop_172["For loop"]
+    dec_201{"files_ev&lt;br&gt;&lt;i&gt;Condición en línea 201:&lt;br&gt;files_ev&lt;/i&gt;"}
+    fn__validate_output_237["fmt_ok = Validate Output&lt;br&gt;&lt;i&gt;Verifica artefactos generados vs plan&lt;br&gt;(file tree, quality)&lt;/i&gt;"]
+    dec_309{"not tool_names&lt;br&gt;&lt;i&gt;Condición en línea 309:&lt;br&gt;not tool_names&lt;/i&gt;"}
+    dec_92{"tool ==&lt;br&gt;'move_or_rename_sandboxed'&lt;br&gt;&lt;i&gt;Condición en línea 92:&lt;br&gt;tool == 'move_or_rename_sandboxed'&lt;/i&gt;"}
+    dec_108{"tool in _FILEPATH_TOOLS&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;tool in _FILEPATH_TOOLS&lt;/i&gt;"}
+    dec_204{"spans_ev&lt;br&gt;&lt;i&gt;Condición en línea 204:&lt;br&gt;spans_ev&lt;/i&gt;"}
+    dec_238{"not fmt_ok&lt;br&gt;&lt;i&gt;Condición en línea 238:&lt;br&gt;not fmt_ok&lt;/i&gt;"}
+    dec_317{"attempts_in_loop &gt;=&lt;br&gt;max_attempts&lt;br&gt;&lt;i&gt;Condición en línea 317:&lt;br&gt;attempts_in_loop &gt;= max_attempts&lt;/i&gt;"}
+    dec_95{"src and (not&lt;br&gt;src.startswith(('.', '/')))&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;src and (not src.startswith(('.', '/')))&lt;/i&gt;"}
+    dec_110{"orig and (not&lt;br&gt;str(orig).startswith(('.', '/')))&lt;br&gt;&lt;i&gt;Condición en línea 110:&lt;br&gt;orig and (not str(orig).startswith(('.', '/')))&lt;/i&gt;"}
+    dec_246{"Condition?&lt;br&gt;&lt;i&gt;Condición en línea 246:&lt;br&gt;settings.repair_validate_functional&lt;/i&gt;"}
+    dec_99{"dst and (not&lt;br&gt;dst.startswith(('.', '/')))&lt;br&gt;&lt;i&gt;Condición en línea 99:&lt;br&gt;dst and (not dst.startswith(('.', '/')))&lt;/i&gt;"}
+    dec_248{"html_files&lt;br&gt;&lt;i&gt;Condición en línea 248:&lt;br&gt;html_files&lt;/i&gt;"}
+    dec_104{"orig and (not&lt;br&gt;str(orig).startswith(('.', '/')))&lt;br&gt;&lt;i&gt;Condición en línea 104:&lt;br&gt;orig and (not str(orig).startswith(('.', '/')))&lt;/i&gt;"}
+    loop_45["For each entry"]
+    dec_46{"entry == '.cogniteam'&lt;br&gt;&lt;i&gt;Condición en línea 46:&lt;br&gt;entry == '.cogniteam'&lt;/i&gt;"}
+    dec_50{"os.path.isdir(src)&lt;br&gt;&lt;i&gt;Condición en línea 50:&lt;br&gt;os.path.isdir(src)&lt;/i&gt;"}
+    loop_65["For each entry"]
+    dec_66{"entry == '.cogniteam'&lt;br&gt;&lt;i&gt;Condición en línea 66:&lt;br&gt;entry == '.cogniteam'&lt;/i&gt;"}
+    dec_70{"os.path.isdir(src)&lt;br&gt;&lt;i&gt;Condición en línea 70:&lt;br&gt;os.path.isdir(src)&lt;/i&gt;"}
+    loop_137["For each key"]
+    dec_139{"not fname or&lt;br&gt;isinstance(fname, (dict, list))&lt;br&gt;&lt;i&gt;Condición en línea 139:&lt;br&gt;not fname or isinstance(fname, (dict, list))&lt;/i&gt;"}
+    dec_142{"fname.startswith('((')&lt;br&gt;&lt;i&gt;Condición en línea 142:&lt;br&gt;fname.startswith('((')&lt;/i&gt;"}
+    dec_144{"fname.startswith(('.', '/'))&lt;br&gt;&lt;i&gt;Condición en línea 144:&lt;br&gt;fname.startswith(('.', '/'))&lt;/i&gt;"}
+    dec_147{"os.path.isfile(candidate)&lt;br&gt;&lt;i&gt;Condición en línea 147:&lt;br&gt;os.path.isfile(candidate)&lt;/i&gt;"}
+    dec_155{"os.path.isdir(artifacts_dir)&lt;br&gt;&lt;i&gt;Condición en línea 155:&lt;br&gt;os.path.isdir(artifacts_dir)&lt;/i&gt;"}
+    dec_159{"listing&lt;br&gt;&lt;i&gt;Condición en línea 159:&lt;br&gt;listing&lt;/i&gt;"}
+    loop_251["For each fname in html_files"]
+    dec_262{"not vres.get('passed')&lt;br&gt;&lt;i&gt;Condición en línea 262:&lt;br&gt;not vres.get('passed')&lt;/i&gt;"}
+    dec_272{"passed&lt;br&gt;&lt;i&gt;Condición en línea 272:&lt;br&gt;passed&lt;/i&gt;"}
+    loop_326["For each i"]
+    dec_330{"last_evidence&lt;br&gt;&lt;i&gt;Condición en línea 330:&lt;br&gt;last_evidence&lt;/i&gt;"}
+    dec_361{"atype == 'ESCALATE'&lt;br&gt;&lt;i&gt;Condición en línea 361:&lt;br&gt;atype == 'ESCALATE'&lt;/i&gt;"}
+    dec_364{"atype == 'INSERT_BEFORE'&lt;br&gt;&lt;i&gt;Condición en línea 364:&lt;br&gt;atype == 'INSERT_BEFORE'&lt;/i&gt;"}
+    dec_366{"isinstance(prep_step, dict)&lt;br&gt;and prep_step.get('tool_to_use')&lt;br&gt;&lt;i&gt;Condición en línea 366:&lt;br&gt;isinstance(prep_step, dict) and prep_step.get('tool_to_use')&lt;/i&gt;"}
+    dec_367{"prep_step('tool_to_use') in&lt;br&gt;tool_map&lt;br&gt;&lt;i&gt;Condición en línea 367:&lt;br&gt;prep_step('tool_to_use') in tool_map&lt;/i&gt;"}
+    dec_383{"atype == 'PATCH_INPUTS'&lt;br&gt;&lt;i&gt;Condición en línea 383:&lt;br&gt;atype == 'PATCH_INPUTS'&lt;/i&gt;"}
+    dec_385{"isinstance(new_inputs, dict)&lt;br&gt;and dict)&lt;br&gt;&lt;i&gt;Condición en línea 385:&lt;br&gt;isinstance(new_inputs, dict) and isinstance(step_info.get('i&lt;/i&gt;"}
+    dec_389{"atype == 'PATCH_TOOL'&lt;br&gt;&lt;i&gt;Condición en línea 389:&lt;br&gt;atype == 'PATCH_TOOL'&lt;/i&gt;"}
+    dec_391{"new_tool in tool_map and&lt;br&gt;new_tool != tool_name&lt;br&gt;&lt;i&gt;Condición en línea 391:&lt;br&gt;new_tool in tool_map and new_tool != tool_name&lt;/i&gt;"}
+    dec_405{"isinstance(result, dict) and&lt;br&gt;result.get('success') is False&lt;br&gt;&lt;i&gt;Condición en línea 405:&lt;br&gt;isinstance(result, dict) and result.get('success') is False&lt;/i&gt;"}
+    dec_415{"passed&lt;br&gt;&lt;i&gt;Condición en línea 415:&lt;br&gt;passed&lt;/i&gt;"}
+    fn__staging_dir_for[["Staging Dir For"]]
+    fn__setup_staging[["Setup Staging"]]
+    fn__promote[["Promote"]]
+    fn__rewrite_paths_to_staging[["Rewrite Paths To Staging"]]
+    fn__execute_tool_in_staging[["Execute Tool In Staging"]]
+    fn__collect_file_evidence[["Collect File Evidence"]]
+    fn__collect_span_evidence[["Collect Span Evidence"]]
+    fn__collect_evidence[["Collect Evidence"]]
+    fn__find_html_in_dir[["Find Html In Dir"]]
+    fn__run_verification[["Run Verification"]]
+    fn_repair_with_loop[["Repair With Loop"]]
+    tool_repair_step_v2_334["action = Repair Step v2&lt;br&gt;&lt;i&gt;Reparación mejorada (evidencia&lt;br&gt;recopilada del entorno)&lt;/i&gt;"]
+    n_start --&gt; fn__staging_dir_for
+    n_start --&gt; fn__setup_staging
+    fn__setup_staging --&gt; dec_44
+    dec_44 --&gt; loop_45
+    loop_45 --&gt; dec_46
+    dec_46 --&gt; dec_50
+    dec_50 -- "loop" --&gt; loop_45
+    n_start --&gt; fn__promote
+    fn__promote --&gt; dec_63
+    dec_63 --&gt; loop_65
+    loop_65 --&gt; dec_66
+    dec_66 --&gt; dec_70
+    dec_70 -- "loop" --&gt; loop_65
+    n_start --&gt; fn__rewrite_paths_to_staging
+    fn__rewrite_paths_to_staging --&gt; dec_85
+    dec_85 --&gt; dec_92
+    dec_92 --&gt; dec_95
+    dec_95 --&gt; dec_99
+    dec_99 --&gt; dec_104
+    dec_85 --&gt; dec_108
+    dec_108 --&gt; dec_110
+    n_start --&gt; fn__execute_tool_in_staging
+    fn__execute_tool_in_staging --&gt; dec_126
+    n_start --&gt; fn__collect_file_evidence
+    fn__collect_file_evidence --&gt; dec_135
+    dec_135 --&gt; loop_137
+    loop_137 --&gt; dec_139
+    dec_139 --&gt; dec_142
+    dec_142 --&gt; dec_144
+    dec_144 --&gt; dec_147
+    dec_147 -- "loop" --&gt; loop_137
+    loop_137 --&gt; dec_155
+    dec_155 --&gt; dec_159
+    n_start --&gt; fn__collect_span_evidence
+    fn__collect_span_evidence --&gt; loop_172
+    n_start --&gt; fn__collect_evidence
+    fn__collect_evidence --&gt; dec_201
+    dec_201 --&gt; dec_204
+    n_start --&gt; fn__find_html_in_dir
+    n_start --&gt; fn__run_verification
+    fn__run_verification --&gt; fn__validate_output_237
+    fn__validate_output_237 --&gt; dec_238
+    dec_238 --&gt; dec_246
+    dec_246 --&gt; dec_248
+    dec_248 --&gt; loop_251
+    loop_251 --&gt; dec_262
+    dec_262 -- "loop" --&gt; loop_251
+    loop_251 --&gt; dec_272
+    n_start --&gt; fn_repair_with_loop
+    fn_repair_with_loop --&gt; dec_309
+    dec_309 --&gt; dec_317
+    dec_317 --&gt; loop_326
+    loop_326 --&gt; dec_330
+    dec_330 --&gt; tool_repair_step_v2_334
+    tool_repair_step_v2_334 --&gt; dec_361
+    dec_361 --&gt; dec_364
+    dec_364 --&gt; dec_366
+    dec_366 --&gt; dec_367
+    dec_367 --&gt; dec_383
+    dec_383 --&gt; dec_385
+    dec_383 --&gt; dec_389
+    dec_389 --&gt; dec_391
+    dec_391 --&gt; dec_405
+    dec_405 --&gt; dec_415
+    dec_415 -- "loop" --&gt; loop_326
+    class n_start node-start
+    class fn__staging_dir_for,fn__setup_staging,fn__promote,fn__rewrite_paths_to_staging,fn__execute_tool_in_staging,fn__collect_file_evidence,fn__collect_span_evidence,fn__collect_evidence,fn__find_html_in_dir,fn__run_verification,fn_repair_with_loop node-subprocess
+    class dec_44,dec_46,dec_50,dec_63,dec_66,dec_70,dec_85,dec_92,dec_95,dec_99,dec_104,dec_108,dec_110,dec_126,dec_135,dec_139,dec_142,dec_144,dec_147,dec_155,dec_159,dec_201,dec_204,dec_238,dec_246,dec_248,dec_262,dec_272,dec_309,dec_317,dec_330,dec_361,dec_364,dec_366,dec_367,dec_383,dec_385,dec_389,dec_391,dec_405,dec_415 node-decision
+    class loop_45,loop_65,loop_137,loop_172,loop_251,loop_326 node-loop
+    class fn__validate_output_237 node-process
+    class tool_repair_step_v2_334 node-tool
+    class n_end node-end
+    click fn__staging_dir_for href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Staging.html" "Abrir detalle"
+    click fn__setup_staging href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Staging.html" "Abrir detalle"
+    click fn__promote href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Staging.html" "Abrir detalle"
+    click fn__rewrite_paths_to_staging href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Staging.html" "Abrir detalle"
+    click fn__execute_tool_in_staging href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Staging.html" "Abrir detalle"
+    click fn__collect_file_evidence href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Evidence.html" "Abrir detalle"
+    click fn__collect_span_evidence href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Evidence.html" "Abrir detalle"
+    click fn__collect_evidence href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Evidence.html" "Abrir detalle"
+    click fn__find_html_in_dir href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Evidence.html" "Abrir detalle"
+    click fn__run_verification href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Evidence.html" "Abrir detalle"
+    click fn_repair_with_loop href "cogniteam_L4_Cogniteam_Agents_Repair_v2_Loop.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

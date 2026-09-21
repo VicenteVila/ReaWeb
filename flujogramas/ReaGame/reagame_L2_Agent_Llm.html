@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaGame · Nivel 2 · Llm</title>
+<meta name="description" content="Flujograma ReaGame · Nivel 2 · Llm - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaGame/index.html">ReaGame</a> <span class="sep">›</span><a href="reagame_L0_Overview.html">L0</a> <span class="sep">›</span><a href="reagame_L1_Agent.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agent · Llm</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Llm
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_44{"raw is None&lt;br&gt;&lt;i&gt;Condición en línea 44:&lt;br&gt;raw is None&lt;/i&gt;"}
+    dec_81{"isinstance(contents, str)&lt;br&gt;&lt;i&gt;Condición en línea 81:&lt;br&gt;isinstance(contents, str)&lt;/i&gt;"}
+    dec_46{"isinstance(raw, dict)&lt;br&gt;&lt;i&gt;Condición en línea 46:&lt;br&gt;isinstance(raw, dict)&lt;/i&gt;"}
+    dec_105{"not tools&lt;br&gt;&lt;i&gt;Condición en línea 105:&lt;br&gt;not tools&lt;/i&gt;"}
+    loop_108["For each t in tools"]
+    dec_187{"cache is not None&lt;br&gt;&lt;i&gt;Condición en línea 187:&lt;br&gt;cache is not None&lt;/i&gt;"}
+    dec_190{"hit is not None&lt;br&gt;&lt;i&gt;Condición en línea 190:&lt;br&gt;hit is not None&lt;/i&gt;"}
+    dec_192{"Has tool&lt;br&gt;calls?&lt;br&gt;&lt;i&gt;LLM devolvió tool_calls?&lt;br&gt;→ iterar sobre cada una&lt;/i&gt;"}
+    loop_84["For each part in contents"]
+    dec_85{"isinstance(part, str)&lt;br&gt;&lt;i&gt;Condición en línea 85:&lt;br&gt;isinstance(part, str)&lt;/i&gt;"}
+    dec_89{"txt&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;txt&lt;/i&gt;"}
+    dec_93{"data&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;data&lt;/i&gt;"}
+    loop_122["For loop"]
+    dec_127{"spec.get('type') == 'array'&lt;br&gt;and spec.get('items')&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;spec.get('type') == 'array' and spec.get('items')&lt;/i&gt;"}
+    dec_134{"spec.get('required')&lt;br&gt;&lt;i&gt;Condición en línea 134:&lt;br&gt;spec.get('required')&lt;/i&gt;"}
+    loop_206["For each model in _chain"]
+    dec_213{"model != self._chain(0)&lt;br&gt;&lt;i&gt;Condición en línea 213:&lt;br&gt;model != self._chain(0)&lt;/i&gt;"}
+    dec_226{"resp.candidates&lt;br&gt;&lt;i&gt;Condición en línea 226:&lt;br&gt;resp.candidates&lt;/i&gt;"}
+    dec_228{"cand.content and&lt;br&gt;cand.content.parts&lt;br&gt;&lt;i&gt;Condición en línea 228:&lt;br&gt;cand.content and cand.content.parts&lt;/i&gt;"}
+    loop_229["For each part in parts"]
+    dec_230{"part.text is not None&lt;br&gt;&lt;i&gt;Condición en línea 230:&lt;br&gt;part.text is not None&lt;/i&gt;"}
+    dec_232{"part.function_call is not&lt;br&gt;None&lt;br&gt;&lt;i&gt;Condición en línea 232:&lt;br&gt;part.function_call is not None&lt;/i&gt;"}
+    dec_238{"usage is not None&lt;br&gt;&lt;i&gt;Condición en línea 238:&lt;br&gt;usage is not None&lt;/i&gt;"}
+    dec_245{"Has tool&lt;br&gt;calls?&lt;br&gt;&lt;i&gt;LLM devolvió tool_calls?&lt;br&gt;→ iterar sobre cada una&lt;/i&gt;"}
+    fn__convert_args[["Convert Args"]]
+    fn_llm__cache_key[["Cache Key"]]
+    fn_llm__tools[["Tools"]]
+    fn_llm__params[["Params"]]
+    fn_llm__type[["Type"]]
+    fn_llm_generate[["Generate"]]
+    fn_llm_generate_vision[["Generate Vision"]]
+    fn_llm__complete[["Complete"]]
+    fn_llm_count_tokens[["Count Tokens"]]
+    fn_llm_estimate_cost[["Estimate Cost"]]
+    n_start --&gt; fn__convert_args
+    fn__convert_args --&gt; dec_44
+    dec_44 --&gt; dec_46
+    n_start --&gt; fn_llm__cache_key
+    fn_llm__cache_key --&gt; dec_81
+    dec_81 -- "NO" --&gt; loop_84
+    loop_84 --&gt; dec_85
+    dec_85 --&gt; dec_89
+    dec_89 --&gt; dec_93
+    dec_93 -- "loop" --&gt; loop_84
+    fn_llm__cache_key --&gt; fn_llm__tools
+    fn_llm__tools --&gt; dec_105
+    dec_105 --&gt; loop_108
+    fn_llm__tools --&gt; fn_llm__params
+    fn_llm__params --&gt; loop_122
+    loop_122 --&gt; dec_127
+    dec_127 --&gt; dec_134
+    dec_134 -- "loop" --&gt; loop_122
+    fn_llm__params --&gt; fn_llm__type
+    fn_llm__type --&gt; fn_llm_generate
+    fn_llm_generate --&gt; fn_llm_generate_vision
+    fn_llm_generate_vision --&gt; fn_llm__complete
+    fn_llm__complete --&gt; dec_187
+    dec_187 --&gt; dec_190
+    dec_190 --&gt; dec_192
+    dec_192 --&gt; loop_206
+    loop_206 --&gt; dec_213
+    dec_213 -- "loop" --&gt; loop_206
+    loop_206 --&gt; dec_226
+    dec_226 --&gt; dec_228
+    dec_228 --&gt; loop_229
+    loop_229 --&gt; dec_230
+    dec_230 --&gt; dec_232
+    dec_232 -- "loop" --&gt; loop_229
+    loop_229 --&gt; dec_238
+    dec_238 --&gt; dec_245
+    fn_llm__complete --&gt; fn_llm_count_tokens
+    fn_llm_count_tokens --&gt; fn_llm_estimate_cost
+    class n_start node-start
+    class fn__convert_args,fn_llm__cache_key,fn_llm__tools,fn_llm__params,fn_llm__type,fn_llm_generate,fn_llm_generate_vision,fn_llm__complete,fn_llm_count_tokens,fn_llm_estimate_cost node-subprocess
+    class dec_44,dec_46,dec_81,dec_85,dec_89,dec_93,dec_105,dec_127,dec_134,dec_187,dec_190,dec_192,dec_213,dec_226,dec_228,dec_230,dec_232,dec_238,dec_245 node-decision
+    class loop_84,loop_108,loop_122,loop_206,loop_229 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

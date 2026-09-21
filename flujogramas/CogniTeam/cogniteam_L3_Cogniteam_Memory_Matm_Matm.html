@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 3 · Matm</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 3 · Matm - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Cogniteam · Memory · Matm · Matm</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Matm
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_222{"shared_with&lt;br&gt;&lt;i&gt;Condición en línea 222:&lt;br&gt;shared_with&lt;/i&gt;"}
+    dec_293{"experts&lt;br&gt;&lt;i&gt;Condición en línea 293:&lt;br&gt;experts&lt;/i&gt;"}
+    dec_295{"top_expert.confidence &gt; 0.6&lt;br&gt;and top_expert.performance &gt; 0.5&lt;br&gt;&lt;i&gt;Condición en línea 295:&lt;br&gt;top_expert.confidence &gt; 0.6 and top_expert.performance &gt; 0.5&lt;/i&gt;"}
+    dec_321{"not memories&lt;br&gt;&lt;i&gt;Condición en línea 321:&lt;br&gt;not memories&lt;/i&gt;"}
+    dec_332{"result('method') ==&lt;br&gt;'delegation'&lt;br&gt;&lt;i&gt;Condición en línea 332:&lt;br&gt;result('method') == 'delegation'&lt;/i&gt;"}
+    dec_341{"result_text&lt;br&gt;&lt;i&gt;Condición en línea 341:&lt;br&gt;result_text&lt;/i&gt;"}
+    loop_99["For each entry in entries"]
+    dec_100{"entry.agent_a == agent_a and&lt;br&gt;entry.topic == topic&lt;br&gt;&lt;i&gt;Condición en línea 100:&lt;br&gt;entry.agent_a == agent_a and entry.topic == topic&lt;/i&gt;"}
+    loop_161["For each entry"]
+    dec_169{"entry.keywords&lt;br&gt;&lt;i&gt;Condición en línea 169:&lt;br&gt;entry.keywords&lt;/i&gt;"}
+    loop_188["For loop"]
+    dec_190{"experts&lt;br&gt;&lt;i&gt;Condición en línea 190:&lt;br&gt;experts&lt;/i&gt;"}
+    loop_223["For each other_agent in shared_with"]
+    dec_224{"other_agent != agent_id&lt;br&gt;&lt;i&gt;Condición en línea 224:&lt;br&gt;other_agent != agent_id&lt;/i&gt;"}
+    loop_261["For each mem in candidates"]
+    dec_264{"mem.tags&lt;br&gt;&lt;i&gt;Condición en línea 264:&lt;br&gt;mem.tags&lt;/i&gt;"}
+    loop_283["For each m in results"]
+    fn_get_matm[["Get Matm"]]
+    fn_matm_register_agent[["Register Agent"]]
+    fn_matm_declare_expertise[["Declare Expertise"]]
+    fn_matm_update_expertise_performance[["Update Expertise Performance"]]
+    fn_matm_find_expert[["Find Expert"]]
+    fn_matm_get_all_experts_for_query[["Get All Experts For Query"]]
+    fn_matm_store_memory[["Store Memory"]]
+    fn_matm_retrieve_memories[["Retrieve Memories"]]
+    fn_matm_transactive_retrieve[["Transactive Retrieve"]]
+    tool_find_expert_291["experts = Find Expert&lt;br&gt;&lt;i&gt;MATM: selecciona el agente experto&lt;br&gt;para el query&lt;/i&gt;"]
+    fn_matm_synthesize_knowledge[["Synthesize Knowledge"]]
+    tool_transactive_retrieve_318["result = Transactive Retrieve&lt;br&gt;&lt;i&gt;Recupera de agentes expertos del&lt;br&gt;team&lt;/i&gt;"]
+    fn_matm_save[["Save"]]
+    fn_matm_load[["Load"]]
+    tool_retrieve_memories_306["memories = Retrieve Memories&lt;br&gt;&lt;i&gt;MATM: recupera memoria transactiva&lt;/i&gt;"]
+    tool_llm_complete_340["result_text = LLM Complete&lt;br&gt;&lt;i&gt;Groq/Ollama: envía prompt + contexto&lt;br&gt;→ JSON/texto (routing por proveedor)&lt;/i&gt;"]
+    tool_find_expert_189["experts = Find Expert&lt;br&gt;&lt;i&gt;MATM: selecciona el agente experto&lt;br&gt;para el query&lt;/i&gt;"]
+    n_start --&gt; fn_get_matm
+    n_start --&gt; fn_matm_register_agent
+    fn_matm_register_agent --&gt; fn_matm_declare_expertise
+    fn_matm_declare_expertise --&gt; loop_99
+    loop_99 --&gt; dec_100
+    dec_100 -- "loop" --&gt; loop_99
+    fn_matm_declare_expertise --&gt; fn_matm_update_expertise_performance
+    fn_matm_update_expertise_performance --&gt; fn_matm_find_expert
+    fn_matm_find_expert --&gt; loop_161
+    loop_161 --&gt; dec_169
+    dec_169 -- "loop" --&gt; loop_161
+    fn_matm_find_expert --&gt; fn_matm_get_all_experts_for_query
+    fn_matm_get_all_experts_for_query --&gt; loop_188
+    loop_188 --&gt; tool_find_expert_189
+    tool_find_expert_189 --&gt; dec_190
+    dec_190 -- "loop" --&gt; loop_188
+    fn_matm_get_all_experts_for_query --&gt; fn_matm_store_memory
+    fn_matm_store_memory --&gt; dec_222
+    dec_222 --&gt; loop_223
+    loop_223 --&gt; dec_224
+    dec_224 -- "loop" --&gt; loop_223
+    fn_matm_store_memory --&gt; fn_matm_retrieve_memories
+    fn_matm_retrieve_memories --&gt; loop_261
+    loop_261 --&gt; dec_264
+    dec_264 -- "loop" --&gt; loop_261
+    loop_261 --&gt; loop_283
+    fn_matm_retrieve_memories --&gt; fn_matm_transactive_retrieve
+    fn_matm_transactive_retrieve --&gt; tool_find_expert_291
+    tool_find_expert_291 --&gt; dec_293
+    dec_293 --&gt; dec_295
+    dec_295 --&gt; tool_retrieve_memories_306
+    fn_matm_transactive_retrieve --&gt; fn_matm_synthesize_knowledge
+    fn_matm_synthesize_knowledge --&gt; tool_transactive_retrieve_318
+    tool_transactive_retrieve_318 --&gt; dec_321
+    dec_321 --&gt; dec_332
+    dec_332 --&gt; tool_llm_complete_340
+    tool_llm_complete_340 --&gt; dec_341
+    fn_matm_synthesize_knowledge --&gt; fn_matm_save
+    fn_matm_save --&gt; fn_matm_load
+    class n_start node-start
+    class fn_get_matm,fn_matm_register_agent,fn_matm_declare_expertise,fn_matm_update_expertise_performance,fn_matm_find_expert,fn_matm_get_all_experts_for_query,fn_matm_store_memory,fn_matm_retrieve_memories,fn_matm_transactive_retrieve,fn_matm_synthesize_knowledge,fn_matm_save,fn_matm_load node-subprocess
+    class loop_99,loop_161,loop_188,loop_223,loop_261,loop_283 node-loop
+    class dec_100,dec_169,dec_190,dec_222,dec_224,dec_264,dec_293,dec_295,dec_321,dec_332,dec_341 node-decision
+    class tool_find_expert_189,tool_find_expert_291,tool_retrieve_memories_306,tool_transactive_retrieve_318,tool_llm_complete_340 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

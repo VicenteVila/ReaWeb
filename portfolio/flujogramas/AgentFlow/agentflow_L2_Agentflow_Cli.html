@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 2 · Cli</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 2 · Cli - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L1_Agentflow.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agentflow · Cli</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Cli
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_41{"args.palette&lt;br&gt;&lt;i&gt;Condición en línea 41:&lt;br&gt;args.palette&lt;/i&gt;"}
+    dec_144{"input_path.is_dir()&lt;br&gt;&lt;i&gt;Condición en línea 144:&lt;br&gt;input_path.is_dir()&lt;/i&gt;"}
+    dec_176{"_raw and _raw(0) == 'diff'&lt;br&gt;&lt;i&gt;Condición en línea 176:&lt;br&gt;_raw and _raw(0) == 'diff'&lt;/i&gt;"}
+    fn__handle_diff_177["Handle Diff&lt;br&gt;&lt;i&gt;Subcomando CLI: compara dos&lt;br&gt;flujos y pinta cambios&lt;/i&gt;"]
+    dec_155{"overview&lt;br&gt;&lt;i&gt;Condición en línea 155:&lt;br&gt;overview&lt;/i&gt;"}
+    dec_280{"getattr(args, 'palette',&lt;br&gt;None)&lt;br&gt;&lt;i&gt;Condición en línea 280:&lt;br&gt;getattr(args, 'palette', None)&lt;/i&gt;"}
+    dec_284{"not input_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 284:&lt;br&gt;not input_path.exists()&lt;/i&gt;"}
+    dec_288{"args.drilldown&lt;br&gt;&lt;i&gt;Condición en línea 288:&lt;br&gt;args.drilldown&lt;/i&gt;"}
+    fn__handle_drilldown_289["Handle Drill-Down&lt;br&gt;&lt;i&gt;Subcomando CLI: lanza el&lt;br&gt;drill-down completo&lt;/i&gt;"]
+    dec_293{"input_path.is_dir()&lt;br&gt;&lt;i&gt;Condición en línea 293:&lt;br&gt;input_path.is_dir()&lt;/i&gt;"}
+    dec_318{"args.summary&lt;br&gt;&lt;i&gt;Condición en línea 318:&lt;br&gt;args.summary&lt;/i&gt;"}
+    dec_323{"args.format == 'svg'&lt;br&gt;&lt;i&gt;Condición en línea 323:&lt;br&gt;args.format == 'svg'&lt;/i&gt;"}
+    dec_326{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 326:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_336{"args.format == 'mermaid'&lt;br&gt;&lt;i&gt;Condición en línea 336:&lt;br&gt;args.format == 'mermaid'&lt;/i&gt;"}
+    dec_339{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 339:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_347{"args.format ==&lt;br&gt;'mermaid-html'&lt;br&gt;&lt;i&gt;Condición en línea 347:&lt;br&gt;args.format == 'mermaid-html'&lt;/i&gt;"}
+    dec_350{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 350:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_358{"args.format == 'html'&lt;br&gt;&lt;i&gt;Condición en línea 358:&lt;br&gt;args.format == 'html'&lt;/i&gt;"}
+    dec_361{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 361:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_368{"args.format == 'ascii'&lt;br&gt;&lt;i&gt;Condición en línea 368:&lt;br&gt;args.format == 'ascii'&lt;/i&gt;"}
+    dec_371{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 371:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_378{"args.format == 'dot'&lt;br&gt;&lt;i&gt;Condición en línea 378:&lt;br&gt;args.format == 'dot'&lt;/i&gt;"}
+    dec_381{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 381:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_388{"args.format in ('sequence',&lt;br&gt;'mermaid-seq', 'sequence-html')&lt;br&gt;&lt;i&gt;Condición en línea 388:&lt;br&gt;args.format in ('sequence', 'mermaid-seq', 'sequence-html')&lt;/i&gt;"}
+    dec_398{"args.format == 'sequence'&lt;br&gt;&lt;i&gt;Condición en línea 398:&lt;br&gt;args.format == 'sequence'&lt;/i&gt;"}
+    dec_407{"args.format ==&lt;br&gt;'sequence-html'&lt;br&gt;&lt;i&gt;Condición en línea 407:&lt;br&gt;args.format == 'sequence-html'&lt;/i&gt;"}
+    dec_400{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 400:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_418{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 418:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_409{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 409:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_429{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 429:&lt;br&gt;args.output&lt;/i&gt;"}
+    loop_46["For each path"]
+    dec_47{"not path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 47:&lt;br&gt;not path.exists()&lt;/i&gt;"}
+    dec_58{"args.title&lt;br&gt;&lt;i&gt;Condición en línea 58:&lt;br&gt;args.title&lt;/i&gt;"}
+    dec_61{"args.format == 'svg'&lt;br&gt;&lt;i&gt;Condición en línea 61:&lt;br&gt;args.format == 'svg'&lt;/i&gt;"}
+    dec_64{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 64:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_72{"args.format == 'mermaid'&lt;br&gt;&lt;i&gt;Condición en línea 72:&lt;br&gt;args.format == 'mermaid'&lt;/i&gt;"}
+    dec_75{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 75:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_84{"args.format ==&lt;br&gt;'mermaid-html'&lt;br&gt;&lt;i&gt;Condición en línea 84:&lt;br&gt;args.format == 'mermaid-html'&lt;/i&gt;"}
+    dec_87{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 87:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_96{"args.format == 'html'&lt;br&gt;&lt;i&gt;Condición en línea 96:&lt;br&gt;args.format == 'html'&lt;/i&gt;"}
+    dec_99{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 99:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_105{"args.format == 'ascii'&lt;br&gt;&lt;i&gt;Condición en línea 105:&lt;br&gt;args.format == 'ascii'&lt;/i&gt;"}
+    dec_107{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 107:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_113{"args.format == 'dot'&lt;br&gt;&lt;i&gt;Condición en línea 113:&lt;br&gt;args.format == 'dot'&lt;/i&gt;"}
+    dec_115{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 115:&lt;br&gt;args.output&lt;/i&gt;"}
+    dec_123{"args.output&lt;br&gt;&lt;i&gt;Condición en línea 123:&lt;br&gt;args.output&lt;/i&gt;"}
+    fn__handle_diff[["Handle Diff"]]
+    fn__handle_drilldown[["Handle Drilldown"]]
+    fn_main[["Main"]]
+    tool_run_drilldown_145["entries = Run Drill-Down&lt;br&gt;&lt;i&gt;Genera la jerarquía completa&lt;br&gt;L0→Ln de un repositorio&lt;/i&gt;"]
+    tool_parse_file_164["g0 = Parse File&lt;br&gt;&lt;i&gt;Parsear fichero completo&lt;br&gt;(agent flow)&lt;/i&gt;"]
+    tool_build_repo_overview_298["graph = Repo Overview&lt;br&gt;&lt;i&gt;Overview de un repositorio&lt;br&gt;(imports + módulos)&lt;/i&gt;"]
+    tool_parse_file_312["graph = Parse File&lt;br&gt;&lt;i&gt;Parsear fichero completo&lt;br&gt;(agent flow)&lt;/i&gt;"]
+    tool_save_svg_327["path = Save SVG&lt;br&gt;&lt;i&gt;Escribe el fichero .svg&lt;/i&gt;"]
+    tool_to_svg_331["svg_text = Render SVG&lt;br&gt;&lt;i&gt;Renderizado vectorial SVG&lt;br&gt;del flujo (neon/dark/...)&lt;/i&gt;"]
+    tool_save_html_362["path = Save HTML&lt;br&gt;&lt;i&gt;Escribe el fichero .html&lt;/i&gt;"]
+    tool_save_dot_382["path = Save DOT&lt;br&gt;&lt;i&gt;Escribe el fichero .dot&lt;/i&gt;"]
+    tool_to_sequence_svg_399["svg_text = Sequence SVG&lt;br&gt;&lt;i&gt;Diagrama de secuencia&lt;br&gt;SVG desde interacciones&lt;/i&gt;"]
+    tool_to_sequence_html_408["html_text = Sequence HTML&lt;br&gt;&lt;i&gt;Diagrama de secuencia&lt;br&gt;HTML interactivo&lt;/i&gt;"]
+    tool_save_excalidraw_430["path = Save Excalidraw&lt;br&gt;&lt;i&gt;Escribe el fichero .excalidraw&lt;/i&gt;"]
+    tool_to_excalidraw_437["doc = Excalidraw&lt;br&gt;&lt;i&gt;Exporta geometría del flujo&lt;br&gt;a .excalidraw&lt;/i&gt;"]
+    tool_save_svg_65["path = Save SVG&lt;br&gt;&lt;i&gt;Escribe el fichero .svg&lt;/i&gt;"]
+    tool_save_html_100["path = Save HTML&lt;br&gt;&lt;i&gt;Escribe el fichero .html&lt;/i&gt;"]
+    tool_save_dot_116["path = Save DOT&lt;br&gt;&lt;i&gt;Escribe el fichero .dot&lt;/i&gt;"]
+    tool_save_excalidraw_124["path = Save Excalidraw&lt;br&gt;&lt;i&gt;Escribe el fichero .excalidraw&lt;/i&gt;"]
+    tool_to_excalidraw_128["doc = Excalidraw&lt;br&gt;&lt;i&gt;Exporta geometría del flujo&lt;br&gt;a .excalidraw&lt;/i&gt;"]
+    n_start --&gt; fn__handle_diff
+    fn__handle_diff --&gt; dec_41
+    dec_41 --&gt; loop_46
+    loop_46 --&gt; dec_47
+    dec_47 -- "loop" --&gt; loop_46
+    loop_46 --&gt; dec_58
+    dec_58 --&gt; dec_61
+    dec_61 --&gt; dec_64
+    dec_64 -- "YES" --&gt; tool_save_svg_65
+    dec_64 --&gt; dec_72
+    dec_72 --&gt; dec_75
+    dec_75 --&gt; dec_84
+    dec_84 --&gt; dec_87
+    dec_87 --&gt; dec_96
+    dec_96 --&gt; dec_99
+    dec_99 -- "YES" --&gt; tool_save_html_100
+    dec_99 --&gt; dec_105
+    dec_105 --&gt; dec_107
+    dec_107 --&gt; dec_113
+    dec_113 --&gt; dec_115
+    dec_115 -- "YES" --&gt; tool_save_dot_116
+    dec_115 --&gt; dec_123
+    dec_123 -- "YES" --&gt; tool_save_excalidraw_124
+    dec_123 -- "NO" --&gt; tool_to_excalidraw_128
+    n_start --&gt; fn__handle_drilldown
+    fn__handle_drilldown --&gt; dec_144
+    dec_144 --&gt; tool_run_drilldown_145
+    tool_run_drilldown_145 --&gt; dec_155
+    dec_155 --&gt; tool_parse_file_164
+    n_start --&gt; fn_main
+    fn_main --&gt; dec_176
+    dec_176 --&gt; fn__handle_diff_177
+    fn__handle_diff_177 --&gt; dec_280
+    dec_280 --&gt; dec_284
+    dec_284 --&gt; dec_288
+    dec_288 --&gt; fn__handle_drilldown_289
+    fn__handle_drilldown_289 --&gt; dec_293
+    dec_293 -- "YES" --&gt; tool_build_repo_overview_298
+    dec_293 -- "NO" --&gt; tool_parse_file_312
+    tool_parse_file_312 --&gt; dec_318
+    dec_318 --&gt; dec_323
+    dec_323 --&gt; dec_326
+    dec_326 -- "YES" --&gt; tool_save_svg_327
+    dec_326 -- "NO" --&gt; tool_to_svg_331
+    tool_to_svg_331 --&gt; dec_336
+    dec_336 --&gt; dec_339
+    dec_339 --&gt; dec_347
+    dec_347 --&gt; dec_350
+    dec_350 --&gt; dec_358
+    dec_358 --&gt; dec_361
+    dec_361 -- "YES" --&gt; tool_save_html_362
+    dec_361 --&gt; dec_368
+    dec_368 --&gt; dec_371
+    dec_371 --&gt; dec_378
+    dec_378 --&gt; dec_381
+    dec_381 -- "YES" --&gt; tool_save_dot_382
+    dec_381 --&gt; dec_388
+    dec_388 --&gt; dec_398
+    dec_398 --&gt; tool_to_sequence_svg_399
+    tool_to_sequence_svg_399 --&gt; dec_400
+    dec_398 --&gt; dec_407
+    dec_407 --&gt; tool_to_sequence_html_408
+    tool_to_sequence_html_408 --&gt; dec_409
+    dec_407 -- "NO" --&gt; dec_418
+    dec_418 --&gt; dec_429
+    dec_429 -- "YES" --&gt; tool_save_excalidraw_430
+    dec_429 -- "NO" --&gt; tool_to_excalidraw_437
+    class n_start node-start
+    class fn__handle_diff,fn__handle_drilldown,fn_main node-subprocess
+    class dec_41,dec_47,dec_58,dec_61,dec_64,dec_72,dec_75,dec_84,dec_87,dec_96,dec_99,dec_105,dec_107,dec_113,dec_115,dec_123,dec_144,dec_155,dec_176,dec_280,dec_284,dec_288,dec_293,dec_318,dec_323,dec_326,dec_336,dec_339,dec_347,dec_350,dec_358,dec_361,dec_368,dec_371,dec_378,dec_381,dec_388,dec_398,dec_400,dec_407,dec_409,dec_418,dec_429 node-decision
+    class loop_46 node-loop
+    class tool_save_svg_65,tool_save_html_100,tool_save_dot_116,tool_save_excalidraw_124,tool_to_excalidraw_128,tool_run_drilldown_145,tool_parse_file_164,tool_build_repo_overview_298,tool_parse_file_312,tool_save_svg_327,tool_to_svg_331,tool_save_html_362,tool_save_dot_382,tool_to_sequence_svg_399,tool_to_sequence_html_408,tool_save_excalidraw_430,tool_to_excalidraw_437 node-tool
+    class fn__handle_diff_177,fn__handle_drilldown_289 node-process
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

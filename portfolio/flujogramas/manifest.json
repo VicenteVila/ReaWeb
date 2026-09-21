@@ -1,0 +1,53 @@
+{
+  "description": "Flujogramas Mermaid (.mmd) por repositorio. Cada diagrama es un archivo .mmd dentro de flujogramas/<repo>/ que se renderiza con mermaid.js. Los repos sin carpeta de flujogramas (o vacía) no tienen diagramas disponibles.",
+  "repos": {
+    "AgentFlow": [
+      "agentflow_L0_Overview.mmd",
+      "agentflow_L1_Agentflow.mmd"
+    ],
+    "Asubarnipal": [
+      "asubarnipal_L0_Overview.mmd",
+      "asubarnipal_L1_Api.mmd",
+      "asubarnipal_L1_App_Service.mmd",
+      "asubarnipal_L1_Config.mmd",
+      "asubarnipal_L1_Core.mmd",
+      "asubarnipal_L1_Dashboard.mmd",
+      "asubarnipal_L1_Examples.mmd",
+      "asubarnipal_L1_Index_Rag.mmd",
+      "asubarnipal_L1_Interface.mmd",
+      "asubarnipal_L1_Scripts.mmd",
+      "asubarnipal_L1_Skills.mmd"
+    ],
+    "CogniTeam": [
+      "cogniteam_L0_Overview.mmd",
+      "cogniteam_L1_Cogniteam.mmd",
+      "cogniteam_L1_Experiments_Crear_proyecto_godot.mmd",
+      "cogniteam_L1_Main.mmd",
+      "cogniteam_L1_Scripts.mmd"
+    ],
+    "ReaGame": [
+      "reagame_L0_Overview.mmd",
+      "reagame_L1_Agent.mmd",
+      "reagame_L1_Config.mmd",
+      "reagame_L1_Scripts.mmd",
+      "reagame_L1_Tools.mmd"
+    ],
+    "ReaWeb": [
+      "reaweb_L0_Overview.mmd",
+      "reaweb_L1_Agent.mmd",
+      "reaweb_L1_Config.mmd",
+      "reaweb_L1_Scripts.mmd",
+      "reaweb_L1_Tools.mmd",
+      "reaweb_L1_phased_horizontal.mmd",
+      "reaweb_L1_radial.mmd"
+    ],
+    "TraceForge": [
+      "traceforge_L0_Overview.mmd",
+      "traceforge_L1_Examples.mmd",
+      "traceforge_L1_Traceforge.mmd"
+    ],
+    "PromptForge": [],
+    "PopeBot-agente": []
+  },
+  "notas": "PromptForge y PopeBot-agente no tienen carpeta de flujogramas: su nodo flujogramas debe mostrar un aviso 'Sin flujogramas disponibles para este repositorio'."
+}

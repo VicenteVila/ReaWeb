@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 2 · Mermaid</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 2 · Mermaid - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L1_Agentflow.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agentflow · Mermaid</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Mermaid
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_58{"sanitized and&lt;br&gt;sanitized(0).isdigit()&lt;br&gt;&lt;i&gt;Condición en línea 58:&lt;br&gt;sanitized and sanitized(0).isdigit()&lt;/i&gt;"}
+    loop_75["For loop"]
+    dec_86{"node.detail&lt;br&gt;&lt;i&gt;Condición en línea 86:&lt;br&gt;node.detail&lt;/i&gt;"}
+    dec_102{"node.diff_status in&lt;br&gt;('added', 'removed', 'changed')&lt;br&gt;&lt;i&gt;Condición en línea 102:&lt;br&gt;node.diff_status in ('added', 'removed', 'changed')&lt;/i&gt;"}
+    dec_114{"label&lt;br&gt;&lt;i&gt;Condición en línea 114:&lt;br&gt;label&lt;/i&gt;"}
+    dec_145{"detail != 'high'&lt;br&gt;&lt;i&gt;Condición en línea 145:&lt;br&gt;detail != 'high'&lt;/i&gt;"}
+    dec_60{"sanitized in&lt;br&gt;_MERMAID_RESERVED&lt;br&gt;&lt;i&gt;Condición en línea 60:&lt;br&gt;sanitized in _MERMAID_RESERVED&lt;/i&gt;"}
+    dec_90{"node.detail&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;node.detail&lt;/i&gt;"}
+    dec_104{"node.node_type ==&lt;br&gt;NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 104:&lt;br&gt;node.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    dec_116{"dashed&lt;br&gt;&lt;i&gt;Condición en línea 116:&lt;br&gt;dashed&lt;/i&gt;"}
+    dec_148{"layout == 'grid'&lt;br&gt;&lt;i&gt;Condición en línea 148:&lt;br&gt;layout == 'grid'&lt;/i&gt;"}
+    dec_348{"back_link&lt;br&gt;&lt;i&gt;Condición en línea 348:&lt;br&gt;back_link&lt;/i&gt;"}
+    dec_93{"len(combined) &gt; 200&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;len(combined) &gt; 200&lt;/i&gt;"}
+    dec_119{"dashed&lt;br&gt;&lt;i&gt;Condición en línea 119:&lt;br&gt;dashed&lt;/i&gt;"}
+    dec_150{"layout == 'phased'&lt;br&gt;&lt;i&gt;Condición en línea 150:&lt;br&gt;layout == 'phased'&lt;/i&gt;"}
+    dec_152{"layout ==&lt;br&gt;'phased-horizontal'&lt;br&gt;&lt;i&gt;Condición en línea 152:&lt;br&gt;layout == 'phased-horizontal'&lt;/i&gt;"}
+    dec_154{"layout == 'radial'&lt;br&gt;&lt;i&gt;Condición en línea 154:&lt;br&gt;layout == 'radial'&lt;/i&gt;"}
+    dec_156{"layout == 'swimlane'&lt;br&gt;&lt;i&gt;Condición en línea 156:&lt;br&gt;layout == 'swimlane'&lt;/i&gt;"}
+    dec_159{"layout == 'vertical'&lt;br&gt;&lt;i&gt;Condición en línea 159:&lt;br&gt;layout == 'vertical'&lt;/i&gt;"}
+    dec_169{"links&lt;br&gt;&lt;i&gt;Condición en línea 169:&lt;br&gt;links&lt;/i&gt;"}
+    dec_171{"theme&lt;br&gt;&lt;i&gt;Condición en línea 171:&lt;br&gt;theme&lt;/i&gt;"}
+    dec_173{"init&lt;br&gt;&lt;i&gt;Condición en línea 173:&lt;br&gt;init&lt;/i&gt;"}
+    dec_175{"layout == 'vertical'&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;layout == 'vertical'&lt;/i&gt;"}
+    dec_177{"no_phases or layout ==&lt;br&gt;'phased-horizontal'&lt;br&gt;&lt;i&gt;Condición en línea 177:&lt;br&gt;no_phases or layout == 'phased-horizontal'&lt;/i&gt;"}
+    loop_183["For each nt"]
+    dec_196{"layout in ('phased',&lt;br&gt;'phased-horizontal')&lt;br&gt;&lt;i&gt;Condición en línea 196:&lt;br&gt;layout in ('phased', 'phased-horizontal')&lt;/i&gt;"}
+    dec_198{"layout == 'swimlane'&lt;br&gt;&lt;i&gt;Condición en línea 198:&lt;br&gt;layout == 'swimlane'&lt;/i&gt;"}
+    dec_203{"boxes and (not no_phases)&lt;br&gt;&lt;i&gt;Condición en línea 203:&lt;br&gt;boxes and (not no_phases)&lt;/i&gt;"}
+    dec_207{"layout in ('phased',&lt;br&gt;'phased-horizontal')&lt;br&gt;&lt;i&gt;Condición en línea 207:&lt;br&gt;layout in ('phased', 'phased-horizontal')&lt;/i&gt;"}
+    loop_248["For each p in positioned"]
+    loop_208["For each p in positioned"]
+    loop_224["For each p in positioned"]
+    loop_254["For each edge"]
+    loop_257["For each fb in feedback_arrows"]
+    dec_261{"theme&lt;br&gt;&lt;i&gt;Condición en línea 261:&lt;br&gt;theme&lt;/i&gt;"}
+    loop_210["For each pb in phase_boxes"]
+    dec_213{"not members&lt;br&gt;&lt;i&gt;Condición en línea 213:&lt;br&gt;not members&lt;/i&gt;"}
+    loop_217["For each nid in members"]
+    dec_220{"node&lt;br&gt;&lt;i&gt;Condición en línea 220:&lt;br&gt;node&lt;/i&gt;"}
+    loop_229["For each box in box_list"]
+    dec_233{"not members&lt;br&gt;&lt;i&gt;Condición en línea 233:&lt;br&gt;not members&lt;/i&gt;"}
+    loop_237["For each nid in members"]
+    dec_239{"node&lt;br&gt;&lt;i&gt;Condición en línea 239:&lt;br&gt;node&lt;/i&gt;"}
+    loop_244["For each p in positioned"]
+    dec_245{"p.node.id not in boxed_ids&lt;br&gt;&lt;i&gt;Condición en línea 245:&lt;br&gt;p.node.id not in boxed_ids&lt;/i&gt;"}
+    loop_263["For each gnode in nodes"]
+    dec_264{"gnode.diff_status or&lt;br&gt;gnode.node_type ==&lt;br&gt;&lt;i&gt;Condición en línea 264:&lt;br&gt;gnode.diff_status or gnode.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    dec_266{"gnode.node_type not in&lt;br&gt;_ME_CLASS&lt;br&gt;&lt;i&gt;Condición en línea 266:&lt;br&gt;gnode.node_type not in _ME_CLASS&lt;/i&gt;"}
+    loop_269["For loop"]
+    dec_273{"links&lt;br&gt;&lt;i&gt;Condición en línea 273:&lt;br&gt;links&lt;/i&gt;"}
+    loop_274["For loop"]
+    fn__sanitize_id[["Sanitize Id"]]
+    fn__escape_label[["Escape Label"]]
+    fn__node_label[["Node Label"]]
+    fn__node_definition[["Node Definition"]]
+    fn__edge_line[["Edge Line"]]
+    fn_to_mermaid[["To Mermaid"]]
+    fn_save_mermaid[["Save Mermaid"]]
+    fn_to_mermaid_html[["To Mermaid Html"]]
+    fn_save_mermaid_html[["Save Mermaid Html"]]
+    tool_to_mermaid_344["mmd = Render Mermaid&lt;br&gt;&lt;i&gt;Serializa el flujo a texto&lt;br&gt;Mermaid (markdown)&lt;/i&gt;"]
+    n_start --&gt; fn__sanitize_id
+    fn__sanitize_id --&gt; dec_58
+    dec_58 --&gt; dec_60
+    n_start --&gt; fn__escape_label
+    fn__escape_label --&gt; loop_75
+    n_start --&gt; fn__node_label
+    fn__node_label --&gt; dec_86
+    dec_86 --&gt; dec_90
+    dec_90 --&gt; dec_93
+    n_start --&gt; fn__node_definition
+    fn__node_definition --&gt; dec_102
+    dec_102 --&gt; dec_104
+    n_start --&gt; fn__edge_line
+    fn__edge_line --&gt; dec_114
+    dec_114 --&gt; dec_116
+    dec_116 --&gt; dec_119
+    n_start --&gt; fn_to_mermaid
+    fn_to_mermaid --&gt; dec_145
+    dec_145 --&gt; dec_148
+    dec_148 --&gt; dec_150
+    dec_150 --&gt; dec_152
+    dec_152 --&gt; dec_154
+    dec_154 --&gt; dec_156
+    dec_156 --&gt; dec_159
+    dec_159 --&gt; dec_169
+    dec_169 --&gt; dec_171
+    dec_171 --&gt; dec_173
+    dec_173 --&gt; dec_175
+    dec_175 --&gt; dec_177
+    dec_177 --&gt; loop_183
+    loop_183 --&gt; dec_196
+    dec_196 --&gt; dec_198
+    dec_198 --&gt; dec_203
+    dec_203 --&gt; dec_207
+    dec_207 --&gt; loop_208
+    loop_208 --&gt; loop_210
+    loop_210 --&gt; dec_213
+    dec_213 --&gt; loop_217
+    loop_217 --&gt; dec_220
+    dec_220 -- "loop" --&gt; loop_217
+    loop_217 -- "loop" --&gt; loop_210
+    dec_207 --&gt; loop_224
+    loop_224 --&gt; loop_229
+    loop_229 --&gt; dec_233
+    dec_233 --&gt; loop_237
+    loop_237 --&gt; dec_239
+    dec_239 -- "loop" --&gt; loop_237
+    loop_237 -- "loop" --&gt; loop_229
+    loop_229 --&gt; loop_244
+    loop_244 --&gt; dec_245
+    dec_245 -- "loop" --&gt; loop_244
+    dec_203 -- "NO" --&gt; loop_248
+    loop_248 --&gt; loop_254
+    loop_254 --&gt; loop_257
+    loop_257 --&gt; dec_261
+    dec_261 --&gt; loop_263
+    loop_263 --&gt; dec_264
+    dec_264 --&gt; dec_266
+    dec_266 -- "loop" --&gt; loop_263
+    loop_263 --&gt; loop_269
+    loop_269 --&gt; dec_273
+    dec_273 --&gt; loop_274
+    n_start --&gt; fn_save_mermaid
+    n_start --&gt; fn_to_mermaid_html
+    fn_to_mermaid_html --&gt; tool_to_mermaid_344
+    tool_to_mermaid_344 --&gt; dec_348
+    n_start --&gt; fn_save_mermaid_html
+    class n_start node-start
+    class fn__sanitize_id,fn__escape_label,fn__node_label,fn__node_definition,fn__edge_line,fn_to_mermaid,fn_save_mermaid,fn_to_mermaid_html,fn_save_mermaid_html node-subprocess
+    class dec_58,dec_60,dec_86,dec_90,dec_93,dec_102,dec_104,dec_114,dec_116,dec_119,dec_145,dec_148,dec_150,dec_152,dec_154,dec_156,dec_159,dec_169,dec_171,dec_173,dec_175,dec_177,dec_196,dec_198,dec_203,dec_207,dec_213,dec_220,dec_233,dec_239,dec_245,dec_261,dec_264,dec_266,dec_273,dec_348 node-decision
+    class loop_75,loop_183,loop_208,loop_210,loop_217,loop_224,loop_229,loop_237,loop_244,loop_248,loop_254,loop_257,loop_263,loop_269,loop_274 node-loop
+    class tool_to_mermaid_344 node-tool
+    class n_end node-end
+    click fn__sanitize_id href "agentflow_L3_Agentflow_Mermaid_Labels.html" "Abrir detalle"
+    click fn__escape_label href "agentflow_L3_Agentflow_Mermaid_Labels.html" "Abrir detalle"
+    click fn__node_label href "agentflow_L3_Agentflow_Mermaid_Labels.html" "Abrir detalle"
+    click fn__node_definition href "agentflow_L3_Agentflow_Mermaid_Labels.html" "Abrir detalle"
+    click fn__edge_line href "agentflow_L3_Agentflow_Mermaid_Labels.html" "Abrir detalle"
+    click fn_to_mermaid href "agentflow_L3_Agentflow_Mermaid_Export.html" "Abrir detalle"
+    click fn_save_mermaid href "agentflow_L3_Agentflow_Mermaid_Export.html" "Abrir detalle"
+    click fn_to_mermaid_html href "agentflow_L3_Agentflow_Mermaid_Export.html" "Abrir detalle"
+    click fn_save_mermaid_html href "agentflow_L3_Agentflow_Mermaid_Export.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TraceForge · Nivel 2 · Dashboard</title>
+<meta name="description" content="Flujograma TraceForge · Nivel 2 · Dashboard - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/TraceForge/index.html">TraceForge</a> <span class="sep">›</span><a href="traceforge_L0_Overview.html">L0</a> <span class="sep">›</span><a href="traceforge_L1_Traceforge.html">L1</a> <span class="sep">›</span><span class="current">L2 · Traceforge · Dashboard</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Dashboard
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_249{"open_browser&lt;br&gt;&lt;i&gt;Condición en línea 249:&lt;br&gt;open_browser&lt;/i&gt;"}
+    dec_70{"bucket not in ('hour',&lt;br&gt;'day')&lt;br&gt;&lt;i&gt;Condición en línea 70:&lt;br&gt;bucket not in ('hour', 'day')&lt;/i&gt;"}
+    dec_97{"path == '/'&lt;br&gt;&lt;i&gt;Condición en línea 97:&lt;br&gt;path == '/'&lt;/i&gt;"}
+    dec_99{"path == '/api/health'&lt;br&gt;&lt;i&gt;Condición en línea 99:&lt;br&gt;path == '/api/health'&lt;/i&gt;"}
+    dec_101{"path == '/api/traces'&lt;br&gt;&lt;i&gt;Condición en línea 101:&lt;br&gt;path == '/api/traces'&lt;/i&gt;"}
+    dec_106{"path == '/api/trace-count'&lt;br&gt;&lt;i&gt;Condición en línea 106:&lt;br&gt;path == '/api/trace-count'&lt;/i&gt;"}
+    dec_108{"path == '/api/timeseries'&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;path == '/api/timeseries'&lt;/i&gt;"}
+    dec_110{"path == '/api/export.csv'&lt;br&gt;&lt;i&gt;Condición en línea 110:&lt;br&gt;path == '/api/export.csv'&lt;/i&gt;"}
+    loop_188["For each s in spans"]
+    dec_112{"path.startswith('/api/trace/')&lt;br&gt;&lt;i&gt;Condición en línea 112:&lt;br&gt;path.startswith('/api/trace/')&lt;/i&gt;"}
+    dec_211{"rows&lt;br&gt;&lt;i&gt;Condición en línea 211:&lt;br&gt;rows&lt;/i&gt;"}
+    dec_115{"not spans&lt;br&gt;&lt;i&gt;Condición en línea 115:&lt;br&gt;not spans&lt;/i&gt;"}
+    dec_118{"path == '/api/stats'&lt;br&gt;&lt;i&gt;Condición en línea 118:&lt;br&gt;path == '/api/stats'&lt;/i&gt;"}
+    dec_120{"path == '/api/query'&lt;br&gt;&lt;i&gt;Condición en línea 120:&lt;br&gt;path == '/api/query'&lt;/i&gt;"}
+    loop_73["For each s in spans"]
+    dec_74{"NOT started_at?&lt;br&gt;&lt;i&gt;Niega started_at&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    loop_143["For each s in spans"]
+    dec_144{"s.agent not in by_agent&lt;br&gt;&lt;i&gt;Condición en línea 144:&lt;br&gt;s.agent not in by_agent&lt;/i&gt;"}
+    loop_152["For loop"]
+    fn__span_dict[["Span Dict"]]
+    fn__trace_summary[["Trace Summary"]]
+    fn__build_timeseries[["Build Timeseries"]]
+    fn_run_dashboard[["Run Dashboard"]]
+    fn_dashboardhandler_log_message[["Log Message"]]
+    tool_query_69["spans = Query&lt;br&gt;&lt;i&gt;Consulta estructurada/filtrada de spans&lt;/i&gt;"]
+    fn_dashboardhandler_do_GET[["Do Get"]]
+    fn_dashboardhandler__params[["Params"]]
+    fn_dashboardhandler__query[["Query"]]
+    fn_dashboardhandler__stats[["Stats"]]
+    tool_list_traces_104["traces = List Traces&lt;br&gt;&lt;i&gt;Enumeración de traces con filtros&lt;/i&gt;"]
+    tool_query_141["spans = Query&lt;br&gt;&lt;i&gt;Consulta estructurada/filtrada de spans&lt;/i&gt;"]
+    fn_dashboardhandler__send_json[["Send Json"]]
+    fn_dashboardhandler__send_html[["Send Html"]]
+    fn_dashboardhandler__export_rows[["Export Rows"]]
+    fn_dashboardhandler__send_csv[["Send Csv"]]
+    tool_get_trace_114["spans = Get Trace&lt;br&gt;&lt;i&gt;Recupera un trace completo por id&lt;/i&gt;"]
+    n_start --&gt; fn__span_dict
+    n_start --&gt; fn__trace_summary
+    n_start --&gt; fn__build_timeseries
+    fn__build_timeseries --&gt; tool_query_69
+    tool_query_69 --&gt; dec_70
+    dec_70 --&gt; loop_73
+    loop_73 --&gt; dec_74
+    dec_74 -- "loop" --&gt; loop_73
+    n_start --&gt; fn_run_dashboard
+    fn_run_dashboard --&gt; dec_249
+    n_start --&gt; fn_dashboardhandler_log_message
+    fn_dashboardhandler_log_message --&gt; fn_dashboardhandler_do_GET
+    fn_dashboardhandler_do_GET --&gt; dec_97
+    dec_97 --&gt; dec_99
+    dec_99 --&gt; dec_101
+    dec_101 --&gt; tool_list_traces_104
+    tool_list_traces_104 --&gt; dec_106
+    dec_106 --&gt; dec_108
+    dec_108 --&gt; dec_110
+    dec_110 --&gt; dec_112
+    dec_112 --&gt; tool_get_trace_114
+    tool_get_trace_114 --&gt; dec_115
+    dec_115 --&gt; dec_118
+    dec_118 --&gt; dec_120
+    fn_dashboardhandler_do_GET --&gt; fn_dashboardhandler__params
+    fn_dashboardhandler__params --&gt; fn_dashboardhandler__query
+    fn_dashboardhandler__query --&gt; fn_dashboardhandler__stats
+    fn_dashboardhandler__stats --&gt; tool_query_141
+    tool_query_141 --&gt; loop_143
+    loop_143 --&gt; dec_144
+    dec_144 -- "loop" --&gt; loop_143
+    loop_143 --&gt; loop_152
+    fn_dashboardhandler__stats --&gt; fn_dashboardhandler__send_json
+    fn_dashboardhandler__send_json --&gt; fn_dashboardhandler__send_html
+    fn_dashboardhandler__send_html --&gt; fn_dashboardhandler__export_rows
+    fn_dashboardhandler__export_rows --&gt; loop_188
+    fn_dashboardhandler__export_rows --&gt; fn_dashboardhandler__send_csv
+    fn_dashboardhandler__send_csv --&gt; dec_211
+    class n_start node-start
+    class fn__span_dict,fn__trace_summary,fn__build_timeseries,fn_run_dashboard,fn_dashboardhandler_log_message,fn_dashboardhandler_do_GET,fn_dashboardhandler__params,fn_dashboardhandler__query,fn_dashboardhandler__stats,fn_dashboardhandler__send_json,fn_dashboardhandler__send_html,fn_dashboardhandler__export_rows,fn_dashboardhandler__send_csv node-subprocess
+    class tool_query_69,tool_list_traces_104,tool_get_trace_114,tool_query_141 node-tool
+    class dec_70,dec_74,dec_249,dec_97,dec_99,dec_101,dec_106,dec_108,dec_110,dec_112,dec_115,dec_118,dec_120,dec_144,dec_211 node-decision
+    class loop_73,loop_143,loop_152,loop_188 node-loop
+    class n_end node-end
+    click fn_run_dashboard href "traceforge_L3_Traceforge_Dashboard_Entry.html" "Abrir detalle"
+    click fn__span_dict href "traceforge_L3_Traceforge_Dashboard_Views.html" "Abrir detalle"
+    click fn__trace_summary href "traceforge_L3_Traceforge_Dashboard_Views.html" "Abrir detalle"
+    click fn__build_timeseries href "traceforge_L3_Traceforge_Dashboard_Views.html" "Abrir detalle"
+    click fn_dashboardhandler_log_message href "traceforge_L3_Traceforge_Dashboard_HTTP.html" "Abrir detalle"
+    click fn_dashboardhandler__params href "traceforge_L3_Traceforge_Dashboard_HTTP.html" "Abrir detalle"
+    click fn_dashboardhandler__query href "traceforge_L3_Traceforge_Dashboard_HTTP.html" "Abrir detalle"
+    click fn_dashboardhandler__stats href "traceforge_L3_Traceforge_Dashboard_HTTP.html" "Abrir detalle"
+    click fn_dashboardhandler__send_json href "traceforge_L3_Traceforge_Dashboard_HTTP.html" "Abrir detalle"
+    click fn_dashboardhandler__send_html href "traceforge_L3_Traceforge_Dashboard_HTTP.html" "Abrir detalle"
+    click fn_dashboardhandler__export_rows href "traceforge_L3_Traceforge_Dashboard_HTTP.html" "Abrir detalle"
+    click fn_dashboardhandler__send_csv href "traceforge_L3_Traceforge_Dashboard_HTTP.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

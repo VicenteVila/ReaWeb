@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 2 · Layouts</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 2 · Layouts - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L1_Agentflow.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agentflow · Layouts</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Layouts
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_40{"ch in _NARROW_CHARS&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;ch in _NARROW_CHARS&lt;/i&gt;"}
+    dec_72{"level == 'high'&lt;br&gt;&lt;i&gt;Condición en línea 72:&lt;br&gt;level == 'high'&lt;/i&gt;"}
+    dec_99{"node.detail&lt;br&gt;&lt;i&gt;Condición en línea 99:&lt;br&gt;node.detail&lt;/i&gt;"}
+    dec_670{"'planner' in combined&lt;br&gt;&lt;i&gt;Condición en línea 670:&lt;br&gt;'planner' in combined&lt;/i&gt;"}
+    dec_696{"NOT nodes?&lt;br&gt;&lt;i&gt;Niega nodes&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_770{"NOT nodes?&lt;br&gt;&lt;i&gt;Niega nodes&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_857{"NOT nodes?&lt;br&gt;&lt;i&gt;Niega nodes&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_998{"any((n.phase for n in&lt;br&gt;graph.nodes))&lt;br&gt;&lt;i&gt;Condición en línea 998:&lt;br&gt;any((n.phase for n in graph.nodes))&lt;/i&gt;"}
+    dec_1011{"not cyc&lt;br&gt;&lt;i&gt;Condición en línea 1011:&lt;br&gt;not cyc&lt;/i&gt;"}
+    dec_1074{"node.node_type ==&lt;br&gt;NodeType.START&lt;br&gt;&lt;i&gt;Condición en línea 1074:&lt;br&gt;node.node_type == NodeType.START&lt;/i&gt;"}
+    loop_1119["For each p in positioned"]
+    loop_1186["For each p in positioned"]
+    dec_1250{"NOT nodes?&lt;br&gt;&lt;i&gt;Niega nodes&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    loop_1358["For each e in edges"]
+    dec_1382{"NOT nodes?&lt;br&gt;&lt;i&gt;Niega nodes&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_42{"ch in _WIDE_CHARS&lt;br&gt;&lt;i&gt;Condición en línea 42:&lt;br&gt;ch in _WIDE_CHARS&lt;/i&gt;"}
+    dec_104{"t == NodeType.DECISION&lt;br&gt;&lt;i&gt;Condición en línea 104:&lt;br&gt;t == NodeType.DECISION&lt;/i&gt;"}
+    dec_672{"'developer' in combined or&lt;br&gt;'coder' in combined&lt;br&gt;&lt;i&gt;Condición en línea 672:&lt;br&gt;'developer' in combined or 'coder' in combined&lt;/i&gt;"}
+    loop_775["For each node in nodes"]
+    loop_864["For each phase in phase_groups"]
+    loop_999["For each node in nodes"]
+    loop_1013["For each node in nodes"]
+    dec_1076{"node.node_type ==&lt;br&gt;NodeType.END&lt;br&gt;&lt;i&gt;Condición en línea 1076:&lt;br&gt;node.node_type == NodeType.END&lt;/i&gt;"}
+    loop_1254["For each phase in phase_groups"]
+    loop_1390["For loop"]
+    dec_44{"ch.isupper()&lt;br&gt;&lt;i&gt;Condición en línea 44:&lt;br&gt;ch.isupper()&lt;/i&gt;"}
+    dec_674{"'debugger' in combined or&lt;br&gt;'repair' in combined&lt;br&gt;&lt;i&gt;Condición en línea 674:&lt;br&gt;'debugger' in combined or 'repair' in combined&lt;/i&gt;"}
+    loop_789["For each lane in ordered_lanes"]
+    loop_1392["For loop"]
+    dec_46{"ch.isdigit()&lt;br&gt;&lt;i&gt;Condición en línea 46:&lt;br&gt;ch.isdigit()&lt;/i&gt;"}
+    dec_676{"'designer' in combined or&lt;br&gt;'ui_' in combined&lt;br&gt;&lt;i&gt;Condición en línea 676:&lt;br&gt;'designer' in combined or 'ui_' in combined&lt;/i&gt;"}
+    dec_48{"ch == ' '&lt;br&gt;&lt;i&gt;Condición en línea 48:&lt;br&gt;ch == ' '&lt;/i&gt;"}
+    dec_678{"node.node_type ==&lt;br&gt;NodeType.TOOL&lt;br&gt;&lt;i&gt;Condición en línea 678:&lt;br&gt;node.node_type == NodeType.TOOL&lt;/i&gt;"}
+    dec_680{"node.node_type ==&lt;br&gt;NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 680:&lt;br&gt;node.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    dec_682{"node.node_type ==&lt;br&gt;NodeType.SUBPROCESS&lt;br&gt;&lt;i&gt;Condición en línea 682:&lt;br&gt;node.node_type == NodeType.SUBPROCESS&lt;/i&gt;"}
+    dec_684{"node.node_type ==&lt;br&gt;NodeType.START&lt;br&gt;&lt;i&gt;Condición en línea 684:&lt;br&gt;node.node_type == NodeType.START&lt;/i&gt;"}
+    dec_686{"node.node_type ==&lt;br&gt;NodeType.END&lt;br&gt;&lt;i&gt;Condición en línea 686:&lt;br&gt;node.node_type == NodeType.END&lt;/i&gt;"}
+    loop_75["For each n in nodes"]
+    dec_76{"level == 'low'&lt;br&gt;&lt;i&gt;Condición en línea 76:&lt;br&gt;level == 'low'&lt;/i&gt;"}
+    dec_78{"level == 'med'&lt;br&gt;&lt;i&gt;Condición en línea 78:&lt;br&gt;level == 'med'&lt;/i&gt;"}
+    loop_85["For each e in edges"]
+    loop_707["For each node_id in main_row"]
+    dec_709{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 709:&lt;br&gt;node is None&lt;/i&gt;"}
+    loop_720["For each node_id in tool_row"]
+    dec_722{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 722:&lt;br&gt;node is None&lt;/i&gt;"}
+    loop_731["For each node_id in evo_row"]
+    dec_733{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 733:&lt;br&gt;node is None&lt;/i&gt;"}
+    loop_803["For each nid in topo"]
+    dec_805{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 805:&lt;br&gt;node is None&lt;/i&gt;"}
+    dec_808{"lane not in lane_x&lt;br&gt;&lt;i&gt;Condición en línea 808:&lt;br&gt;lane not in lane_x&lt;/i&gt;"}
+    loop_822["For each lane in ordered_lanes"]
+    dec_824{"not nodes_in_lane&lt;br&gt;&lt;i&gt;Condición en línea 824:&lt;br&gt;not nodes_in_lane&lt;/i&gt;"}
+    loop_876["For each node in nodes"]
+    dec_878{"node.node_type in&lt;br&gt;(NodeType.TOOL,&lt;br&gt;&lt;i&gt;Condición en línea 878:&lt;br&gt;node.node_type in (NodeType.TOOL, NodeType.SUBPROCESS)&lt;/i&gt;"}
+    dec_880{"node.node_type ==&lt;br&gt;NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 880:&lt;br&gt;node.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    loop_888["For each phase"]
+    dec_890{"not node_ids&lt;br&gt;&lt;i&gt;Condición en línea 890:&lt;br&gt;not node_ids&lt;/i&gt;"}
+    loop_897["For each nid in main_nodes"]
+    dec_899{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 899:&lt;br&gt;node is None&lt;/i&gt;"}
+    loop_911["For each nid in side_nodes"]
+    dec_913{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 913:&lt;br&gt;node is None&lt;/i&gt;"}
+    loop_924["For each nid in evo_nodes"]
+    dec_926{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 926:&lt;br&gt;node is None&lt;/i&gt;"}
+    loop_974["For each node_id in order"]
+    dec_976{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 976:&lt;br&gt;node is None&lt;/i&gt;"}
+    dec_979{"node.node_type in&lt;br&gt;(NodeType.TOOL,&lt;br&gt;&lt;i&gt;Condición en línea 979:&lt;br&gt;node.node_type in (NodeType.TOOL, NodeType.SUBPROCESS)&lt;/i&gt;"}
+    dec_981{"node.node_type ==&lt;br&gt;NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 981:&lt;br&gt;node.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    loop_1019["For each node in nodes"]
+    dec_1020{"node.id in cyc&lt;br&gt;&lt;i&gt;Condición en línea 1020:&lt;br&gt;node.id in cyc&lt;/i&gt;"}
+    dec_1022{"node.id in ancestors&lt;br&gt;&lt;i&gt;Condición en línea 1022:&lt;br&gt;node.id in ancestors&lt;/i&gt;"}
+    loop_1033["For each e in edges"]
+    dec_1034{"e.source in adj and e.target&lt;br&gt;in adj&lt;br&gt;&lt;i&gt;Condición en línea 1034:&lt;br&gt;e.source in adj and e.target in adj&lt;/i&gt;"}
+    loop_1038["For loop"]
+    loop_1042["Loop"]
+    dec_1044{"cur == start&lt;br&gt;&lt;i&gt;Condición en línea 1044:&lt;br&gt;cur == start&lt;/i&gt;"}
+    dec_1047{"cur in seen&lt;br&gt;&lt;i&gt;Condición en línea 1047:&lt;br&gt;cur in seen&lt;/i&gt;"}
+    loop_1057["For each e in edges"]
+    dec_1058{"e.source in radj and&lt;br&gt;e.target in radj&lt;br&gt;&lt;i&gt;Condición en línea 1058:&lt;br&gt;e.source in radj and e.target in radj&lt;/i&gt;"}
+    loop_1063["while stack"]
+    loop_1065["For each prev"]
+    dec_1066{"prev not in found and prev&lt;br&gt;not in targets&lt;br&gt;&lt;i&gt;Condición en línea 1066:&lt;br&gt;prev not in found and prev not in targets&lt;/i&gt;"}
+    loop_1089["For each nid in node_ids"]
+    dec_1091{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 1091:&lt;br&gt;node is None&lt;/i&gt;"}
+    dec_1093{"node.node_type in&lt;br&gt;(NodeType.TOOL,&lt;br&gt;&lt;i&gt;Condición en línea 1093:&lt;br&gt;node.node_type in (NodeType.TOOL, NodeType.SUBPROCESS)&lt;/i&gt;"}
+    dec_1095{"node.node_type ==&lt;br&gt;NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 1095:&lt;br&gt;node.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    loop_1122["For each phase"]
+    dec_1124{"not nodes&lt;br&gt;&lt;i&gt;Condición en línea 1124:&lt;br&gt;not nodes&lt;/i&gt;"}
+    loop_1158["For each edge in edges"]
+    dec_1159{"edge.source in pos_lookup&lt;br&gt;and edge.target in pos_lookup&lt;br&gt;&lt;i&gt;Condición en línea 1159:&lt;br&gt;edge.source in pos_lookup and edge.target in pos_lookup&lt;/i&gt;"}
+    dec_1163{"tgt.y &lt; src.y - 50&lt;br&gt;&lt;i&gt;Condición en línea 1163:&lt;br&gt;tgt.y &lt; src.y - 50&lt;/i&gt;"}
+    loop_1189["For loop"]
+    dec_1190{"not nodes&lt;br&gt;&lt;i&gt;Condición en línea 1190:&lt;br&gt;not nodes&lt;/i&gt;"}
+    loop_1219["For each e in edges"]
+    dec_1220{"e.target in in_degree&lt;br&gt;&lt;i&gt;Condición en línea 1220:&lt;br&gt;e.target in in_degree&lt;/i&gt;"}
+    dec_1222{"e.source in adj&lt;br&gt;&lt;i&gt;Condición en línea 1222:&lt;br&gt;e.source in adj&lt;/i&gt;"}
+    loop_1228["while queue"]
+    loop_1231["For each neighbor"]
+    dec_1233{"in_degree(neighbor) == 0&lt;br&gt;&lt;i&gt;Condición en línea 1233:&lt;br&gt;in_degree(neighbor) == 0&lt;/i&gt;"}
+    loop_1236["For each n in nodes"]
+    dec_1237{"n.id not in order&lt;br&gt;&lt;i&gt;Condición en línea 1237:&lt;br&gt;n.id not in order&lt;/i&gt;"}
+    loop_1265["For each phase"]
+    dec_1267{"not node_ids&lt;br&gt;&lt;i&gt;Condición en línea 1267:&lt;br&gt;not node_ids&lt;/i&gt;"}
+    dec_1317{"main_nodes&lt;br&gt;&lt;i&gt;Condición en línea 1317:&lt;br&gt;main_nodes&lt;/i&gt;"}
+    dec_1319{"side_nodes&lt;br&gt;&lt;i&gt;Condición en línea 1319:&lt;br&gt;side_nodes&lt;/i&gt;"}
+    dec_1321{"evo_nodes&lt;br&gt;&lt;i&gt;Condición en línea 1321:&lt;br&gt;evo_nodes&lt;/i&gt;"}
+    loop_1343["For each node in nodes"]
+    dec_1344{"node.node_type ==&lt;br&gt;NodeType.START&lt;br&gt;&lt;i&gt;Condición en línea 1344:&lt;br&gt;node.node_type == NodeType.START&lt;/i&gt;"}
+    loop_1347["For each e in edges"]
+    dec_1350{"graph.nodes&lt;br&gt;&lt;i&gt;Condición en línea 1350:&lt;br&gt;graph.nodes&lt;/i&gt;"}
+    loop_1365["while queue"]
+    loop_1367["For each nb"]
+    dec_1368{"nb not in levels&lt;br&gt;&lt;i&gt;Condición en línea 1368:&lt;br&gt;nb not in levels&lt;/i&gt;"}
+    loop_1371["For each node in nodes"]
+    dec_1372{"node.id not in levels&lt;br&gt;&lt;i&gt;Condición en línea 1372:&lt;br&gt;node.id not in levels&lt;/i&gt;"}
+    loop_1402["For each level"]
+    dec_1404{"not nids&lt;br&gt;&lt;i&gt;Condición en línea 1404:&lt;br&gt;not nids&lt;/i&gt;"}
+    loop_1408["For loop"]
+    dec_1410{"node is None&lt;br&gt;&lt;i&gt;Condición en línea 1410:&lt;br&gt;node is None&lt;/i&gt;"}
+    loop_1428["For each p in positioned"]
+    fn__char_em_width[["Char Em Width"]]
+    fn_measure_text[["Measure Text"]]
+    fn_with_detail_level[["With Detail Level"]]
+    fn_node_size[["Node Size"]]
+    fn_get_theme[["Get Theme"]]
+    fn__assign_lane[["Assign Lane"]]
+    fn_hierarchical_layout[["Hierarchical Layout"]]
+    fn_grid_layout[["Grid Layout"]]
+    fn_swimlane_layout[["Swimlane Layout"]]
+    fn_phased_layout[["Phased Layout"]]
+    fn__assign_rows[["Assign Rows"]]
+    fn__phase_groups[["Phase Groups"]]
+    fn__structural_phase_groups[["Structural Phase Groups"]]
+    fn__nodes_in_cycles[["Nodes In Cycles"]]
+    fn__ancestors_of[["Ancestors Of"]]
+    fn__default_phase[["Default Phase"]]
+    fn__classify_phase_nodes[["Classify Phase Nodes"]]
+    fn__topo_order_filtered[["Topo Order Filtered"]]
+    fn__compute_phase_boxes[["Compute Phase Boxes"]]
+    fn__identify_feedback_arrows[["Identify Feedback Arrows"]]
+    fn__compute_group_boxes[["Compute Group Boxes"]]
+    fn__topological_sort[["Topological Sort"]]
+    fn_phased_horizontal_layout[["Phased Horizontal Layout"]]
+    fn__radial_center[["Radial Center"]]
+    fn__radial_levels[["Radial Levels"]]
+    fn_radial_layout[["Radial Layout"]]
+    fn__column_metrics_1272[["Column Metrics"]]
+    fn__place_1296[["Place"]]
+    n_start --&gt; fn__char_em_width
+    fn__char_em_width --&gt; dec_40
+    dec_40 --&gt; dec_42
+    dec_42 --&gt; dec_44
+    dec_44 --&gt; dec_46
+    dec_46 --&gt; dec_48
+    n_start --&gt; fn_measure_text
+    n_start --&gt; fn_with_detail_level
+    fn_with_detail_level --&gt; dec_72
+    dec_72 --&gt; loop_75
+    loop_75 --&gt; dec_76
+    dec_76 --&gt; dec_78
+    dec_78 -- "loop" --&gt; loop_75
+    loop_75 --&gt; loop_85
+    n_start --&gt; fn_node_size
+    fn_node_size --&gt; dec_99
+    dec_99 --&gt; dec_104
+    n_start --&gt; fn_get_theme
+    n_start --&gt; fn__assign_lane
+    fn__assign_lane --&gt; dec_670
+    dec_670 --&gt; dec_672
+    dec_672 --&gt; dec_674
+    dec_674 --&gt; dec_676
+    dec_676 --&gt; dec_678
+    dec_678 --&gt; dec_680
+    dec_680 --&gt; dec_682
+    dec_682 --&gt; dec_684
+    dec_684 --&gt; dec_686
+    n_start --&gt; fn_hierarchical_layout
+    fn_hierarchical_layout --&gt; dec_696
+    dec_696 --&gt; loop_707
+    loop_707 --&gt; dec_709
+    dec_709 -- "loop" --&gt; loop_707
+    loop_707 --&gt; loop_720
+    loop_720 --&gt; dec_722
+    dec_722 -- "loop" --&gt; loop_720
+    loop_720 --&gt; loop_731
+    loop_731 --&gt; dec_733
+    dec_733 -- "loop" --&gt; loop_731
+    n_start --&gt; fn_grid_layout
+    n_start --&gt; fn_swimlane_layout
+    fn_swimlane_layout --&gt; dec_770
+    dec_770 --&gt; loop_775
+    loop_775 --&gt; loop_789
+    loop_789 --&gt; loop_803
+    loop_803 --&gt; dec_805
+    dec_805 --&gt; dec_808
+    dec_808 -- "loop" --&gt; loop_803
+    loop_803 --&gt; loop_822
+    loop_822 --&gt; dec_824
+    dec_824 -- "loop" --&gt; loop_822
+    n_start --&gt; fn_phased_layout
+    fn_phased_layout --&gt; dec_857
+    dec_857 --&gt; loop_864
+    loop_864 --&gt; loop_876
+    loop_876 --&gt; dec_878
+    dec_878 --&gt; dec_880
+    dec_880 -- "loop" --&gt; loop_876
+    loop_876 --&gt; loop_888
+    loop_888 --&gt; dec_890
+    dec_890 --&gt; loop_897
+    loop_897 --&gt; dec_899
+    dec_899 -- "loop" --&gt; loop_897
+    loop_897 --&gt; loop_911
+    loop_911 --&gt; dec_913
+    dec_913 -- "loop" --&gt; loop_911
+    loop_911 --&gt; loop_924
+    loop_924 --&gt; dec_926
+    dec_926 -- "loop" --&gt; loop_924
+    loop_924 -- "loop" --&gt; loop_888
+    n_start --&gt; fn__assign_rows
+    fn__assign_rows --&gt; loop_974
+    loop_974 --&gt; dec_976
+    dec_976 --&gt; dec_979
+    dec_979 --&gt; dec_981
+    dec_981 -- "loop" --&gt; loop_974
+    n_start --&gt; fn__phase_groups
+    fn__phase_groups --&gt; dec_998
+    dec_998 --&gt; loop_999
+    n_start --&gt; fn__structural_phase_groups
+    fn__structural_phase_groups --&gt; dec_1011
+    dec_1011 --&gt; loop_1013
+    loop_1013 --&gt; loop_1019
+    loop_1019 --&gt; dec_1020
+    dec_1020 --&gt; dec_1022
+    dec_1022 -- "loop" --&gt; loop_1019
+    n_start --&gt; fn__nodes_in_cycles
+    fn__nodes_in_cycles --&gt; loop_1033
+    loop_1033 --&gt; dec_1034
+    dec_1034 -- "loop" --&gt; loop_1033
+    loop_1033 --&gt; loop_1038
+    loop_1038 --&gt; loop_1042
+    loop_1042 --&gt; dec_1044
+    dec_1044 --&gt; dec_1047
+    dec_1047 -- "loop" --&gt; loop_1042
+    loop_1042 -- "loop" --&gt; loop_1038
+    n_start --&gt; fn__ancestors_of
+    fn__ancestors_of --&gt; loop_1057
+    loop_1057 --&gt; dec_1058
+    dec_1058 -- "loop" --&gt; loop_1057
+    loop_1057 --&gt; loop_1063
+    loop_1063 --&gt; loop_1065
+    loop_1065 --&gt; dec_1066
+    dec_1066 -- "loop" --&gt; loop_1065
+    loop_1065 -- "loop" --&gt; loop_1063
+    n_start --&gt; fn__default_phase
+    fn__default_phase --&gt; dec_1074
+    dec_1074 --&gt; dec_1076
+    n_start --&gt; fn__classify_phase_nodes
+    fn__classify_phase_nodes --&gt; loop_1089
+    loop_1089 --&gt; dec_1091
+    dec_1091 --&gt; dec_1093
+    dec_1093 --&gt; dec_1095
+    dec_1095 -- "loop" --&gt; loop_1089
+    n_start --&gt; fn__topo_order_filtered
+    n_start --&gt; fn__compute_phase_boxes
+    fn__compute_phase_boxes --&gt; loop_1119
+    loop_1119 --&gt; loop_1122
+    loop_1122 --&gt; dec_1124
+    dec_1124 -- "loop" --&gt; loop_1122
+    n_start --&gt; fn__identify_feedback_arrows
+    fn__identify_feedback_arrows --&gt; loop_1158
+    loop_1158 --&gt; dec_1159
+    dec_1159 --&gt; dec_1163
+    dec_1163 -- "loop" --&gt; loop_1158
+    n_start --&gt; fn__compute_group_boxes
+    fn__compute_group_boxes --&gt; loop_1186
+    loop_1186 --&gt; loop_1189
+    loop_1189 --&gt; dec_1190
+    dec_1190 -- "loop" --&gt; loop_1189
+    n_start --&gt; fn__topological_sort
+    fn__topological_sort --&gt; loop_1219
+    loop_1219 --&gt; dec_1220
+    dec_1220 --&gt; dec_1222
+    dec_1222 -- "loop" --&gt; loop_1219
+    loop_1219 --&gt; loop_1228
+    loop_1228 --&gt; loop_1231
+    loop_1231 --&gt; dec_1233
+    dec_1233 -- "loop" --&gt; loop_1231
+    loop_1231 -- "loop" --&gt; loop_1228
+    loop_1228 --&gt; loop_1236
+    loop_1236 --&gt; dec_1237
+    dec_1237 -- "loop" --&gt; loop_1236
+    n_start --&gt; fn_phased_horizontal_layout
+    fn_phased_horizontal_layout --&gt; dec_1250
+    dec_1250 --&gt; loop_1254
+    loop_1254 --&gt; loop_1265
+    loop_1265 --&gt; dec_1267
+    dec_1267 --&gt; fn__column_metrics_1272
+    fn__column_metrics_1272 --&gt; fn__place_1296
+    fn__place_1296 --&gt; dec_1317
+    dec_1317 --&gt; dec_1319
+    dec_1319 --&gt; dec_1321
+    dec_1321 -- "loop" --&gt; loop_1265
+    n_start --&gt; fn__radial_center
+    fn__radial_center --&gt; loop_1343
+    loop_1343 --&gt; dec_1344
+    dec_1344 -- "loop" --&gt; loop_1343
+    loop_1343 --&gt; loop_1347
+    loop_1347 --&gt; dec_1350
+    n_start --&gt; fn__radial_levels
+    fn__radial_levels --&gt; loop_1358
+    loop_1358 --&gt; loop_1365
+    loop_1365 --&gt; loop_1367
+    loop_1367 --&gt; dec_1368
+    dec_1368 -- "loop" --&gt; loop_1367
+    loop_1367 -- "loop" --&gt; loop_1365
+    loop_1365 --&gt; loop_1371
+    loop_1371 --&gt; dec_1372
+    dec_1372 -- "loop" --&gt; loop_1371
+    n_start --&gt; fn_radial_layout
+    fn_radial_layout --&gt; dec_1382
+    dec_1382 --&gt; loop_1390
+    loop_1390 --&gt; loop_1392
+    loop_1392 --&gt; loop_1402
+    loop_1402 --&gt; dec_1404
+    dec_1404 --&gt; loop_1408
+    loop_1408 --&gt; dec_1410
+    dec_1410 -- "loop" --&gt; loop_1408
+    loop_1408 -- "loop" --&gt; loop_1402
+    loop_1402 --&gt; loop_1428
+    class n_start node-start
+    class fn__char_em_width,fn_measure_text,fn_with_detail_level,fn_node_size,fn_get_theme,fn__assign_lane,fn_hierarchical_layout,fn_grid_layout,fn_swimlane_layout,fn_phased_layout,fn__assign_rows,fn__phase_groups,fn__structural_phase_groups,fn__nodes_in_cycles,fn__ancestors_of,fn__default_phase,fn__classify_phase_nodes,fn__topo_order_filtered,fn__compute_phase_boxes,fn__identify_feedback_arrows,fn__compute_group_boxes,fn__topological_sort,fn_phased_horizontal_layout,fn__column_metrics_1272,fn__place_1296,fn__radial_center,fn__radial_levels,fn_radial_layout node-subprocess
+    class dec_40,dec_42,dec_44,dec_46,dec_48,dec_72,dec_76,dec_78,dec_99,dec_104,dec_670,dec_672,dec_674,dec_676,dec_678,dec_680,dec_682,dec_684,dec_686,dec_696,dec_709,dec_722,dec_733,dec_770,dec_805,dec_808,dec_824,dec_857,dec_878,dec_880,dec_890,dec_899,dec_913,dec_926,dec_976,dec_979,dec_981,dec_998,dec_1011,dec_1020,dec_1022,dec_1034,dec_1044,dec_1047,dec_1058,dec_1066,dec_1074,dec_1076,dec_1091,dec_1093,dec_1095,dec_1124,dec_1159,dec_1163,dec_1190,dec_1220,dec_1222,dec_1233,dec_1237,dec_1250,dec_1267,dec_1317,dec_1319,dec_1321,dec_1344,dec_1350,dec_1368,dec_1372,dec_1382,dec_1404,dec_1410 node-decision
+    class loop_75,loop_85,loop_707,loop_720,loop_731,loop_775,loop_789,loop_803,loop_822,loop_864,loop_876,loop_888,loop_897,loop_911,loop_924,loop_974,loop_999,loop_1013,loop_1019,loop_1033,loop_1038,loop_1042,loop_1057,loop_1063,loop_1065,loop_1089,loop_1119,loop_1122,loop_1158,loop_1186,loop_1189,loop_1219,loop_1228,loop_1231,loop_1236,loop_1254,loop_1265,loop_1343,loop_1347,loop_1358,loop_1365,loop_1367,loop_1371,loop_1390,loop_1392,loop_1402,loop_1408,loop_1428 node-loop
+    class n_end node-end
+    click fn__char_em_width href "agentflow_L3_Agentflow_Layouts_Measure.html" "Abrir detalle"
+    click fn_measure_text href "agentflow_L3_Agentflow_Layouts_Measure.html" "Abrir detalle"
+    click fn_node_size href "agentflow_L3_Agentflow_Layouts_Measure.html" "Abrir detalle"
+    click fn_get_theme href "agentflow_L3_Agentflow_Layouts_Measure.html" "Abrir detalle"
+    click fn_with_detail_level href "agentflow_L3_Agentflow_Layouts_Measure.html" "Abrir detalle"
+    click fn__assign_rows href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__topological_sort href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__phase_groups href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__structural_phase_groups href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__nodes_in_cycles href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__ancestors_of href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__default_phase href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__classify_phase_nodes href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__topo_order_filtered href "agentflow_L3_Agentflow_Layouts_Topo.html" "Abrir detalle"
+    click fn__compute_phase_boxes href "agentflow_L3_Agentflow_Layouts_PhaseBoxes.html" "Abrir detalle"
+    click fn__compute_group_boxes href "agentflow_L3_Agentflow_Layouts_PhaseBoxes.html" "Abrir detalle"
+    click fn__identify_feedback_arrows href "agentflow_L3_Agentflow_Layouts_PhaseBoxes.html" "Abrir detalle"
+    click fn_hierarchical_layout href "agentflow_L3_Agentflow_Layouts_Linear.html" "Abrir detalle"
+    click fn_phased_layout href "agentflow_L3_Agentflow_Layouts_Phased.html" "Abrir detalle"
+    click fn_phased_horizontal_layout href "agentflow_L3_Agentflow_Layouts_Phased.html" "Abrir detalle"
+    click fn_grid_layout href "agentflow_L3_Agentflow_Layouts_GridSwim.html" "Abrir detalle"
+    click fn_swimlane_layout href "agentflow_L3_Agentflow_Layouts_GridSwim.html" "Abrir detalle"
+    click fn__assign_lane href "agentflow_L3_Agentflow_Layouts_GridSwim.html" "Abrir detalle"
+    click fn__radial_center href "agentflow_L3_Agentflow_Layouts_Radial.html" "Abrir detalle"
+    click fn__radial_levels href "agentflow_L3_Agentflow_Layouts_Radial.html" "Abrir detalle"
+    click fn_radial_layout href "agentflow_L3_Agentflow_Layouts_Radial.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

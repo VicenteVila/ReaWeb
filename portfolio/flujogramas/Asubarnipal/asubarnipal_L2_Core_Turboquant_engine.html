@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · engine</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · engine - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Core · Turboquant · engine</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Turboquant Engine
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_86{"NOT _ollama_available?&lt;br&gt;&lt;i&gt;Niega _ollama_available&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_90{"configured&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;configured&lt;/i&gt;"}
+    dec_101{"not mode_cfg&lt;br&gt;&lt;i&gt;Condición en línea 101:&lt;br&gt;not mode_cfg&lt;/i&gt;"}
+    dec_119{"model_cfg&lt;br&gt;&lt;i&gt;Condición en línea 119:&lt;br&gt;model_cfg&lt;/i&gt;"}
+    dec_171{"mode&lt;br&gt;&lt;i&gt;Condición en línea 171:&lt;br&gt;mode&lt;/i&gt;"}
+    dec_174{"NOT is_applied?&lt;br&gt;&lt;i&gt;Niega is_applied&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_202{"NOT _ollama_available?&lt;br&gt;&lt;i&gt;Niega _ollama_available&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_208{"not model&lt;br&gt;&lt;i&gt;Condición en línea 208:&lt;br&gt;not model&lt;/i&gt;"}
+    dec_262{"not model_name&lt;br&gt;&lt;i&gt;Condición en línea 262:&lt;br&gt;not model_name&lt;/i&gt;"}
+    loop_269["For each path in search_paths"]
+    dec_270{"os.path.exists(path)&lt;br&gt;&lt;i&gt;Condición en línea 270:&lt;br&gt;os.path.exists(path)&lt;/i&gt;"}
+    dec_277{"quantizer is None&lt;br&gt;&lt;i&gt;Condición en línea 277:&lt;br&gt;quantizer is None&lt;/i&gt;"}
+    dec_281{"adapter is None&lt;br&gt;&lt;i&gt;Condición en línea 281:&lt;br&gt;adapter is None&lt;/i&gt;"}
+    dec_287{"model is None&lt;br&gt;&lt;i&gt;Condición en línea 287:&lt;br&gt;model is None&lt;/i&gt;"}
+    dec_329{"cache is None&lt;br&gt;&lt;i&gt;Condición en línea 329:&lt;br&gt;cache is None&lt;/i&gt;"}
+    dec_354{"compressor is None&lt;br&gt;&lt;i&gt;Condición en línea 354:&lt;br&gt;compressor is None&lt;/i&gt;"}
+    dec_357{"max_tokens&lt;br&gt;&lt;i&gt;Condición en línea 357:&lt;br&gt;max_tokens&lt;/i&gt;"}
+    dec_381{"self._kv_cache is not None&lt;br&gt;&lt;i&gt;Condición en línea 381:&lt;br&gt;self._kv_cache is not None&lt;/i&gt;"}
+    fn_get_engine[["Get Engine"]]
+    fn_apply_chat_mode[["Apply Chat Mode"]]
+    fn_get_turbo_params[["Get Turbo Params"]]
+    fn_get_turbo_status[["Get Turbo Status"]]
+    fn_turboquantengine___new__[["New"]]
+    fn_turboquantengine__check_ollama[["Check Ollama"]]
+    fn_turboquantengine__detect_gguf_models[["Detect Gguf Models"]]
+    fn_turboquantengine_get_active_model[["Get Active Model"]]
+    fn_turboquantengine_apply_mode[["Apply Mode"]]
+    fn_turboquantengine_apply_by_priority[["Apply By Priority"]]
+    fn_turboquantengine_get_current_settings[["Get Current Settings"]]
+    fn_turboquantengine_get_optimized_params[["Get Optimized Params"]]
+    fn_turboquantengine_benchmark[["Benchmark"]]
+    fn_turboquantengine_get_quantizer[["Get Quantizer"]]
+    fn_turboquantengine_get_adapter[["Get Adapter"]]
+    fn_turboquantengine__find_gguf_model[["Find Gguf Model"]]
+    fn_turboquantengine_quantize_active_model[["Quantize Active Model"]]
+    fn_turboquantengine_get_kv_cache[["Get Kv Cache"]]
+    fn_turboquantengine_get_kv_cache_stats[["Get Kv Cache Stats"]]
+    fn_turboquantengine_get_compressor[["Get Compressor"]]
+    fn_turboquantengine_compress_conversation[["Compress Conversation"]]
+    fn_turboquantengine_reset[["Reset"]]
+    n_start --&gt; fn_get_engine
+    n_start --&gt; fn_apply_chat_mode
+    n_start --&gt; fn_get_turbo_params
+    n_start --&gt; fn_get_turbo_status
+    n_start --&gt; fn_turboquantengine___new__
+    fn_turboquantengine___new__ --&gt; fn_turboquantengine__check_ollama
+    fn_turboquantengine__check_ollama --&gt; fn_turboquantengine__detect_gguf_models
+    fn_turboquantengine__detect_gguf_models --&gt; fn_turboquantengine_get_active_model
+    fn_turboquantengine_get_active_model --&gt; dec_86
+    dec_86 --&gt; dec_90
+    fn_turboquantengine_get_active_model --&gt; fn_turboquantengine_apply_mode
+    fn_turboquantengine_apply_mode --&gt; dec_101
+    dec_101 --&gt; dec_119
+    fn_turboquantengine_apply_mode --&gt; fn_turboquantengine_apply_by_priority
+    fn_turboquantengine_apply_by_priority --&gt; fn_turboquantengine_get_current_settings
+    fn_turboquantengine_get_current_settings --&gt; fn_turboquantengine_get_optimized_params
+    fn_turboquantengine_get_optimized_params --&gt; dec_171
+    dec_171 --&gt; dec_174
+    fn_turboquantengine_get_optimized_params --&gt; fn_turboquantengine_benchmark
+    fn_turboquantengine_benchmark --&gt; dec_202
+    dec_202 --&gt; dec_208
+    fn_turboquantengine_benchmark --&gt; fn_turboquantengine_get_quantizer
+    fn_turboquantengine_get_quantizer --&gt; fn_turboquantengine_get_adapter
+    fn_turboquantengine_get_adapter --&gt; fn_turboquantengine__find_gguf_model
+    fn_turboquantengine__find_gguf_model --&gt; dec_262
+    dec_262 --&gt; loop_269
+    loop_269 --&gt; dec_270
+    dec_270 -- "loop" --&gt; loop_269
+    fn_turboquantengine__find_gguf_model --&gt; fn_turboquantengine_quantize_active_model
+    fn_turboquantengine_quantize_active_model --&gt; dec_277
+    dec_277 --&gt; dec_281
+    dec_281 --&gt; dec_287
+    fn_turboquantengine_quantize_active_model --&gt; fn_turboquantengine_get_kv_cache
+    fn_turboquantengine_get_kv_cache --&gt; fn_turboquantengine_get_kv_cache_stats
+    fn_turboquantengine_get_kv_cache_stats --&gt; dec_329
+    fn_turboquantengine_get_kv_cache_stats --&gt; fn_turboquantengine_get_compressor
+    fn_turboquantengine_get_compressor --&gt; fn_turboquantengine_compress_conversation
+    fn_turboquantengine_compress_conversation --&gt; dec_354
+    dec_354 --&gt; dec_357
+    fn_turboquantengine_compress_conversation --&gt; fn_turboquantengine_get_current_settings
+    fn_turboquantengine_get_current_settings --&gt; dec_381
+    fn_turboquantengine_get_current_settings --&gt; fn_turboquantengine_reset
+    class n_start node-start
+    class fn_get_engine,fn_apply_chat_mode,fn_get_turbo_params,fn_get_turbo_status,fn_turboquantengine___new__,fn_turboquantengine__check_ollama,fn_turboquantengine__detect_gguf_models,fn_turboquantengine_get_active_model,fn_turboquantengine_apply_mode,fn_turboquantengine_apply_by_priority,fn_turboquantengine_get_current_settings,fn_turboquantengine_get_optimized_params,fn_turboquantengine_benchmark,fn_turboquantengine_get_quantizer,fn_turboquantengine_get_adapter,fn_turboquantengine__find_gguf_model,fn_turboquantengine_quantize_active_model,fn_turboquantengine_get_kv_cache,fn_turboquantengine_get_kv_cache_stats,fn_turboquantengine_get_compressor,fn_turboquantengine_compress_conversation,fn_turboquantengine_reset node-subprocess
+    class dec_86,dec_90,dec_101,dec_119,dec_171,dec_174,dec_202,dec_208,dec_262,dec_270,dec_277,dec_281,dec_287,dec_329,dec_354,dec_357,dec_381 node-decision
+    class loop_269 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

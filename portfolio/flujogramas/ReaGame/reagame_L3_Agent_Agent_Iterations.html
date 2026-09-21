@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaGame · Nivel 3 · Iterations</title>
+<meta name="description" content="Flujograma ReaGame · Nivel 3 · Iterations - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaGame/index.html">ReaGame</a> <span class="sep">›</span><a href="reagame_L0_Overview.html">L0</a> <span class="sep">›</span><a href="reagame_L2_Agent_Agent.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agent · Agent · Iterations</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Agent · Iterations
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_14{"candidate_id is None&lt;br&gt;&lt;i&gt;Condición en línea 14:&lt;br&gt;candidate_id is None&lt;/i&gt;"}
+    dec_54{"Meta-edits&lt;br&gt;enabled?&lt;br&gt;&lt;i&gt;allow_meta_edits = True?&lt;br&gt;→ permitir edit_skill&lt;/i&gt;"}
+    dec_87{"Tool:&lt;br&gt;Audit Visual?&lt;br&gt;&lt;i&gt;VLM: captura del juego → score 0-100&lt;br&gt;+ issues + sugerencias de arte/nivel&lt;/i&gt;"}
+    dec_18{"not has_entry(cand_dir)&lt;br&gt;&lt;i&gt;Condición en línea 18:&lt;br&gt;not has_entry(cand_dir)&lt;/i&gt;"}
+    dec_61{"call.name ==&lt;br&gt;'inspect_archetype' and (not&lt;br&gt;&lt;i&gt;Condición en línea 61:&lt;br&gt;call.name == 'inspect_archetype' and (not kwargs.get('archet&lt;/i&gt;"}
+    dec_22{"not func_tests&lt;br&gt;&lt;i&gt;Condición en línea 22:&lt;br&gt;not func_tests&lt;/i&gt;"}
+    dec_68{"hasattr(tool,&lt;br&gt;'last_functional_tests') and&lt;br&gt;&lt;i&gt;Condición en línea 68:&lt;br&gt;hasattr(tool, 'last_functional_tests') and tool.last_functio&lt;/i&gt;"}
+    dec_90{"_blk is not None and&lt;br&gt;(int, float))&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;_blk is not None and isinstance(_blk.get('visual_vlm'), (int&lt;/i&gt;"}
+    dec_94{"not m&lt;br&gt;&lt;i&gt;Condición en línea 94:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_99{"Has nodes?&lt;br&gt;&lt;i&gt;Search tree tiene nodos?&lt;br&gt;→ evaluar candidato&lt;/i&gt;"}
+    dec_104{"blended is not None&lt;br&gt;&lt;i&gt;Condición en línea 104:&lt;br&gt;blended is not None&lt;/i&gt;"}
+    dec_118{"Tool:&lt;br&gt;Audit Creative?&lt;br&gt;&lt;i&gt;VLM anti-proxy: novedad/originalidad&lt;br&gt;score 0-100, hints de mutación&lt;/i&gt;"}
+    dec_121{"_blk is not None and&lt;br&gt;(int, float))&lt;br&gt;&lt;i&gt;Condición en línea 121:&lt;br&gt;_blk is not None and isinstance(_blk.get('creativity_vlm'),&lt;/i&gt;"}
+    dec_125{"not m&lt;br&gt;&lt;i&gt;Condición en línea 125:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_130{"Has nodes?&lt;br&gt;&lt;i&gt;Search tree tiene nodos?&lt;br&gt;→ evaluar candidato&lt;/i&gt;"}
+    dec_136{"blended is not None&lt;br&gt;&lt;i&gt;Condición en línea 136:&lt;br&gt;blended is not None&lt;/i&gt;"}
+    dec_145{"call.name not in&lt;br&gt;('generate_candidate',&lt;br&gt;&lt;i&gt;Condición en línea 145:&lt;br&gt;call.name not in ('generate_candidate', 'audit_page')&lt;/i&gt;"}
+    dec_152{"_blk is not None&lt;br&gt;&lt;i&gt;Condición en línea 152:&lt;br&gt;_blk is not None&lt;/i&gt;"}
+    dec_154{"not isinstance(total, (int,&lt;br&gt;float))&lt;br&gt;&lt;i&gt;Condición en línea 154:&lt;br&gt;not isinstance(total, (int, float))&lt;/i&gt;"}
+    dec_167{"not m&lt;br&gt;&lt;i&gt;Condición en línea 167:&lt;br&gt;not m&lt;/i&gt;"}
+    loop_44["Loop"]
+    dec_46{"parts and 'text' in parts(0)&lt;br&gt;&lt;i&gt;Condición en línea 46:&lt;br&gt;parts and 'text' in parts(0)&lt;/i&gt;"}
+    loop_185["For loop"]
+    dec_187{"m2&lt;br&gt;&lt;i&gt;Condición en línea 187:&lt;br&gt;m2&lt;/i&gt;"}
+    dec_195{"Tool:&lt;br&gt;Generate Candidate?&lt;br&gt;&lt;i&gt;LLM sub-agente genera un juego Godot&lt;br&gt;(scripts .gd + assets) → hipótesis H0..Hn&lt;/i&gt;"}
+    dec_202{"Has nodes?&lt;br&gt;&lt;i&gt;Search tree tiene nodos?&lt;br&gt;→ evaluar candidato&lt;/i&gt;"}
+    dec_212{"existing is not None&lt;br&gt;&lt;i&gt;Condición en línea 212:&lt;br&gt;existing is not None&lt;/i&gt;"}
+    dec_219{"is_confirm&lt;br&gt;&lt;i&gt;Condición en línea 219:&lt;br&gt;is_confirm&lt;/i&gt;"}
+    fn__last_action_summary[["Last Action Summary"]]
+    fn__subtask_checklist[["Subtask Checklist"]]
+    fn__safe_history_slice[["Safe History Slice"]]
+    fn__exec_tool[["Exec Tool"]]
+    fn__handle_eval_result[["Handle Eval Result"]]
+    tool_audit_visual_87["Audit Visual&lt;br&gt;&lt;i&gt;VLM: captura del juego → score 0-100&lt;br&gt;+ issues + sugerencias de arte/nivel&lt;/i&gt;"]
+    tool_audit_creative_118["Audit Creative&lt;br&gt;&lt;i&gt;VLM anti-proxy: novedad/originalidad&lt;br&gt;score 0-100, hints de mutación&lt;/i&gt;"]
+    tool_generate_candidate_195["Generate Candidate&lt;br&gt;&lt;i&gt;LLM sub-agente genera un juego Godot&lt;br&gt;(scripts .gd + assets) → hipótesis H0..Hn&lt;/i&gt;"]
+    n_start --&gt; fn__last_action_summary
+    n_start --&gt; fn__subtask_checklist
+    fn__subtask_checklist --&gt; dec_14
+    dec_14 --&gt; dec_18
+    dec_18 --&gt; dec_22
+    n_start --&gt; fn__safe_history_slice
+    fn__safe_history_slice --&gt; loop_44
+    loop_44 --&gt; dec_46
+    dec_46 -- "loop" --&gt; loop_44
+    n_start --&gt; fn__exec_tool
+    fn__exec_tool --&gt; dec_54
+    dec_54 --&gt; dec_61
+    dec_61 --&gt; dec_68
+    n_start --&gt; fn__handle_eval_result
+    fn__handle_eval_result --&gt; dec_87
+    dec_87 -- "YES" --&gt; tool_audit_visual_87
+    tool_audit_visual_87 --&gt; dec_90
+    dec_90 -- "NO" --&gt; dec_94
+    dec_94 --&gt; dec_99
+    dec_99 --&gt; dec_104
+    dec_104 --&gt; dec_118
+    dec_118 -- "YES" --&gt; tool_audit_creative_118
+    tool_audit_creative_118 --&gt; dec_121
+    dec_121 -- "NO" --&gt; dec_125
+    dec_125 --&gt; dec_130
+    dec_130 --&gt; dec_136
+    dec_136 --&gt; dec_145
+    dec_145 --&gt; dec_152
+    dec_152 -- "YES" --&gt; dec_154
+    dec_152 --&gt; dec_167
+    dec_167 --&gt; loop_185
+    loop_185 --&gt; dec_187
+    dec_187 -- "loop" --&gt; loop_185
+    loop_185 --&gt; dec_195
+    dec_195 -- "YES" --&gt; tool_generate_candidate_195
+    dec_195 -- "NO" --&gt; dec_202
+    dec_202 --&gt; dec_212
+    dec_212 --&gt; dec_219
+    class n_start node-start
+    class fn__last_action_summary,fn__subtask_checklist,fn__safe_history_slice,fn__exec_tool,fn__handle_eval_result node-subprocess
+    class dec_14,dec_18,dec_22,dec_46,dec_54,dec_61,dec_68,dec_87,dec_90,dec_94,dec_99,dec_104,dec_118,dec_121,dec_125,dec_130,dec_136,dec_145,dec_152,dec_154,dec_167,dec_187,dec_195,dec_202,dec_212,dec_219 node-decision
+    class loop_44,loop_185 node-loop
+    class tool_audit_visual_87,tool_audit_creative_118,tool_generate_candidate_195 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

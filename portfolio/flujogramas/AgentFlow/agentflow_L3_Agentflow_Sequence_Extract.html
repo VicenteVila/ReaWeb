@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 3 · Extract</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 3 · Extract - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L2_Agentflow_Sequence.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agentflow · Sequence · Extract</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Sequence · Extract
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    loop_12["For each node"]
+    dec_13{"isinstance(node,&lt;br&gt;ast.ClassDef) and or or node.name&lt;br&gt;&lt;i&gt;Condición en línea 13:&lt;br&gt;isinstance(node, ast.ClassDef) and (_is_actor_class_name(nod&lt;/i&gt;"}
+    dec_23{"short not in&lt;br&gt;interactions.actors&lt;br&gt;&lt;i&gt;Condición en línea 23:&lt;br&gt;short not in interactions.actors&lt;/i&gt;"}
+    loop_28["For each node"]
+    dec_29{"isinstance(node, ast.Assign)&lt;br&gt;and isinstance(node.value,&lt;br&gt;&lt;i&gt;Condición en línea 29:&lt;br&gt;isinstance(node, ast.Assign) and isinstance(node.value, ast.&lt;/i&gt;"}
+    dec_32{"isinstance(func, ast.Name)&lt;br&gt;&lt;i&gt;Condición en línea 32:&lt;br&gt;isinstance(func, ast.Name)&lt;/i&gt;"}
+    dec_34{"isinstance(func,&lt;br&gt;ast.Attribute)&lt;br&gt;&lt;i&gt;Condición en línea 34:&lt;br&gt;isinstance(func, ast.Attribute)&lt;/i&gt;"}
+    dec_36{"cls_name and&lt;br&gt;(cls_name(:1).isupper() and or or&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;cls_name and (cls_name(:1).isupper() and (_is_actor_class_na&lt;/i&gt;"}
+    loop_44["For each target in targets"]
+    dec_45{"isinstance(target, ast.Name)&lt;br&gt;&lt;i&gt;Condición en línea 45:&lt;br&gt;isinstance(target, ast.Name)&lt;/i&gt;"}
+    dec_51{"short not in&lt;br&gt;interactions.actors&lt;br&gt;&lt;i&gt;Condición en línea 51:&lt;br&gt;short not in interactions.actors&lt;/i&gt;"}
+    dec_53{"isinstance(target,&lt;br&gt;ast.Attribute) and ast.Name)&lt;br&gt;&lt;i&gt;Condición en línea 53:&lt;br&gt;isinstance(target, ast.Attribute) and isinstance(target.valu&lt;/i&gt;"}
+    dec_61{"short not in&lt;br&gt;interactions.actors&lt;br&gt;&lt;i&gt;Condición en línea 61:&lt;br&gt;short not in interactions.actors&lt;/i&gt;"}
+    loop_66["For each node"]
+    dec_67{"isinstance(node,&lt;br&gt;ast.ImportFrom) and node.module&lt;br&gt;&lt;i&gt;Condición en línea 67:&lt;br&gt;isinstance(node, ast.ImportFrom) and node.module&lt;/i&gt;"}
+    loop_70["For each hint in _ACTOR_NAME_HINTS"]
+    dec_71{"hint in mod_low&lt;br&gt;&lt;i&gt;Condición en línea 71:&lt;br&gt;hint in mod_low&lt;/i&gt;"}
+    loop_72["For each seg"]
+    dec_73{"hint in seg.lower()&lt;br&gt;&lt;i&gt;Condición en línea 73:&lt;br&gt;hint in seg.lower()&lt;/i&gt;"}
+    dec_77{"hit&lt;br&gt;&lt;i&gt;Condición en línea 77:&lt;br&gt;hit&lt;/i&gt;"}
+    dec_80{"actor.lower() == 'llm'&lt;br&gt;&lt;i&gt;Condición en línea 80:&lt;br&gt;actor.lower() == 'llm'&lt;/i&gt;"}
+    loop_82["For each alias in names"]
+    dec_84{"actor not in&lt;br&gt;interactions.actors&lt;br&gt;&lt;i&gt;Condición en línea 84:&lt;br&gt;actor not in interactions.actors&lt;/i&gt;"}
+    dec_89{"not sender&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;not sender&lt;/i&gt;"}
+    dec_90{"class_names&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;class_names&lt;/i&gt;"}
+    dec_95{"sender not in&lt;br&gt;interactions.actors&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;sender not in interactions.actors&lt;/i&gt;"}
+    loop_140["For each node"]
+    dec_141{"isinstance(node,&lt;br&gt;(ast.FunctionDef,&lt;br&gt;&lt;i&gt;Condición en línea 141:&lt;br&gt;isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))&lt;/i&gt;"}
+    loop_145["For each cls"]
+    dec_146{"isinstance(cls,&lt;br&gt;ast.ClassDef)&lt;br&gt;&lt;i&gt;Condición en línea 146:&lt;br&gt;isinstance(cls, ast.ClassDef)&lt;/i&gt;"}
+    loop_148["For each item in body"]
+    dec_149{"isinstance(item,&lt;br&gt;(ast.FunctionDef,&lt;br&gt;&lt;i&gt;Condición en línea 149:&lt;br&gt;isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))&lt;/i&gt;"}
+    loop_162["For each f"]
+    dec_164{"key in seen_f&lt;br&gt;&lt;i&gt;Condición en línea 164:&lt;br&gt;key in seen_f&lt;/i&gt;"}
+    dec_167{"f.type == 'alt' and (not&lt;br&gt;&lt;i&gt;Condición en línea 167:&lt;br&gt;f.type == 'alt' and (not _is_significant_condition(f.label))&lt;/i&gt;"}
+    loop_174["For loop"]
+    loop_186["For each f in frag_deduped"]
+    dec_187{"f.type == 'else' and (not&lt;br&gt;any((af.type == 'alt' and &lt; for af&lt;br&gt;&lt;i&gt;Condición en línea 187:&lt;br&gt;f.type == 'else' and (not any((af.type == 'alt' and af.begin&lt;/i&gt;"}
+    loop_215["For each p in paths"]
+    dec_217{"not path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 217:&lt;br&gt;not path.exists()&lt;/i&gt;"}
+    loop_230["For each msg in messages"]
+    dec_231{"msg.sender in import_map&lt;br&gt;&lt;i&gt;Condición en línea 231:&lt;br&gt;msg.sender in import_map&lt;/i&gt;"}
+    dec_233{"msg.receiver in import_map&lt;br&gt;&lt;i&gt;Condición en línea 233:&lt;br&gt;msg.receiver in import_map&lt;/i&gt;"}
+    fn_extract_interactions[["Extract Interactions"]]
+    fn_extract_from_file[["Extract From File"]]
+    fn_extract_interactions_multi[["Extract Interactions Multi"]]
+    fn_extract_interactions_from_dir[["Extract Interactions From Dir"]]
+    fn__extract_message_102[["Extract Message"]]
+    fn_visit_body_129[["Visit Body"]]
+    tool_extract_interactions_225["ix = Extract Interactions&lt;br&gt;&lt;i&gt;Extrae mensajes actor-a-actor&lt;br&gt;de un fuente&lt;/i&gt;"]
+    n_start --&gt; fn_extract_interactions
+    fn_extract_interactions --&gt; loop_12
+    loop_12 --&gt; dec_13
+    dec_13 --&gt; dec_23
+    dec_23 -- "loop" --&gt; loop_12
+    loop_12 --&gt; loop_28
+    loop_28 --&gt; dec_29
+    dec_29 --&gt; dec_32
+    dec_32 --&gt; dec_34
+    dec_34 --&gt; dec_36
+    dec_36 --&gt; loop_44
+    loop_44 --&gt; dec_45
+    dec_45 --&gt; dec_51
+    dec_45 --&gt; dec_53
+    dec_53 --&gt; dec_61
+    dec_61 -- "loop" --&gt; loop_44
+    loop_44 -- "loop" --&gt; loop_28
+    loop_28 --&gt; loop_66
+    loop_66 --&gt; dec_67
+    dec_67 --&gt; loop_70
+    loop_70 --&gt; dec_71
+    dec_71 --&gt; loop_72
+    loop_72 --&gt; dec_73
+    dec_73 -- "loop" --&gt; loop_72
+    loop_72 -- "loop" --&gt; loop_70
+    loop_70 --&gt; dec_77
+    dec_77 --&gt; dec_80
+    dec_80 --&gt; loop_82
+    loop_82 --&gt; dec_84
+    dec_84 -- "loop" --&gt; loop_66
+    loop_66 --&gt; dec_89
+    dec_89 --&gt; dec_90
+    dec_90 --&gt; dec_95
+    dec_95 --&gt; fn__extract_message_102
+    fn__extract_message_102 --&gt; fn_visit_body_129
+    fn_visit_body_129 --&gt; loop_140
+    loop_140 --&gt; dec_141
+    dec_141 -- "loop" --&gt; loop_140
+    loop_140 --&gt; loop_145
+    loop_145 --&gt; dec_146
+    dec_146 --&gt; loop_148
+    loop_148 --&gt; dec_149
+    dec_149 -- "loop" --&gt; loop_148
+    loop_148 -- "loop" --&gt; loop_145
+    loop_145 --&gt; loop_162
+    loop_162 --&gt; dec_164
+    dec_164 --&gt; dec_167
+    dec_167 -- "loop" --&gt; loop_162
+    loop_162 --&gt; loop_174
+    loop_174 --&gt; loop_186
+    loop_186 --&gt; dec_187
+    dec_187 -- "loop" --&gt; loop_186
+    n_start --&gt; fn_extract_from_file
+    n_start --&gt; fn_extract_interactions_multi
+    fn_extract_interactions_multi --&gt; loop_215
+    loop_215 --&gt; dec_217
+    dec_217 --&gt; tool_extract_interactions_225
+    tool_extract_interactions_225 --&gt; loop_230
+    loop_230 --&gt; dec_231
+    dec_231 --&gt; dec_233
+    dec_233 -- "loop" --&gt; loop_230
+    loop_230 -- "loop" --&gt; loop_215
+    n_start --&gt; fn_extract_interactions_from_dir
+    class n_start node-start
+    class fn_extract_interactions,fn__extract_message_102,fn_visit_body_129,fn_extract_from_file,fn_extract_interactions_multi,fn_extract_interactions_from_dir node-subprocess
+    class loop_12,loop_28,loop_44,loop_66,loop_70,loop_72,loop_82,loop_140,loop_145,loop_148,loop_162,loop_174,loop_186,loop_215,loop_230 node-loop
+    class dec_13,dec_23,dec_29,dec_32,dec_34,dec_36,dec_45,dec_51,dec_53,dec_61,dec_67,dec_71,dec_73,dec_77,dec_80,dec_84,dec_89,dec_90,dec_95,dec_141,dec_146,dec_149,dec_164,dec_167,dec_187,dec_217,dec_231,dec_233 node-decision
+    class tool_extract_interactions_225 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

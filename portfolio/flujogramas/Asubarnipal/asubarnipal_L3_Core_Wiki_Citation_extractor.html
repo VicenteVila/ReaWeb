@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 3 · extractor</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 3 · extractor - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Core · Wiki · Citation · extractor</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Citation Extractor
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_378{"formato&lt;br&gt;&lt;i&gt;Condición en línea 378:&lt;br&gt;formato&lt;/i&gt;"}
+    dec_182{"len(groups) &gt;= 1&lt;br&gt;&lt;i&gt;Condición en línea 182:&lt;br&gt;len(groups) &gt;= 1&lt;/i&gt;"}
+    dec_184{"len(groups) &gt;= 2&lt;br&gt;&lt;i&gt;Condición en línea 184:&lt;br&gt;len(groups) &gt;= 2&lt;/i&gt;"}
+    dec_205{"len(groups) &gt;= 1&lt;br&gt;&lt;i&gt;Condición en línea 205:&lt;br&gt;len(groups) &gt;= 1&lt;/i&gt;"}
+    dec_186{"len(groups) &gt;= 3&lt;br&gt;&lt;i&gt;Condición en línea 186:&lt;br&gt;len(groups) &gt;= 3&lt;/i&gt;"}
+    dec_207{"len(groups) &gt;= 2&lt;br&gt;&lt;i&gt;Condición en línea 207:&lt;br&gt;len(groups) &gt;= 2&lt;/i&gt;"}
+    dec_226{"len(groups) &gt;= 1&lt;br&gt;&lt;i&gt;Condición en línea 226:&lt;br&gt;len(groups) &gt;= 1&lt;/i&gt;"}
+    dec_188{"len(groups) &gt;= 4&lt;br&gt;&lt;i&gt;Condición en línea 188:&lt;br&gt;len(groups) &gt;= 4&lt;/i&gt;"}
+    dec_209{"len(groups) &gt;= 3&lt;br&gt;&lt;i&gt;Condición en línea 209:&lt;br&gt;len(groups) &gt;= 3&lt;/i&gt;"}
+    dec_228{"len(groups) &gt;= 2&lt;br&gt;&lt;i&gt;Condición en línea 228:&lt;br&gt;len(groups) &gt;= 2&lt;/i&gt;"}
+    dec_247{"len(groups) &gt;= 2&lt;br&gt;&lt;i&gt;Condición en línea 247:&lt;br&gt;len(groups) &gt;= 2&lt;/i&gt;"}
+    dec_190{"len(groups) &gt;= 5 and&lt;br&gt;groups(4)&lt;br&gt;&lt;i&gt;Condición en línea 190:&lt;br&gt;len(groups) &gt;= 5 and groups(4)&lt;/i&gt;"}
+    dec_211{"len(groups) &gt;= 4 and&lt;br&gt;groups(3)&lt;br&gt;&lt;i&gt;Condición en línea 211:&lt;br&gt;len(groups) &gt;= 4 and groups(3)&lt;/i&gt;"}
+    dec_230{"len(groups) &gt;= 3&lt;br&gt;&lt;i&gt;Condición en línea 230:&lt;br&gt;len(groups) &gt;= 3&lt;/i&gt;"}
+    dec_249{"len(groups) &gt;= 3&lt;br&gt;&lt;i&gt;Condición en línea 249:&lt;br&gt;len(groups) &gt;= 3&lt;/i&gt;"}
+    dec_268{"len(groups) &gt;= 1&lt;br&gt;&lt;i&gt;Condición en línea 268:&lt;br&gt;len(groups) &gt;= 1&lt;/i&gt;"}
+    dec_192{"len(groups) &gt;= 6 and&lt;br&gt;groups(5)&lt;br&gt;&lt;i&gt;Condición en línea 192:&lt;br&gt;len(groups) &gt;= 6 and groups(5)&lt;/i&gt;"}
+    dec_213{"len(groups) &gt;= 5 and&lt;br&gt;groups(4)&lt;br&gt;&lt;i&gt;Condición en línea 213:&lt;br&gt;len(groups) &gt;= 5 and groups(4)&lt;/i&gt;"}
+    dec_232{"len(groups) &gt;= 4 and&lt;br&gt;groups(3)&lt;br&gt;&lt;i&gt;Condición en línea 232:&lt;br&gt;len(groups) &gt;= 4 and groups(3)&lt;/i&gt;"}
+    dec_251{"len(groups) &gt;= 4&lt;br&gt;&lt;i&gt;Condición en línea 251:&lt;br&gt;len(groups) &gt;= 4&lt;/i&gt;"}
+    dec_270{"len(groups) &gt;= 2&lt;br&gt;&lt;i&gt;Condición en línea 270:&lt;br&gt;len(groups) &gt;= 2&lt;/i&gt;"}
+    dec_194{"len(groups) &gt;= 7 and&lt;br&gt;groups(6)&lt;br&gt;&lt;i&gt;Condición en línea 194:&lt;br&gt;len(groups) &gt;= 7 and groups(6)&lt;/i&gt;"}
+    dec_215{"len(groups) &gt;= 6&lt;br&gt;&lt;i&gt;Condición en línea 215:&lt;br&gt;len(groups) &gt;= 6&lt;/i&gt;"}
+    dec_234{"len(groups) &gt;= 5 and&lt;br&gt;groups(4)&lt;br&gt;&lt;i&gt;Condición en línea 234:&lt;br&gt;len(groups) &gt;= 5 and groups(4)&lt;/i&gt;"}
+    dec_253{"len(groups) &gt;= 5 and&lt;br&gt;groups(4)&lt;br&gt;&lt;i&gt;Condición en línea 253:&lt;br&gt;len(groups) &gt;= 5 and groups(4)&lt;/i&gt;"}
+    dec_196{"len(groups) &gt;= 8 and&lt;br&gt;groups(7)&lt;br&gt;&lt;i&gt;Condición en línea 196:&lt;br&gt;len(groups) &gt;= 8 and groups(7)&lt;/i&gt;"}
+    dec_217{"len(groups) &gt;= 7 and&lt;br&gt;groups(6)&lt;br&gt;&lt;i&gt;Condición en línea 217:&lt;br&gt;len(groups) &gt;= 7 and groups(6)&lt;/i&gt;"}
+    dec_236{"len(groups) &gt;= 6&lt;br&gt;&lt;i&gt;Condición en línea 236:&lt;br&gt;len(groups) &gt;= 6&lt;/i&gt;"}
+    dec_255{"len(groups) &gt;= 6 and&lt;br&gt;groups(5)&lt;br&gt;&lt;i&gt;Condición en línea 255:&lt;br&gt;len(groups) &gt;= 6 and groups(5)&lt;/i&gt;"}
+    dec_238{"len(groups) &gt;= 7 and&lt;br&gt;groups(6)&lt;br&gt;&lt;i&gt;Condición en línea 238:&lt;br&gt;len(groups) &gt;= 7 and groups(6)&lt;/i&gt;"}
+    dec_257{"len(groups) &gt;= 7 and&lt;br&gt;groups(6)&lt;br&gt;&lt;i&gt;Condición en línea 257:&lt;br&gt;len(groups) &gt;= 7 and groups(6)&lt;/i&gt;"}
+    dec_259{"len(groups) &gt;= 8 and&lt;br&gt;groups(7)&lt;br&gt;&lt;i&gt;Condición en línea 259:&lt;br&gt;len(groups) &gt;= 8 and groups(7)&lt;/i&gt;"}
+    loop_109["For loop"]
+    loop_110["For each pattern in patterns"]
+    loop_113["For each match in matches"]
+    dec_115{"citation&lt;br&gt;&lt;i&gt;Condición en línea 115:&lt;br&gt;citation&lt;/i&gt;"}
+    loop_288["For each citation in citations"]
+    dec_292{"normalized not in seen&lt;br&gt;&lt;i&gt;Condición en línea 292:&lt;br&gt;normalized not in seen&lt;/i&gt;"}
+    fn_extract_citations[["Extract Citations"]]
+    fn_citation_to_dict[["To Dict"]]
+    fn_citationextractor_extract[["Extract"]]
+    fn_citation_get_identifier[["Get Identifier"]]
+    fn_citationextractor__parse_match[["Parse Match"]]
+    fn_citationextractor__parse_apa[["Parse Apa"]]
+    fn_citationextractor__parse_mla[["Parse Mla"]]
+    fn_citationextractor__parse_chicago[["Parse Chicago"]]
+    fn_citationextractor__parse_ieee[["Parse Ieee"]]
+    fn_citationextractor__parse_inline[["Parse Inline"]]
+    fn_citationextractor__remove_duplicates[["Remove Duplicates"]]
+    fn_citationextractor_extract_from_pdf[["Extract From Pdf"]]
+    fn_citationextractor_extract_from_url[["Extract From Url"]]
+    n_start --&gt; fn_extract_citations
+    fn_extract_citations --&gt; dec_378
+    n_start --&gt; fn_citation_to_dict
+    fn_citation_to_dict --&gt; fn_citation_get_identifier
+    n_start --&gt; fn_citationextractor_extract
+    fn_citationextractor_extract --&gt; loop_109
+    loop_109 --&gt; loop_110
+    loop_110 --&gt; loop_113
+    loop_113 --&gt; dec_115
+    dec_115 -- "loop" --&gt; loop_113
+    loop_113 -- "loop" --&gt; loop_110
+    loop_110 -- "loop" --&gt; loop_109
+    fn_citationextractor_extract --&gt; fn_citationextractor__parse_match
+    fn_citationextractor__parse_match --&gt; fn_citationextractor__parse_apa
+    fn_citationextractor__parse_apa --&gt; dec_182
+    dec_182 --&gt; dec_184
+    dec_184 --&gt; dec_186
+    dec_186 --&gt; dec_188
+    dec_188 --&gt; dec_190
+    dec_190 --&gt; dec_192
+    dec_192 --&gt; dec_194
+    dec_194 --&gt; dec_196
+    fn_citationextractor__parse_apa --&gt; fn_citationextractor__parse_mla
+    fn_citationextractor__parse_mla --&gt; dec_205
+    dec_205 --&gt; dec_207
+    dec_207 --&gt; dec_209
+    dec_209 --&gt; dec_211
+    dec_211 --&gt; dec_213
+    dec_213 --&gt; dec_215
+    dec_215 --&gt; dec_217
+    fn_citationextractor__parse_mla --&gt; fn_citationextractor__parse_chicago
+    fn_citationextractor__parse_chicago --&gt; dec_226
+    dec_226 --&gt; dec_228
+    dec_228 --&gt; dec_230
+    dec_230 --&gt; dec_232
+    dec_232 --&gt; dec_234
+    dec_234 --&gt; dec_236
+    dec_236 --&gt; dec_238
+    fn_citationextractor__parse_chicago --&gt; fn_citationextractor__parse_ieee
+    fn_citationextractor__parse_ieee --&gt; dec_247
+    dec_247 --&gt; dec_249
+    dec_249 --&gt; dec_251
+    dec_251 --&gt; dec_253
+    dec_253 --&gt; dec_255
+    dec_255 --&gt; dec_257
+    dec_257 --&gt; dec_259
+    fn_citationextractor__parse_ieee --&gt; fn_citationextractor__parse_inline
+    fn_citationextractor__parse_inline --&gt; dec_268
+    dec_268 --&gt; dec_270
+    fn_citationextractor__parse_inline --&gt; fn_citationextractor__remove_duplicates
+    fn_citationextractor__remove_duplicates --&gt; loop_288
+    loop_288 --&gt; dec_292
+    dec_292 -- "loop" --&gt; loop_288
+    fn_citationextractor__remove_duplicates --&gt; fn_citationextractor_extract_from_pdf
+    fn_citationextractor_extract_from_pdf --&gt; fn_citationextractor_extract_from_url
+    class n_start node-start
+    class fn_extract_citations,fn_citation_to_dict,fn_citation_get_identifier,fn_citationextractor_extract,fn_citationextractor__parse_match,fn_citationextractor__parse_apa,fn_citationextractor__parse_mla,fn_citationextractor__parse_chicago,fn_citationextractor__parse_ieee,fn_citationextractor__parse_inline,fn_citationextractor__remove_duplicates,fn_citationextractor_extract_from_pdf,fn_citationextractor_extract_from_url node-subprocess
+    class dec_378,dec_115,dec_182,dec_184,dec_186,dec_188,dec_190,dec_192,dec_194,dec_196,dec_205,dec_207,dec_209,dec_211,dec_213,dec_215,dec_217,dec_226,dec_228,dec_230,dec_232,dec_234,dec_236,dec_238,dec_247,dec_249,dec_251,dec_253,dec_255,dec_257,dec_259,dec_268,dec_270,dec_292 node-decision
+    class loop_109,loop_110,loop_113,loop_288 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

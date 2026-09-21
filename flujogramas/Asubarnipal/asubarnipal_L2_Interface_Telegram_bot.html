@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · bot</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · bot - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Interface · Telegram · bot</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Telegram Bot
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    loop_215["For each msg in history"]
+    dec_226{"text.startswith('/')&lt;br&gt;&lt;i&gt;Condición en línea 226:&lt;br&gt;text.startswith('/')&lt;/i&gt;"}
+    dec_476{"not voice&lt;br&gt;&lt;i&gt;Condición en línea 476:&lt;br&gt;not voice&lt;/i&gt;"}
+    dec_531{"not is_vision_available()&lt;br&gt;&lt;i&gt;Condición en línea 531:&lt;br&gt;not is_vision_available()&lt;/i&gt;"}
+    dec_231{"PENDING_RESTORE.get(user_id) != fb&lt;br&gt;&lt;i&gt;Condición en línea 231:&lt;br&gt;PENDING_RESTORE.get(user_id) != 'waiting' and fb in ('sí', '&lt;/i&gt;"}
+    dec_495{"success&lt;br&gt;&lt;i&gt;Condición en línea 495:&lt;br&gt;success&lt;/i&gt;"}
+    dec_542{"success&lt;br&gt;&lt;i&gt;Condición en línea 542:&lt;br&gt;success&lt;/i&gt;"}
+    dec_560{"query.data ==&lt;br&gt;'show_dashboard'&lt;br&gt;&lt;i&gt;Condición en línea 560:&lt;br&gt;query.data == 'show_dashboard'&lt;/i&gt;"}
+    dec_234{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 234:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_507{"ogg_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 507:&lt;br&gt;ogg_path.exists()&lt;/i&gt;"}
+    dec_551{"photo_path.exists()&lt;br&gt;&lt;i&gt;Condición en línea 551:&lt;br&gt;photo_path.exists()&lt;/i&gt;"}
+    dec_562{"config.DATA_DIR.exists()&lt;br&gt;&lt;i&gt;Condición en línea 562:&lt;br&gt;config.DATA_DIR.exists()&lt;/i&gt;"}
+    dec_589{"query.data == 'show_wiki'&lt;br&gt;&lt;i&gt;Condición en línea 589:&lt;br&gt;query.data == 'show_wiki'&lt;/i&gt;"}
+    dec_249{"re.match('^https?://',&lt;br&gt;text.strip())&lt;br&gt;&lt;i&gt;Condición en línea 249:&lt;br&gt;re.match('^https?://', text.strip())&lt;/i&gt;"}
+    dec_564{"agent_file.exists()&lt;br&gt;&lt;i&gt;Condición en línea 564:&lt;br&gt;agent_file.exists()&lt;/i&gt;"}
+    dec_591{"not entries&lt;br&gt;&lt;i&gt;Condición en línea 591:&lt;br&gt;not entries&lt;/i&gt;"}
+    dec_601{"query.data ==&lt;br&gt;'agent_continue'&lt;br&gt;&lt;i&gt;Condición en línea 601:&lt;br&gt;query.data == 'agent_continue'&lt;/i&gt;"}
+    dec_264{"session_info.get('exists')&lt;br&gt;and 0) &gt; 0&lt;br&gt;&lt;i&gt;Condición en línea 264:&lt;br&gt;session_info.get('exists') and session_info.get('message_cou&lt;/i&gt;"}
+    dec_571{"config.HEARTBEAT_FILE.exists()&lt;br&gt;&lt;i&gt;Condición en línea 571:&lt;br&gt;config.HEARTBEAT_FILE.exists()&lt;/i&gt;"}
+    loop_596["For each e"]
+    dec_265{"user_id not in&lt;br&gt;PENDING_RESTORE&lt;br&gt;&lt;i&gt;Condición en línea 265:&lt;br&gt;user_id not in PENDING_RESTORE&lt;/i&gt;"}
+    dec_282{"PENDING_RESTORE.get(user_id) ==&lt;br&gt;&lt;i&gt;Condición en línea 282:&lt;br&gt;PENDING_RESTORE.get(user_id) == 'waiting'&lt;/i&gt;"}
+    dec_283{"text.lower() in ('sí', 'si',&lt;br&gt;'yes', 's', 'y')&lt;br&gt;&lt;i&gt;Condición en línea 283:&lt;br&gt;text.lower() in ('sí', 'si', 'yes', 's', 'y')&lt;/i&gt;"}
+    dec_289{"system_prompt&lt;br&gt;&lt;i&gt;Condición en línea 289:&lt;br&gt;system_prompt&lt;/i&gt;"}
+    dec_303{"text.lower() in ('no', 'n')&lt;br&gt;&lt;i&gt;Condición en línea 303:&lt;br&gt;text.lower() in ('no', 'n')&lt;/i&gt;"}
+    dec_295{"charlar_mode&lt;br&gt;&lt;i&gt;Condición en línea 295:&lt;br&gt;charlar_mode&lt;/i&gt;"}
+    dec_316{"bypass_rag&lt;br&gt;&lt;i&gt;Condición en línea 316:&lt;br&gt;bypass_rag&lt;/i&gt;"}
+    dec_328{"session.get('charla_mode')&lt;br&gt;&lt;i&gt;Condición en línea 328:&lt;br&gt;session.get('charla_mode')&lt;/i&gt;"}
+    dec_343{"not&lt;br&gt;session.get('system_prompt')&lt;br&gt;&lt;i&gt;Condición en línea 343:&lt;br&gt;not session.get('system_prompt')&lt;/i&gt;"}
+    loop_353["For each attempt"]
+    dec_372{"response&lt;br&gt;&lt;i&gt;Condición en línea 372:&lt;br&gt;response&lt;/i&gt;"}
+    dec_385{"not response&lt;br&gt;&lt;i&gt;Condición en línea 385:&lt;br&gt;not response&lt;/i&gt;"}
+    dec_392{"response&lt;br&gt;&lt;i&gt;Condición en línea 392:&lt;br&gt;response&lt;/i&gt;"}
+    dec_406{"not response&lt;br&gt;&lt;i&gt;Condición en línea 406:&lt;br&gt;not response&lt;/i&gt;"}
+    dec_437{"not response&lt;br&gt;&lt;i&gt;Condición en línea 437:&lt;br&gt;not response&lt;/i&gt;"}
+    dec_443{"response&lt;br&gt;&lt;i&gt;Condición en línea 443:&lt;br&gt;response&lt;/i&gt;"}
+    fn_get_user_session[["Get User Session"]]
+    fn__estimate_tokens[["Estimate Tokens"]]
+    fn__trim_history[["Trim History"]]
+    fn__save_to_db[["Save To Db"]]
+    fn__load_from_db[["Load From Db"]]
+    fn__prune_db_history[["Prune Db History"]]
+    fn__clear_db_session[["Clear Db Session"]]
+    fn__get_fallback_model[["Get Fallback Model"]]
+    fn__build_messages[["Build Messages"]]
+    fn_handle_message[["Handle Message"]]
+    fn_handle_voice[["Handle Voice"]]
+    fn_handle_photo[["Handle Photo"]]
+    fn_agent_callback[["Agent Callback"]]
+    fn_indexar_wiki_cmd[["Indexar Wiki Cmd"]]
+    fn_error_handler[["Error Handler"]]
+    fn_clear_session_cmd[["Clear Session Cmd"]]
+    fn_session_info_cmd[["Session Info Cmd"]]
+    fn_main[["Main"]]
+    tool_answer_558["Answer&lt;br&gt;&lt;i&gt;Respuesta con contexto recuperado&lt;/i&gt;"]
+    fn_rate_limit_check_815[["Rate Limit Check"]]
+    tool_call_with_turbo_365["result = Call w/ Turbo&lt;br&gt;&lt;i&gt;LLM con compresión turboquant&lt;/i&gt;"]
+    tool_remember_450["Remember&lt;br&gt;&lt;i&gt;HMem: consolida un evento en la memoria&lt;/i&gt;"]
+    n_start --&gt; fn_get_user_session
+    n_start --&gt; fn__estimate_tokens
+    n_start --&gt; fn__trim_history
+    n_start --&gt; fn__save_to_db
+    n_start --&gt; fn__load_from_db
+    n_start --&gt; fn__prune_db_history
+    n_start --&gt; fn__clear_db_session
+    n_start --&gt; fn__get_fallback_model
+    n_start --&gt; fn__build_messages
+    fn__build_messages --&gt; loop_215
+    n_start --&gt; fn_handle_message
+    fn_handle_message --&gt; dec_226
+    dec_226 --&gt; dec_231
+    dec_231 --&gt; dec_234
+    dec_234 --&gt; dec_249
+    dec_249 --&gt; dec_264
+    dec_264 --&gt; dec_265
+    dec_265 --&gt; dec_282
+    dec_282 --&gt; dec_283
+    dec_283 --&gt; dec_289
+    dec_289 --&gt; dec_295
+    dec_283 --&gt; dec_303
+    dec_303 --&gt; dec_316
+    dec_316 --&gt; dec_328
+    dec_328 --&gt; dec_343
+    dec_343 --&gt; loop_353
+    loop_353 --&gt; tool_call_with_turbo_365
+    tool_call_with_turbo_365 --&gt; dec_372
+    dec_372 -- "loop" --&gt; loop_353
+    loop_353 --&gt; dec_385
+    dec_385 --&gt; dec_392
+    dec_392 --&gt; dec_406
+    dec_406 --&gt; dec_437
+    dec_437 --&gt; dec_443
+    dec_443 --&gt; tool_remember_450
+    n_start --&gt; fn_handle_voice
+    fn_handle_voice --&gt; dec_476
+    dec_476 --&gt; dec_495
+    dec_495 --&gt; dec_507
+    n_start --&gt; fn_handle_photo
+    fn_handle_photo --&gt; dec_531
+    dec_531 --&gt; dec_542
+    dec_542 --&gt; dec_551
+    n_start --&gt; fn_agent_callback
+    fn_agent_callback --&gt; tool_answer_558
+    tool_answer_558 --&gt; dec_560
+    dec_560 --&gt; dec_562
+    dec_562 --&gt; dec_564
+    dec_564 --&gt; dec_571
+    dec_560 --&gt; dec_589
+    dec_589 --&gt; dec_591
+    dec_591 --&gt; loop_596
+    dec_589 --&gt; dec_601
+    n_start --&gt; fn_indexar_wiki_cmd
+    n_start --&gt; fn_error_handler
+    n_start --&gt; fn_clear_session_cmd
+    n_start --&gt; fn_session_info_cmd
+    n_start --&gt; fn_main
+    fn_main --&gt; fn_rate_limit_check_815
+    class n_start node-start
+    class fn_get_user_session,fn__estimate_tokens,fn__trim_history,fn__save_to_db,fn__load_from_db,fn__prune_db_history,fn__clear_db_session,fn__get_fallback_model,fn__build_messages,fn_handle_message,fn_handle_voice,fn_handle_photo,fn_agent_callback,fn_indexar_wiki_cmd,fn_error_handler,fn_clear_session_cmd,fn_session_info_cmd,fn_main,fn_rate_limit_check_815 node-subprocess
+    class loop_215,loop_353,loop_596 node-loop
+    class dec_226,dec_231,dec_234,dec_249,dec_264,dec_265,dec_282,dec_283,dec_289,dec_295,dec_303,dec_316,dec_328,dec_343,dec_372,dec_385,dec_392,dec_406,dec_437,dec_443,dec_476,dec_495,dec_507,dec_531,dec_542,dec_551,dec_560,dec_562,dec_564,dec_571,dec_589,dec_591,dec_601 node-decision
+    class tool_call_with_turbo_365,tool_remember_450,tool_answer_558 node-tool
+    class n_end node-end
+    click fn_main href "asubarnipal_L3_Interface_Telegram_bot_Entry.html" "Abrir detalle"
+    click fn_get_user_session href "asubarnipal_L3_Interface_Telegram_bot_Sessions.html" "Abrir detalle"
+    click fn__save_to_db href "asubarnipal_L3_Interface_Telegram_bot_Sessions.html" "Abrir detalle"
+    click fn__load_from_db href "asubarnipal_L3_Interface_Telegram_bot_Sessions.html" "Abrir detalle"
+    click fn__prune_db_history href "asubarnipal_L3_Interface_Telegram_bot_Sessions.html" "Abrir detalle"
+    click fn__clear_db_session href "asubarnipal_L3_Interface_Telegram_bot_Sessions.html" "Abrir detalle"
+    click fn__estimate_tokens href "asubarnipal_L3_Interface_Telegram_bot_Messages.html" "Abrir detalle"
+    click fn__trim_history href "asubarnipal_L3_Interface_Telegram_bot_Messages.html" "Abrir detalle"
+    click fn__build_messages href "asubarnipal_L3_Interface_Telegram_bot_Messages.html" "Abrir detalle"
+    click fn_handle_message href "asubarnipal_L3_Interface_Telegram_bot_Handlers.html" "Abrir detalle"
+    click fn_handle_voice href "asubarnipal_L3_Interface_Telegram_bot_Handlers.html" "Abrir detalle"
+    click fn_handle_photo href "asubarnipal_L3_Interface_Telegram_bot_Handlers.html" "Abrir detalle"
+    click fn_agent_callback href "asubarnipal_L3_Interface_Telegram_bot_Handlers.html" "Abrir detalle"
+    click fn_error_handler href "asubarnipal_L3_Interface_Telegram_bot_Handlers.html" "Abrir detalle"
+    click fn_indexar_wiki_cmd href "asubarnipal_L3_Interface_Telegram_bot_Commands.html" "Abrir detalle"
+    click fn_clear_session_cmd href "asubarnipal_L3_Interface_Telegram_bot_Commands.html" "Abrir detalle"
+    click fn_session_info_cmd href "asubarnipal_L3_Interface_Telegram_bot_Commands.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

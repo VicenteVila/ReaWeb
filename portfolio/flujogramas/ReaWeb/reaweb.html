@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · reaweb</title>
+<meta name="description" content="Flujograma ReaWeb · reaweb - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><span class="current">reaweb</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Flow: agent
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    init["Init Agent&lt;br&gt;&lt;i&gt;run_id, mkdir, upsert_run, write_text&lt;/i&gt;"]
+    main_loop["Main Loop&lt;br&gt;&lt;i&gt;while True:&lt;br&gt;  turn += 1&lt;br&gt;  register_evaluation()&lt;br&gt;  budget.done()?&lt;/i&gt;"]
+    loop_869["Main Loop&lt;br&gt;(while True)"]
+    dec_876{"stop_reason&lt;br&gt;&lt;i&gt;Condición en línea 876:&lt;br&gt;stop_reason&lt;/i&gt;"}
+    dec_900{"NOT tool_calls?&lt;br&gt;&lt;i&gt;Niega tool_calls&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_904{"any((k in text.lower() for k&lt;br&gt;in ('done', 'fin', 'finalizado',&lt;br&gt;&lt;i&gt;Condición en línea 904:&lt;br&gt;any((k in text.lower() for k in ('done', 'fin', 'finalizado'&lt;/i&gt;"}
+    dec_905{"self.target_h and&lt;br&gt;self.hypothesis_count &lt;=&lt;br&gt;&lt;i&gt;Condición en línea 905:&lt;br&gt;self.target_h and self.hypothesis_count &lt;= self.target_h&lt;/i&gt;"}
+    loop_919["For each call in tool_calls"]
+    dec_945{"call.name ==&lt;br&gt;'generate_candidate' and node_id&lt;br&gt;&lt;i&gt;Condición en línea 945:&lt;br&gt;call.name == 'generate_candidate' and node_id is not None&lt;/i&gt;"}
+    dec_949{"call.name ==&lt;br&gt;'generate_candidate' and node_id&lt;br&gt;&lt;i&gt;Condición en línea 949:&lt;br&gt;call.name == 'generate_candidate' and node_id is not None&lt;/i&gt;"}
+    dec_953{"call.name ==&lt;br&gt;'generate_candidate' and is not&lt;br&gt;&lt;i&gt;Condición en línea 953:&lt;br&gt;call.name == 'generate_candidate' and pre_snapshot is not No&lt;/i&gt;"}
+    dec_956{"node_id is not None and&lt;br&gt;call.name in 'audit_page')&lt;br&gt;&lt;i&gt;Condición en línea 956:&lt;br&gt;node_id is not None and call.name in ('generate_candidate',&lt;/i&gt;"}
+    dec_961{"self.budget.done()&lt;br&gt;&lt;i&gt;Condición en línea 961:&lt;br&gt;self.budget.done()&lt;/i&gt;"}
+    dec_969{"self.llm)&lt;br&gt;&lt;i&gt;Condición en línea 969:&lt;br&gt;self.context.should_compact(transcript_text, self.llm)&lt;/i&gt;"}
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_976{"self.memory.incremental.exists()&lt;br&gt;&lt;i&gt;Condición en línea 976:&lt;br&gt;self.memory.incremental.exists()&lt;/i&gt;"}
+    n_start --&gt; init
+    init --&gt; main_loop
+    main_loop --&gt; loop_869
+    loop_869 --&gt; dec_876
+    dec_876 --&gt; dec_900
+    dec_900 --&gt; dec_904
+    dec_904 --&gt; dec_905
+    dec_905 --&gt; loop_919
+    loop_919 --&gt; dec_945
+    dec_945 --&gt; dec_949
+    dec_949 --&gt; dec_953
+    dec_953 --&gt; dec_956
+    loop_919 --&gt; dec_961
+    dec_961 --&gt; dec_969
+    loop_869 --&gt; dec_976
+    dec_956 -. "loop" .-&gt; loop_919
+    dec_969 -. "loop" .-&gt; loop_869
+    class n_start node-start
+    class init node-process
+    class main_loop,loop_869,loop_919 node-loop
+    class dec_876,dec_900,dec_904,dec_905,dec_945,dec_949,dec_953,dec_956,dec_961,dec_969,dec_976 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

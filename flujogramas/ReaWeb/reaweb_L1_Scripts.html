@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · Nivel 1 · Scripts</title>
+<meta name="description" content="Flujograma ReaWeb · Nivel 1 · Scripts - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><a href="reaweb_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L1 · Scripts</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% reaweb · scripts
+%%{init: {"securityLevel": "loose", "themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start"])
+    mod__common["Common&lt;br&gt;&lt;i&gt;12 nodos, 10 enlaces&lt;/i&gt;"]
+    mod_backfill_memory["Backfill Memory&lt;br&gt;&lt;i&gt;33 nodos, 36 enlaces&lt;/i&gt;"]
+    mod_cleanup_runs["Cleanup Runs&lt;br&gt;&lt;i&gt;21 nodos, 20 enlaces&lt;/i&gt;"]
+    mod_export_candidate["Export Candidate&lt;br&gt;&lt;i&gt;6 nodos, 4 enlaces&lt;/i&gt;"]
+    mod_gate_harness_edit["Gate Harness Edit&lt;br&gt;&lt;i&gt;27 nodos, 25 enlaces&lt;/i&gt;"]
+    mod_gen_cards["Gen Cards&lt;br&gt;&lt;i&gt;13 nodos, 12 enlaces&lt;/i&gt;"]
+    mod_merge_lessons["Merge Lessons&lt;br&gt;&lt;i&gt;10 nodos, 10 enlaces&lt;/i&gt;"]
+    mod_reaweb_cli["Reaweb Cli&lt;br&gt;&lt;i&gt;4 nodos, 2 enlaces&lt;/i&gt;"]
+    mod_render_dashboard["Render Dashboard&lt;br&gt;&lt;i&gt;32 nodos, 33 enlaces&lt;/i&gt;"]
+    mod_run_agent["Run Agent&lt;br&gt;&lt;i&gt;4 nodos, 2 enlaces&lt;/i&gt;"]
+    mod_run_battery["Run Battery&lt;br&gt;&lt;i&gt;21 nodos, 21 enlaces&lt;/i&gt;"]
+    mod_run_benchmark["Run Benchmark&lt;br&gt;&lt;i&gt;44 nodos, 46 enlaces&lt;/i&gt;"]
+    mod_run_misevo["Run Misevo&lt;br&gt;&lt;i&gt;19 nodos, 19 enlaces&lt;/i&gt;"]
+    mod_seed_from_docs["Seed From Docs&lt;br&gt;&lt;i&gt;14 nodos, 13 enlaces&lt;/i&gt;"]
+    mod_trend_evolution["Trend Evolution&lt;br&gt;&lt;i&gt;34 nodos, 39 enlaces&lt;/i&gt;"]
+    n_end(["End"])
+    n_start --&gt; mod__common
+    mod__common --&gt; mod_backfill_memory
+    mod_backfill_memory --&gt; mod_cleanup_runs
+    mod_cleanup_runs --&gt; mod_export_candidate
+    mod_export_candidate --&gt; mod_gate_harness_edit
+    mod_gate_harness_edit --&gt; mod_gen_cards
+    mod_gen_cards --&gt; mod_merge_lessons
+    mod_merge_lessons --&gt; mod_reaweb_cli
+    mod_reaweb_cli --&gt; mod_render_dashboard
+    mod_render_dashboard --&gt; mod_run_agent
+    mod_run_agent --&gt; mod_run_battery
+    mod_run_battery --&gt; mod_run_benchmark
+    mod_run_benchmark --&gt; mod_run_misevo
+    mod_run_misevo --&gt; mod_seed_from_docs
+    mod_seed_from_docs --&gt; mod_trend_evolution
+    mod_trend_evolution --&gt; n_end
+    class n_start node-start
+    class mod__common,mod_backfill_memory,mod_cleanup_runs,mod_gate_harness_edit,mod_gen_cards,mod_merge_lessons,mod_render_dashboard,mod_run_battery,mod_run_benchmark,mod_run_misevo,mod_seed_from_docs,mod_trend_evolution node-loop
+    class mod_export_candidate,mod_reaweb_cli,mod_run_agent node-process
+    class n_end node-end
+    click mod__common href "reaweb_L2_Scripts__common.html" "Abrir detalle"
+    click mod_backfill_memory href "reaweb_L2_Scripts_Backfill_memory.html" "Abrir detalle"
+    click mod_cleanup_runs href "reaweb_L2_Scripts_Cleanup_runs.html" "Abrir detalle"
+    click mod_export_candidate href "reaweb_L2_Scripts_Export_candidate.html" "Abrir detalle"
+    click mod_gate_harness_edit href "reaweb_L2_Scripts_Gate_harness_edit.html" "Abrir detalle"
+    click mod_gen_cards href "reaweb_L2_Scripts_Gen_cards.html" "Abrir detalle"
+    click mod_merge_lessons href "reaweb_L2_Scripts_Merge_lessons.html" "Abrir detalle"
+    click mod_reaweb_cli href "reaweb_L2_Scripts_Reaweb_cli.html" "Abrir detalle"
+    click mod_render_dashboard href "reaweb_L2_Scripts_Render_dashboard.html" "Abrir detalle"
+    click mod_run_agent href "reaweb_L2_Scripts_Run_agent.html" "Abrir detalle"
+    click mod_run_battery href "reaweb_L2_Scripts_Run_battery.html" "Abrir detalle"
+    click mod_run_benchmark href "reaweb_L2_Scripts_Run_benchmark.html" "Abrir detalle"
+    click mod_run_misevo href "reaweb_L2_Scripts_Run_misevo.html" "Abrir detalle"
+    click mod_seed_from_docs href "reaweb_L2_Scripts_Seed_from_docs.html" "Abrir detalle"
+    click mod_trend_evolution href "reaweb_L2_Scripts_Trend_evolution.html" "Abrir detalle"
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

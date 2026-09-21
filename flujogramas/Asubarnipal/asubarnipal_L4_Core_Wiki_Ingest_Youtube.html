@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 4 · Youtube</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 4 · Youtube - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L3_Core_Wiki_Ingest.html">L3</a> <span class="sep">›</span><span class="current">L4 · Core · Wiki · Ingest · Youtube</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Ingest · Youtube
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_20{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 20:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_68{"'youtube.com' in&lt;br&gt;parsed.hostname or in&lt;br&gt;&lt;i&gt;Condición en línea 68:&lt;br&gt;'youtube.com' in parsed.hostname or 'www.youtube.com' in par&lt;/i&gt;"}
+    dec_81{"video_id&lt;br&gt;&lt;i&gt;Condición en línea 81:&lt;br&gt;video_id&lt;/i&gt;"}
+    dec_71{"'youtu.be' in&lt;br&gt;parsed.hostname&lt;br&gt;&lt;i&gt;Condición en línea 71:&lt;br&gt;'youtu.be' in parsed.hostname&lt;/i&gt;"}
+    dec_90{"snippets&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;snippets&lt;/i&gt;"}
+    dec_41{"node_path&lt;br&gt;&lt;i&gt;Condición en línea 41:&lt;br&gt;node_path&lt;/i&gt;"}
+    dec_45{"result.returncode == 0&lt;br&gt;&lt;i&gt;Condición en línea 45:&lt;br&gt;result.returncode == 0&lt;/i&gt;"}
+    dec_50{"Tool:&lt;br&gt;nt?&lt;br&gt;&lt;i&gt;Dispatch nt&lt;/i&gt;"}
+    loop_57["For each path in node_paths"]
+    dec_58{"os.path.exists(path)&lt;br&gt;&lt;i&gt;Condición en línea 58:&lt;br&gt;os.path.exists(path)&lt;/i&gt;"}
+    loop_92["For each s in snippets"]
+    dec_95{"text&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;text&lt;/i&gt;"}
+    dec_104{"not transcript&lt;br&gt;&lt;i&gt;Condición en línea 104:&lt;br&gt;not transcript&lt;/i&gt;"}
+    dec_116{"node_available&lt;br&gt;&lt;i&gt;Condición en línea 116:&lt;br&gt;node_available&lt;/i&gt;"}
+    loop_134["For each lang in subtitle_langs"]
+    dec_135{"subs_dict.get(lang)&lt;br&gt;&lt;i&gt;Condición en línea 135:&lt;br&gt;subs_dict.get(lang)&lt;/i&gt;"}
+    dec_138{"not chosen_subs&lt;br&gt;&lt;i&gt;Condición en línea 138:&lt;br&gt;not chosen_subs&lt;/i&gt;"}
+    loop_139["For each lang in subtitle_langs"]
+    dec_140{"auto_dict.get(lang)&lt;br&gt;&lt;i&gt;Condición en línea 140:&lt;br&gt;auto_dict.get(lang)&lt;/i&gt;"}
+    dec_143{"not chosen_subs and&lt;br&gt;auto_dict&lt;br&gt;&lt;i&gt;Condición en línea 143:&lt;br&gt;not chosen_subs and auto_dict&lt;/i&gt;"}
+    dec_147{"chosen_subs&lt;br&gt;&lt;i&gt;Condición en línea 147:&lt;br&gt;chosen_subs&lt;/i&gt;"}
+    loop_149["For each fmt_entry"]
+    dec_151{"not sub_url&lt;br&gt;&lt;i&gt;Condición en línea 151:&lt;br&gt;not sub_url&lt;/i&gt;"}
+    loop_153["For each attempt"]
+    dec_155{"attempt &gt; 0&lt;br&gt;&lt;i&gt;Condición en línea 155:&lt;br&gt;attempt &gt; 0&lt;/i&gt;"}
+    dec_158{"resp.ok&lt;br&gt;&lt;i&gt;Condición en línea 158:&lt;br&gt;resp.ok&lt;/i&gt;"}
+    dec_159{"'vtt' in&lt;br&gt;resp.headers.get('Content-Type',&lt;br&gt;&lt;i&gt;Condición en línea 159:&lt;br&gt;'vtt' in resp.headers.get('Content-Type', '').lower() or sub&lt;/i&gt;"}
+    dec_163{"texts&lt;br&gt;&lt;i&gt;Condición en línea 163:&lt;br&gt;texts&lt;/i&gt;"}
+    dec_167{"resp.status_code == 429&lt;br&gt;&lt;i&gt;Condición en línea 167:&lt;br&gt;resp.status_code == 429&lt;/i&gt;"}
+    dec_171{"transcript&lt;br&gt;&lt;i&gt;Condición en línea 171:&lt;br&gt;transcript&lt;/i&gt;"}
+    dec_181{"not metadata&lt;br&gt;&lt;i&gt;Condición en línea 181:&lt;br&gt;not metadata&lt;/i&gt;"}
+    loop_210["For each line"]
+    dec_212{"'—&gt;' in line&lt;br&gt;&lt;i&gt;Condición en línea 212:&lt;br&gt;'—&gt;' in line&lt;/i&gt;"}
+    dec_216{"len(parts) &gt;= 2&lt;br&gt;&lt;i&gt;Condición en línea 216:&lt;br&gt;len(parts) &gt;= 2&lt;/i&gt;"}
+    dec_224{"line and (not&lt;br&gt;line.startswith('WEBVTT')) and&lt;br&gt;&lt;i&gt;Condición en línea 224:&lt;br&gt;line and (not line.startswith('WEBVTT')) and (not line.start&lt;/i&gt;"}
+    dec_225{"line.startswith('&lt;')&lt;br&gt;&lt;i&gt;Condición en línea 225:&lt;br&gt;line.startswith('&lt;')&lt;/i&gt;"}
+    dec_228{"clean_text.strip()&lt;br&gt;&lt;i&gt;Condición en línea 228:&lt;br&gt;clean_text.strip()&lt;/i&gt;"}
+    dec_230{"current_text&lt;br&gt;&lt;i&gt;Condición en línea 230:&lt;br&gt;current_text&lt;/i&gt;"}
+    dec_234{"current_text&lt;br&gt;&lt;i&gt;Condición en línea 234:&lt;br&gt;current_text&lt;/i&gt;"}
+    loop_245["For each seg"]
+    dec_247{"text&lt;br&gt;&lt;i&gt;Condición en línea 247:&lt;br&gt;text&lt;/i&gt;"}
+    dec_254{"not texts&lt;br&gt;&lt;i&gt;Condición en línea 254:&lt;br&gt;not texts&lt;/i&gt;"}
+    loop_255["For each line"]
+    dec_257{"'—&gt;' in line or&lt;br&gt;line.isdigit()&lt;br&gt;&lt;i&gt;Condición en línea 257:&lt;br&gt;'—&gt;' in line or line.isdigit()&lt;/i&gt;"}
+    dec_259{"line&lt;br&gt;&lt;i&gt;Condición en línea 259:&lt;br&gt;line&lt;/i&gt;"}
+    fn_ingest_url[["Ingest Url"]]
+    fn__is_youtube_url[["Is Youtube Url"]]
+    fn__extract_youtube_transcript[["Extract Youtube Transcript"]]
+    fn__ingest_youtube[["Ingest Youtube"]]
+    tool_add_entity_16["result = Add Entity&lt;br&gt;&lt;i&gt;EntityGraph: inserta/actualiza una entidad&lt;/i&gt;"]
+    fn__extract_video_id[["Extract Video Id"]]
+    fn__check_node_js[["Check Node Js"]]
+    fn__parse_vtt_content[["texts = Parse Vtt Content"]]
+    fn__parse_srt_content[["texts = Parse Srt Content"]]
+    fn__extract_youtube_metadata[["metadata = Extract Youtube Metadata"]]
+    n_start --&gt; fn_ingest_url
+    fn_ingest_url --&gt; tool_add_entity_16
+    tool_add_entity_16 --&gt; dec_20
+    n_start --&gt; fn__is_youtube_url
+    n_start --&gt; fn__check_node_js
+    fn__check_node_js --&gt; dec_41
+    dec_41 --&gt; dec_45
+    dec_45 --&gt; dec_50
+    dec_50 --&gt; loop_57
+    loop_57 --&gt; dec_58
+    dec_58 -- "loop" --&gt; loop_57
+    n_start --&gt; fn__extract_video_id
+    fn__extract_video_id --&gt; dec_68
+    dec_68 --&gt; dec_71
+    n_start --&gt; fn__extract_youtube_transcript
+    fn__extract_youtube_transcript --&gt; fn__extract_video_id
+    fn__extract_video_id --&gt; dec_81
+    dec_81 --&gt; dec_90
+    dec_90 --&gt; loop_92
+    loop_92 --&gt; dec_95
+    dec_95 -- "loop" --&gt; loop_92
+    loop_92 --&gt; dec_104
+    dec_104 --&gt; fn__check_node_js
+    fn__check_node_js --&gt; dec_116
+    dec_116 --&gt; loop_134
+    loop_134 --&gt; dec_135
+    dec_135 -- "loop" --&gt; loop_134
+    loop_134 --&gt; dec_138
+    dec_138 --&gt; loop_139
+    loop_139 --&gt; dec_140
+    dec_140 -- "loop" --&gt; loop_139
+    loop_139 --&gt; dec_143
+    dec_143 --&gt; dec_147
+    dec_147 -- "YES" --&gt; loop_149
+    loop_149 --&gt; dec_151
+    dec_151 --&gt; loop_153
+    loop_153 --&gt; dec_155
+    dec_155 --&gt; dec_158
+    dec_158 --&gt; dec_159
+    dec_159 -- "YES" --&gt; fn__parse_vtt_content
+    dec_159 -- "NO" --&gt; fn__parse_srt_content
+    fn__parse_srt_content --&gt; dec_163
+    dec_158 --&gt; dec_167
+    dec_167 -- "loop" --&gt; loop_153
+    loop_153 --&gt; dec_171
+    dec_171 -- "loop" --&gt; loop_149
+    dec_147 --&gt; dec_181
+    dec_181 --&gt; fn__extract_youtube_metadata
+    n_start --&gt; fn__extract_youtube_metadata
+    n_start --&gt; fn__parse_vtt_content
+    fn__parse_vtt_content --&gt; loop_210
+    loop_210 --&gt; dec_212
+    dec_212 --&gt; dec_216
+    dec_216 --&gt; dec_224
+    dec_224 --&gt; dec_225
+    dec_225 --&gt; dec_228
+    dec_224 --&gt; dec_230
+    dec_230 -- "loop" --&gt; loop_210
+    loop_210 --&gt; dec_234
+    n_start --&gt; fn__parse_srt_content
+    fn__parse_srt_content --&gt; loop_245
+    loop_245 --&gt; dec_247
+    dec_247 -- "loop" --&gt; loop_245
+    loop_245 --&gt; dec_254
+    dec_254 --&gt; loop_255
+    loop_255 --&gt; dec_257
+    dec_257 --&gt; dec_259
+    dec_259 -- "loop" --&gt; loop_255
+    n_start --&gt; fn__ingest_youtube
+    class n_start node-start
+    class fn_ingest_url,fn__is_youtube_url,fn__check_node_js,fn__extract_video_id,fn__extract_youtube_transcript,fn__parse_vtt_content,fn__parse_srt_content,fn__extract_youtube_metadata,fn__ingest_youtube node-subprocess
+    class tool_add_entity_16 node-tool
+    class dec_20,dec_41,dec_45,dec_50,dec_58,dec_68,dec_71,dec_81,dec_90,dec_95,dec_104,dec_116,dec_135,dec_138,dec_140,dec_143,dec_147,dec_151,dec_155,dec_158,dec_159,dec_163,dec_167,dec_171,dec_181,dec_212,dec_216,dec_224,dec_225,dec_228,dec_230,dec_234,dec_247,dec_254,dec_257,dec_259 node-decision
+    class loop_57,loop_92,loop_134,loop_139,loop_149,loop_153,loop_210,loop_245,loop_255 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

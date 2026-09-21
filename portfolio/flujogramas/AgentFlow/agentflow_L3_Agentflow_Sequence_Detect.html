@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 3 · Detect</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 3 · Detect - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L2_Agentflow_Sequence.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agentflow · Sequence · Detect</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Sequence · Detect
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_28{"depth &gt; 6&lt;br&gt;&lt;i&gt;Condición en línea 28:&lt;br&gt;depth &gt; 6&lt;/i&gt;"}
+    dec_82{"low.startswith('isinstance') or&lt;br&gt;&lt;i&gt;Condición en línea 82:&lt;br&gt;low.startswith('isinstance') or low.startswith('hasattr')&lt;/i&gt;"}
+    dec_85{"low.startswith('not ') and '&lt;br&gt;' not in low(4:)&lt;br&gt;&lt;i&gt;Condición en línea 85:&lt;br&gt;low.startswith('not ') and ' ' not in low(4:)&lt;/i&gt;"}
+    dec_87{"low in ('true', 'false',&lt;br&gt;'none')&lt;br&gt;&lt;i&gt;Condición en línea 87:&lt;br&gt;low in ('true', 'false', 'none')&lt;/i&gt;"}
+    dec_91{"'==' in low and any((k in&lt;br&gt;low for k in ('format', 'type',&lt;br&gt;&lt;i&gt;Condición en línea 91:&lt;br&gt;'==' in low and any((k in low for k in ('format', 'type', 'm&lt;/i&gt;"}
+    dec_93{"low.endswith('in available')&lt;br&gt;or low.endswith('in expected')&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;low.endswith('in available') or low.endswith('in expected')&lt;/i&gt;"}
+    dec_96{"'output' in low and ('get('&lt;br&gt;in low or 'dict' in low or in low&lt;br&gt;&lt;i&gt;Condición en línea 96:&lt;br&gt;'output' in low and ('get(' in low or 'dict' in low or 'succ&lt;/i&gt;"}
+    dec_99{"low in ('valid', 'ok',&lt;br&gt;'result', 'done', 'success',&lt;br&gt;&lt;i&gt;Condición en línea 99:&lt;br&gt;low in ('valid', 'ok', 'result', 'done', 'success', 'passed'&lt;/i&gt;"}
+    loop_34["while current"]
+    dec_38{"len(orelse) == 1 and&lt;br&gt;isinstance(orelse(0), ast.If)&lt;br&gt;&lt;i&gt;Condición en línea 38:&lt;br&gt;len(orelse) == 1 and isinstance(orelse(0), ast.If)&lt;/i&gt;"}
+    dec_40{"orelse&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;orelse&lt;/i&gt;"}
+    loop_47["For loop"]
+    dec_48{"i == 0&lt;br&gt;&lt;i&gt;Condición en línea 48:&lt;br&gt;i == 0&lt;/i&gt;"}
+    fn__is_actor_class_name[["Is Actor Class Name"]]
+    fn__looks_like_actor[["Looks Like Actor"]]
+    fn__try_unwrap_call[["Try Unwrap Call"]]
+    fn__extract_fragments_from_if[["Extract Fragments From If"]]
+    fn__is_significant_condition[["Is Significant Condition"]]
+    fn__collect_fragments[["Collect Fragments"]]
+    n_start --&gt; fn__is_actor_class_name
+    n_start --&gt; fn__looks_like_actor
+    n_start --&gt; fn__try_unwrap_call
+    n_start --&gt; fn__extract_fragments_from_if
+    fn__extract_fragments_from_if --&gt; dec_28
+    dec_28 --&gt; loop_34
+    loop_34 --&gt; dec_38
+    dec_38 --&gt; dec_40
+    dec_40 -- "loop" --&gt; loop_34
+    loop_34 --&gt; loop_47
+    loop_47 --&gt; dec_48
+    dec_48 --&gt; fn__collect_fragments
+    fn__collect_fragments -- "loop" --&gt; loop_47
+    n_start --&gt; fn__collect_fragments
+    n_start --&gt; fn__is_significant_condition
+    fn__is_significant_condition --&gt; dec_82
+    dec_82 --&gt; dec_85
+    dec_85 --&gt; dec_87
+    dec_87 --&gt; dec_91
+    dec_91 --&gt; dec_93
+    dec_93 --&gt; dec_96
+    dec_96 --&gt; dec_99
+    class n_start node-start
+    class fn__is_actor_class_name,fn__looks_like_actor,fn__try_unwrap_call,fn__extract_fragments_from_if,fn__collect_fragments,fn__is_significant_condition node-subprocess
+    class dec_28,dec_38,dec_40,dec_48,dec_82,dec_85,dec_87,dec_91,dec_93,dec_96,dec_99 node-decision
+    class loop_34,loop_47 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

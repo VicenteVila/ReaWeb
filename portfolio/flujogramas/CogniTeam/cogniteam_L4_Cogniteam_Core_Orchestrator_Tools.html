@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 4 · Tools</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 4 · Tools - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><a href="cogniteam_L3_Cogniteam_Core_Orchestrator.html">L3</a> <span class="sep">›</span><span class="current">L4 · Cogniteam · Core · Orchestrator · Tools</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Orchestrator · Tools
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_2{"raw_name in available&lt;br&gt;&lt;i&gt;Condición en línea 2:&lt;br&gt;raw_name in available&lt;/i&gt;"}
+    dec_12{"not expected_format&lt;br&gt;&lt;i&gt;Condición en línea 12:&lt;br&gt;not expected_format&lt;/i&gt;"}
+    dec_201{"not html_files&lt;br&gt;&lt;i&gt;Condición en línea 201:&lt;br&gt;not html_files&lt;/i&gt;"}
+    dec_5{"m and m.group(1) in&lt;br&gt;available&lt;br&gt;&lt;i&gt;Condición en línea 5:&lt;br&gt;m and m.group(1) in available&lt;/i&gt;"}
+    dec_18{"expected_format == 'json'&lt;br&gt;and isinstance(check, str)&lt;br&gt;&lt;i&gt;Condición en línea 18:&lt;br&gt;expected_format == 'json' and isinstance(check, str)&lt;/i&gt;"}
+    dec_134{"ctx.get('results')&lt;br&gt;&lt;i&gt;Condición en línea 134:&lt;br&gt;ctx.get('results')&lt;/i&gt;"}
+    dec_26{"isinstance(output, dict) and&lt;br&gt;'success' in output and ('message'&lt;br&gt;&lt;i&gt;Condición en línea 26:&lt;br&gt;isinstance(output, dict) and 'success' in output and ('messa&lt;/i&gt;"}
+    dec_138{"temporal&lt;br&gt;&lt;i&gt;Condición en línea 138:&lt;br&gt;temporal&lt;/i&gt;"}
+    dec_27{"expected_format ==&lt;br&gt;'tool_response_dict'&lt;br&gt;&lt;i&gt;Condición en línea 27:&lt;br&gt;expected_format == 'tool_response_dict'&lt;/i&gt;"}
+    dec_36{"isinstance(output, dict) and&lt;br&gt;'result' in output&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;isinstance(output, dict) and 'result' in output&lt;/i&gt;"}
+    dec_29{"expected_format == 'json'&lt;br&gt;&lt;i&gt;Condición en línea 29:&lt;br&gt;expected_format == 'json'&lt;/i&gt;"}
+    dec_37{"expected_format == 'json'&lt;br&gt;&lt;i&gt;Condición en línea 37:&lt;br&gt;expected_format == 'json'&lt;/i&gt;"}
+    dec_41{"isinstance(output, dict) and&lt;br&gt;'success' in output&lt;br&gt;&lt;i&gt;Condición en línea 41:&lt;br&gt;isinstance(output, dict) and 'success' in output&lt;/i&gt;"}
+    dec_147{"gctx.get('global_communities')&lt;br&gt;&lt;i&gt;Condición en línea 147:&lt;br&gt;gctx.get('global_communities')&lt;/i&gt;"}
+    dec_31{"output.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 31:&lt;br&gt;output.get('success')&lt;/i&gt;"}
+    dec_42{"output.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 42:&lt;br&gt;output.get('success')&lt;/i&gt;"}
+    dec_151{"summaries&lt;br&gt;&lt;i&gt;Condición en línea 151:&lt;br&gt;summaries&lt;/i&gt;"}
+    dec_47{"expected_format == 'html'&lt;br&gt;&lt;i&gt;Condición en línea 47:&lt;br&gt;expected_format == 'html'&lt;/i&gt;"}
+    dec_51{"expected_format in ('css',&lt;br&gt;'js', 'javascript', 'ts',&lt;br&gt;&lt;i&gt;Condición en línea 51:&lt;br&gt;expected_format in ('css', 'js', 'javascript', 'ts', 'typesc&lt;/i&gt;"}
+    dec_160{"sctx.get('relevant_skills')&lt;br&gt;&lt;i&gt;Condición en línea 160:&lt;br&gt;sctx.get('relevant_skills')&lt;/i&gt;"}
+    dec_53{"expected_format == 'text'&lt;br&gt;&lt;i&gt;Condición en línea 53:&lt;br&gt;expected_format == 'text'&lt;/i&gt;"}
+    dec_165{"skills_list&lt;br&gt;&lt;i&gt;Condición en línea 165:&lt;br&gt;skills_list&lt;/i&gt;"}
+    dec_55{"expected_format ==&lt;br&gt;'json_string'&lt;br&gt;&lt;i&gt;Condición en línea 55:&lt;br&gt;expected_format == 'json_string'&lt;/i&gt;"}
+    dec_170{"parts&lt;br&gt;&lt;i&gt;Condición en línea 170:&lt;br&gt;parts&lt;/i&gt;"}
+    dec_57{"valid&lt;br&gt;&lt;i&gt;Condición en línea 57:&lt;br&gt;valid&lt;/i&gt;"}
+    dec_63{"expected_format == 'json'&lt;br&gt;&lt;i&gt;Condición en línea 63:&lt;br&gt;expected_format == 'json'&lt;/i&gt;"}
+    dec_65{"expected_format == 'boolean'&lt;br&gt;&lt;i&gt;Condición en línea 65:&lt;br&gt;expected_format == 'boolean'&lt;/i&gt;"}
+    dec_67{"expected_format ==&lt;br&gt;'tool_response_dict'&lt;br&gt;&lt;i&gt;Condición en línea 67:&lt;br&gt;expected_format == 'tool_response_dict'&lt;/i&gt;"}
+    dec_72{"not valid&lt;br&gt;&lt;i&gt;Condición en línea 72:&lt;br&gt;not valid&lt;/i&gt;"}
+    loop_177["For loop"]
+    dec_178{"isinstance(val, dict)&lt;br&gt;&lt;i&gt;Condición en línea 178:&lt;br&gt;isinstance(val, dict)&lt;/i&gt;"}
+    dec_180{"isinstance(val, str)&lt;br&gt;&lt;i&gt;Condición en línea 180:&lt;br&gt;isinstance(val, str)&lt;/i&gt;"}
+    dec_184{"content and len(content) &gt;&lt;br&gt;20&lt;br&gt;&lt;i&gt;Condición en línea 184:&lt;br&gt;content and len(content) &gt; 20&lt;/i&gt;"}
+    loop_206["For each fname in html_files"]
+    dec_212{"result.get('passed')&lt;br&gt;&lt;i&gt;Condición en línea 212:&lt;br&gt;result.get('passed')&lt;/i&gt;"}
+    loop_218["For each err"]
+    dec_220{"result.get('screenshot_path')&lt;br&gt;&lt;i&gt;Condición en línea 220:&lt;br&gt;result.get('screenshot_path')&lt;/i&gt;"}
+    fn__resolve_tool_name[["Resolve Tool Name"]]
+    fn__validate_output[["Validate Output"]]
+    fn__seed_skills_once[["Seed Skills Once"]]
+    fn__record_step_skill_usage[["Record Step Skill Usage"]]
+    fn__get_memory_context[["Get Memory Context"]]
+    fn__get_artifacts_summary[["Get Artifacts Summary"]]
+    fn__run_functional_validation[["Run Functional Validation"]]
+    fn__find_file_in_tree[["Find File In Tree"]]
+    tool_hybrid_retrieve_133["ctx = Hybrid Retrieve&lt;br&gt;&lt;i&gt;Recuperación híbrida (list-sage&lt;br&gt;graph + consulta local)&lt;/i&gt;"]
+    tool_hybrid_search_146["gctx = Hybrid Search&lt;br&gt;&lt;i&gt;GraphRAG: combina búsqueda&lt;br&gt;local y global&lt;/i&gt;"]
+    tool_retrieve_with_memory_159["sctx = Retrieve w/ Memory&lt;br&gt;&lt;i&gt;Recupera skills relevantes para&lt;br&gt;la tarea&lt;/i&gt;"]
+    n_start --&gt; fn__resolve_tool_name
+    fn__resolve_tool_name --&gt; dec_2
+    dec_2 --&gt; dec_5
+    n_start --&gt; fn__validate_output
+    fn__validate_output --&gt; dec_12
+    dec_12 --&gt; dec_18
+    dec_18 --&gt; dec_26
+    dec_26 --&gt; dec_27
+    dec_27 --&gt; dec_29
+    dec_29 --&gt; dec_31
+    dec_26 --&gt; dec_36
+    dec_36 --&gt; dec_37
+    dec_36 --&gt; dec_41
+    dec_41 --&gt; dec_42
+    dec_42 --&gt; dec_47
+    dec_47 --&gt; dec_51
+    dec_51 --&gt; dec_53
+    dec_53 --&gt; dec_55
+    dec_55 --&gt; dec_57
+    dec_55 --&gt; dec_63
+    dec_63 --&gt; dec_65
+    dec_65 --&gt; dec_67
+    dec_67 --&gt; dec_72
+    n_start --&gt; fn__seed_skills_once
+    n_start --&gt; fn__record_step_skill_usage
+    n_start --&gt; fn__get_memory_context
+    fn__get_memory_context --&gt; tool_hybrid_retrieve_133
+    tool_hybrid_retrieve_133 --&gt; dec_134
+    dec_134 --&gt; dec_138
+    dec_138 --&gt; tool_hybrid_search_146
+    tool_hybrid_search_146 --&gt; dec_147
+    dec_147 --&gt; dec_151
+    dec_151 --&gt; tool_retrieve_with_memory_159
+    tool_retrieve_with_memory_159 --&gt; dec_160
+    dec_160 --&gt; dec_165
+    dec_165 --&gt; dec_170
+    n_start --&gt; fn__get_artifacts_summary
+    fn__get_artifacts_summary --&gt; loop_177
+    loop_177 --&gt; dec_178
+    dec_178 --&gt; dec_180
+    dec_180 --&gt; dec_184
+    dec_184 -- "loop" --&gt; loop_177
+    n_start --&gt; fn__run_functional_validation
+    fn__run_functional_validation --&gt; dec_201
+    dec_201 --&gt; loop_206
+    loop_206 --&gt; dec_212
+    dec_212 --&gt; loop_218
+    loop_218 --&gt; dec_220
+    dec_220 -- "loop" --&gt; loop_206
+    n_start --&gt; fn__find_file_in_tree
+    class n_start node-start
+    class fn__resolve_tool_name,fn__validate_output,fn__seed_skills_once,fn__record_step_skill_usage,fn__get_memory_context,fn__get_artifacts_summary,fn__run_functional_validation,fn__find_file_in_tree node-subprocess
+    class dec_2,dec_5,dec_12,dec_18,dec_26,dec_27,dec_29,dec_31,dec_36,dec_37,dec_41,dec_42,dec_47,dec_51,dec_53,dec_55,dec_57,dec_63,dec_65,dec_67,dec_72,dec_134,dec_138,dec_147,dec_151,dec_160,dec_165,dec_170,dec_178,dec_180,dec_184,dec_201,dec_212,dec_220 node-decision
+    class tool_hybrid_retrieve_133,tool_hybrid_search_146,tool_retrieve_with_memory_159 node-tool
+    class loop_177,loop_206,loop_218 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

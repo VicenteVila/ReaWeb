@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 3 · handler</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 3 · handler - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L3 · Interface · Handlers · Graphify · handler</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Graphify Handler
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_30{"'deep' in args&lt;br&gt;&lt;i&gt;Condición en línea 30:&lt;br&gt;'deep' in args&lt;/i&gt;"}
+    dec_99{"NOT args?&lt;br&gt;&lt;i&gt;Niega args&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_131{"not stats.get('exists')&lt;br&gt;&lt;i&gt;Condición en línea 131:&lt;br&gt;not stats.get('exists')&lt;/i&gt;"}
+    dec_167{"not report&lt;br&gt;&lt;i&gt;Condición en línea 167:&lt;br&gt;not report&lt;/i&gt;"}
+    dec_186{"NOT args?&lt;br&gt;&lt;i&gt;Niega args&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_211{"NOT args?&lt;br&gt;&lt;i&gt;Niega args&lt;br&gt;para lógica invertida&lt;/i&gt;"}
+    dec_32{"'force' in args&lt;br&gt;&lt;i&gt;Condición en línea 32:&lt;br&gt;'force' in args&lt;/i&gt;"}
+    dec_82{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 82:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_148{"stats.get('hubs')&lt;br&gt;&lt;i&gt;Condición en línea 148:&lt;br&gt;stats.get('hubs')&lt;/i&gt;"}
+    dec_175{"len(report) &gt; 4000&lt;br&gt;&lt;i&gt;Condición en línea 175:&lt;br&gt;len(report) &gt; 4000&lt;/i&gt;"}
+    dec_224{"fmt == 'callflow'&lt;br&gt;&lt;i&gt;Condición en línea 224:&lt;br&gt;fmt == 'callflow'&lt;/i&gt;"}
+    dec_114{"result.get('success') and&lt;br&gt;result.get('answer')&lt;br&gt;&lt;i&gt;Condición en línea 114:&lt;br&gt;result.get('success') and result.get('answer')&lt;/i&gt;"}
+    loop_150["For each hub"]
+    dec_201{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 201:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_42{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 42:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_153{"stats.get('html_exists')&lt;br&gt;&lt;i&gt;Condición en línea 153:&lt;br&gt;stats.get('html_exists')&lt;/i&gt;"}
+    dec_233{"result.get('success')&lt;br&gt;&lt;i&gt;Condición en línea 233:&lt;br&gt;result.get('success')&lt;/i&gt;"}
+    dec_58{"stats.get('hubs')&lt;br&gt;&lt;i&gt;Condición en línea 58:&lt;br&gt;stats.get('hubs')&lt;/i&gt;"}
+    dec_155{"stats.get('report_exists')&lt;br&gt;&lt;i&gt;Condición en línea 155:&lt;br&gt;stats.get('report_exists')&lt;/i&gt;"}
+    loop_60["For each hub"]
+    fn_graphify_cmd[["Graphify Cmd"]]
+    fn_graph_update_cmd[["Graph Update Cmd"]]
+    fn_graph_query_cmd[["Graph Query Cmd"]]
+    fn_graph_stats_cmd[["Graph Stats Cmd"]]
+    fn_graph_report_cmd[["Graph Report Cmd"]]
+    fn_graph_add_cmd[["Graph Add Cmd"]]
+    fn_graph_export_cmd[["Graph Export Cmd"]]
+    tool_update_graph_80["result = Update Graph&lt;br&gt;&lt;i&gt;Graphify: actualiza el grafo&lt;/i&gt;"]
+    tool_query_graph_112["result = Query Graph&lt;br&gt;&lt;i&gt;Graphify: consulta el grafo&lt;/i&gt;"]
+    tool_add_url_to_graph_199["result = Add URL to Graph&lt;br&gt;&lt;i&gt;Graphify: añade una URL como nodo&lt;/i&gt;"]
+    tool_build_graph_40["result = Build Graph&lt;br&gt;&lt;i&gt;Graphify: construye el grafo&lt;br&gt;(story-graph) del vault&lt;/i&gt;"]
+    tool_export_graph_231["result = Export Graph&lt;br&gt;&lt;i&gt;Graphify: exporta el grafo&lt;/i&gt;"]
+    n_start --&gt; fn_graphify_cmd
+    fn_graphify_cmd --&gt; dec_30
+    dec_30 --&gt; dec_32
+    dec_32 --&gt; tool_build_graph_40
+    tool_build_graph_40 --&gt; dec_42
+    dec_42 --&gt; dec_58
+    dec_58 --&gt; loop_60
+    n_start --&gt; fn_graph_update_cmd
+    fn_graph_update_cmd --&gt; tool_update_graph_80
+    tool_update_graph_80 --&gt; dec_82
+    n_start --&gt; fn_graph_query_cmd
+    fn_graph_query_cmd --&gt; dec_99
+    dec_99 --&gt; tool_query_graph_112
+    tool_query_graph_112 --&gt; dec_114
+    n_start --&gt; fn_graph_stats_cmd
+    fn_graph_stats_cmd --&gt; dec_131
+    dec_131 --&gt; dec_148
+    dec_148 --&gt; loop_150
+    loop_150 --&gt; dec_153
+    dec_153 --&gt; dec_155
+    n_start --&gt; fn_graph_report_cmd
+    fn_graph_report_cmd --&gt; dec_167
+    dec_167 --&gt; dec_175
+    n_start --&gt; fn_graph_add_cmd
+    fn_graph_add_cmd --&gt; dec_186
+    dec_186 --&gt; tool_add_url_to_graph_199
+    tool_add_url_to_graph_199 --&gt; dec_201
+    n_start --&gt; fn_graph_export_cmd
+    fn_graph_export_cmd --&gt; dec_211
+    dec_211 --&gt; dec_224
+    dec_224 --&gt; tool_export_graph_231
+    tool_export_graph_231 --&gt; dec_233
+    class n_start node-start
+    class fn_graphify_cmd,fn_graph_update_cmd,fn_graph_query_cmd,fn_graph_stats_cmd,fn_graph_report_cmd,fn_graph_add_cmd,fn_graph_export_cmd node-subprocess
+    class dec_30,dec_32,dec_42,dec_58,dec_82,dec_99,dec_114,dec_131,dec_148,dec_153,dec_155,dec_167,dec_175,dec_186,dec_201,dec_211,dec_224,dec_233 node-decision
+    class tool_build_graph_40,tool_update_graph_80,tool_query_graph_112,tool_add_url_to_graph_199,tool_export_graph_231 node-tool
+    class loop_60,loop_150 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

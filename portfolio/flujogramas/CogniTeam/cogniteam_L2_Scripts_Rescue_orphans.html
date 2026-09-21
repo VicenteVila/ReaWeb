@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniTeam · Nivel 2 · orphans</title>
+<meta name="description" content="Flujograma CogniTeam · Nivel 2 · orphans - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/CogniTeam/index.html">CogniTeam</a> <span class="sep">›</span><a href="cogniteam_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Scripts · Rescue · orphans</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Rescue Orphans
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_40{"not own&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;not own&lt;/i&gt;"}
+    dec_97{"DST.exists()&lt;br&gt;&lt;i&gt;Condición en línea 97:&lt;br&gt;DST.exists()&lt;/i&gt;"}
+    loop_43["For each run"]
+    dec_44{"not run.is_dir()&lt;br&gt;&lt;i&gt;Condición en línea 44:&lt;br&gt;not run.is_dir()&lt;/i&gt;"}
+    dec_47{"not own.issubset(run_files)&lt;br&gt;&lt;i&gt;Condición en línea 47:&lt;br&gt;not own.issubset(run_files)&lt;/i&gt;"}
+    dec_49{"all((_hash_of(run, rel) ==&lt;br&gt;own_hashes(rel) for rel in own))&lt;br&gt;&lt;i&gt;Condición en línea 49:&lt;br&gt;all((_hash_of(run, rel) == own_hashes(rel) for rel in own))&lt;/i&gt;"}
+    loop_57["For each f"]
+    dec_58{"f.is_file() and f.suffix in&lt;br&gt;('.md', '.html', '.json', '.txt',&lt;br&gt;&lt;i&gt;Condición en línea 58:&lt;br&gt;f.is_file() and f.suffix in ('.md', '.html', '.json', '.txt'&lt;/i&gt;"}
+    dec_65{"names &amp; GAME_NAMES or any((k&lt;br&gt;in text for k in ('game over',&lt;br&gt;&lt;i&gt;Condición en línea 65:&lt;br&gt;names &amp; GAME_NAMES or any((k in text for k in ('game over',&lt;/i&gt;"}
+    dec_71{"any((k in names for k in&lt;br&gt;('research.md', 'outline.md', and&lt;br&gt;&lt;i&gt;Condición en línea 71:&lt;br&gt;any((k in names for k in ('research.md', 'outline.md', 'blog&lt;/i&gt;"}
+    dec_75{"'blog.md' in names and&lt;br&gt;'fetch_arxiv_papers.py' in names&lt;br&gt;&lt;i&gt;Condición en línea 75:&lt;br&gt;'blog.md' in names and 'fetch_arxiv_papers.py' in names&lt;/i&gt;"}
+    dec_79{"any((k in names for k in&lt;br&gt;('brand_guide.json', 'brand.md',&lt;br&gt;&lt;i&gt;Condición en línea 79:&lt;br&gt;any((k in names for k in ('brand_guide.json', 'brand_guideli&lt;/i&gt;"}
+    dec_90{"res&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;res&lt;/i&gt;"}
+    loop_101["For each flow_dir"]
+    dec_102{"not flow_dir.is_dir()&lt;br&gt;&lt;i&gt;Condición en línea 102:&lt;br&gt;not flow_dir.is_dir()&lt;/i&gt;"}
+    dec_105{"not files&lt;br&gt;&lt;i&gt;Condición en línea 105:&lt;br&gt;not files&lt;/i&gt;"}
+    dec_108{"_is_duplicated(flow_dir)&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;_is_duplicated(flow_dir)&lt;/i&gt;"}
+    loop_126["For loop"]
+    loop_129["For each name in duplicated"]
+    loop_132["For loop"]
+    fn__hash_of[["Hash Of"]]
+    fn__relative_files[["Relative Files"]]
+    fn__is_duplicated[["Is Duplicated"]]
+    fn__infer[["Infer"]]
+    fn_main[["Main"]]
+    tool_create_cage_from_yaml_86["cage = Cage from YAML&lt;br&gt;&lt;i&gt;Construye DeterministicCage&lt;br&gt;apartir del archetype YAML&lt;/i&gt;"]
+    n_start --&gt; fn__hash_of
+    n_start --&gt; fn__relative_files
+    n_start --&gt; fn__is_duplicated
+    fn__is_duplicated --&gt; dec_40
+    dec_40 --&gt; loop_43
+    loop_43 --&gt; dec_44
+    dec_44 --&gt; dec_47
+    dec_47 --&gt; dec_49
+    dec_49 -- "loop" --&gt; loop_43
+    n_start --&gt; fn__infer
+    fn__infer --&gt; loop_57
+    loop_57 --&gt; dec_58
+    dec_58 -- "loop" --&gt; loop_57
+    loop_57 --&gt; dec_65
+    dec_65 --&gt; dec_71
+    dec_71 --&gt; dec_75
+    dec_75 --&gt; dec_79
+    dec_79 --&gt; tool_create_cage_from_yaml_86
+    tool_create_cage_from_yaml_86 --&gt; dec_90
+    n_start --&gt; fn_main
+    fn_main --&gt; dec_97
+    dec_97 --&gt; loop_101
+    loop_101 --&gt; dec_102
+    dec_102 --&gt; dec_105
+    dec_105 --&gt; dec_108
+    dec_108 -- "loop" --&gt; loop_101
+    loop_101 --&gt; loop_126
+    loop_126 --&gt; loop_129
+    loop_129 --&gt; loop_132
+    class n_start node-start
+    class fn__hash_of,fn__relative_files,fn__is_duplicated,fn__infer,fn_main node-subprocess
+    class dec_40,dec_44,dec_47,dec_49,dec_58,dec_65,dec_71,dec_75,dec_79,dec_90,dec_97,dec_102,dec_105,dec_108 node-decision
+    class loop_43,loop_57,loop_101,loop_126,loop_129,loop_132 node-loop
+    class tool_create_cage_from_yaml_86 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

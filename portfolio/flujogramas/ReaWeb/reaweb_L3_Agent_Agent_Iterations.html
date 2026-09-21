@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · Nivel 3 · Iterations</title>
+<meta name="description" content="Flujograma ReaWeb · Nivel 3 · Iterations - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><a href="reaweb_L0_Overview.html">L0</a> <span class="sep">›</span><a href="reaweb_L2_Agent_Agent.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agent · Agent · Iterations</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Agent · Iterations
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    dec_17{"Tool:&lt;br&gt;Audit Truth?&lt;br&gt;&lt;i&gt;Partes huérfanas, enlaces rotos,&lt;br&gt;referencias vs diseño real&lt;/i&gt;"}
+    dec_228{"candidate_id is None&lt;br&gt;&lt;i&gt;Condición en línea 228:&lt;br&gt;candidate_id is None&lt;/i&gt;"}
+    dec_231{"not (cand_dir /&lt;br&gt;'index.html').exists()&lt;br&gt;&lt;i&gt;Condición en línea 231:&lt;br&gt;not (cand_dir / 'index.html').exists()&lt;/i&gt;"}
+    dec_277{"call.name ==&lt;br&gt;'inspect_archetype' and (not&lt;br&gt;&lt;i&gt;Condición en línea 277:&lt;br&gt;call.name == 'inspect_archetype' and (not kwargs.get('archet&lt;/i&gt;"}
+    dec_21{"_blk is not None&lt;br&gt;&lt;i&gt;Condición en línea 21:&lt;br&gt;_blk is not None&lt;/i&gt;"}
+    dec_238{"not func_tests&lt;br&gt;&lt;i&gt;Condición en línea 238:&lt;br&gt;not func_tests&lt;/i&gt;"}
+    dec_284{"hasattr(tool,&lt;br&gt;'last_functional_tests') and&lt;br&gt;&lt;i&gt;Condición en línea 284:&lt;br&gt;hasattr(tool, 'last_functional_tests') and tool.last_functio&lt;/i&gt;"}
+    dec_23{"isinstance(design_score,&lt;br&gt;str) and&lt;br&gt;&lt;i&gt;Condición en línea 23:&lt;br&gt;isinstance(design_score, str) and design_score.lstrip('-').i&lt;/i&gt;"}
+    dec_34{"node_id and node_id in&lt;br&gt;self.tree.nodes&lt;br&gt;&lt;i&gt;Condición en línea 34:&lt;br&gt;node_id and node_id in self.tree.nodes&lt;/i&gt;"}
+    dec_25{"not isinstance(design_score,&lt;br&gt;(int, float))&lt;br&gt;&lt;i&gt;Condición en línea 25:&lt;br&gt;not isinstance(design_score, (int, float))&lt;/i&gt;"}
+    dec_36{"design_score is not None&lt;br&gt;&lt;i&gt;Condición en línea 36:&lt;br&gt;design_score is not None&lt;/i&gt;"}
+    dec_44{"parts_ok&lt;br&gt;&lt;i&gt;Condición en línea 44:&lt;br&gt;parts_ok&lt;/i&gt;"}
+    dec_57{"Tool:&lt;br&gt;Audit Visual?&lt;br&gt;&lt;i&gt;VLM Gemini: screenshot → score 0-100&lt;br&gt;+ issues + suggestions&lt;/i&gt;"}
+    dec_60{"_blk is not None and&lt;br&gt;(int, float))&lt;br&gt;&lt;i&gt;Condición en línea 60:&lt;br&gt;_blk is not None and isinstance(_blk.get('visual_vlm'), (int&lt;/i&gt;"}
+    dec_64{"not m&lt;br&gt;&lt;i&gt;Condición en línea 64:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_70{"node_id and node_id in&lt;br&gt;self.tree.nodes&lt;br&gt;&lt;i&gt;Condición en línea 70:&lt;br&gt;node_id and node_id in self.tree.nodes&lt;/i&gt;"}
+    dec_89{"Tool:&lt;br&gt;Audit Creative?&lt;br&gt;&lt;i&gt;VLM anti-proxy: novedad/originalidad&lt;br&gt;score 0-100, mutation hints&lt;/i&gt;"}
+    dec_92{"_blk is not None and&lt;br&gt;(int, float))&lt;br&gt;&lt;i&gt;Condición en línea 92:&lt;br&gt;_blk is not None and isinstance(_blk.get('creativity_vlm'),&lt;/i&gt;"}
+    dec_96{"not m&lt;br&gt;&lt;i&gt;Condición en línea 96:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_102{"node_id and node_id in&lt;br&gt;self.tree.nodes&lt;br&gt;&lt;i&gt;Condición en línea 102:&lt;br&gt;node_id and node_id in self.tree.nodes&lt;/i&gt;"}
+    dec_117{"call.name not in&lt;br&gt;('generate_candidate',&lt;br&gt;&lt;i&gt;Condición en línea 117:&lt;br&gt;call.name not in ('generate_candidate', 'audit_page')&lt;/i&gt;"}
+    dec_124{"_blk is not None&lt;br&gt;&lt;i&gt;Condición en línea 124:&lt;br&gt;_blk is not None&lt;/i&gt;"}
+    dec_126{"not isinstance(total, (int,&lt;br&gt;float))&lt;br&gt;&lt;i&gt;Condición en línea 126:&lt;br&gt;not isinstance(total, (int, float))&lt;/i&gt;"}
+    dec_146{"not m&lt;br&gt;&lt;i&gt;Condición en línea 146:&lt;br&gt;not m&lt;/i&gt;"}
+    dec_137{"isinstance(_blk.get('fails'), and&lt;br&gt;&lt;i&gt;Condición en línea 137:&lt;br&gt;isinstance(_blk.get('fails'), list) and _blk('fails')&lt;/i&gt;"}
+    dec_142{"cause&lt;br&gt;&lt;i&gt;Condición en línea 142:&lt;br&gt;cause&lt;/i&gt;"}
+    loop_162["For loop"]
+    dec_164{"m2&lt;br&gt;&lt;i&gt;Condición en línea 164:&lt;br&gt;m2&lt;/i&gt;"}
+    dec_169{"cause&lt;br&gt;&lt;i&gt;Condición en línea 169:&lt;br&gt;cause&lt;/i&gt;"}
+    dec_176{"Tool:&lt;br&gt;Generate Candidate?&lt;br&gt;&lt;i&gt;LLM sub-agent genera HTML/CSS/JS&lt;br&gt;exploration=True, target_h=0..N&lt;/i&gt;"}
+    dec_183{"self.hypothesis_count == 0&lt;br&gt;or node_id not in self.tree.nodes&lt;br&gt;&lt;i&gt;Condición en línea 183:&lt;br&gt;self.hypothesis_count == 0 or node_id not in self.tree.nodes&lt;/i&gt;"}
+    dec_193{"existing is not None&lt;br&gt;&lt;i&gt;Condición en línea 193:&lt;br&gt;existing is not None&lt;/i&gt;"}
+    dec_200{"is_confirm&lt;br&gt;&lt;i&gt;Condición en línea 200:&lt;br&gt;is_confirm&lt;/i&gt;"}
+    loop_260["Loop"]
+    dec_262{"parts and 'text' in parts(0)&lt;br&gt;&lt;i&gt;Condición en línea 262:&lt;br&gt;parts and 'text' in parts(0)&lt;/i&gt;"}
+    fn__handle_eval_result[["Handle Eval Result"]]
+    fn__subtask_checklist[["Subtask Checklist"]]
+    fn__safe_history_slice[["Safe History Slice"]]
+    fn__exec_tool[["Exec Tool"]]
+    tool_audit_truth_17["Audit Truth&lt;br&gt;&lt;i&gt;Partes huérfanas, enlaces rotos,&lt;br&gt;referencias vs diseño real&lt;/i&gt;"]
+    tool_audit_visual_57["Audit Visual&lt;br&gt;&lt;i&gt;VLM Gemini: screenshot → score 0-100&lt;br&gt;+ issues + suggestions&lt;/i&gt;"]
+    tool_audit_creative_89["Audit Creative&lt;br&gt;&lt;i&gt;VLM anti-proxy: novedad/originalidad&lt;br&gt;score 0-100, mutation hints&lt;/i&gt;"]
+    tool_generate_candidate_176["Generate Candidate&lt;br&gt;&lt;i&gt;LLM sub-agent genera HTML/CSS/JS&lt;br&gt;exploration=True, target_h=0..N&lt;/i&gt;"]
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_270{"Meta-edits&lt;br&gt;enabled?&lt;br&gt;&lt;i&gt;allow_meta_edits = True?&lt;br&gt;→ permitir edit_skill&lt;/i&gt;"}
+    dec_40{"blended is not None&lt;br&gt;&lt;i&gt;Condición en línea 40:&lt;br&gt;blended is not None&lt;/i&gt;"}
+    dec_75{"blended is not None&lt;br&gt;&lt;i&gt;Condición en línea 75:&lt;br&gt;blended is not None&lt;/i&gt;"}
+    dec_108{"blended is not None&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;blended is not None&lt;/i&gt;"}
+    fn__last_action_summary[["Last Action Summary"]]
+    n_start --&gt; fn__handle_eval_result
+    fn__handle_eval_result --&gt; dec_17
+    dec_17 -- "YES" --&gt; tool_audit_truth_17
+    tool_audit_truth_17 --&gt; dec_21
+    dec_21 --&gt; dec_23
+    dec_23 --&gt; dec_25
+    dec_21 --&gt; dec_34
+    dec_34 --&gt; dec_36
+    dec_36 --&gt; dec_40
+    dec_40 --&gt; dec_44
+    dec_44 --&gt; dec_57
+    dec_57 -- "YES" --&gt; tool_audit_visual_57
+    tool_audit_visual_57 --&gt; dec_60
+    dec_60 -- "NO" --&gt; dec_64
+    dec_64 --&gt; dec_70
+    dec_70 --&gt; dec_75
+    dec_75 --&gt; dec_89
+    dec_89 -- "YES" --&gt; tool_audit_creative_89
+    tool_audit_creative_89 --&gt; dec_92
+    dec_92 -- "NO" --&gt; dec_96
+    dec_96 --&gt; dec_102
+    dec_102 --&gt; dec_108
+    dec_108 --&gt; dec_117
+    dec_117 --&gt; dec_124
+    dec_124 --&gt; dec_126
+    dec_126 --&gt; dec_137
+    dec_137 --&gt; dec_142
+    dec_124 --&gt; dec_146
+    dec_146 --&gt; loop_162
+    loop_162 --&gt; dec_164
+    dec_164 -- "loop" --&gt; loop_162
+    loop_162 --&gt; dec_169
+    dec_169 --&gt; dec_176
+    dec_176 -- "YES" --&gt; tool_generate_candidate_176
+    dec_176 -- "NO" --&gt; dec_183
+    dec_183 --&gt; dec_193
+    dec_193 --&gt; dec_200
+    n_start --&gt; fn__last_action_summary
+    n_start --&gt; fn__subtask_checklist
+    fn__subtask_checklist --&gt; dec_228
+    dec_228 --&gt; dec_231
+    dec_231 --&gt; dec_238
+    n_start --&gt; fn__safe_history_slice
+    fn__safe_history_slice --&gt; loop_260
+    loop_260 --&gt; dec_262
+    dec_262 -- "loop" --&gt; loop_260
+    n_start --&gt; fn__exec_tool
+    fn__exec_tool --&gt; dec_270
+    dec_270 --&gt; dec_277
+    dec_277 --&gt; dec_284
+    class n_start node-start
+    class fn__handle_eval_result,fn__last_action_summary,fn__subtask_checklist,fn__safe_history_slice,fn__exec_tool node-subprocess
+    class dec_17,dec_21,dec_23,dec_25,dec_34,dec_36,dec_40,dec_44,dec_57,dec_60,dec_64,dec_70,dec_75,dec_89,dec_92,dec_96,dec_102,dec_108,dec_117,dec_124,dec_126,dec_137,dec_142,dec_146,dec_164,dec_169,dec_176,dec_183,dec_193,dec_200,dec_228,dec_231,dec_238,dec_262,dec_270,dec_277,dec_284 node-decision
+    class tool_audit_truth_17,tool_audit_visual_57,tool_audit_creative_89,tool_generate_candidate_176 node-tool
+    class loop_162,loop_260 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

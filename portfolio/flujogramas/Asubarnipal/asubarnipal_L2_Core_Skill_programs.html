@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 2 · programs</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 2 · programs - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L2 · Core · Skill · programs</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Skill Programs
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_315{"_registry is None&lt;br&gt;&lt;i&gt;Condición en línea 315:&lt;br&gt;_registry is None&lt;/i&gt;"}
+    dec_109{"attempt &gt;= max_attempt&lt;br&gt;&lt;i&gt;Condición en línea 109:&lt;br&gt;attempt &gt;= max_attempt&lt;/i&gt;"}
+    loop_232["For each pf in matched"]
+    loop_281["For each pf"]
+    dec_295{"pf is None&lt;br&gt;&lt;i&gt;Condición en línea 295:&lt;br&gt;pf is None&lt;/i&gt;"}
+    dec_297{"not pf.matches(state)&lt;br&gt;&lt;i&gt;Condición en línea 297:&lt;br&gt;not pf.matches(state)&lt;/i&gt;"}
+    loop_75["For each part in parts"]
+    dec_76{"isinstance(current, dict)&lt;br&gt;&lt;i&gt;Condición en línea 76:&lt;br&gt;isinstance(current, dict)&lt;/i&gt;"}
+    loop_220["For each pf"]
+    dec_222{"pf.matches(state)&lt;br&gt;&lt;i&gt;Condición en línea 222:&lt;br&gt;pf.matches(state)&lt;/i&gt;"}
+    fn_get_pf_registry[["Get Pf Registry"]]
+    fn_programfunction_execute[["Execute"]]
+    fn_retrypf_execute[["Execute"]]
+    fn_decomposepf_execute[["Execute"]]
+    fn_fallbackpf_execute[["Execute"]]
+    fn_validatebeforeactpf_execute[["Execute"]]
+    fn_skillprogramregistry_register[["Register"]]
+    fn_programfunction_matches[["Matches"]]
+    fn_skillprogramregistry_register_builtins[["Register Builtins"]]
+    fn_programfunction__get_nested[["Get Nested"]]
+    fn_skillprogramregistry_find_matching[["Find Matching"]]
+    fn_programfunction_record_outcome[["Record Outcome"]]
+    fn_skillprogramregistry_execute_matching[["Execute Matching"]]
+    fn_skillprogramregistry_evolve_from_failures[["Evolve From Failures"]]
+    fn_skillprogramregistry_get_stats[["Get Stats"]]
+    fn_skillprogramregistry_list_pfs[["List Pfs"]]
+    fn_skillprogramregistry_execute_pf[["Execute Pf"]]
+    n_start --&gt; fn_get_pf_registry
+    fn_get_pf_registry --&gt; dec_315
+    n_start --&gt; fn_programfunction_execute
+    fn_programfunction_execute --&gt; fn_programfunction_matches
+    fn_programfunction_matches --&gt; fn_programfunction__get_nested
+    fn_programfunction__get_nested --&gt; loop_75
+    loop_75 --&gt; dec_76
+    dec_76 -- "loop" --&gt; loop_75
+    fn_programfunction__get_nested --&gt; fn_programfunction_record_outcome
+    n_start --&gt; fn_retrypf_execute
+    fn_retrypf_execute --&gt; dec_109
+    n_start --&gt; fn_decomposepf_execute
+    n_start --&gt; fn_fallbackpf_execute
+    n_start --&gt; fn_validatebeforeactpf_execute
+    n_start --&gt; fn_skillprogramregistry_register
+    fn_skillprogramregistry_register --&gt; fn_skillprogramregistry_register_builtins
+    fn_skillprogramregistry_register_builtins --&gt; fn_skillprogramregistry_find_matching
+    fn_skillprogramregistry_find_matching --&gt; loop_220
+    loop_220 --&gt; dec_222
+    dec_222 -- "loop" --&gt; loop_220
+    fn_skillprogramregistry_find_matching --&gt; fn_skillprogramregistry_execute_matching
+    fn_skillprogramregistry_execute_matching --&gt; loop_232
+    fn_skillprogramregistry_execute_matching --&gt; fn_skillprogramregistry_evolve_from_failures
+    fn_skillprogramregistry_evolve_from_failures --&gt; fn_skillprogramregistry_get_stats
+    fn_skillprogramregistry_get_stats --&gt; fn_skillprogramregistry_list_pfs
+    fn_skillprogramregistry_list_pfs --&gt; loop_281
+    fn_skillprogramregistry_list_pfs --&gt; fn_skillprogramregistry_execute_pf
+    fn_skillprogramregistry_execute_pf --&gt; dec_295
+    dec_295 --&gt; dec_297
+    class n_start node-start
+    class fn_get_pf_registry,fn_programfunction_execute,fn_programfunction_matches,fn_programfunction__get_nested,fn_programfunction_record_outcome,fn_retrypf_execute,fn_decomposepf_execute,fn_fallbackpf_execute,fn_validatebeforeactpf_execute,fn_skillprogramregistry_register,fn_skillprogramregistry_register_builtins,fn_skillprogramregistry_find_matching,fn_skillprogramregistry_execute_matching,fn_skillprogramregistry_evolve_from_failures,fn_skillprogramregistry_get_stats,fn_skillprogramregistry_list_pfs,fn_skillprogramregistry_execute_pf node-subprocess
+    class dec_315,dec_76,dec_109,dec_222,dec_295,dec_297 node-decision
+    class loop_75,loop_220,loop_232,loop_281 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 3 · Render</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 3 · Render - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L2_Agentflow_Sequence.html">L2</a> <span class="sep">›</span><span class="current">L3 · Agentflow · Sequence · Render</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Sequence · Render
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_22{"title&lt;br&gt;&lt;i&gt;Condición en línea 22:&lt;br&gt;title&lt;/i&gt;"}
+    loop_28["For each p in participants"]
+    loop_43["For loop"]
+    loop_49["For each frag in frags"]
+    dec_52{"not inner_lines&lt;br&gt;&lt;i&gt;Condición en línea 52:&lt;br&gt;not inner_lines&lt;/i&gt;"}
+    loop_76["For loop"]
+    loop_119["For each node"]
+    dec_120{"isinstance(node,&lt;br&gt;ast.ImportFrom) and node.module&lt;br&gt;&lt;i&gt;Condición en línea 120:&lt;br&gt;isinstance(node, ast.ImportFrom) and node.module&lt;/i&gt;"}
+    loop_123["For each hint in _ACTOR_NAME_HINTS"]
+    dec_124{"hint in mod_low&lt;br&gt;&lt;i&gt;Condición en línea 124:&lt;br&gt;hint in mod_low&lt;/i&gt;"}
+    dec_127{"actor_hint is None&lt;br&gt;&lt;i&gt;Condición en línea 127:&lt;br&gt;actor_hint is None&lt;/i&gt;"}
+    loop_131["For each seg"]
+    dec_132{"actor_hint in seg.lower()&lt;br&gt;&lt;i&gt;Condición en línea 132:&lt;br&gt;actor_hint in seg.lower()&lt;/i&gt;"}
+    dec_136{"actor.lower() == 'llm'&lt;br&gt;&lt;i&gt;Condición en línea 136:&lt;br&gt;actor.lower() == 'llm'&lt;/i&gt;"}
+    loop_138["For each alias in names"]
+    loop_152["For each ix in interactions_list"]
+    loop_153["For each actor in actors"]
+    dec_154{"actor not in seen_actors&lt;br&gt;&lt;i&gt;Condición en línea 154:&lt;br&gt;actor not in seen_actors&lt;/i&gt;"}
+    loop_157["For each msg in messages"]
+    dec_159{"key not in seen_messages&lt;br&gt;&lt;i&gt;Condición en línea 159:&lt;br&gt;key not in seen_messages&lt;/i&gt;"}
+    loop_162["For each frag in fragments"]
+    fn_to_sequence_svg[["To Sequence Svg"]]
+    fn_save_sequence_svg[["Save Sequence Svg"]]
+    fn_to_sequence_html[["To Sequence Html"]]
+    fn__build_import_actor_map[["Build Import Actor Map"]]
+    fn_merge_interactions[["Merge Interactions"]]
+    n_start --&gt; fn_to_sequence_svg
+    fn_to_sequence_svg --&gt; dec_22
+    dec_22 --&gt; loop_28
+    loop_28 --&gt; loop_43
+    loop_43 --&gt; loop_49
+    loop_49 --&gt; dec_52
+    dec_52 -- "loop" --&gt; loop_49
+    loop_49 --&gt; loop_76
+    n_start --&gt; fn_save_sequence_svg
+    n_start --&gt; fn_to_sequence_html
+    n_start --&gt; fn__build_import_actor_map
+    fn__build_import_actor_map --&gt; loop_119
+    loop_119 --&gt; dec_120
+    dec_120 --&gt; loop_123
+    loop_123 --&gt; dec_124
+    dec_124 -- "loop" --&gt; loop_123
+    loop_123 --&gt; dec_127
+    dec_127 --&gt; loop_131
+    loop_131 --&gt; dec_132
+    dec_132 -- "loop" --&gt; loop_131
+    loop_131 --&gt; dec_136
+    dec_136 --&gt; loop_138
+    loop_138 -- "loop" --&gt; loop_119
+    n_start --&gt; fn_merge_interactions
+    fn_merge_interactions --&gt; loop_152
+    loop_152 --&gt; loop_153
+    loop_153 --&gt; dec_154
+    dec_154 -- "loop" --&gt; loop_153
+    loop_153 --&gt; loop_157
+    loop_157 --&gt; dec_159
+    dec_159 -- "loop" --&gt; loop_157
+    loop_157 --&gt; loop_162
+    loop_162 -- "loop" --&gt; loop_152
+    class n_start node-start
+    class fn_to_sequence_svg,fn_save_sequence_svg,fn_to_sequence_html,fn__build_import_actor_map,fn_merge_interactions node-subprocess
+    class dec_22,dec_52,dec_120,dec_124,dec_127,dec_132,dec_136,dec_154,dec_159 node-decision
+    class loop_28,loop_43,loop_49,loop_76,loop_119,loop_123,loop_131,loop_138,loop_152,loop_153,loop_157,loop_162 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

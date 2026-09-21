@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 2 · Dot</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 2 · Dot - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L1_Agentflow.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agentflow · Dot</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Dot
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_57{"node.detail&lt;br&gt;&lt;i&gt;Condición en línea 57:&lt;br&gt;node.detail&lt;/i&gt;"}
+    dec_87{"label&lt;br&gt;&lt;i&gt;Condición en línea 87:&lt;br&gt;label&lt;/i&gt;"}
+    dec_113{"detail != 'high'&lt;br&gt;&lt;i&gt;Condición en línea 113:&lt;br&gt;detail != 'high'&lt;/i&gt;"}
+    dec_62{"node.diff_status in&lt;br&gt;_DOT_DIFF_FILL&lt;br&gt;&lt;i&gt;Condición en línea 62:&lt;br&gt;node.diff_status in _DOT_DIFF_FILL&lt;/i&gt;"}
+    dec_90{"diff_status in ('added',&lt;br&gt;'removed', 'changed')&lt;br&gt;&lt;i&gt;Condición en línea 90:&lt;br&gt;diff_status in ('added', 'removed', 'changed')&lt;/i&gt;"}
+    loop_131["For each node in nodes"]
+    dec_67{"pal is not None&lt;br&gt;&lt;i&gt;Condición en línea 67:&lt;br&gt;pal is not None&lt;/i&gt;"}
+    dec_93{"diff_status == 'removed'&lt;br&gt;&lt;i&gt;Condición en línea 93:&lt;br&gt;diff_status == 'removed'&lt;/i&gt;"}
+    dec_95{"label in&lt;br&gt;EDGE_SEMANTIC_COLORS&lt;br&gt;&lt;i&gt;Condición en línea 95:&lt;br&gt;label in EDGE_SEMANTIC_COLORS&lt;/i&gt;"}
+    loop_136["For each edge in edges"]
+    dec_70{"isinstance(colors, dict)&lt;br&gt;&lt;i&gt;Condición en línea 70:&lt;br&gt;isinstance(colors, dict)&lt;/i&gt;"}
+    dec_77{"node.node_type ==&lt;br&gt;NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 77:&lt;br&gt;node.node_type == NodeType.EVOLUTION&lt;/i&gt;"}
+    dec_98{"label == 'loop'&lt;br&gt;&lt;i&gt;Condición en línea 98:&lt;br&gt;label == 'loop'&lt;/i&gt;"}
+    dec_100{"style == 'dashed'&lt;br&gt;&lt;i&gt;Condición en línea 100:&lt;br&gt;style == 'dashed'&lt;/i&gt;"}
+    dec_80{"shape == 'box'&lt;br&gt;&lt;i&gt;Condición en línea 80:&lt;br&gt;shape == 'box'&lt;/i&gt;"}
+    fn__dot_escape[["Dot Escape"]]
+    fn__node_attrs[["Node Attrs"]]
+    fn__edge_attrs[["Edge Attrs"]]
+    fn_to_dot[["To Dot"]]
+    fn_save_dot[["Save Dot"]]
+    n_start --&gt; fn__dot_escape
+    n_start --&gt; fn__node_attrs
+    fn__node_attrs --&gt; dec_57
+    dec_57 --&gt; dec_62
+    dec_62 --&gt; dec_67
+    dec_67 -- "YES" --&gt; dec_70
+    dec_67 --&gt; dec_77
+    dec_77 --&gt; dec_80
+    n_start --&gt; fn__edge_attrs
+    fn__edge_attrs --&gt; dec_87
+    dec_87 --&gt; dec_90
+    dec_90 --&gt; dec_93
+    dec_90 --&gt; dec_95
+    dec_95 --&gt; dec_98
+    dec_95 --&gt; dec_100
+    n_start --&gt; fn_to_dot
+    fn_to_dot --&gt; dec_113
+    dec_113 --&gt; loop_131
+    loop_131 --&gt; loop_136
+    n_start --&gt; fn_save_dot
+    class n_start node-start
+    class fn__dot_escape,fn__node_attrs,fn__edge_attrs,fn_to_dot,fn_save_dot node-subprocess
+    class dec_57,dec_62,dec_67,dec_70,dec_77,dec_80,dec_87,dec_90,dec_93,dec_95,dec_98,dec_100,dec_113 node-decision
+    class loop_131,loop_136 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

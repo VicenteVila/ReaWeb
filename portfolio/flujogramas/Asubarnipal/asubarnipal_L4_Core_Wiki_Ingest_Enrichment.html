@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 4 · Enrichment</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 4 · Enrichment - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L3_Core_Wiki_Ingest.html">L3</a> <span class="sep">›</span><span class="current">L4 · Core · Wiki · Ingest · Enrichment</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Ingest · Enrichment
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_3{"not text or len(text) &lt; 100&lt;br&gt;&lt;i&gt;Condición en línea 3:&lt;br&gt;not text or len(text) &lt; 100&lt;/i&gt;"}
+    dec_13{"es_count &gt;= 2 and es_count&lt;br&gt;&gt;= en_count&lt;br&gt;&lt;i&gt;Condición en línea 13:&lt;br&gt;es_count &gt;= 2 and es_count &gt;= en_count&lt;/i&gt;"}
+    dec_15{"en_count &gt;= 2 and en_count&lt;br&gt;&gt;= es_count&lt;br&gt;&lt;i&gt;Condición en línea 15:&lt;br&gt;en_count &gt;= 2 and en_count &gt;= es_count&lt;/i&gt;"}
+    dec_17{"es_count &gt; en_count&lt;br&gt;&lt;i&gt;Condición en línea 17:&lt;br&gt;es_count &gt; en_count&lt;/i&gt;"}
+    dec_19{"en_count &gt; 0&lt;br&gt;&lt;i&gt;Condición en línea 19:&lt;br&gt;en_count &gt; 0&lt;/i&gt;"}
+    loop_105["For each concept in concepts"]
+    loop_107["For each r in results"]
+    dec_108{"r('name') not in&lt;br&gt;(rel('name') for rel in related)&lt;br&gt;&lt;i&gt;Condición en línea 108:&lt;br&gt;r('name') not in (rel('name') for rel in related)&lt;/i&gt;"}
+    dec_110{"len(related) &gt;= 10&lt;br&gt;&lt;i&gt;Condición en línea 110:&lt;br&gt;len(related) &gt;= 10&lt;/i&gt;"}
+    fn__detect_language[["Detect Language"]]
+    fn__translate_text[["Translate Text"]]
+    fn__generate_summary[["Generate Summary"]]
+    fn__extract_concepts[["Extract Concepts"]]
+    fn__find_related_notes[["Find Related Notes"]]
+    tool_search_106["results = Search&lt;br&gt;&lt;i&gt;Búsqueda híbrida (sqlite + obsidian /&lt;br&gt;semántica densa + BM25)&lt;/i&gt;"]
+    n_start --&gt; fn__detect_language
+    fn__detect_language --&gt; dec_3
+    dec_3 --&gt; dec_13
+    dec_13 --&gt; dec_15
+    dec_15 --&gt; dec_17
+    dec_17 --&gt; dec_19
+    n_start --&gt; fn__translate_text
+    n_start --&gt; fn__generate_summary
+    n_start --&gt; fn__extract_concepts
+    n_start --&gt; fn__find_related_notes
+    fn__find_related_notes --&gt; loop_105
+    loop_105 --&gt; tool_search_106
+    tool_search_106 --&gt; loop_107
+    loop_107 --&gt; dec_108
+    dec_108 --&gt; dec_110
+    dec_110 -- "loop" --&gt; loop_107
+    loop_107 -- "loop" --&gt; loop_105
+    class n_start node-start
+    class fn__detect_language,fn__translate_text,fn__generate_summary,fn__extract_concepts,fn__find_related_notes node-subprocess
+    class dec_3,dec_13,dec_15,dec_17,dec_19,dec_108,dec_110 node-decision
+    class loop_105,loop_107 node-loop
+    class tool_search_106 node-tool
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asubarnipal · Nivel 3 · Search</title>
+<meta name="description" content="Flujograma Asubarnipal · Nivel 3 · Search - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/Asubarnipal/index.html">Asubarnipal</a> <span class="sep">›</span><a href="asubarnipal_L0_Overview.html">L0</a> <span class="sep">›</span><a href="asubarnipal_L2_Core_Wiki.html">L2</a> <span class="sep">›</span><span class="current">L3 · Core · Wiki · Search</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Search
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_31{"keywords&lt;br&gt;&lt;i&gt;Condición en línea 31:&lt;br&gt;keywords&lt;/i&gt;"}
+    loop_33["For each token in keywords"]
+    loop_39["For each r"]
+    dec_45{"name_matches&lt;br&gt;&lt;i&gt;Condición en línea 45:&lt;br&gt;name_matches&lt;/i&gt;"}
+    loop_56["For each r"]
+    loop_81["For each row"]
+    loop_85["For each r in rels"]
+    dec_86{"isinstance(r, dict)&lt;br&gt;&lt;i&gt;Condición en línea 86:&lt;br&gt;isinstance(r, dict)&lt;/i&gt;"}
+    dec_87{"r.get('name')&lt;br&gt;&lt;i&gt;Condición en línea 87:&lt;br&gt;r.get('name')&lt;/i&gt;"}
+    dec_89{"isinstance(r, str) and&lt;br&gt;r.strip()&lt;br&gt;&lt;i&gt;Condición en línea 89:&lt;br&gt;isinstance(r, str) and r.strip()&lt;/i&gt;"}
+    loop_102["For each row"]
+    loop_105["For each tag in tags"]
+    loop_118["For each row"]
+    dec_120{"not relacionados or&lt;br&gt;relacionados == '()'&lt;br&gt;&lt;i&gt;Condición en línea 120:&lt;br&gt;not relacionados or relacionados == '()'&lt;/i&gt;"}
+    loop_126["For each rel in rels"]
+    dec_129{"not self.cursor.fetchone()&lt;br&gt;&lt;i&gt;Condición en línea 129:&lt;br&gt;not self.cursor.fetchone()&lt;/i&gt;"}
+    loop_148["For each row"]
+    dec_150{"estado == 'draft'&lt;br&gt;&lt;i&gt;Condición en línea 150:&lt;br&gt;estado == 'draft'&lt;/i&gt;"}
+    dec_152{"estado == 'final'&lt;br&gt;&lt;i&gt;Condición en línea 152:&lt;br&gt;estado == 'final'&lt;/i&gt;"}
+    dec_154{"not relacionados or&lt;br&gt;relacionados == '()'&lt;br&gt;&lt;i&gt;Condición en línea 154:&lt;br&gt;not relacionados or relacionados == '()'&lt;/i&gt;"}
+    fn_wikisearchmixin_search[["Search"]]
+    fn_wikisearchmixin_get_hubs[["Get Hubs"]]
+    fn_wikisearchmixin_get_clusters[["Get Clusters"]]
+    fn_wikisearchmixin_lint[["Lint"]]
+    fn_wikisearchmixin_get_stats[["Get Stats"]]
+    n_start --&gt; fn_wikisearchmixin_search
+    fn_wikisearchmixin_search --&gt; dec_31
+    dec_31 --&gt; loop_33
+    loop_33 --&gt; loop_39
+    loop_39 -- "loop" --&gt; loop_33
+    loop_33 --&gt; dec_45
+    dec_45 --&gt; loop_56
+    fn_wikisearchmixin_search --&gt; fn_wikisearchmixin_get_hubs
+    fn_wikisearchmixin_get_hubs --&gt; loop_81
+    loop_81 --&gt; loop_85
+    loop_85 --&gt; dec_86
+    dec_86 --&gt; dec_87
+    dec_86 --&gt; dec_89
+    dec_89 -- "loop" --&gt; loop_85
+    loop_85 -- "loop" --&gt; loop_81
+    fn_wikisearchmixin_get_hubs --&gt; fn_wikisearchmixin_get_clusters
+    fn_wikisearchmixin_get_clusters --&gt; loop_102
+    loop_102 --&gt; loop_105
+    loop_105 -- "loop" --&gt; loop_102
+    fn_wikisearchmixin_get_clusters --&gt; fn_wikisearchmixin_lint
+    fn_wikisearchmixin_lint --&gt; loop_118
+    loop_118 --&gt; dec_120
+    dec_120 --&gt; loop_126
+    loop_126 --&gt; dec_129
+    dec_129 -- "loop" --&gt; loop_126
+    loop_126 -- "loop" --&gt; loop_118
+    fn_wikisearchmixin_lint --&gt; fn_wikisearchmixin_get_stats
+    fn_wikisearchmixin_get_stats --&gt; loop_148
+    loop_148 --&gt; dec_150
+    dec_150 --&gt; dec_152
+    dec_152 --&gt; dec_154
+    dec_154 -- "loop" --&gt; loop_148
+    class n_start node-start
+    class fn_wikisearchmixin_search,fn_wikisearchmixin_get_hubs,fn_wikisearchmixin_get_clusters,fn_wikisearchmixin_lint,fn_wikisearchmixin_get_stats node-subprocess
+    class dec_31,dec_45,dec_86,dec_87,dec_89,dec_120,dec_129,dec_150,dec_152,dec_154 node-decision
+    class loop_33,loop_39,loop_56,loop_81,loop_85,loop_102,loop_105,loop_118,loop_126,loop_148 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

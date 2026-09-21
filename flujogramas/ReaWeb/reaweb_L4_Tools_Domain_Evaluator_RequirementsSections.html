@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · Nivel 4 · RequirementsSections</title>
+<meta name="description" content="Flujograma ReaWeb · Nivel 4 · RequirementsSections - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><a href="reaweb_L0_Overview.html">L0</a> <span class="sep">›</span><a href="reaweb_L3_Tools_Domain_Evaluator.html">L3</a> <span class="sep">›</span><span class="current">L4 · Tools · Domain · Evaluator · RequirementsSections</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Evaluator · RequirementsSections
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart LR
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    loop_9["For each m"]
+    dec_11{"'&lt;' in url or '$(' in url or&lt;br&gt;'(' in url&lt;br&gt;&lt;i&gt;Condición en línea 11:&lt;br&gt;'&lt;' in url or '$(' in url or '(' in url&lt;/i&gt;"}
+    dec_13{"any((h in url for h in&lt;br&gt;('github.com', 'gitlab.com',&lt;br&gt;&lt;i&gt;Condición en línea 13:&lt;br&gt;any((h in url for h in ('github.com', 'gitlab.com', 'bitbuck&lt;/i&gt;"}
+    dec_14{"url not in reqs&lt;br&gt;&lt;i&gt;Condición en línea 14:&lt;br&gt;url not in reqs&lt;/i&gt;"}
+    loop_19["For each m"]
+    dec_21{"owner&lt;br&gt;&lt;i&gt;Condición en línea 21:&lt;br&gt;owner&lt;/i&gt;"}
+    loop_23["For each owner"]
+    dec_25{"not any((f'(base)/' in r for&lt;br&gt;r in reqs)) and base not in reqs&lt;br&gt;&lt;i&gt;Condición en línea 25:&lt;br&gt;not any((f'(base)/' in r for r in reqs)) and base not in req&lt;/i&gt;"}
+    dec_29{"owners&lt;br&gt;&lt;i&gt;Condición en línea 29:&lt;br&gt;owners&lt;/i&gt;"}
+    loop_75["For each m"]
+    dec_77{"name in seen or name in skip&lt;br&gt;or len(name) &lt; 4&lt;br&gt;&lt;i&gt;Condición en línea 77:&lt;br&gt;name in seen or name in skip or len(name) &lt; 4&lt;/i&gt;"}
+    dec_80{"name not in reqs&lt;br&gt;&lt;i&gt;Condición en línea 80:&lt;br&gt;name not in reqs&lt;/i&gt;"}
+    dec_82{"len(reqs) &gt;= max_items&lt;br&gt;&lt;i&gt;Condición en línea 82:&lt;br&gt;len(reqs) &gt;= max_items&lt;/i&gt;"}
+    loop_100["For each key in priority"]
+    dec_103{"any((a in task_low for a in&lt;br&gt;aliases))&lt;br&gt;&lt;i&gt;Condición en línea 103:&lt;br&gt;any((a in task_low for a in aliases))&lt;/i&gt;"}
+    dec_105{"key not in found&lt;br&gt;&lt;i&gt;Condición en línea 105:&lt;br&gt;key not in found&lt;/i&gt;"}
+    loop_117["For each a in aliases"]
+    dec_118{"a in h_low&lt;br&gt;&lt;i&gt;Condición en línea 118:&lt;br&gt;a in h_low&lt;/i&gt;"}
+    fn_extract_requirements[["Extract Requirements"]]
+    fn_extract_sections[["Extract Sections"]]
+    fn__html_has_section[["Html Has Section"]]
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    n_start --&gt; fn_extract_requirements
+    fn_extract_requirements --&gt; loop_9
+    loop_9 --&gt; dec_11
+    dec_11 --&gt; dec_13
+    dec_13 --&gt; dec_14
+    dec_14 -- "loop" --&gt; loop_9
+    loop_9 --&gt; loop_19
+    loop_19 --&gt; dec_21
+    dec_21 -- "loop" --&gt; loop_19
+    loop_19 --&gt; loop_23
+    loop_23 --&gt; dec_25
+    dec_25 -- "loop" --&gt; loop_23
+    loop_23 --&gt; dec_29
+    dec_29 --&gt; loop_75
+    loop_75 --&gt; dec_77
+    dec_77 --&gt; dec_80
+    dec_80 --&gt; dec_82
+    dec_82 -- "loop" --&gt; loop_75
+    n_start --&gt; fn_extract_sections
+    fn_extract_sections --&gt; loop_100
+    loop_100 --&gt; dec_103
+    dec_103 --&gt; dec_105
+    dec_105 -- "loop" --&gt; loop_100
+    n_start --&gt; fn__html_has_section
+    fn__html_has_section --&gt; loop_117
+    loop_117 --&gt; dec_118
+    dec_118 -- "loop" --&gt; loop_117
+    class n_start node-start
+    class fn_extract_requirements,fn_extract_sections,fn__html_has_section node-subprocess
+    class loop_9,loop_19,loop_23,loop_75,loop_100,loop_117 node-loop
+    class dec_11,dec_13,dec_14,dec_21,dec_25,dec_29,dec_77,dec_80,dec_82,dec_103,dec_105,dec_118 node-decision
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

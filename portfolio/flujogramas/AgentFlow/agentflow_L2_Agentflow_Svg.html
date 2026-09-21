@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow · Nivel 2 · Svg</title>
+<meta name="description" content="Flujograma AgentFlow · Nivel 2 · Svg - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/AgentFlow/index.html">AgentFlow</a> <span class="sep">›</span><a href="agentflow_L0_Overview.html">L0</a> <span class="sep">›</span><a href="agentflow_L1_Agentflow.html">L1</a> <span class="sep">›</span><span class="current">L2 · Agentflow · Svg</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% Svg
+%%{init: {"themeVariables": {"lineColor": "#00ff88"}}}%%
+flowchart TD
+    classDef node-start fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-end fill:#000000,stroke:#ff0055,color:#e0e0e0
+    classDef node-process fill:#000000,stroke:#8b5cf6,color:#e0e0e0
+    classDef node-decision fill:#000000,stroke:#facc15,color:#e0e0e0
+    classDef node-subprocess fill:#000000,stroke:#00ffff,color:#e0e0e0
+    classDef node-tool fill:#000000,stroke:#00ff88,color:#e0e0e0
+    classDef node-loop fill:#000000,stroke:#ff00ff,color:#e0e0e0
+    classDef evolution fill:#000000,stroke:#ff8800,stroke-dasharray: 5 5,color:#e0e0e0
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;br&gt;budget.start()&lt;/i&gt;"])
+    n_end(["End&lt;br&gt;&lt;i&gt;db.close()&lt;br&gt;_final_summary()&lt;/i&gt;"])
+    dec_61{"diff in _DIFF_NODE_COLORS&lt;br&gt;&lt;i&gt;Condición en línea 61:&lt;br&gt;diff in _DIFF_NODE_COLORS&lt;/i&gt;"}
+    loop_141["For loop"]
+    dec_162{"detail != 'high'&lt;br&gt;&lt;i&gt;Condición en línea 162:&lt;br&gt;detail != 'high'&lt;/i&gt;"}
+    dec_73{"t == NodeType.EVOLUTION&lt;br&gt;&lt;i&gt;Condición en línea 73:&lt;br&gt;t == NodeType.EVOLUTION&lt;/i&gt;"}
+    dec_166{"layout == 'grid'&lt;br&gt;&lt;i&gt;Condición en línea 166:&lt;br&gt;layout == 'grid'&lt;/i&gt;"}
+    dec_81{"t in (NodeType.START,&lt;br&gt;NodeType.END)&lt;br&gt;&lt;i&gt;Condición en línea 81:&lt;br&gt;t in (NodeType.START, NodeType.END)&lt;/i&gt;"}
+    dec_168{"layout == 'phased'&lt;br&gt;&lt;i&gt;Condición en línea 168:&lt;br&gt;layout == 'phased'&lt;/i&gt;"}
+    dec_86{"t == NodeType.DECISION&lt;br&gt;&lt;i&gt;Condición en línea 86:&lt;br&gt;t == NodeType.DECISION&lt;/i&gt;"}
+    dec_170{"layout ==&lt;br&gt;'phased-horizontal'&lt;br&gt;&lt;i&gt;Condición en línea 170:&lt;br&gt;layout == 'phased-horizontal'&lt;/i&gt;"}
+    dec_172{"layout == 'radial'&lt;br&gt;&lt;i&gt;Condición en línea 172:&lt;br&gt;layout == 'radial'&lt;/i&gt;"}
+    loop_185["For each pb in phase_boxes"]
+    loop_195["For each gb in group_boxes"]
+    loop_205["For each lb in lane_boxes"]
+    loop_222["For loop"]
+    dec_224{"edge.diff_status in&lt;br&gt;_DIFF_EDGE_COLORS&lt;br&gt;&lt;i&gt;Condición en línea 224:&lt;br&gt;edge.diff_status in _DIFF_EDGE_COLORS&lt;/i&gt;"}
+    dec_226{"edge.label in&lt;br&gt;EDGE_SEMANTIC_COLORS&lt;br&gt;&lt;i&gt;Condición en línea 226:&lt;br&gt;edge.label in EDGE_SEMANTIC_COLORS&lt;/i&gt;"}
+    dec_234{"edge.label&lt;br&gt;&lt;i&gt;Condición en línea 234:&lt;br&gt;edge.label&lt;/i&gt;"}
+    loop_240["For loop"]
+    dec_241{"fb.source_id not in&lt;br&gt;pos_lookup or fb.target_id not in&lt;br&gt;&lt;i&gt;Condición en línea 241:&lt;br&gt;fb.source_id not in pos_lookup or fb.target_id not in pos_lo&lt;/i&gt;"}
+    dec_249{"fb.label&lt;br&gt;&lt;i&gt;Condición en línea 249:&lt;br&gt;fb.label&lt;/i&gt;"}
+    loop_255["For each pos in positioned"]
+    dec_257{"pos.group_id&lt;br&gt;&lt;i&gt;Condición en línea 257:&lt;br&gt;pos.group_id&lt;/i&gt;"}
+    dec_265{"pos.node.detail and detail_c&lt;br&gt;is not None&lt;br&gt;&lt;i&gt;Condición en línea 265:&lt;br&gt;pos.node.detail and detail_c is not None&lt;/i&gt;"}
+    dec_271{"legend&lt;br&gt;&lt;i&gt;Condición en línea 271:&lt;br&gt;legend&lt;/i&gt;"}
+    fn__fmt[["Fmt"]]
+    fn__poly_points[["Poly Points"]]
+    fn__shape_svg[["Shape Svg"]]
+    fn__text_svg[["Text Svg"]]
+    fn__arrow_path[["Arrow Path"]]
+    fn__legend_svg[["Legend Svg"]]
+    fn_to_svg[["To Svg"]]
+    fn_save_svg[["Save Svg"]]
+    n_start --&gt; fn__fmt
+    n_start --&gt; fn__poly_points
+    n_start --&gt; fn__shape_svg
+    fn__shape_svg --&gt; dec_61
+    dec_61 --&gt; dec_73
+    dec_73 --&gt; dec_81
+    dec_81 --&gt; dec_86
+    n_start --&gt; fn__text_svg
+    n_start --&gt; fn__arrow_path
+    n_start --&gt; fn__legend_svg
+    fn__legend_svg --&gt; loop_141
+    n_start --&gt; fn_to_svg
+    fn_to_svg --&gt; dec_162
+    dec_162 --&gt; dec_166
+    dec_166 --&gt; dec_168
+    dec_168 --&gt; dec_170
+    dec_170 --&gt; dec_172
+    dec_172 --&gt; loop_185
+    loop_185 --&gt; loop_195
+    loop_195 --&gt; loop_205
+    loop_205 --&gt; loop_222
+    loop_222 --&gt; dec_224
+    dec_224 --&gt; dec_226
+    dec_226 --&gt; dec_234
+    dec_234 -- "loop" --&gt; loop_222
+    loop_222 --&gt; loop_240
+    loop_240 --&gt; dec_241
+    dec_241 --&gt; dec_249
+    dec_249 -- "loop" --&gt; loop_240
+    loop_240 --&gt; loop_255
+    loop_255 --&gt; dec_257
+    dec_257 --&gt; dec_265
+    dec_265 -- "loop" --&gt; loop_255
+    loop_255 --&gt; dec_271
+    n_start --&gt; fn_save_svg
+    class n_start node-start
+    class fn__fmt,fn__poly_points,fn__shape_svg,fn__text_svg,fn__arrow_path,fn__legend_svg,fn_to_svg,fn_save_svg node-subprocess
+    class dec_61,dec_73,dec_81,dec_86,dec_162,dec_166,dec_168,dec_170,dec_172,dec_224,dec_226,dec_234,dec_241,dec_249,dec_257,dec_265,dec_271 node-decision
+    class loop_141,loop_185,loop_195,loop_205,loop_222,loop_240,loop_255 node-loop
+    class n_end node-end
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

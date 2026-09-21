@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReaWeb · Nivel 1 · horizontal</title>
+<meta name="description" content="Flujograma ReaWeb · Nivel 1 · horizontal - Graphic knowledge de Vicente Vila">
+<link rel="stylesheet" href="../page-common.css">
+<style>
+  .stage { overflow:auto; padding:1.5rem; }
+  .stage > div { width:max-content; min-width:100%; margin:0 auto; }
+  .stage svg { max-width:none; }
+  .hint { color:var(--text); opacity:.6; font-size:.8rem; margin-left:1.5rem; }
+  .msg { text-align:center; padding:3rem; color:var(--text); opacity:.8; }
+  .mmd-src { display:none; }
+  .sun{display:none} body.dark-theme .sun{display:inline} body.dark-theme .moon{display:none}
+</style>
+</head>
+<body class="dark-theme">
+<script src="../../particles.js"></script>
+<div class="topbar">
+  <div class="breadcrumbs"><a href="../../index.html">Grafo</a> <span class="sep">›</span><a href="../../repos/ReaWeb/index.html">ReaWeb</a> <span class="sep">›</span><a href="reaweb_L0_Overview.html">L0</a> <span class="sep">›</span><span class="current">L1 · phased · horizontal</span></div>
+  <nav>
+    <button id="theme-toggle" aria-label="Cambiar modo de color" title="Cambiar modo de color">
+      <span class="moon">🌙</span><span class="sun">☀️</span>
+    </button>
+    <a class="back" href="../../index.html">← Volver al grafo</a>
+  </nav>
+</div>
+<div class="stage"><div id="container"><p class="msg">Cargando diagrama…</p></div></div>
+<p class="hint">Puedes hacer scroll y ampliar el diagrama con el zoom del navegador.</p>
+
+<pre id="mmd" class="mmd-src">
+%% ReaWeb · L1 · Agent (phased-horizontal)
+flowchart LR
+    classDef evolution fill:#ffedd5,stroke:#ea580c,stroke-dasharray: 5 5
+    classDef added fill:#a7f3d0,stroke:#065f46
+    classDef removed fill:#fecaca,stroke:#991b1b,stroke-dasharray: 5 5
+    classDef changed fill:#fde68a,stroke:#92400e
+    subgraph n_1 ["FASE 1 · PREPARACIÓN"]
+    n_start(["Start&lt;br&gt;&lt;i&gt;Agent.run() invoked&lt;/i&gt;"])
+    init["Init Agent&lt;br&gt;&lt;i&gt;run_id, mkdir, upsert_run, write_text&lt;/i&gt;"]
+    special__seed_from_workspace_867["Seed Workspace&lt;br&gt;&lt;i&gt;Si workspace/current existe&lt;/i&gt;"]
+    end
+    subgraph n_2 ["FASE 2 · LOOP DE EVOLUCIÓN (H1…Hn)"]
+    main_loop["Main Loop&lt;br&gt;&lt;i&gt;while True:&lt;/i&gt;"]
+    loop_869["Main Loop&lt;br&gt;(while True)"]
+    dec_876{"Stop&lt;br&gt;reason?&lt;br&gt;&lt;i&gt;Motivo de parada?&lt;/i&gt;"}
+    special__render_state_881["state = Render State&lt;br&gt;&lt;i&gt;Genera prompt con: turn, cost,&lt;/i&gt;"]
+    dec_900{"NOT tool_calls?&lt;br&gt;&lt;i&gt;Niega tool_calls&lt;/i&gt;"}
+    dec_904{"Agent said&lt;br&gt;done?&lt;br&gt;&lt;i&gt;¿Agente dijo done/fin/finalizado?&lt;/i&gt;"}
+    dec_905{"Target H&lt;br&gt;reached?&lt;br&gt;&lt;i&gt;hypothesis_count ≤ target_h?&lt;/i&gt;"}
+    loop_919["For each call in tool_calls"]
+    dec_945{"call.name ==&lt;br&gt;'generate_candidate' and node_id&lt;br&gt;&lt;i&gt;Condición en línea 945:&lt;/i&gt;"}
+    special__snapshot_946["Snapshot Workspace&lt;br&gt;&lt;i&gt;Copia workspace/ → candidates/(id)/&lt;/i&gt;"]
+    dec_949{"call.name ==&lt;br&gt;'generate_candidate' and node_id&lt;br&gt;&lt;i&gt;Condición en línea 949:&lt;/i&gt;"}
+    dec_953{"call.name ==&lt;br&gt;'generate_candidate' and is not&lt;br&gt;&lt;i&gt;Condición en línea 953:&lt;/i&gt;"}
+    dec_956{"node_id is not None and&lt;br&gt;call.name in 'audit_page')&lt;br&gt;&lt;i&gt;Condición en línea 956:&lt;/i&gt;"}
+    dec_961{"Budget&lt;br&gt;done?&lt;br&gt;&lt;i&gt;turns ≥ 24 OR cost ≥ $5.00&lt;/i&gt;"}
+    dec_969{"Compact&lt;br&gt;context?&lt;br&gt;&lt;i&gt;tokens &gt; 60000?&lt;/i&gt;"}
+    dec_976{"self.memory.incremental.exists()&lt;br&gt;&lt;i&gt;Condición en línea 976:&lt;/i&gt;"}
+    tool_audit_truth_407["Audit Truth&lt;br&gt;&lt;i&gt;Partes huérfanas, enlaces rotos,&lt;/i&gt;"]
+    tool_audit_visual_447["Audit Visual&lt;br&gt;&lt;i&gt;VLM Gemini: screenshot → score 0-100&lt;/i&gt;"]
+    tool_audit_creative_479["Audit Creative&lt;br&gt;&lt;i&gt;VLM anti-proxy: novedad/originalidad&lt;/i&gt;"]
+    tool_generate_candidate_566["Generate Candidate&lt;br&gt;&lt;i&gt;LLM sub-agent genera HTML/CSS/JS&lt;/i&gt;"]
+    evo__auto_truth_audit_947["Auto Truth Audit&lt;br&gt;&lt;i&gt;1 vez/run: partes conectadas&lt;/i&gt;"]:::evolution
+    evo__auto_visual_audit_948["Auto Visual Audit&lt;br&gt;&lt;i&gt;Post-generate: VLM screenshot&lt;/i&gt;"]:::evolution
+    evo__compute_novelty_950["Compute Novelty&lt;br&gt;&lt;i&gt;DOM(0.45) + palette(0.35)&lt;/i&gt;"]:::evolution
+    evo__maybe_auto_lesson_955["Auto Lesson&lt;br&gt;&lt;i&gt;delta ≥ 4.0 → aprende worked/didnt&lt;/i&gt;"]:::evolution
+    evo__maybe_subtask_lesson_957["Subtask Lesson&lt;br&gt;&lt;i&gt;Detecta subtask fail→pass&lt;/i&gt;"]:::evolution
+    end
+    subgraph n_3 ["FASE 3 · CIERRE"]
+    special__export_final_982(["Export Final&lt;br&gt;&lt;i&gt;Copia mejor candidato a&lt;/i&gt;"])
+    end
+    n_start --&gt; init
+    init --&gt; main_loop
+    main_loop --&gt; special__seed_from_workspace_867
+    special__seed_from_workspace_867 --&gt; loop_869
+    loop_869 --&gt; dec_876
+    dec_876 --&gt; special__render_state_881
+    special__render_state_881 --&gt; dec_900
+    dec_900 --&gt; dec_904
+    dec_904 --&gt; dec_905
+    dec_905 --&gt; loop_919
+    loop_919 --&gt; dec_945
+    dec_945 --&gt; special__snapshot_946
+    special__snapshot_946 --&gt; evo__auto_truth_audit_947
+    evo__auto_truth_audit_947 --&gt; evo__auto_visual_audit_948
+    evo__auto_visual_audit_948 --&gt; dec_949
+    dec_949 --&gt; evo__compute_novelty_950
+    evo__compute_novelty_950 --&gt; dec_953
+    dec_953 --&gt; evo__maybe_auto_lesson_955
+    evo__maybe_auto_lesson_955 --&gt; dec_956
+    dec_956 --&gt; evo__maybe_subtask_lesson_957
+    evo__maybe_subtask_lesson_957 -- "loop" --&gt; loop_919
+    loop_919 --&gt; dec_961
+    dec_961 --&gt; dec_969
+    dec_969 -- "loop" --&gt; loop_869
+    loop_869 --&gt; dec_976
+    dec_976 --&gt; special__export_final_982
+    loop_919 -- "dispatch" --&gt; tool_audit_truth_407
+    loop_919 -- "dispatch" --&gt; tool_audit_visual_447
+    loop_919 -- "dispatch" --&gt; tool_audit_creative_479
+    loop_919 -- "dispatch" --&gt; tool_generate_candidate_566
+
+</pre>
+<script src="../../mermaid.min.js"></script>
+<script>
+(function () {
+  var themeToggle = document.getElementById('theme-toggle');
+  var body = document.body;
+  themeToggle.addEventListener('click', function () {
+    var next = !body.classList.contains('dark-theme');
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    window.location.reload();
+  });
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') body.classList.remove('dark-theme');
+
+  var container = document.getElementById('container');
+  var source = document.getElementById('mmd').textContent;
+  if (typeof mermaid === 'undefined') {
+    container.innerHTML = '<p class="msg">No se pudo cargar la librería Mermaid.</p>';
+    return;
+  }
+  var dark = body.classList.contains('dark-theme');
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default',
+    themeVariables: { lineColor: '#00ff88' }
+  });
+  mermaid.render('mmd-diagram', source).then(function (res) {
+    container.innerHTML = res.svg;
+    if (typeof res.bindFunctions === 'function') res.bindFunctions(container);
+  }).catch(function (e) {
+    container.innerHTML = '<p class="msg">No se pudo renderizar el diagrama: ' + e.message + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

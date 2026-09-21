@@ -47,7 +47,7 @@
       "traceforge_L1_Traceforge.mmd"
     ],
     "PromptForge": [],
-    "PopeBot-agente": []
+    "Bibliotecario": []
   },
-  "notas": "PromptForge y PopeBot-agente no tienen carpeta de flujogramas: su nodo flujogramas debe mostrar un aviso 'Sin flujogramas disponibles para este repositorio'."
+  "notas": "PromptForge y Bibliotecario no tienen carpeta de flujogramas: su nodo flujogramas debe mostrar un aviso 'Sin flujogramas disponibles para este repositorio'."
 }

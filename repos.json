@@ -2,11 +2,25 @@
   "owner": "VicenteVila",
   "repos": [
     {
+      "name": "AgentFlow",
+      "description": "Parse and visualize AI agent control flows as Excalidraw diagrams and SVG.",
+      "topics": ["Python", "AI", "Visualization"],
+      "type": "repo",
+      "connections": ["CogniTeam"]
+    },
+    {
       "name": "Asubarnipal",
       "description": "Agente de Investigacion con Telegram, Dashboard, GraphRAG y Turboquant",
       "topics": ["Python", "AI", "GraphRAG"],
       "type": "repo",
       "connections": ["CogniTeam"]
+    },
+    {
+      "name": "Bibliotecario",
+      "description": "Agente de consultas sobre documentación.",
+      "topics": ["Python", "RAG", "LLM"],
+      "type": "repo",
+      "connections": ["Asubarnipal"]
     },
     {
       "name": "CogniTeam",
@@ -42,13 +56,6 @@
       "topics": ["Python", "Godot", "Game Dev"],
       "type": "repo",
       "connections": []
-    },
-    {
-      "name": "Bibliotecario",
-      "description": "Agente de consultas sobre documentación.",
-      "topics": ["Python", "RAG", "LLM"],
-      "type": "repo",
-      "connections": ["Asubarnipal"]
     }
   ]
 }

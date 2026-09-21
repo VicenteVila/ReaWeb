@@ -42,6 +42,13 @@
       "topics": ["Python", "Godot", "Game Dev"],
       "type": "repo",
       "connections": []
+    },
+    {
+      "name": "Bibliotecario",
+      "description": "Agente de consultas sobre documentación.",
+      "topics": ["Python", "RAG", "LLM"],
+      "type": "repo",
+      "connections": ["Asubarnipal"]
     }
   ]
 }

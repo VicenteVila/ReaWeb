@@ -19,7 +19,19 @@ let graphData = {
     "repos": []
 };
 
-// Cargar repositorios dinámicamente
+// Cargar repositorios dinámicamente y dibujar el grafo una vez listos los datos.
+// initGraph está declarada más abajo (hoisting); se invoca solo al terminar el
+// fetch para no dibujar un grafo vacío. Si falla la carga, se loguea el error.
+fetch('repos.json')
+    .then(r => {
+        if (!r.ok) throw new Error(`repos.json -> HTTP ${r.status}`);
+        return r.json();
+    })
+    .then(data => {
+        graphData.repos = data.repos || [];
+        initGraph();
+    })
+    .catch(err => console.error("Error cargando repos.json", err));
 
 // Manifesto de flujogramas por repo (archivos .mmd disponibles). PromptForge y
 // PopeBot-agente NO tienen flujogramas -> se muestra aviso.
@@ -30,6 +42,7 @@ const FLUJOGRAMAS_MANIFEST = {
     "ReaGame": ["reagame_L0_Overview.mmd", "reagame_L1_Agent.mmd", "reagame_L1_Config.mmd", "reagame_L1_Scripts.mmd", "reagame_L1_Tools.mmd"],
     "ReaWeb": ["reaweb_L0_Overview.mmd", "reaweb_L1_Agent.mmd", "reaweb_L1_Config.mmd", "reaweb_L1_Scripts.mmd", "reaweb_L1_Tools.mmd", "reaweb_L1_phased_horizontal.mmd", "reaweb_L1_radial.mmd"],
     "TraceForge": ["traceforge_L0_Overview.mmd", "traceforge_L1_Examples.mmd", "traceforge_L1_Traceforge.mmd"],
+    "Bibliotecario": [],
     "PromptForge": [],
     "PopeBot-agente": []
 };
@@ -64,8 +77,6 @@ const NODE_GRADIENTS = {
     'flow-node':   ['#e9d5ff', '#a78bfa', '#6d28d9']
 };
 
-let graphData = GRAPH_DATA_FALLBACK;
-
 // Esquemas visuales (infogramas .jfif) por repositorio. PopeBot-agente no
 // tiene esquema -> queda fuera del mapa y no se muestra nada en su hover.
 const INFOGRAMAS = {
@@ -85,6 +96,7 @@ const REPO_SUMMARY = {
     "ReaGame": "Agente ReASearch especializado en desarrollo de juegos Godot 4. Fork limpio del core genérico de reaweb-harness (mismo loop de exploración/explotación, métricas, lecciones, caché y gobernanza de skills) con una capa específica de juegos.",
     "TraceForge": "Structured tracing for multi-agent LLM pipelines: trazado estructurado de los flujos multi-agente para entender y depurar cada paso de sus pipelines de LLMs.",
     "CogniTeam": "Sistema multi-agente en Python que recibe una tarea en lenguaje natural, la clasifica en un dominio y arquetipo (14 dominios, 61 arquetipos), genera un plan de pasos con las herramientas disponibles, lo ejecuta, valida los resultados y deja un reporte de la ejecución con todas las llamadas LLM registradas.",
+    "Bibliotecario": "Agente de consultas sobre documentación: responde preguntas en lenguaje natural sobre una base documental y cita las fuentes usadas, con RAG y sin depender de SaaS.",
     "PromptForge": "CI/CD para prompts de LLMs: versiona prompts en YAML, testea regresiones contra datasets de evaluación y los optimiza automáticamente (inspirado en DSPy, pero free-tier).",
     "Asubarnipal": "Agente autónomo con interfaz de Telegram, knowledge base RAG, memoria híbrida (H-Mem) y dashboard de analítica en tiempo real.",
     "PopeBot-agente": "The repository IS the agent: cada acción que tu agente hace es un git commit. Ves exactamente qué hizo, cuándo y por qué; si lo fastidia, revierte."
@@ -105,6 +117,7 @@ const REPO_KIND = {
     "ReaGame": "arnes",
     "CogniTeam": "arnes",
     "Asubarnipal": "arnes",
+    "Bibliotecario": "arnes",
     "PopeBot-agente": "arnes",
     "AgentFlow": "herramienta",
     "TraceForge": "herramienta",
@@ -192,7 +205,7 @@ function initGraph() {
         // 3 nodos hijos, saliendo del BORDE SUPERIOR del círculo del repo
         const childTypes = [
             { label: 'Conocimientos\nIA', cls: 'topics-node', onClick: () => showTopics(repo.name, repo.topics), aria: `Conocimientos IA de ${repo.name}` },
-            { label: 'README', cls: 'readme-node', onClick: () => { window.location.href = `repos/${repo.name}/index.html`; }, aria: `Ver README de ${repo.name}` },
+            { label: 'README', cls: 'readme-node', onClick: () => { window.open(`https://github.com/VicenteVila/${repo.name}`, '_blank'); }, aria: `Ver README de ${repo.name}` },
             { label: 'Flujogramas', cls: 'flow-node', onClick: () => openFlujogramas(repo.name), aria: `Flujogramas de ${repo.name}` }
         ];
 

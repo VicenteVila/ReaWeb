@@ -57,7 +57,9 @@ Basado en:
   memoria* abajo).
 - **Propuesta Arquitectura de Agente Web** — diseño de carpetas, stack y estrategia
   free-tier.
-- **Docs/** — reglas globales, skills, workflows y 6 arquetipos de web development.
+- **Docs/** — reglas globales, skills, workflows y documentación de diseño.
+- **domain/** — conocimiento vivo: reglas, skills, workflows y **7 arquetipos** de
+  web development.
 
 Documentación del diseño (para humanos):
 

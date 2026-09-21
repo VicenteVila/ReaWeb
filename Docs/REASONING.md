@@ -125,6 +125,36 @@ El razonamiento no fue lineal; fue incremental, con capas de defensa ante
     retrieval gate (`safe_only=True`) y reuse gate (SAFEEVOLVE: atribución de
     daño + retirement) — con benchmark M/B/P de simulacro marcado
     (`benchmark/misevo_tasks.yaml`, `scripts/run_misevo.py`) y 11 tests nuevos.
+15. **Selección adaptativa de validación** (`6fda0be`, Punto 10): adaptamos
+    Task-CoEvolve (Miyai et al. 2026) — `tools/domain/task_coevolve.py` muestrea
+    el pool por poder discriminante (`--rho`), estima el score full-suite con
+    Hájek/diferencia anclada y sustituye las train/dev fijas del gate por las 2
+    tareas más informativas. Documentado en
+    [`Docs/TASK_CO_EVOLUTION.md`](../Docs/TASK_CO_EVOLUTION.md).
+16. **v0.2.0 — releases y CLI** (`c955797`): entry point `reaweb`, Docker,
+    workflow de release semántico, CONTRIBUTING y badges de CI.
+17. **Pipeline de diseño** (`5622513`, Punto 11): estética de artefactos con
+    feedback real del criterio visual en cada paso del pipeline.
+18. **Graph Engineering** (`4a0abc3`, `a2c4898`, `4b00be1`, `eedd837`, Punto 12):
+    del estudio de Feng et al. 2026 tomamos tres primitivas y las adaptamos a
+    agente único — grafo de dependencias de tools (`skill_deps.yaml` +
+    `tools/domain/skill_graph.py`), atribución causal de fallos
+    (Who&When) y genealogía de meta-ediciones (EvoFlow). Después se añadieron el
+    **grafo predictivo** (`deps_pending`, avisa antes de ejecutar), el **grafo
+    de conocimiento funcional** con lecciones+diff y budget ampliado, y los
+    fixes F1 (`audit_visual` automático post-generación) y F2 (repos huérfanos
+    visibles en el estado). Especificación en
+    [`Docs/GRAPH_ENGINEERING.md`](../Docs/GRAPH_ENGINEERING.md).
+19. **WikiSkill + Procedural Graph + PEARL** (`65def48`, `7c1fece`,
+    `8fcfe36`, `b6945a1`, `533c00c`): memoria persistente de tres capas
+    (Raw/Wiki/Skill, `tools/domain/` + `scripts/wiki_*`), conocimiento
+    procedural declarativo en triplets (`pg_graph.yaml`, PG Proposer con gate y
+    `scripts/pg_evolve.py`) y re-ranking semántico de la Skill Layer vía el
+    LPRA de PEARL (`tools/domain/pg_reranker.py`, `tools/domain/pearl_reasoner.py`).
+    La validación A/B ([`Docs/PG_AB_VALIDATION.md`](../Docs/PG_AB_VALIDATION.md))
+    destapó y corrigió cuatro defectos silenciosos del harness; el cierre fue la
+    integración del **portfolio creativo** (grafo interactivo dinámico
+    razonado con PEARL) para despliegue en GitHub Pages.
 
 ### Lecciones del propio proceso de desarrollo
 
@@ -148,6 +178,19 @@ El razonamiento no fue lineal; fue incremental, con capas de defensa ante
   era evidente en las primeras runs, donde `lessons.db` se escribía y se
   reutilizaba sin filtrar. El paper "Practice Makes Unsafe" lo formalizó y
   motivó la capa de gobernanza (Punto 9).
+- **Un experimento A/B puede invalidarse por un flag congelado en el import**:
+  la validación del Procedural Graph destapó que `PG_GRAPH_ENABLED` se leía de
+  la constante de `config` en construcción del módulo, así que on/off corrían
+  la misma condición (tiradas inválidas, platô 66/70). La lección: leer los
+  flags **en tiempo de run** y registrar la condición real por run
+  (`run_config.json` → `flags.pg_enabled`) para poder auditar qué se ejecutó
+  de verdad.
+- **Los benchmarks comparativos encuentran los bugs que la suite unitaria no**:
+  el A/B destapó también que la caché semántica colisionaba objetivos distintos
+  en `generate_candidate`/loop (devolvía la misma página por similitud y mataba
+  la diversidad de mutaciones) y que una sub-task funcional sin test ejecutado
+  bloqueaba el gate estricto con un FAIL permanente e irreparable. La caché se
+  desactivó en generación y loop, y el evaluador pasó ese caso a "no aplicable".
 
 ## 5. Decisiones abiertas (futuro)
 

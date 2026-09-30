@@ -40,33 +40,31 @@ def find_chrome() -> str | None:
 
 
 def render_screenshot(chrome: str, html_path: Path, png_path: Path, viewport: str = "1280,900") -> bool:
-    """Renderiza un index.html a PNG con Chrome headless de Windows (WSL)."""
+    """Renderiza un index.html a PNG con Chrome headless de Windows (WSL).
+
+    Delega en el transporte compartido (HTTP con fallback file://): el render
+    del dashboard debe reflejar lo mismo que ven los críticos VLM y los tests
+    funcionales, incluido el JS que carga datos con fetch().
+    """
+    from tools.domain.render_server import page_url, win_path
+
     try:
         png_path.parent.mkdir(parents=True, exist_ok=True)
-        # Convertir rutas WSL -> Windows (chrome.exe es una app Windows)
-        try:
-            import shutil
-            import subprocess as _sp
-
-            if Path("/usr/bin/wslpath").exists():
-                _win = lambda p: _sp.run(["wslpath", "-w", str(p)], capture_output=True, text=True).stdout.strip()
-            else:
-                raise OSError
-        except OSError:
-            _win = lambda p: str(p).replace("/mnt/c/", "C:\\").replace("/", "\\")
-
-        url = "file://" + _win(html_path)
-        shot = _win(png_path)
+        url, extra, stop = page_url(html_path, project_dir=Path(html_path).parent)
         cmd = [
             chrome,
             "--headless=new",
             "--disable-gpu",
             "--hide-scrollbars",
             f"--window-size={viewport}",
-            "--screenshot=" + shot,
+            *extra,
+            "--screenshot=" + win_path(png_path),
             url,
         ]
-        subprocess.run(cmd, capture_output=True, timeout=60)
+        try:
+            subprocess.run(cmd, capture_output=True, timeout=60)
+        finally:
+            stop()
         return png_path.exists() and png_path.stat().st_size > 0
     except Exception:
         return False

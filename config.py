@@ -21,6 +21,63 @@ _load_dotenv(ROOT / ".env")
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-pro-preview")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
+# Proveedor LLM: "gemini" (SDK nativo) o cualquiera de los OpenAI-compatible de
+# OPENAI_COMPAT_PROVIDERS (mistral / groq / cerebras / openrouter). El agente
+# (tool-calling) usa el modelo de texto y los críticos VLM el de visión.
+LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "gemini").strip().lower()
+# Proveedor solo para los críticos VLM (screenshots), si conviene separarlo del
+# agente: p. ej. Groq para el texto (rápido, buen tool-calling) y Mistral para
+# la visión (sus screenshots completos no chocan con el límite ITPM de Groq).
+# Vacío = usar el mismo proveedor que el agente.
+VISION_PROVIDER = os.environ.get("VISION_PROVIDER", "").strip().lower()
+
+
+def _openai_compat(key_env, base_env, base_default, model_env, model_default,
+                   vision_env, vision_default, fallbacks, extra_headers=None):
+    """Ficha de un proveedor con API OpenAI-compatible (chat/completions)."""
+    return {
+        "key_env": key_env,
+        "api_key": os.environ.get(key_env, ""),
+        "base_url": os.environ.get(base_env, base_default),
+        "model": os.environ.get(model_env, model_default),
+        "vision_model": os.environ.get(vision_env, vision_default),
+        "fallbacks": fallbacks,
+        "headers": extra_headers or {},
+    }
+
+
+OPENAI_COMPAT_PROVIDERS = {
+    # Mistral: el tier gratuito solo expone los 8B (ministral) y pixtral-12b;
+    # mistral-large/pixtral-large responden 403/429 en esa clave.
+    "mistral": _openai_compat(
+        "MISTRAL_API_KEY", "MISTRAL_BASE_URL", "https://api.mistral.ai/v1",
+        "MISTRAL_MODEL", "open-mistral-nemo",
+        "MISTRAL_VISION_MODEL", "pixtral-12b",
+        ["mistral-tiny"],
+    ),
+    # Groq:texto gpt-oss-120b (tool-calling nativo, muy rápido) y VLM
+    # qwen3.8-27b (sí acepta imagen; gpt-oss es solo texto).
+    "groq": _openai_compat(
+        "GROQ_API_KEY", "GROQ_BASE_URL", "https://api.groq.com/openai/v1",
+        "GROQ_MODEL", "openai/gpt-oss-120b",
+        "GROQ_VISION_MODEL", "qwen/qwen3.8-27b",
+        ["qwen/qwen3.8-27b"],
+    ),
+    "cerebras": _openai_compat(
+        "CEREBRAS_API_KEY", "CEREBRAS_BASE_URL", "https://api.cerebras.ai/v1",
+        "CEREBRAS_MODEL", "gpt-oss-120b",
+        "CEREBRAS_VISION_MODEL", "qwen-3.8-27b",
+        ["qwen-3.8-27b"],
+    ),
+    "openrouter": _openai_compat(
+        "OPENROUTER_API_KEY", "OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1",
+        "OPENROUTER_MODEL", "google/gemini-3.1-pro-preview",
+        "OPENROUTER_VISION_MODEL", "google/gemini-3.1-pro-preview",
+        [],
+        {"HTTP-Referer": "https://reaweb.local", "X-Title": "ReaWeb harness"},
+    ),
+}
+
 PATHS = {
     "root": ROOT,
     "agent": ROOT / ".agent",
@@ -74,10 +131,28 @@ HARNESS_COMPONENTS = {
     "skills": ("skills",),                  # Skill Layer WikiSkill (domain/skills/)
 }
 
+# Versión de la escala de `total`. Súbela cuando cambie QUÉ mide o cómo se
+# combinan los ejes (pesos, gates, ejes nuevos). El harness la graba en cada
+# evaluación y Task-CoEvolve filtra el historial por versión, de modo que los
+# scores de una escala antigua no se mezclan con los de la nueva al calcular
+# varianzas para la selección adaptativa de tareas.
+#
+# v2 (2026-09-29): el funcional se mide servriendo por HTTP en vez de file://,
+# `grafo_visible` cuenta de verdad y un test P0 fallado capa el score. Los
+# totales previos a v2 se medían con el grafo roto (fetch bloqueado por CORS
+# bajo file://) y NO son comparables con los de v2.
+SCORING_VERSION = 2
+
 # Umbral de ceiling para candidatos que incumplen un gate bloqueante (Eq. 8 del
 # paper: un P0 gate capa la puntuación). Si un candidato no cumple las secciones
 # obligatorias de la tarea, su total no puede superar este techo.
 BLOCKING_CEILING = 40
+
+# Gate funcional (P0). Además del umbral agregado, estos tests son gates por
+# sí mismos: si alguno falla, el candidato queda capado aunque la media
+# funcional sea alta. Así una media no puede tapar "el grafo no se dibuja" o
+# "el JS está roto" (el caso que dejó pasar páginas rotas con total alto).
+FUNCTIONAL_P0_GATE = ["js_sin_errores", "interactivos_responden", "grafo_visible"]
 
 # Caché semántica de LLM (Punto 2, Qwen 3.8): reutiliza respuestas de llamadas
 # repetidas (mismas tareas/estados re-ejecutados) cuando el embedding del prompt
@@ -165,6 +240,17 @@ MODEL_PRICES = {
     "gemini-3.1-pro-preview-customtools": (2.50, 15.00),
     "gemini-3-flash-preview": (0.15, 0.60),
     "gemini-3.1-flash-lite": (0.10, 0.40),
+    "openai/gpt-oss-120b": (0.15, 0.75),
+    "openai/gpt-oss-20b": (0.10, 0.50),
+    "qwen/qwen3.8-27b": (0.20, 0.60),
+    "qwen-3.8-27b": (0.20, 0.60),
+    "gpt-oss-120b": (0.15, 0.75),
+    "mistral-large-latest": (2.00, 6.00),
+    "pixtral-large-latest": (2.00, 6.00),
+    "open-mistral-nemo": (0.15, 0.15),
+    "pixtral-12b": (0.15, 0.15),
+    "mistral-small-latest": (0.10, 0.30),
+    "mistral-tiny": (0.10, 0.30),
     "default": (1.25, 5.00),
 }
 

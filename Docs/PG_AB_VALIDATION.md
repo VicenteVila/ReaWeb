@@ -122,6 +122,38 @@ lenta.
 Ver §5. Es el fallo que invalida las tandas actuales y el que motivó la
 auditabilidad por-run.
 
+### 4.5 La cadena de fallback servía otro modelo sin que nadie lo viera (fallo crítico)
+
+`run_config.json` guarda el modelo **pedido**, no el **resuelto**: cuando Pro
+volvió a dar `RESOURCE_EXHAUSTED`, la cadena cayó a `gemini-3.1-flash-lite` y las
+7 runs "gemini-3.1-pro-preview" de la tanda Gemini se ejecutaron en realidad
+con flash-lite. Se detectó por el coste: **$0.018/run cuadra con flash-lite
+($0.10/$0.40 por M) y no con Pro ($2.50/$15)** para ~6 turnos con prompts de
+~15k tokens.
+
+Consecuencia: esa tanda no es una línea base de Pro (y su consumo real era ~15-25x
+menor que con Pro sirviendo). **Corrección**: cada marker registra ahora
+`model`/`provider` resueltos y el `summary.json` calcula `resolved_models`,
+`failed_runs` y `valid` (`valid=false` si se mezclan modelos o hay runs sin score).
+Regla: no analizar una batería sin comprobar `valid` y `resolved_models`.
+
+### 4.6 Cuello de tokens por proveedor: el VLM es barato, el agente no
+
+Medido con capturas reales del harness (viewport 1280x900, el que usan los tres
+críticos):
+
+| llamada | tokens | límite del tier | veredicto |
+|---|---|---|---|
+| VLM (`qwen3.8-27b`, 1 captura) | 1.808 in | 8.000 TPM | viable |
+| VLM × 73 (12 runs) | ~134.600 in | — | ~17% del presupuesto |
+| Agente (prompt del harness) | ~15.200 in | 8.000 TPM | **413 siempre** |
+
+Groq **cuenta píxeles, no base64**: un PNG de 18,9 KB (base64 ≈ 6,4k "tokens de
+texto") solo consume 1.808 tokens. Los tres VLM comparten viewport, luego el coste
+y el trato son iguales en ambos brazos. Lo que no cabe en Groq es el agente
+(estado + 17 schemas de tools, más el HTML entero en la verificación doble de
+`audit_page`), de ahí la separación `LLM_PROVIDER` / `VISION_PROVIDER`.
+
 ## 5. El fallo de inyección del flag (fallo crítico) y su corrección
 
 **Diseño del A/B** — el driver alterna la condición por env:
@@ -186,6 +218,24 @@ Nota ambiental: esta tanda se ejecutó con la API de Gemini muy castigada
 (503s frecuentes, runs de 16–29 min); el `[skip]`/retomabilidad del driver se
 estrenó en esa tanda.
 
+### Tanda 3 — n=6+6 (VÁLIDA, pero con otro modelo: `open-mistral-nemo` + `pixtral-12b`)
+
+Flag auditado run por run (`on` → `pg_enabled=true`, `off` → `false`), sin mezcla
+de modelos. Datos en `runs/battery_results_mistral8b/` (12 markers + `summary.json`).
+
+| | on | off |
+|---|---|---|
+| best | 76, 77, 77, 80, 82, 83 | 75, 77, 77, 81, 82, 85 |
+| media (sd) | 79.2 (2.9) | 79.5 (3.8) |
+
+Delta `on-off` = **−0.30**; permutación exacta 2-colas **p=0.9329** (462/924
+reasignaciones); 6 turnos y ~11 tools medios en ambos brazos; coste total $5.59.
+
+**Lectura**: con este modelo/juez **no hay efecto detectable** del PG — la
+diferencia observada es ruido. No es una replicación de la configuración Gemini
+(agente y juez cambian), sino una **línea base independiente**: sus datos no se
+pueden sumar ni comparar con las tandas 1–2, solo usar como referencia interna.
+
 ## 7. Poder estadístico y diseño propuesto
 
 - **n por grupo**: con la varianza observada (sd 4–5 pt), para detectar un delta
@@ -202,18 +252,23 @@ estrenó en esa tanda.
 
 ```bash
 cd reaweb-harness
-REPS=5 python -m scripts.run_ab_pg_battery          # 10 runs, round-robin on/off
+# el modelo del AGENTE y el del JUICIÓN de imágenes son independientes
+LLM_PROVIDER=gemini VISION_PROVIDER=groq REPS=6 python -m scripts.run_ab_pg_battery
 ls runs/battery_results/                            # markers + summary.json
 ```
 
-Post-análisis (comando mínimo):
+Post-análisis: primero `valid`/`resolved_models` del `summary.json`, y solo
+después la comparación (los markers se leen igual):
 
 ```bash
 python - <<'EOF'
-import json, statistics as st, itertools
+import json, statistics as st
 from pathlib import Path
-rows=[json.loads(f.read_text()) for f in Path("runs/battery_results").glob("*_*_rep*.json")]
-on=[r["best"] for r in rows if r["cond"]=="on"]; off=[r["best"] for r in rows if r["cond"]=="off"]
+s=json.loads(Path("runs/battery_results/summary.json").read_text())
+print("valid:", s["valid"], "| modelos:", s["resolved_models"], "| fallos:", s["failed_runs"])
+rows=s["results"]
+on=[r["best"] for r in rows if r["cond"]=="on" and r["best"] is not None]
+off=[r["best"] for r in rows if r["cond"]=="off" and r["best"] is not None]
 print("on ", on, st.mean(on), "| off", off, st.mean(off))
 EOF
 ```
@@ -228,4 +283,9 @@ EOF
 | — | Tanda 1 n=3+3 | resultados listados (§6), **inválidos por §5** |
 | — | Tanda 2 n=5+5 (reps 4–5) | resultados listados (§6), **inválidos por §5** |
 | — | **Fix flag congelado** (§5) + `flags.pg_enabled` en run_config | toggle efectivo + auditabilidad por run |
+| 2026-09-30 | Provider OpenAI-compatible genérico (`mistral`, `groq`, `cerebras`, `openrouter`) + `VISION_PROVIDER` | deja de estar atado a Gemini para agente o juez |
+| 2026-09-30 | Tanda Gemini de 7 runs: en realidad servida por flash-lite (§4.5) | no es línea base de Pro; el modelo resuelto pasa a auditarse |
+| 2026-09-30 | Tanda 3 n=6+6 con `open-mistral-nemo` + `pixtral-12b` | **válida**: delta −0.30, p=0.9329 → sin efecto detectable en este modelo |
+| 2026-09-30 | Parser tolerante de `===FILE===` con fences Markdown | salida del modelo ya no se pierde ni ensucia el workspace |
+| 2026-09-30 | Límites de tokens separados con/sin tools; run fallida no aborta la batería | batería continua y reanudable ante cuotas agotadas |
 | — | Pendiente: re-validación con control real (n≥6, §7) | — |

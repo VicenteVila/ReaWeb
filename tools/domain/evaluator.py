@@ -8,6 +8,23 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from config import BLOCKING_CEILING, FUNCTIONAL_P0_GATE, SCORING_VERSION
+
+# Umbral agregado del gate funcional. Sube respecto al 60 original: una página
+# cuyo grafo no se dibuja sacaba exactamente 60 y pasaba el gate. El gate por
+# test P0 (abajo) es la red que no depende de este número.
+FUNCTIONAL_GATE_MIN = 80
+
+# Formato de un fallo funcional en `functional_fails`: "[<nombre>] <detalle>".
+_FUNCTIONAL_FAIL_RE = re.compile(r"^\[([a-z_]+)\]")
+
+
+def _p0_test_name(fail_line: str) -> str | None:
+    """Nombre del test si la línea de fallo corresponde a un test P0."""
+    m = _FUNCTIONAL_FAIL_RE.match((fail_line or "").strip())
+    name = m.group(1) if m else None
+    return name if name in FUNCTIONAL_P0_GATE else None
+
 SEO_CHECKS = {
     "title": ("<title> presente", lambda h: "<title" in h and "</title>" in h),
     "title_len": (
@@ -762,11 +779,17 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
         gates["structure"] = structure_fails
 
     # GATE FUNCIONAL (P0): si el candidato no es funcional de verdad (JS roto,
-    # interactivos sin efecto, enlaces rotos, formularios que recargan), queda
-    # capado igual que un candidato sin secciones. "Primero funcional, luego
-    # bonito": la estética nunca compensa una página que no funciona.
-    if functional is not None and functional < 60:
+    # interactivos sin efecto, enlaces rotos, formularios que recargan, grafo
+    # que no se dibuja), queda capado igual que un candidato sin secciones.
+    # "Primero funcional, luego bonito": la estética nunca compensa una página
+    # que no funciona. Además del umbral agregado, cada test P0 fallado es gate
+    # por sí mismo: una media funcional alta no puede tapar un fallo crítico
+    # (antes bastaba una media alta para colarse con el grafo roto).
+    if functional is not None and functional < FUNCTIONAL_GATE_MIN:
         gates["functional"] = functional_fails or [f"test funcional fallido ({functional}/100)"]
+    p0_failed = [f for f in functional_fails if _p0_test_name(f)]
+    if p0_failed:
+        gates["functional_p0"] = p0_failed
 
     # GATE DE PARTES INTEGRANTES: si el candidato fabrica repos/ pero NO los
     # enlaza desde la raíz (repos huérfanos), queda capado igual que un candidato
@@ -793,6 +816,7 @@ def evaluate(project_dir: str | Path, requirements: list[str] | None = None, wei
 
     return {
         "total": total,
+        "scoring_version": SCORING_VERSION,
         "seo": seo,
         "a11y": a11y,
         "performance": perf,

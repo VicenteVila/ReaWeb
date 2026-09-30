@@ -16,7 +16,7 @@ from agent.llm import LLMResponse
 from agent.memory_db import MemoryDB
 from agent.state import ContextManager, Experiment, Memory, SearchTree, TreeNode
 from agent import harness_snapshot
-from config import CONTEXT_DEFAULTS, ensure_dirs, LESSON_AUTO, PATHS
+from config import CONTEXT_DEFAULTS, ensure_dirs, LESSON_AUTO, PATHS, SCORING_VERSION
 
 
 class Agent:
@@ -73,6 +73,7 @@ class Agent:
             started=datetime.now().isoformat(),
             status="running",
             initial_url=initial_url,
+            scoring_version=SCORING_VERSION,
             harness_hash=self.harness_start["tree_hash"],
         )
         self.context = ContextManager(
@@ -1101,6 +1102,30 @@ class Agent:
                              "note": "El candidato previo se registró como H0. Los próximos generate_candidate deben MUTARLO, no regenerar desde cero."})
 
     def run(self, registry, initial_url: str = "") -> str:
+        try:
+            return self._run_inner(registry, initial_url)
+        except BaseException as e:
+            # Robustez: si la run muere (API caída, 503/429, bug), no puede
+            # quedar en status='running' para siempre. Se marca 'interrupted'
+            # con la causa para que el registro sea honesto y no contamine.
+            try:
+                self.db.upsert_run(
+                    run_id=self.run_id,
+                    finished=datetime.now().isoformat(),
+                    status="interrupted",
+                    harness_diff=f"interrumpida: {type(e).__name__}: {str(e)[:200]}",
+                )
+            except Exception:
+                pass
+            try:
+                self.db.close()
+            except Exception:
+                pass
+            self._log("error", {"event": "interrupted",
+                                "error": f"{type(e).__name__}: {str(e)[:200]}"})
+            raise
+
+    def _run_inner(self, registry, initial_url: str = "") -> str:
         self.budget.start()
         self._log("start", {"archetype": self.archetype_name, "task": self.task})
 

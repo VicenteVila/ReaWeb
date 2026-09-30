@@ -54,23 +54,24 @@ def find_chrome() -> str | None:
 
 
 def render_screenshot(html_path: Path, png_path: Path, viewport: str = "1280,900") -> bool:
-    """Renderiza un index.html a PNG con Chrome/Edge headless de Windows (WSL)."""
+    """Renderiza un index.html a PNG con Chrome/Edge headless de Windows (WSL).
+
+    Se sirve el candidato por HTTP (no file://) para que el JS con fetch()
+    funcione: bajo file:// el origen es null y CORS bloquea la carga de
+    recursos locales, dejando el grafo vacío y produciendo críticas VLM
+    falsas. Si no se puede levantar el servidor, degrada a file:// con
+    --allow-file-access-from-files.
+    """
+    from tools.domain.render_server import page_url, win_path
+
     chrome = find_chrome()
     if not chrome:
         return False
     try:
         png_path.parent.mkdir(parents=True, exist_ok=True)
-        html_path = html_path.resolve()
         png_path = png_path.resolve()
-        try:
-            if Path("/usr/bin/wslpath").exists():
-                _win = lambda p: subprocess.run(["wslpath", "-w", str(p)], capture_output=True, text=True).stdout.strip()
-            else:
-                raise OSError
-        except OSError:
-            _win = lambda p: str(p).replace("/mnt/c/", "C:\\").replace("/", "\\")
-        url = "file://" + _win(html_path)
-        shot = _win(png_path)
+        url, extra, stop = page_url(html_path, project_dir=Path(html_path).parent)
+        shot = win_path(png_path)
         cmd = [
             chrome,
             "--headless=new",
@@ -78,10 +79,14 @@ def render_screenshot(html_path: Path, png_path: Path, viewport: str = "1280,900
             "--hide-scrollbars",
             "--virtual-time-budget=5000",
             f"--window-size={viewport}",
+            *extra,
             "--screenshot=" + shot,
             url,
         ]
-        subprocess.run(cmd, capture_output=True, timeout=90)
+        try:
+            subprocess.run(cmd, capture_output=True, timeout=90)
+        finally:
+            stop()
         return png_path.exists() and png_path.stat().st_size > 0
     except Exception:
         return False

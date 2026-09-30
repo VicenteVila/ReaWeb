@@ -24,6 +24,10 @@ FUNC_RUNNER = r"""
 (function(){
   if (window.__funcResults) return;
   window.__funcResults = {tests: [], errors: []};
+  // Tests P0: su fallo capa el score aunque la media sea alta. Deben declararse
+  // aquí Y en FUNCTIONAL_TESTS (Python); el post-check de run_functional_test
+  // avisa si alguno se quedó sin ejecutar.
+  var P0_TESTS = ['js_sin_errores', 'interactivos_responden', 'grafo_visible'];
   function rec(n,p,d){ window.__funcResults.tests.push({n:n,p:p?1:0,d:d||''}); }
   function done(){ document.title = 'FUNC:' + JSON.stringify(window.__funcResults); }
 
@@ -97,24 +101,42 @@ FUNC_RUNNER = r"""
       if (after !== before) reacted = 1;
       rec('interactivos_responden', interactive.length === 0 || reacted === 1,
           reacted ? 'el DOM cambió tras los clicks' : interactive.length + ' interactivos sin efecto');
+      checkGrafo();
       finish();
     }, 250);
 
     rec('js_sin_errores', jsErrors.length === 0,
         jsErrors.length ? jsErrors.join(' | ') : 'sin errores JS');
 
-    // Punto 12c: grafo de conocimiento — el SVG #knowledge-svg debe tener
-    // al menos 3 nodos (circle) y 2 edges (line) para considerarse renderizado.
-    var ksvg = document.getElementById('knowledge-svg');
-    if (ksvg) {
+    // Punto 12c: el SVG de contenido DEBE dibujarse. Se mide DESPUÉS de que
+    // resuelvan los fetch() del runtime (dentro del setTimeout), porque el JS
+    // que dibuja el grafo es asíncrono: medir de forma síncrona reportaba 0
+    // nodos en páginas que sí dibujaban. Se elige por id conocido o, si no, el
+    // <svg> dentro de un contenedor de grafo o el de más hijos.
+    // Señal primaria = nodos (circles) dibujados; las aristas (lines) son
+    // informativas, porque hay implementaciones que solo las dibujan al hover.
+    function checkGrafo(){
+      var svgs = Array.prototype.slice.call(document.querySelectorAll('svg'));
+      var ksvg = document.getElementById('knowledge-svg')
+               || document.getElementById('main-svg')
+               || svgs.filter(function(s){
+                    return s.closest('#graph, .graph-container, .graph');
+                  })[0]
+               || svgs.slice().sort(function(a,b){
+                    return b.childElementCount - a.childElementCount;
+                  })[0];
+      if (!ksvg) return;
       var circles = ksvg.querySelectorAll('circle');
       var lines = ksvg.querySelectorAll('line');
       var texts = ksvg.querySelectorAll('text');
-      var hasContent = circles.length >= 3 && lines.length >= 2;
-      rec('grafo_visible', hasContent,
-          hasContent
-            ? circles.length + ' nodos, ' + lines.length + ' edges, ' + texts.length + ' textos'
-            : 'SVG vacío o incompleto: ' + circles.length + ' circles, ' + lines.length + ' lines');
+      if (circles.length >= 3) {
+        rec('grafo_visible', 1,
+            circles.length + ' nodos, ' + lines.length + ' edges, ' + texts.length + ' textos');
+      } else {
+        rec('grafo_visible', 0,
+            'SVG declarado pero sin grafo (' + circles.length + ' circles): el JS ' +
+            'que lo dibuja no se ejecutó (¿fetch falló?)');
+      }
     }
 
     function finish(){
@@ -127,6 +149,12 @@ FUNC_RUNNER = r"""
       if (ir && ir.p === 0 && /sin efecto/.test(ir.d)) {
         score = Math.max(score - 20, 0);
       }
+      // Cualquier test P0 fallado capa el score aunque la media pase: una media
+      // alta no puede tapar "el grafo no se dibuja" o "el JS está roto".
+      var p0 = window.__funcResults.tests.filter(function(t){
+        return t.p === 0 && P0_TESTS.indexOf(t.n) >= 0;
+      });
+      if (p0.length) score = Math.min(score, 59);
       window.__funcResults.score = score;
       done();
     }
@@ -137,6 +165,32 @@ FUNC_RUNNER = r"""
 })();
 </script>
 """
+
+
+# Manifiesto de tests funcionales que el runner DEBE reportar. Si alguno no
+# aparece en los resultados, el runner tiene un bug (o el JS no corrió) y el
+# harness debe saberlo en vez de puntuar sobre un subconjunto silencioso: así
+# una media alta no puede tapar que "el grafo no se dibujó" porque el test ni
+# siquiera se ejecutó. `grafo_visible` es condicional por diseño (solo hay SVG
+# en algunas páginas), por eso se marca como opcional: si no hay SVG, el test
+# no aplica y no penaliza.
+FUNCTIONAL_TESTS = [
+    ("nav_links_validos", True),
+    ("botones_click_sin_error", True),
+    ("formularios_no_recargan", True),
+    ("js_sin_errores", True),
+    ("interactivos_responden", True),
+    ("grafo_visible", False),
+]
+
+# Tests cuyo fallo individual capa el score funcional aunque la media pase.
+P0_TESTS = ["js_sin_errores", "interactivos_responden", "grafo_visible"]
+
+
+def missing_required_tests(tests: list) -> list[str]:
+    """Tests obligatorios del manifiesto que el runner no reportó."""
+    got = {t.get("n") for t in (tests or [])}
+    return [n for n, required in FUNCTIONAL_TESTS if required and n not in got]
 
 
 def run_functional_test(html_path: Path, timeout: int = 60) -> dict:
@@ -162,14 +216,9 @@ def run_functional_test(html_path: Path, timeout: int = 60) -> dict:
     out_path = html_path.with_name(html_path.stem + ".func.html")
     try:
         out_path.write_text(injected, encoding="utf-8")
-        try:
-            if Path("/usr/bin/wslpath").exists():
-                win = subprocess.run(["wslpath", "-w", str(out_path)],
-                                     capture_output=True, text=True).stdout.strip()
-            else:
-                win = str(out_path).replace("/mnt/c/", "C:\\").replace("/", "\\")
-        except OSError:
-            win = str(out_path).replace("/mnt/c/", "C:\\").replace("/", "\\")
+        from tools.domain.render_server import page_url
+
+        url, extra, stop = page_url(out_path, project_dir=html_path.parent)
 
         cmd = [
             chrome,
@@ -178,13 +227,16 @@ def run_functional_test(html_path: Path, timeout: int = 60) -> dict:
             "--no-sandbox",
             "--virtual-time-budget=6000",
             "--dump-dom",
-            "file://" + win,
+            *extra,
+            url,
         ]
         try:
             out = subprocess.run(cmd, capture_output=True, timeout=timeout)
         except Exception as e:
             return {"functional": None, "ok": False,
                     "tests": [], "errors": [f"chrome ejecucion: {e}"]}
+        finally:
+            stop()
 
         dom = out.stdout.decode("utf-8", errors="replace")
         m = re.search(r"<title>FUNC:(\{.*?\})</title>", dom, re.S)
@@ -203,9 +255,20 @@ def run_functional_test(html_path: Path, timeout: int = 60) -> dict:
             except OSError:
                 pass
 
+    missing = missing_required_tests(data.get("tests", []))
+    errors = list(data.get("errors", []))
+    if missing:
+        # El runner no ejecutó un test obligatorio: es un fallo del harness, no
+        # de la página. No se penaliza el score (puede ser una página sin esos
+        # elementos), pero queda registrado para que no pase inadvertido.
+        errors.append(
+            "runner no ejecutó tests obligatorios: " + ", ".join(missing)
+        )
+
     return {
         "functional": data.get("score"),
         "tests": data.get("tests", []),
-        "errors": data.get("errors", []),
+        "errors": errors,
+        "missing_required": missing,
         "ok": True,
     }

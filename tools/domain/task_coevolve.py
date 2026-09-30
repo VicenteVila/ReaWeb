@@ -199,14 +199,30 @@ class TaskSelector:
 
 # --- Carga de historial desde memory.db ---
 
-def load_history(db, hashes: list[str] | None = None) -> dict[str, list[float]]:
+def load_history(db, hashes: list[str] | None = None,
+                 scoring_version: int | None = None) -> dict[str, list[float]]:
     """Historial {task_hash: [scores 0-1]} desde task_evals (+ runs como semilla).
 
     task_evals es la fuente fina (una fila por tarea evaluada); la tabla runs
     aporta un punto extra por run histórica anterior a Task-CoEvolve.
+
+    `scoring_version` filtra el historial a una escala concreta: si el `total`
+    cambia de significado (pesos, gates o ejes), los scores de la escala vieja
+    no son comparables y ensuciarían la varianza que guía la selección
+    adaptativa. Por defecto usa la versión actual (config.SCORING_VERSION), de
+    modo que el historial pre-v2 (medido con la web rota) se ignora.
     """
+    if scoring_version is None:
+        from config import SCORING_VERSION as scoring_version  # noqa: N813
+
     def _norm(score):
         return max(0.0, min(float(score) / 100.0, 1.0)) if score is not None else None
+
+    def _ok_row(row):
+        # Solo filas etiquetadas con la versión pedida. Las filas sin etiqueta
+        # (histórico previo al versionado) se consideran de la v1 y, al no
+        # coincidir con la v2 actual, quedan fuera.
+        return row.get("scoring_version") == scoring_version
 
     rows = []
     try:
@@ -217,14 +233,15 @@ def load_history(db, hashes: list[str] | None = None) -> dict[str, list[float]]:
     if rows:  # fuente fina: task_evals (una fila por tarea evaluada)
         for row in rows:
             th, s = row["task_hash"], _norm(row["score"])
-            if th and s is not None and (not hashes or th in hashes):
+            if th and s is not None and (not hashes or th in hashes) and _ok_row(row):
                 hist.setdefault(th, []).append(s)
-        return hist
+        if hist:
+            return hist
 
-    # semilla pre-Task-CoEvolve: un punto por run histórica
+    # semilla pre-Task-CoEvolve: un punto por run histórica (best_score).
     for r in db.all_runs():
         th, s = r.get("task_hash"), _norm(r.get("best_score"))
-        if th and s is not None and (not hashes or th in hashes):
+        if th and s is not None and (not hashes or th in hashes) and _ok_row(r):
             hist.setdefault(th, []).append(s)
     return hist
 

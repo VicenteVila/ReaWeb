@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from agent.harness_snapshot import task_hash
 from agent.memory_db import MemoryDB
-from config import PATHS
+from config import PATHS, SCORING_VERSION
 
 
 def _baseline(run_id: str, nodes_by_run: dict) -> float | None:
@@ -315,6 +315,7 @@ def _run_suite(args, db):
             archetype=task_def["archetype"], task=task_def["task"],
             score=best, baseline=baseline,
             harness_hash=getattr(agent, "harness_hash", None) if "agent" in locals() else None,
+            scoring_version=SCORING_VERSION,
         )
         print(f"  => best={best} baseline={baseline} hash={th}")
 

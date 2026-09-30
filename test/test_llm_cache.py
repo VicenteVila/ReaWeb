@@ -127,7 +127,7 @@ def test_llm_hook_uses_cache(monkeypatch, tmp_path):
     monkeypatch.setattr("agent.llm.LLMCache", LLMCache)
     monkeypatch.setattr("agent.llm.genai.Client", _FakeClient)
 
-    llm = LLM(model="m1", api_key="fake-key", use_cache=True)
+    llm = LLM(model="m1", api_key="fake-key", use_cache=True, provider="gemini")
     llm.cache = LLMCache(db_path=tmp_path / "hook.db", threshold=0.80,
                          embed_fn=_embed_identity)
 

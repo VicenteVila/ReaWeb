@@ -7,7 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from agent.agent import Agent
-from agent.llm import LLM
+from agent.llm import MAX_TRANSIENT_ATTEMPTS, LLM
 from tools import registry as base_registry
 from tools.domain import build_domain_registry
 from config import ensure_dirs, PATHS
@@ -34,6 +34,15 @@ def build_agent(archetype: str, task: str, model: str | None, turns: int,
     """Construye el agente + registry listos para ejecutar una run."""
     ensure_dirs()
     llm = LLM(model=model, use_cache=use_cache)
+
+    def _on_retry(m: str, attempt: int, delay: float, err: BaseException) -> None:
+        # Visibilidad: sin esto, un pico de demanda de la API se ve como una
+        # run "colgada" durante minutos sin explicación.
+        msg = str(err).split("\n")[0][:90]
+        print(f"[retry] {m} intento {attempt}/{MAX_TRANSIENT_ATTEMPTS} "
+              f"en {delay:.0f}s -> {msg}", file=sys.stderr, flush=True)
+
+    llm.on_retry = _on_retry
     rules, stack = load_archetype(archetype)
 
     arq_dir = PATHS["domain"] / "archetypes" / archetype

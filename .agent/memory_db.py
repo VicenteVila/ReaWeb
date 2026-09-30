@@ -119,9 +119,17 @@ class MemoryDB:
             ("task_hash", "ALTER TABLE runs ADD COLUMN task_hash TEXT"),
             ("harness_hash", "ALTER TABLE runs ADD COLUMN harness_hash TEXT"),
             ("harness_diff", "ALTER TABLE runs ADD COLUMN harness_diff TEXT"),
+            # scoring v2: versión de la escala de `total`. Las filas antiguas
+            # quedan NULL (= escala legacy) y Task-CoEvolve las ignora al
+            # filtrar por la versión actual.
+            ("scoring_version", "ALTER TABLE runs ADD COLUMN scoring_version INTEGER"),
         ):
             if col not in cols:
                 self.conn.execute(ddl)
+        # scoring v2: la misma columna en task_evals (fuente fina del historial).
+        tcols = {r[1] for r in self.conn.execute("PRAGMA table_info(task_evals)")}
+        if "scoring_version" not in tcols:
+            self.conn.execute("ALTER TABLE task_evals ADD COLUMN scoring_version INTEGER")
         # migración de safety (skill misevolution, P9): campos de gobernanza de
         # lecciones añadidos a tablas preexistentes
         self._migrate_lessons_safety()
@@ -507,14 +515,25 @@ class MemoryDB:
                       task_hash: str | None, archetype: str | None,
                       task: str, score: float | None, baseline: float | None = None,
                       harness_hash: str | None = None,
+                      scoring_version: int | None = None,
                       ts: str | None = None) -> int:
-        """Registra la evaluación de una tarea de validación (suite o gate)."""
+        """Registra la evaluación de una tarea de validación (suite o gate).
+
+        `scoring_version` etiqueta la escala del `total` para que el historial
+        de Task-CoEvolve pueda filtrar y no mezclar escalas distintas. Por
+        defecto se usa la versión vigente (config.SCORING_VERSION): toda fila
+        nueva queda etiquetada automáticamente y solo el histórico previo al
+        versionado queda como legacy.
+        """
+        if scoring_version is None:
+            from config import SCORING_VERSION as scoring_version  # noqa: N813
         cur = self.conn.execute(
             "INSERT INTO task_evals "
-            "(run_id, task_id, task_hash, archetype, task, score, baseline, harness_hash, ts) "
-            "VALUES (?,?,?,?,?,?,?,?,?)",
+            "(run_id, task_id, task_hash, archetype, task, score, baseline, "
+            " harness_hash, scoring_version, ts) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?)",
             (run_id, task_id, task_hash, archetype, task, score, baseline,
-             harness_hash, ts or _now()),
+             harness_hash, scoring_version, ts or _now()),
         )
         self.conn.commit()
         return cur.lastrowid

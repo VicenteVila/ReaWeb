@@ -10,22 +10,54 @@ from tools.base import Tool
 
 
 def _is_safe_filename(name: str) -> bool:
-    """Nombre de archivo permitido: plano (sin rutas ni subdirectorios)."""
-    return (
-        bool(name)
-        and not name.startswith(".")
-        and "/" not in name
-        and "\\" not in name
-        and " " not in name
-        and not name.startswith(("<", "{", "const", "function", "/*"))
-    )
+    """Nombre de archivo permitido: plano (sin rutas ni subdirectorios).
+
+    Se exige un nombre "de verdad": letras, dígitos, punto, guion y guion bajo.
+    Antes bastaba con no tener barras ni espacios, así que un fence markdown
+    (```html) o un trozo de código en la línea siguiente al delimitador se
+    colaba como nombre de archivo y el fichero real nunca se escribía.
+    """
+    import re as _re
+
+    if not name or len(name) > 80:
+        return False
+    if name.startswith("."):
+        return False
+    if "/" in name or "\\" in name or " " in name:
+        return False
+    if not _re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name):
+        return False
+    # un nombre sin extensión es casi siempre código, no un archivo
+    return "." in name
+
+
+def _strip_wrappers(content: str) -> str:
+    """Quita el fence markdown y el ruido de cabecera/al pie que algunos modelos
+    añaden alrededor del fichero, para no escribirlo contaminado a disco."""
+    import re as _re
+
+    text = content.strip()
+    text = _re.sub(r"^```[a-zA-Z0-9_+.-]*\s*\n?", "", text)
+    text = _re.sub(r"^(?:---|===FILE===)\s*\n?", "", text).strip()
+    text = _re.sub(r"\n?```\s*$", "", text)
+    return text
 
 
 def _infer_file(content: str) -> str | None:
-    """Infere el nombre del archivo por el contenido cuando el subagente omitió
+    """Inferye el nombre del archivo por el contenido cuando el subagente omitió
     la línea del nombre (pega el HTML directamente tras ===FILE===)."""
-    head = content.strip()[:200].lower()
-    if head.startswith("<!doctype") or "<html" in head or head.startswith("{"):
+    import re as _re
+
+    text = content.strip()
+    # Los modelos pequeños (y no solo ellos) entregan el fichero envuelto en un
+    # fence markdown (```html ... ```) o precedido de ruido (`---`, `===FILE===`).
+    # Sin quitarlo, un HTML con muchos <meta> antes de <html> no se reconocía y
+    # la extracción fallaba entera (no se escribía ningún archivo).
+    text = _re.sub(r"^```[a-zA-Z0-9_+.-]*\s*\n?", "", text)
+    text = _re.sub(r"^(?:---|===FILE===)\s*\n?", "", text).strip()
+    head = text[:400].lower()
+    whole = text[:2000].lower()
+    if head.startswith("<!doctype") or "<html" in whole or head.startswith("{"):
         return "index.html"
     if head.startswith(":root") or "{" in head and "}" in head and ("color" in head or "font" in head or ";" in head):
         return "styles.css"
@@ -318,13 +350,13 @@ class GenerateCandidate(Tool):
                 fname = lines[0].strip()
                 content = lines[1] if len(lines) == 2 else ""
                 if _is_safe_filename(fname):
-                    files[fname] = content
+                    files[fname] = _strip_wrappers(content)
                 else:
                     # El subagente omitió la línea del nombre (HTML pegado tras ===FILE===):
                     # inferir el archivo por contenido.
                     inferred = _infer_file(body)
                     if inferred:
-                        files.setdefault(inferred, body)
+                        files.setdefault(inferred, _strip_wrappers(body))
                         fallback = True
         elif not files:
             files, f2 = GenerateCandidate._parse_files_fallback(text)

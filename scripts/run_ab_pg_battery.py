@@ -73,8 +73,22 @@ def run_one(arch: str, task: str, cond: str, rep: int) -> dict:
     os.environ["PG_GRAPH_ENABLED"] = "1" if cond == "on" else "0"
     os.environ["WIKI_ENABLED"] = "0"
 
-    a = run_single(arch, task, turns=6, max_cost=2.0, verbose=False, quick=False,
-                   target_h=int(os.environ.get("TARGET_H", "0")))
+    # Una run que revienta (cuota, 5xx sostenidos, bug del harness) no debe tirar
+    # la batería entera: se registra con best=None y se sigue con la siguiente.
+    try:
+        a = run_single(arch, task, turns=6, max_cost=2.0, verbose=False, quick=False,
+                       target_h=int(os.environ.get("TARGET_H", "0")))
+    except Exception as e:  # noqa: BLE001 - queremos registrar cualquier fallo
+        res = {
+            "arch": arch, "task": task, "cond": cond, "rep": rep,
+            "run_id": None, "best": None, "baseline": None, "curve": [],
+            "turns": 0, "cost": 0.0, "tools": 0,
+            "error": f"{type(e).__name__}: {str(e)[:400]}",
+        }
+        mark.write_text(json.dumps(res, ensure_ascii=False))
+        print(f"[error] {arch} {cond} rep{rep} -> {res['error']}", flush=True)
+        return res
+
     curve = curve_from_transcript(a.run_dir)
     totals = [c["total"] for c in curve if c.get("total") is not None]
     n_tools = 0
@@ -88,10 +102,14 @@ def run_one(arch: str, task: str, cond: str, rep: int) -> dict:
         "baseline": curve[0]["total"] if curve else None,
         "curve": [c["total"] for c in curve],
         "turns": a.turn, "cost": a.budget.cost_so_far, "tools": n_tools,
+        # modelo/provider RESUELTOS (pueden diferir de los pedidos si hubo
+        # fallback en la cadena): sin esto el coste no es interpretable
+        "model": getattr(a.llm, "model", None),
+        "provider": getattr(a.llm, "provider", None),
     }
     mark.write_text(json.dumps(res, ensure_ascii=False))
     print(f"[done] {arch} {cond} rep{rep} -> {a.run_id} best={res['best']} "
-          f"cost=${res['cost']:.3f} tools={n_tools}", flush=True)
+          f"cost=${res['cost']:.3f} tools={n_tools} model={res['model']}", flush=True)
     return res
 
 
@@ -104,5 +122,24 @@ if __name__ == "__main__":
         for rep in range(1, reps + 1):
             for cond in ("on", "off"):
                 results.append(run_one(arch, task, cond, rep))
-    (OUT / "summary.json").write_text(json.dumps(results, ensure_ascii=False, indent=2))
+
+    # Integridad: el modelo RESUELTO debe ser único en toda la batería. Si el
+    # fallback de la cadena mezcló modelos entre runs, los grupos no son
+    # comparables y la batería queda marcada como inválida.
+    used = sorted({(r.get("provider") or "?", r.get("model") or "?") for r in results})
+    failed = [f"{r['cond']}/rep{r['rep']}" for r in results
+              if r.get("best") is None or r.get("error")]
+    summary = {
+        "results": results,
+        "resolved_models": [list(u) for u in used],
+        "failed_runs": failed,
+        "valid": len(used) == 1 and not failed,
+    }
+    (OUT / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2))
+    if len(used) != 1:
+        print(f"[WARN] modelos resueltos distintos en la bateria: {used} "
+              f"-> NO comparable, revisar markers antes de analizar", flush=True)
+    if failed:
+        print(f"[WARN] runs sin score valido: {failed} -> NO usar en estadistica",
+              flush=True)
     print("BATTERY_COMPLETE", flush=True)

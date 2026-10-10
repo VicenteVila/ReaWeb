@@ -46,6 +46,16 @@ TASKS = [
      " display, micro-interacciones."),
 ]
 
+# Señales de que la QUOTA (o un muro de límite) está muerta y reintentar las
+# runs restantes solo quema tiempo: la run ya reintentó 7x dentro del LLM.
+_QUOTA_MARKERS = ("429", "resource_exhausted", "quota", "rate limit",
+                  "ratelimit", "tokens per minute", "itpm", "413")
+
+
+def _is_quota_error(msg: str) -> bool:
+    m = (msg or "").lower()
+    return any(k in m for k in _QUOTA_MARKERS)
+
 
 def reset_workspace(arch: str) -> None:
     """Vacía workspace/current para que H0 nazca del arquetipo y no del legado."""
@@ -72,6 +82,12 @@ def run_one(arch: str, task: str, cond: str, rep: int) -> dict:
     # la condición llega al harness vía entorno; el agente la lee por run
     os.environ["PG_GRAPH_ENABLED"] = "1" if cond == "on" else "0"
     os.environ["WIKI_ENABLED"] = "0"
+    # Integridad A/B: UN solo modelo en toda la batería. Sin esto, cuando la
+    # cuota del modelo preferido muere, el fallback degrada a un modelo distinto
+    # y el dataset acaba con modelos MEZCLADOS (no comparable; `valid`=False).
+    os.environ["LLM_SINGLE_MODEL"] = "1"
+    import config as _cfg
+    _cfg.LLM_SINGLE_MODEL = True
 
     # Una run que revienta (cuota, 5xx sostenidos, bug del harness) no debe tirar
     # la batería entera: se registra con best=None y se sigue con la siguiente.
@@ -181,22 +197,11 @@ def preflight(arch: str, task: str, reps: int) -> int:
     return 0
 
 
-if __name__ == "__main__":
-    reps = int(os.environ.get("REPS", "2"))
-    arch_env = os.environ.get("ARCH")
-    archs = [(a, t) for a, t in TASKS if not arch_env or a == arch_env]
-    if os.environ.get("PREFLIGHT", "0") not in ("0", ""):
-        arch, task = archs[0]
-        sys.exit(preflight(arch, task, reps))
-    results = []
-    for arch, task in archs:
-        for rep in range(1, reps + 1):
-            for cond in ("on", "off"):
-                results.append(run_one(arch, task, cond, rep))
-
-    # Integridad: el modelo RESUELTO debe ser único en toda la batería. Si el
-    # fallback de la cadena mezcló modelos entre runs, los grupos no son
-    # comparables y la batería queda marcada como inválida.
+def _write_summary(results: list[dict], paused: bool = False,
+                   note: str | None = None) -> None:
+    """Resumen de la batería con la integridad auditable (modelo resuelto único).
+    Se escribe TAMBIÉN al pausar por cuota, para que la batería sea resumible y
+    el estado sea inspeccionable sin esperar a completar las REPS."""
     used = sorted({(r.get("provider") or "?", r.get("model") or "?") for r in results})
     failed = [f"{r['cond']}/rep{r['rep']}" for r in results
               if r.get("best") is None or r.get("error")]
@@ -204,7 +209,9 @@ if __name__ == "__main__":
         "results": results,
         "resolved_models": [list(u) for u in used],
         "failed_runs": failed,
-        "valid": len(used) == 1 and not failed,
+        "valid": len(used) == 1 and not failed and not paused,
+        "paused": paused,
+        "note": note,
     }
     (OUT / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2))
     if len(used) != 1:
@@ -213,4 +220,40 @@ if __name__ == "__main__":
     if failed:
         print(f"[WARN] runs sin score valido: {failed} -> NO usar en estadistica",
               flush=True)
+
+
+if __name__ == "__main__":
+    reps = int(os.environ.get("REPS", "2"))
+    arch_env = os.environ.get("ARCH")
+    archs = [(a, t) for a, t in TASKS if not arch_env or a == arch_env]
+    if os.environ.get("PREFLIGHT", "0") not in ("0", ""):
+        arch, task = archs[0]
+        sys.exit(preflight(arch, task, reps))
+    results = []
+    consecutive_quota_failures = 0
+    for arch, task in archs:
+        for rep in range(1, reps + 1):
+            for cond in ("on", "off"):
+                res = run_one(arch, task, cond, rep)
+                results.append(res)
+                if res.get("error") and _is_quota_error(res["error"]):
+                    consecutive_quota_failures += 1
+                    # Si la cuota muere a mitad (solía girar 1.5h en 429 sin
+                    # dejar resumen), pausamos LIMPIO: los markers ya escritos
+                    # permiten retomar la batería otro día (run_one hace skip).
+                    if consecutive_quota_failures >= 2:
+                        done = len(results)
+                        total = len(archs) * reps * 2
+                        note = (f"cuota del proveedor agotada tras {done}/{total} "
+                                "runs; batería PAUSADA. Retomar con el mismo "
+                                "comando (mismo REPS y providers): los markers "
+                                "hechos se saltan y se continúa.")
+                        print(f"BATTERY_PAUSED {done}/{total} runs — {note}",
+                              flush=True)
+                        _write_summary(results, paused=True, note=note)
+                        sys.exit(3)
+                else:
+                    consecutive_quota_failures = 0
+
+    _write_summary(results)
     print("BATTERY_COMPLETE", flush=True)

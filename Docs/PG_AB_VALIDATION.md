@@ -236,6 +236,31 @@ diferencia observada es ruido. No es una replicación de la configuración Gemin
 (agente y juez cambian), sino una **línea base independiente**: sus datos no se
 pueden sumar ni comparar con las tandas 1–2, solo usar como referencia interna.
 
+### Tanda 4 — n=6+6 (VÁLIDA, `gemini-3.1-flash-lite` + `qwen`/Groq)
+
+Harness ya con **verificador L0** (§4.7) y **modo integridad** (un solo modelo;
+el dataset no se puede contaminar por fallback). Ejecución el 2026-10-10: la
+cuota free de `gemini-3-flash-preview` está cerrada (`limit: 0` para pro) o
+limitada a 20 requests/día, así que se corrió con flash-lite, cuyo cupo diario
+estaba operativo. Flag auditado run por run (12/12 OK). Datos en
+`runs/battery_results/` (12 markers + `summary.json`, `valid=true`).
+
+| | on | off |
+|---|---|---|
+| best | 82, 73, 74, 70, 73, 80 | 74, 71, 70, 70, 73, 76 |
+| media (sd) | 75.3 (4.6) | 72.3 (2.4) |
+| tools (media) | 12.7 | 13.0 |
+
+Delta `on-off` = **+3.00**; permutación exacta 2-colas **p=0.2511** (232/924);
+BF01 (JZS, r=√2/2) ≈ 3.7 → la evidencia favorece H0, aunque la dirección es
+positiva. Coste total ≈ $0.31; on y off con ~13 tools y coste igual por brazo
+(§4.7 invierte presupuesto: el `on` hacía re-rank, pero sin desbalance neto).
+
+**Lectura honesta**: tercera tanda completa VÁLIDA y segunda con diseño limpio
+(con verificador): **sin efecto detectable** del PG a n=6+6. El +3 cae dentro
+del ruido; además `on` arrancó con baseline peor (62.5 vs 65.0) y terminó con
+más varianza. **Línea base independiente** de Mistral y del resto: no sumable.
+
 ### 4.7 Verificador de pasos (L0) + preflight (L3)
 
 El harness iteraba sobre un workspace roto sin recuperación automática: si una
@@ -291,9 +316,21 @@ cd reaweb-harness
 # sondeo previo (1-2 llamadas) para no lanzar una batería contra cuota agotada
 PREFLIGHT=1 LLM_PROVIDER=gemini VISION_PROVIDER=groq python -m scripts.run_ab_pg_battery
 # solo si PREFLIGHT_OK: el modelo del AGENTE y el del JUICIÓN de imágenes son independientes
+# (la batería fuerza AL SOLA modelo y pausa limpia si la cuota muere a mitad)
 LLM_PROVIDER=gemini VISION_PROVIDER=groq REPS=6 python -m scripts.run_ab_pg_battery
 ls runs/battery_results/                            # markers + summary.json
+# si la cuota se agotó: BATTERY_PAUSED → repetir el MISMO comando otro día (skip + resume)
 ```
+
+Restricciones de cuota medidas el 2026-10-10 (free tier):
+
+- `gemini-3.1-pro-preview`: `limit: 0` requests/día (cerrado, no recargable).
+- `gemini-3-flash-preview`: **20 requests/día** (una run ≈ ese cupo) → la batería
+  con este modelo se completa en varias tandas diarias (`BATTERY_PAUSED` + resume).
+- `gemini-3.1-flash-lite`: cupo diario mayor (operativo incluso con flash agotado).
+- Groq **no sirve como agente**: el prompt real turno-1 (≈5.9k tokens) ya devuelve
+  `413 Request too large` aunque el modelo declare contexto 131072 — muro estructural.
+  Groq sí vale como **juez VLM** (`qwen/qwen3.8-27b`), que es su rol en la batería.
 
 Post-análisis: primero `valid`/`resolved_models` del `summary.json`, y solo
 después la comparación (los markers se leen igual):
@@ -328,4 +365,6 @@ EOF
 | 2026-09-30 | Límites de tokens separados con/sin tools; run fallida no aborta la batería | batería continua y reanudable ante cuotas agotadas |
 | 2026-10-10 | Verificador L0 (§4.7): invariantes locales post-mutación + rollback al último estado verificado + escalada y cierre honesto | el harness deja de iterar sobre un workspace roto y de quemar cuota en pasos inválidos |
 | 2026-10-10 | Preflight L3 (§4.7): sondeo de credenciales/cuota y medida del prompt con schemas antes de lanzar | 1-2 llamadas en vez de REPS≈12 contra una cuota agotada; decide n=6+6 vs n=4+4 con proyección |
+| 2026-10-10 | Modo integridad de batería: `LLM_SINGLE_MODEL` (cadena sin fallback) y **pausa limpia** por cuota (resumen resumible + exit 3) | la batería no se contamina con modelos mezclados ni gira 1.5 h sobre un 429 sin dejar summary |
+| 2026-10-10 | Tanda 4 n=6+6 con `gemini-3.1-flash-lite` + `qwen`/Groq | **válida**: delta +3.00, p=0.2511, BF01≈3.7 → sin efecto detectable; 2ª línea base independiente |
 | — | Pendiente: re-validación con control real (n≥6, §7) | — |

@@ -30,6 +30,11 @@ LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "gemini").strip().lower()
 # la visión (sus screenshots completos no chocan con el límite ITPM de Groq).
 # Vacío = usar el mismo proveedor que el agente.
 VISION_PROVIDER = os.environ.get("VISION_PROVIDER", "").strip().lower()
+# LLM_SINGLE_MODEL=1: colapsa la cadena de fallback al modelo base. Para
+# baterías A/B de integridad estricta (un solo modelo resuelto en todo el
+# dataset, sin contaminación pro->lite cuando agota la cuota). El crítico VLM
+# NO se ve afectado (su modelo se configura aparte).
+LLM_SINGLE_MODEL = os.environ.get("LLM_SINGLE_MODEL", "").strip().lower() in ("1", "true", "yes")
 
 
 def _openai_compat(key_env, base_env, base_default, model_env, model_default,

@@ -13,7 +13,9 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+import os
 import random
+import sys
 import time
 from dataclasses import dataclass
 
@@ -275,6 +277,12 @@ class LLM:
             self._chain = [base_model] + [m for m in FALLBACK_MODELS if m != base_model]
             self._vision_models = list(self._chain)
 
+        # Modo integridad (baterías A/B): un SOLO modelo, sin degradación.
+        if config.LLM_SINGLE_MODEL:
+            self._chain = self._chain[:1]
+            if self.provider == "gemini":
+                self._vision_models = self._chain[:]
+
         self.model = self._chain[0]
         self.last_usage: tuple[int, int] = (0, 0)
         self.cost_so_far: float = 0.0
@@ -445,6 +453,23 @@ class LLM:
         models = self._chain
         if kind == "vision":
             models = getattr(self, "_vision_models", None) or self._chain
+
+        # Diagnóstico: tamaño real del prompt (chars -> ~tokens). Activa con
+        # LLM_TRACE_PROMPT=1; no consume cuota y ayuda a explicar 413 por modelo.
+        if os.environ.get("LLM_TRACE_PROMPT", ""):
+            def _text_len(c):
+                if isinstance(c, str):
+                    return len(c)
+                t = getattr(c, "text", None)
+                if t:
+                    return len(t)
+                return 0  # imagen: no cuenta en chars de texto
+            seq = [contents] if isinstance(contents, str) else contents
+            _chars = sum(_text_len(c) for c in seq)
+            print(f"[trace] kind={kind} model={self.model} "
+                  f"text_chars={_chars} ~tokens={_chars // 4}",
+                  file=sys.stderr, flush=True)
+
         last_err = None
         resp = None
         for model in models:

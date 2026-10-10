@@ -370,6 +370,16 @@ class MemoryDB:
             out.append(d)
         return out
 
+    def delete_node(self, run_id: str, node_id: str) -> None:
+        """Elimina un nodo del árbol (verificador L0: nodo rechazado no debe
+        seguir en el árbol ni en la DB, para que best() no vuelva a apuntar a
+        un candidato con el workspace restaurado/roto)."""
+        self.conn.execute(
+            "DELETE FROM tree_nodes WHERE run_id=? AND node_id=?",
+            (run_id, node_id),
+        )
+        self.conn.commit()
+
     def count_nodes(self) -> int:
         return self.conn.execute("SELECT COUNT(*) FROM tree_nodes").fetchone()[0]
 

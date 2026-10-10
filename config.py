@@ -212,6 +212,21 @@ GENERATOR_CREATIVE_TEMP = float(os.environ.get("GENERATOR_CREATIVE_TEMP", "0.85"
 # toma el control y ejecuta una mutación útil (reparar subtareas o refinar).
 AUTO_UNBLOCK_AT_STALL = int(os.environ.get("AUTO_UNBLOCK_AT_STALL", "2"))
 
+# Verificador de pasos (L0): tras cada generate_candidate se comprueban
+# invariantes LOCALES (gratis, sin llamadas LLM). Si fallan, el harness restaura
+# el workspace desde la última snapshot verificada y el agente reintenta desde un
+# estado bueno, con escalada y cierre honesto si se repite. 100% simétrico en
+# ambos brazos del A/B (no puede favorecer una condición).
+VERIFIER_ENABLED = os.environ.get("VERIFIER_ENABLED", "1") != "0"
+VERIFIER_CHECK_RENDER = os.environ.get("VERIFIER_CHECK_RENDER", "1") != "0"
+# rechazos consecutivos: a partir de este nivel se escala (objetivo de reparación,
+# estilo auto_unblock); igual o por encima de este nivel, la run se detiene
+# honestamente en vez de seguir quemando turnos/cuota sobre un workspace roto.
+VERIFIER_MAX_REJECT_BEFORE_ESCALATE = int(os.environ.get(
+    "VERIFIER_MAX_REJECT_BEFORE_ESCALATE", "2"))
+VERIFIER_MAX_REJECT_BEFORE_STOP = int(os.environ.get(
+    "VERIFIER_MAX_REJECT_BEFORE_STOP", "3"))
+
 # Gobernanza de skills (Punto 9 — "Practice Makes Unsafe", skill misevolution):
 # audita las lecciones antes de escribirlas (write gate), filtra por riesgo en
 # la recuperación (retrieval gate) y retira las lecciones con reuses dañinos

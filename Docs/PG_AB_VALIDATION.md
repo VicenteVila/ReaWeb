@@ -236,6 +236,42 @@ diferencia observada es ruido. No es una replicación de la configuración Gemin
 (agente y juez cambian), sino una **línea base independiente**: sus datos no se
 pueden sumar ni comparar con las tandas 1–2, solo usar como referencia interna.
 
+### 4.7 Verificador de pasos (L0) + preflight (L3)
+
+El harness iteraba sobre un workspace roto sin recuperación automática: si una
+mutación dejaba `index.html` inusable (o rompía la funcionalidad previa), la
+siguiente mutación se construía encima de la basura y la run quemaba turnos y
+cuota. El verificador añade invariantes **100% locales (gratis)** tras cada
+`generate_candidate`:
+
+- `index.html` existe, no está vacío, no tiene wrappers/fences, y contiene `<html>`.
+- Sin regresión del GATE funcional (si lo previo pasaba el gate y la mutación lo
+  suspende → paso roto, se rechaza). Una regresión de *score* NO se rechaza
+  (es señal de exploración y ya la trata el árbol).
+- Opcional (`VERIFIER_CHECK_RENDER`): la página renderiza en Chrome local, lo que
+  además evita lanzar audits VLM (que sí cuestan tokens) sobre páginas rotas.
+
+Si falla, el harness **restaura el workspace desde la última snapshot verificada**
+(helper `restore_workspace_from` compartido con `revert_workspace`), retira el
+nodo del árbol (memoria + DB, para que `best()` no vuelva a un candidato cuyo
+workspace ya no existe), **no** registra lección ni experimento del paso
+rechazado, y realimenta al agente para reintentar desde el estado bueno.
+Rechazos en cadena: 1 feedback; a `VERIFIER_MAX_REJECT_BEFORE_ESCALATE` (2)
+escala una vez con objetivo de reparación (`auto_unblock`); a
+`VERIFIER_MAX_REJECT_BEFORE_STOP` (3) la run se detiene **honestamente** con el
+último candidato verificado (el driver la marca sin abortar la batería).
+
+`PREFLIGHT=1` ejecuta un sondeo **antes** de comprometer una batería: 1-2
+llamadas mínimas que verifican credenciales/cuota, miden el prompt real con
+schemas y avisan si el prompt está ≥80% del límite TPM del proveedor (habría
+detectado el muro 413 de Groq antes de quemar reintentos), y proyectan el coste
+para decidir n=6+6 vs n=4+4.
+
+**Regla de validación**: el verificador se aplica **idéntico en ambos brazos**
+(simétrico, sin dependencia de la condición) y modifica el harness → toda
+batería lanzada con el verificador activo es un **baseline nuevo**: las tandas
+anteriores (Gemini/flash-lite, Mistral) quedan como histórico no comparable.
+
 ## 7. Poder estadístico y diseño propuesto
 
 - **n por grupo**: con la varianza observada (sd 4–5 pt), para detectar un delta
@@ -252,7 +288,9 @@ pueden sumar ni comparar con las tandas 1–2, solo usar como referencia interna
 
 ```bash
 cd reaweb-harness
-# el modelo del AGENTE y el del JUICIÓN de imágenes son independientes
+# sondeo previo (1-2 llamadas) para no lanzar una batería contra cuota agotada
+PREFLIGHT=1 LLM_PROVIDER=gemini VISION_PROVIDER=groq python -m scripts.run_ab_pg_battery
+# solo si PREFLIGHT_OK: el modelo del AGENTE y el del JUICIÓN de imágenes son independientes
 LLM_PROVIDER=gemini VISION_PROVIDER=groq REPS=6 python -m scripts.run_ab_pg_battery
 ls runs/battery_results/                            # markers + summary.json
 ```
@@ -288,4 +326,6 @@ EOF
 | 2026-09-30 | Tanda 3 n=6+6 con `open-mistral-nemo` + `pixtral-12b` | **válida**: delta −0.30, p=0.9329 → sin efecto detectable en este modelo |
 | 2026-09-30 | Parser tolerante de `===FILE===` con fences Markdown | salida del modelo ya no se pierde ni ensucia el workspace |
 | 2026-09-30 | Límites de tokens separados con/sin tools; run fallida no aborta la batería | batería continua y reanudable ante cuotas agotadas |
+| 2026-10-10 | Verificador L0 (§4.7): invariantes locales post-mutación + rollback al último estado verificado + escalada y cierre honesto | el harness deja de iterar sobre un workspace roto y de quemar cuota en pasos inválidos |
+| 2026-10-10 | Preflight L3 (§4.7): sondeo de credenciales/cuota y medida del prompt con schemas antes de lanzar | 1-2 llamadas en vez de REPS≈12 contra una cuota agotada; decide n=6+6 vs n=4+4 con proyección |
 | — | Pendiente: re-validación con control real (n≥6, §7) | — |

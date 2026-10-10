@@ -113,10 +113,81 @@ def run_one(arch: str, task: str, cond: str, rep: int) -> dict:
     return res
 
 
+def preflight(arch: str, task: str, reps: int) -> int:
+    """Sondeo L3 ANTES de consumir una batería entera: comprueba credenciales,
+    cuota disponible y el tamaño real del prompt con schemas. Devuelve exit code
+    (0=listo, 2=no lanzar). Gasta entre 1 y 2 llamadas mínimas — la única pieza
+    con coste de tokens de todo el proceso de decisión."""
+    from agent.llm import LLM
+    from config import PATHS, VISION_PROVIDER
+    from tools.domain import build_domain_registry
+
+    print("== PREFLIGHT ==", flush=True)
+    llm = LLM(model=None, use_cache=False)
+    provider = getattr(llm, "provider", "?")
+    print(f"  agente  -> {provider} / {getattr(llm, 'model', '?')}", flush=True)
+    print(f"  visión  -> {VISION_PROVIDER or provider} / "
+          f"{getattr(llm, '_vision_models', None) or '(mismo que agente)'}", flush=True)
+
+    try:
+        resp = llm.generate("Preflight: responde exactamente OK.", temperature=0.0)
+        print(f"  sondeo credenciales/cuota: OK in={resp.input_tokens} "
+              f"out={resp.output_tokens} -> {resp.text.strip()[:40]!r}", flush=True)
+    except Exception as e:
+        print(f"  SONDA FALLIDA (no lanzar): {type(e).__name__}: {str(e)[:300]}",
+              flush=True)
+        print("PREFLIGHT_FAIL", flush=True)
+        return 2
+
+    # prompt real del agente: system + estado minimo + TODOS los schemas de tools
+    try:
+        registry = build_domain_registry(llm, archetype=arch, task=task)
+        system = getattr(llm, "_system_prompt", None)
+        head = (system() if callable(system) else "") or "Eres un agente de diseño web."
+        probe = f"{head}\n\nTarea: {task}\nMejor candidato: H0 total=80.\n" \
+                "TURNO ACTUAL: Decide tu próxima acción."
+        resp2 = llm.generate(probe, tools=registry.schemas(), temperature=0.0)
+        in_tok = getattr(resp2, "input_tokens", 0)
+        print(f"  prompt real con schemas: {in_tok} input tokens (compatible y 200 OK)",
+              flush=True)
+    except Exception as e:
+        print(f"  prompt con schemas RECHAZADO: {type(e).__name__}: {str(e)[:300]}",
+              flush=True)
+        print("  (el sondeo de cuota pasó; el prompt completo puede fallar en la batería)",
+              flush=True)
+        in_tok = 0
+
+    # limites conocidos por proveedor (TPM) para avisar antes de un muro 413
+    known_limits = {"groq": 8000, "gemini": None, "mistral": None,
+                    "cerebras": None, "openrouter": None}
+    tpm = known_limits.get(provider)
+    if tpm and in_tok >= int(0.8 * tpm):
+        print(f"  WARN: prompt ({in_tok}) >= 80% del limite TPM de {provider} "
+              f"({tpm}): la batería fallará con 413. No lanzar.", flush=True)
+        print("PREFLIGHT_FAIL", flush=True)
+        return 2
+
+    turns = 6
+    out_tok = 2500  # output medio por turno (generacion HTML larga)
+    per_run = turns * (max(in_tok, 2000) + out_tok)
+    for sel in (6, 4):
+        runs = sel * 2
+        print(f"  proyeccion n={sel}+{sel} ({runs} runs): ~{per_run * runs:,} "
+              f"tokens agente + ~{73 * 1844:,} tokens vision (Qwen/Groq) "
+              f"(~${runs * 0.04:.2f} agente si Gemini proyecto; verificado en bateria Mistral)",
+              flush=True)
+    print("PREFLIGHT_OK Para REP casar tu cuota diaria: si cubre ~2x la "
+          "proyeccion de n=6, lanza REPS=6; si estas justo, REPS=4.", flush=True)
+    return 0
+
+
 if __name__ == "__main__":
     reps = int(os.environ.get("REPS", "2"))
     arch_env = os.environ.get("ARCH")
     archs = [(a, t) for a, t in TASKS if not arch_env or a == arch_env]
+    if os.environ.get("PREFLIGHT", "0") not in ("0", ""):
+        arch, task = archs[0]
+        sys.exit(preflight(arch, task, reps))
     results = []
     for arch, task in archs:
         for rep in range(1, reps + 1):

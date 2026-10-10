@@ -58,6 +58,10 @@ class Agent:
         self._auto_lesson_count = 0
         self._content_lesson_count = 0
         self._last_functional_tests = None
+        # Verificador L0: rechazos consecutivos de mutaciones. Bootstrapping sobre
+        # estado congelado previo para que no persista entre runs del mismo agente.
+        self._reject_streak = 0
+        self._reject_escalated_once = False
         self.tree = SearchTree(
             path=self.run_dir / "search_tree.json", run_id=self.run_id, db=self.db
         )
@@ -554,11 +558,22 @@ class Agent:
         Compartida entre las tool_calls del modelo y el auto-unblock por stall
         del harness (garantiza progreso si el agente se bloquea repitiendo)."""
         prev_best = self._current_best_score()
+        prev_node = self.tree.best()
         pre_snapshot = self._snapshot_workspace() if call.name == "generate_candidate" else None
         result, _ = self._exec_tool(registry, call)
         self.history.append({"role": "model", "parts": [{"function_call": {"name": call.name, "args": call.args}}]})
         self.history.append({"role": "user", "parts": [{"function_response": {"name": call.name, "response": {"result": result}}}]})
         node_id = self._handle_eval_result(call, result)
+
+        # --- Verificador L0 (solo generate_candidate): invariantes locales del
+        # paso "mutar" (gratis, 0 llamadas LLM). Si fallan, se restaura el estado
+        # previo verificado y se cierra el ciclo de esta mutación sin snapshot,
+        # audits VLM ni lecciones — no se quema cuota sobre un workspace roto.
+        if call.name == "generate_candidate" and node_id is not None:
+            reason = self._verify_candidate(node_id, prev_node)
+            if reason:
+                self._reject_candidate(node_id, reason, registry, prev_node)
+                return
         node_total = (
             float(self.tree.nodes[node_id].metrics.get("total", 0.0))
             if node_id and node_id in self.tree.nodes else 0.0
@@ -601,6 +616,147 @@ class Agent:
         self._maybe_auto_lesson(call, delta, node_id, result, file_diff=file_diff)
         if node_id is not None and call.name in ("generate_candidate", "audit_page"):
             self._maybe_subtask_lesson(node_id)
+
+    def _verifier_stop_reason(self) -> str | None:
+        """Razón de cierre honesto del verificador L0 (mutaciones rechazadas en
+        cadena) o None si aún se debe continuar. Método aparte para testeabilidad."""
+        from config import VERIFIER_MAX_REJECT_BEFORE_STOP
+        if self._reject_streak >= VERIFIER_MAX_REJECT_BEFORE_STOP:
+            return (f"Verificador: {self._reject_streak} mutaciones "
+                    "inválidas consecutivas; se detiene con el último "
+                    "candidato verificado.")
+        return None
+
+    def _verify_candidate(self, node_id: str,
+                          prev_node) -> str:
+        """Verificador L0 del paso 'mutar' (generate_candidate): invariantes
+        LOCALES y GRATIS (0 llamadas LLM). Devuelve el motivo de rechazo o "" si
+        el paso es usable. NO juzga calidad (no rechaza una regresión legítima de
+        score: esa es señal de exploración y ya la trata el árbol); solo rechaza
+        cuando el paso ha dejado el workspace inusable o ha ROTO lo que antes
+        funcionaba. Simétrico: ninguna rama depende de la condición del A/B.
+        Al aceptar, resetea la racha de rechazos (los rechazos consecutivos dejan
+        de serlo: evita cierre prematuro con patrón bueno-malo-bueno-malo)."""
+        import config as _cfg
+        if not _cfg.VERIFIER_ENABLED:
+            return ""
+        from config import PATHS
+        from tools.domain.evaluator import FUNCTIONAL_GATE_MIN
+
+        problems: list[str] = []
+        target = PATHS["current"]
+        index = target / "index.html"
+
+        if not index.exists():
+            problems.append("no se generó index.html")
+        else:
+            try:
+                text = index.read_text(encoding="utf-8", errors="replace")
+            except Exception:
+                text = ""
+            if not text.strip():
+                problems.append("index.html vacío")
+            if text.lstrip().startswith("```"):
+                problems.append("index.html empieza con fences markdown")
+            if "===FILE===" in text:
+                problems.append("residuo de wrappers ===FILE=== en index.html")
+            if len(text) > 0 and "<html" not in text.lower():
+                problems.append("index.html sin marca <html>")
+
+        # Regresión funcional: si el candidato previo pasaba el gate funcional y
+        # la mutación lo hace suspender, se considera un paso roto (rompe lo que
+        # funcionaba), no una exploración legítima.
+        node = self.tree.nodes.get(node_id)
+        if prev_node is not None and prev_node.id != node_id and node is not None:
+            try:
+                pf = prev_node.metrics.get("functional")
+                nf = node.metrics.get("functional")
+                if (isinstance(pf, (int, float)) and pf >= FUNCTIONAL_GATE_MIN
+                        and isinstance(nf, (int, float)) and nf < FUNCTIONAL_GATE_MIN):
+                    problems.append(f"rompió la funcionalidad previa: {int(pf)} -> {int(nf)}")
+            except Exception:
+                pass
+
+        # Render: si la página no renderiza en Chrome (local), los audits VLM
+        # fallarían y posiblemente la página esté rota. Verificación SOLO local.
+        if _cfg.VERIFIER_CHECK_RENDER and not problems and index.exists():
+            try:
+                from tools.domain.visual_critic import render_screenshot
+                import tempfile
+                png = Path(tempfile.gettempdir()) / f"verify_{self.run_id}_{node_id}.png"
+                ok = render_screenshot(index, png)
+                if png.exists():
+                    png.unlink(missing_ok=True)
+                if not ok:
+                    problems.append("la página no renderiza en Chrome")
+            except Exception:
+                pass  # si Chrome no está disponible, no juzgamos (gate con evidencia)
+
+        self._log("verify", {"node": node_id, "reason": "; ".join(problems) or None})
+        if not problems:
+            self._reject_streak = 0  # aceptado: fin de la racha de rechazos
+        return "; ".join(problems) or ""
+
+    def _reject_candidate(self, node_id: str, reason: str, registry,
+                          prev_node) -> None:
+        """Recuperación L0: restaura el workspace desde el último nodo verificado
+        OK, retira el nodo rechazado del árbol (memoria + DB), deja rastro en el
+        transcript y realimenta al agente para que reintente desde un estado
+        bueno. Rechazos consecutivos escalan (auto_unblock) y después detienen la
+        run honestamente (no seguir quemando cuota sobre un workspace roto)."""
+        from config import VERIFIER_MAX_REJECT_BEFORE_ESCALATE
+
+        self._reject_streak += 1
+
+        restored = None
+        # Restaurar desde el nodo bueno CAPTURADO ANTES de la mutación (no desde
+        # tree.best(): el nodo rechazado podría tener el total más alto).
+        if prev_node is not None and prev_node.id != node_id:
+            try:
+                from tools.domain.web_generator import restore_workspace_from
+                restored = restore_workspace_from(prev_node.id, self.run_id)
+            except Exception:
+                restored = None
+        restored_tag = (f"workspace restaurado a {prev_node.id}" if restored
+                        else "no hay snapshot previo que restaurar")
+
+        # Retirar el nodo de memoria y DB para que best() no vuelva a apuntar a
+        # un candidato cuyo workspace ya no existe (consistencia workspace<->árbol).
+        self.tree.nodes.pop(node_id, None)
+        try:
+            self.tree.save()
+            self.db.delete_node(self.run_id, node_id)
+        except Exception:
+            pass
+
+        self._log("system", {
+            "event": "step_rejected",
+            "node": node_id,
+            "reason": reason,
+            "restored": restored_tag,
+            "streak": self._reject_streak,
+        })
+
+        guide = ("La mutación anterior se DESCARTÓ (workspace restaurado al "
+                 f"candidato verificado {prev_node.id if prev_node and prev_node.id != node_id else 'anterior'}). "
+                 f"Motivo: {reason}. Conserva lo que funcionaba y reintenta desde "
+                 "el estado restaurado; NO reintentes la misma serie de pasos que "
+                 "rompió el workspace: verifica que index.html renderice y que la "
+                 "funcionalidad previa se mantenga")
+        self.history.append({"role": "user", "parts": [{"text": guide}]})
+
+        # Escalada una sola vez: objetivo de REPARACIÓN explícito (auto_unblock)
+        # ya ejecuta una mutación útil desde el estado restaurado.
+        if (not self._reject_escalated_once
+                and self._reject_streak >= VERIFIER_MAX_REJECT_BEFORE_ESCALATE):
+            self._reject_escalated_once = True
+            self._log("system", {"event": "verifier_escalate",
+                                 "streak": self._reject_streak})
+            try:
+                self._auto_unblock(registry)
+            except Exception as e:
+                self._log("system", {"event": "verifier_escalate",
+                                     "error": str(e)[:200]})
 
     def _auto_unblock(self, registry) -> None:
         """Escalada estricta: si el agente lleva N turnos sin tool_call (stall,
@@ -1263,6 +1419,14 @@ class Agent:
                 self._no_tool_streak = 0
                 self._handle_tool_call(registry, call)
             self._sync_budget_cost()
+
+            # Verificador L0: si las mutaciones se rechazan en cadena, detener
+            # la run honestamente en vez de seguir quemando turnos/cuota sobre
+            # un workspace que no pasa las invariantes.
+            stop_reason = self._verifier_stop_reason()
+            if stop_reason:
+                self._log("stop", {"reason": stop_reason})
+                break
 
             # verificamos si tras ejecutar tools el presupuesto pide stop
             if self.budget.done():

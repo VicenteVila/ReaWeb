@@ -766,36 +766,47 @@ class RevertWorkspace(Tool):
         }
 
     def run(self, candidate: str = "", reason: str = "", **kwargs) -> str:
-        import shutil
         run_id = kwargs.get("run_id") or ""
-        candidates_dir = PATHS["runs"] / (run_id or "latest") / "candidates"
-        src = None
-        if candidate:
-            src = candidates_dir / candidate
-            if not (src / "index.html").exists():
+        dst = restore_workspace_from(candidate or None, run_id)
+        if dst is None:
+            candidates_dir = PATHS["runs"] / (run_id or "latest") / "candidates"
+            if candidate:
                 return f"ERROR: no existe snapshot {candidate} en {candidates_dir}"
-        else:
-            # elegir el mejor snapshot por antigüedad de archivos no es robusto;
-            # el agente pasa run_id y candidate explícito normalmente. Sin
-            # candidate, buscar el índice numerado más alto (H<n>).
-            best = None
-            for d in sorted(candidates_dir.glob("H*")):
-                if (d / "index.html").exists():
-                    best = d
-            src = best
-            if src is None:
-                return f"ERROR: no hay snapshots en {candidates_dir}"
-            candidate = src.name
-        dst = PATHS["current"]
-        if dst.exists():
-            for f in dst.iterdir():
-                if f.is_file():
-                    f.unlink()
-                elif f.is_dir():
-                    shutil.rmtree(f, ignore_errors=True)
-        for f in src.iterdir():
+            return f"ERROR: no hay snapshots en {candidates_dir}"
+        return f"OK: workspace/current restaurado desde {dst.name}\nRazón: {reason or '(no dada)'}"
+
+
+def restore_workspace_from(candidate: str | None, run_id: str = "") -> Path | None:
+    """Helper compartido (verificador L0 + revert_workspace): vuelca un snapshot
+    congelado runs/<run_id>/candidates/<candidate> en workspace/current.
+    candidate=None elige el snapshot verificable de índice más alto. Devuelve el
+    directorio fuente restaurado o None si no hay snapshot utilizable."""
+    import shutil
+    candidates_dir = PATHS["runs"] / (run_id or "latest") / "candidates"
+    src = None
+    if candidate:
+        src = candidates_dir / candidate
+        if not (src / "index.html").exists():
+            return None
+    else:
+        best = None
+        for d in sorted(candidates_dir.glob("H*")):
+            if (d / "index.html").exists():
+                best = d
+        src = best
+        if src is None:
+            return None
+    dst = PATHS["current"]
+    if dst.exists():
+        for f in dst.iterdir():
             if f.is_file():
-                shutil.copy2(f, dst / f.name)
+                f.unlink()
             elif f.is_dir():
-                shutil.copytree(f, dst / f.name)
-        return f"OK: workspace/current restaurado desde {candidate}\nRazón: {reason or '(no dada)'}"
+                shutil.rmtree(f, ignore_errors=True)
+    dst.mkdir(parents=True, exist_ok=True)
+    for f in src.iterdir():
+        if f.is_file():
+            shutil.copy2(f, dst / f.name)
+        elif f.is_dir():
+            shutil.copytree(f, dst / f.name)
+    return src

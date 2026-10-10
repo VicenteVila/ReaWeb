@@ -367,4 +367,6 @@ EOF
 | 2026-10-10 | Preflight L3 (§4.7): sondeo de credenciales/cuota y medida del prompt con schemas antes de lanzar | 1-2 llamadas en vez de REPS≈12 contra una cuota agotada; decide n=6+6 vs n=4+4 con proyección |
 | 2026-10-10 | Modo integridad de batería: `LLM_SINGLE_MODEL` (cadena sin fallback) y **pausa limpia** por cuota (resumen resumible + exit 3) | la batería no se contamina con modelos mezclados ni gira 1.5 h sobre un 429 sin dejar summary |
 | 2026-10-10 | Tanda 4 n=6+6 con `gemini-3.1-flash-lite` + `qwen`/Groq | **válida**: delta +3.00, p=0.2511, BF01≈3.7 → sin efecto detectable; 2ª línea base independiente |
+| 2026-10-10 | Fix resume: los markers con error (cuota) se reintentan, no se saltan | una run fallida no se da por hecha al reanudar; el dataset no se envenena |
+| 2026-10-10 | `scripts/battery_resume.sh`: catch-up idempotente de la batería (bucle multi-día, exit 0=completa / 3=cuota agotada) | la tanda capaz avanza cada ciclo de cuota sin intervención manual; útil con PC encendido intermitentemente |
 | — | Pendiente: re-validación con control real (n≥6, §7) | — |

@@ -72,11 +72,16 @@ def reset_workspace(arch: str) -> None:
 
 
 def run_one(arch: str, task: str, cond: str, rep: int) -> dict:
-    """Ejecuta una run (si no hay marker) y persiste el resumen JSON."""
+    """Ejecuta una run (si no hay marker VÁLIDO) y persiste el resumen JSON.
+    Los markers con error (p. ej. cuota agotada) NO se saltan al reanudar: se
+    reintentan, porque una run fallida no es una run hecha. Solo los markers con
+    best no-None se consideran completados."""
     mark = OUT / f"{arch}_{cond}_rep{rep}.json"
     if mark.exists():
-        print(f"[skip] {arch} {cond} rep{rep}", flush=True)
-        return json.loads(mark.read_text())
+        prev = json.loads(mark.read_text())
+        if prev.get("best") is not None and not prev.get("error"):
+            print(f"[skip] {arch} {cond} rep{rep}", flush=True)
+            return prev
 
     reset_workspace(arch)
     # la condición llega al harness vía entorno; el agente la lee por run

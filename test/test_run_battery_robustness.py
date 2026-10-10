@@ -98,3 +98,58 @@ def test_fallback_chain_intact_without_single_model(monkeypatch, patched_config_
     llm = _build_llm_single_model("groq", api_key="fake-key")
     assert "qwen/qwen3.8-27b" in llm._chain, "sin modo integridad hay fallback"
     assert len(llm._chain) == 2
+
+
+# --- resume: los markers con error se reintentan, no se saltan -------------
+
+def _marker(monkeypatch, tmp_path, name, payload):
+    monkeypatch.setattr(battery, "OUT", tmp_path)
+    (tmp_path / name).write_text(json.dumps(payload))
+
+
+def _fake_run_single(monkeypatch, res, transcripts):
+    monkeypatch.setattr(battery, "run_single",
+                        lambda *a, **k: _FakeBatteryRun(res, transcripts))
+
+
+class _FakeBatteryRun:
+    def __init__(self, res, transcripts):
+        self.run_id = res["run_id"]
+        self.turn = res["turns"]
+        self.budget = type("B", (), {"cost_so_far": res["cost"]})()
+        self.llm = type("L", (), {"model": res["model"], "provider": res["provider"]})()
+        self.run_dir = transcripts
+
+
+def _transcript_dir(tmp_path, totals):
+    d = tmp_path / "run"
+    d.mkdir(exist_ok=True)
+    lines = [json.dumps({"kind": "eval", "candidate": f"H{i}", "total": t})
+             for i, t in enumerate(totals)]
+    (d / "transcript.jsonl").write_text("\n".join(lines))
+    return d
+
+
+def test_resume_skips_only_successful_markers(monkeypatch, tmp_path):
+    # marker OK -> skip; marker con error -> se reintenta
+    ok = {"arch": "a", "task": "t", "cond": "on", "rep": 1,
+          "run_id": "R1", "best": 87, "baseline": 85, "curve": [85, 87],
+          "turns": 3, "cost": 0.02, "tools": 10, "model": "openai/gpt-oss-120b",
+          "provider": "groq"}
+    err = {"arch": "a", "task": "t", "cond": "off", "rep": 1,
+           "run_id": None, "best": None, "baseline": None, "curve": [],
+           "turns": 0, "cost": 0.0, "tools": 0,
+           "error": "RuntimeError: Todos los modelos fallaron: 429"}
+    _marker(monkeypatch, tmp_path, "a_on_rep1.json", ok)
+    _marker(monkeypatch, tmp_path, "a_off_rep1.json", err)
+
+    done_ok = battery.run_one("a", "t", "on", 1)
+    assert done_ok["best"] == 87  # no relanza (ya completada)
+
+    res = {"arch": "a", "task": "t", "cond": "off", "rep": 1,
+           "run_id": "R2", "best": 75, "baseline": 70, "curve": [70, 75],
+           "turns": 3, "cost": 0.02, "tools": 9, "model": "openai/gpt-oss-120b",
+           "provider": "groq"}
+    _fake_run_single(monkeypatch, res, _transcript_dir(tmp_path, [70, 75]))
+    done_err = battery.run_one("a", "t", "off", 1)
+    assert done_err["run_id"] == "R2", "una run fallida por cuota debe reintentarse"
